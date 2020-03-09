@@ -2,31 +2,45 @@ package com.joelinjatovo.navette.app.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
+
 import com.joelinjatovo.navette.app.entity.User;
 
 import java.util.List;
 
 @Dao
-public abstract class UserDao implements BaseDao<User> {
+interface UserDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Long[] insert(User... entities);
+
+    @Update
+    Long update(User... entities);
+
+    @Delete
+    Long delete(User... entities);
+
     @Query("SELECT * FROM users")
-    abstract List<User> find();
+    List<User> find();
 
     @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-    abstract User find(Integer id);
+    User find(Integer id);
 
     @Query("SELECT * FROM users WHERE id IN (:ids)")
-    abstract User find(int[] ids);
+    User find(int[] ids);
 
     @Query("SELECT * FROM users")
-    abstract LiveData<List<User>> load();
+    LiveData<List<User>> load();
 
     @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-    abstract LiveData<User> load(int id);
+    LiveData<User> load(int id);
 
     @Query("SELECT * FROM users WHERE id IN (:ids)")
-    abstract LiveData<List<User>> load(int[] ids);
+    LiveData<List<User>> load(int[] ids);
 
     @Query("SELECT COUNT(users.id) FROM users")
-    abstract Integer count();
+    Integer count();
 }
