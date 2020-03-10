@@ -13,15 +13,15 @@ import com.joelinjatovo.navette.app.entity.User;
 import java.util.List;
 
 @Dao
-interface UserDao {
+public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Long[] insert(User... entities);
 
     @Update
-    Long update(User... entities);
+    int update(User... entities);
 
     @Delete
-    Long delete(User... entities);
+    int delete(User... entities);
 
     @Query("SELECT * FROM users")
     List<User> find();

@@ -27,25 +27,25 @@ import static androidx.room.ForeignKey.CASCADE;
 public class User {
     @PrimaryKey
     @SerializedName("id")
-    private int id;
+    public int id;
 
     @SerializedName("phone")
     @ColumnInfo(name = "phone")
-    private String phone;
+    public String phone;
 
     @SerializedName("name")
     @ColumnInfo(name = "name")
-    private String name;
+    public String name;
 
     @SerializedName("locale")
     @ColumnInfo(name = "locale")
-    private String locale;
+    public String locale;
 
     @ColumnInfo(name = "token")
-    private String token;
+    public String token;
 
     @ColumnInfo(name = "refresh_token")
-    private String refresh_token;
+    public String refresh_token;
 
     public String toString(){
         return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "]";

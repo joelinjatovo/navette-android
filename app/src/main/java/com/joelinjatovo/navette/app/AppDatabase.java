@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 
 import com.joelinjatovo.navette.app.converter.ArrayConverter;
 import com.joelinjatovo.navette.app.converter.DateConverter;
+import com.joelinjatovo.navette.app.dao.UserDao;
 import com.joelinjatovo.navette.app.entity.User;
 
 @Database(entities = {
