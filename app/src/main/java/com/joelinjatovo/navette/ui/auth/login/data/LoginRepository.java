@@ -17,7 +17,7 @@ public class LoginRepository {
     private LoggedInUser user = null;
 
     // private constructor : singleton access
-    private LoginRepository(LoginDataSource dataSource) {
+    public LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
