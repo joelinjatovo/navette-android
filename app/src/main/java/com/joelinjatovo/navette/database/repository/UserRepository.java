@@ -1,14 +1,13 @@
-package com.joelinjatovo.navette.app.repository;
+package com.joelinjatovo.navette.database.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
 
-import com.joelinjatovo.navette.app.AppDatabase;
-import com.joelinjatovo.navette.app.dao.UserDao;
-import com.joelinjatovo.navette.app.entity.User;
+import com.joelinjatovo.navette.database.AppDatabase;
+import com.joelinjatovo.navette.database.dao.UserDao;
+import com.joelinjatovo.navette.database.entity.User;
 
 import java.util.List;
 

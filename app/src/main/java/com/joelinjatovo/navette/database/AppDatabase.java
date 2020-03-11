@@ -1,18 +1,17 @@
-package com.joelinjatovo.navette.app;
+package com.joelinjatovo.navette.database;
 
 import android.content.Context;
 
 import androidx.annotation.VisibleForTesting;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.joelinjatovo.navette.app.converter.ArrayConverter;
-import com.joelinjatovo.navette.app.converter.DateConverter;
-import com.joelinjatovo.navette.app.dao.UserDao;
-import com.joelinjatovo.navette.app.entity.User;
+import com.joelinjatovo.navette.database.converter.ArrayConverter;
+import com.joelinjatovo.navette.database.converter.DateConverter;
+import com.joelinjatovo.navette.database.dao.UserDao;
+import com.joelinjatovo.navette.database.entity.User;
 
 @Database(entities = {
         User.class

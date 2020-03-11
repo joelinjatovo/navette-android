@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.data.model;
+package com.joelinjatovo.navette.ui.auth.login.data.model;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository

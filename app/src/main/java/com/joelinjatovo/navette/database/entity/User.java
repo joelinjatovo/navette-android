@@ -1,20 +1,11 @@
-package com.joelinjatovo.navette.app.entity;
+package com.joelinjatovo.navette.database.entity;
 
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
-import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.io.File;
-import java.util.List;
-
-import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(
     tableName = "users",

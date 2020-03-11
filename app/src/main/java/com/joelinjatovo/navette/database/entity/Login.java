@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.app.entity;
+package com.joelinjatovo.navette.database.entity;
 
 import com.google.gson.annotations.SerializedName;
 

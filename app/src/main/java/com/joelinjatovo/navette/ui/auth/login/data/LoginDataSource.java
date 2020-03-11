@@ -1,6 +1,6 @@
-package com.joelinjatovo.navette.data;
+package com.joelinjatovo.navette.ui.auth.login.data;
 
-import com.joelinjatovo.navette.data.model.LoggedInUser;
+import com.joelinjatovo.navette.ui.auth.login.data.model.LoggedInUser;
 
 import java.io.IOException;
 

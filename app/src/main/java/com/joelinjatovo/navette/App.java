@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.app;
+package com.joelinjatovo.navette;
 
 import android.app.Application;
 

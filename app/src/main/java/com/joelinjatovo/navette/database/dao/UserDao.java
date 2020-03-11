@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.app.dao;
+package com.joelinjatovo.navette.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,7 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.joelinjatovo.navette.app.entity.User;
+import com.joelinjatovo.navette.database.entity.User;
 
 import java.util.List;
 

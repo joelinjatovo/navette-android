@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.app.converter;
+package com.joelinjatovo.navette.database.converter;
 
 import androidx.room.TypeConverter;
 

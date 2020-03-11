@@ -1,11 +1,11 @@
-package com.joelinjatovo.navette;
+package com.joelinjatovo.navette.ui.vm;
 
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.joelinjatovo.navette.app.entity.User;
-import com.joelinjatovo.navette.app.repository.UserRepository;
+import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.repository.UserRepository;
 
 import java.util.List;
 
