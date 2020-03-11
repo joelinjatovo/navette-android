@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.auth.login.data;
+package com.joelinjatovo.navette.data;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.

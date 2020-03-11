@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.joelinjatovo.navette.ui.auth.login.data.Result;
-import com.joelinjatovo.navette.ui.auth.login.data.model.LoggedInUser;
+import com.joelinjatovo.navette.data.LoginRepository;
+import com.joelinjatovo.navette.data.Result;
+import com.joelinjatovo.navette.data.model.LoggedInUser;
 import com.joelinjatovo.navette.R;
 
 public class LoginViewModel extends ViewModel {
