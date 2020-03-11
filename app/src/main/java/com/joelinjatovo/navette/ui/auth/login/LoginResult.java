@@ -1,11 +1,11 @@
-package com.joelinjatovo.navette.ui.login;
+package com.joelinjatovo.navette.ui.auth.login;
 
 import androidx.annotation.Nullable;
 
 /**
  * Authentication result : success (user details) or error message.
  */
-class LoginResult {
+public class LoginResult {
     @Nullable
     private LoggedInUserView success;
     @Nullable
@@ -20,12 +20,12 @@ class LoginResult {
     }
 
     @Nullable
-    LoggedInUserView getSuccess() {
+    public LoggedInUserView getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

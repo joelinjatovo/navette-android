@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.notifications;
+package com.joelinjatovo.navette.ui.main.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

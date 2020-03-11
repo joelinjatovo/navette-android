@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.login;
+package com.joelinjatovo.navette.ui.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -8,18 +8,18 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
-import com.joelinjatovo.navette.LoginFragment;
+import com.joelinjatovo.navette.ui.auth.login.LoginFragment;
 import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.RegisterFragment;
+import com.joelinjatovo.navette.ui.auth.register.RegisterFragment;
 
 import java.util.ArrayList;
 
-public class LoginActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_auth);
         ViewPager viewPager = findViewById(R.id.viewPager);
 
         AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());

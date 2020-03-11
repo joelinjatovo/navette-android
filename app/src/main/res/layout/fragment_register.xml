@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterFragment">
+    tools:context=".ui.auth.register.RegisterFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
@@ -32,116 +32,179 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="bottom">
-        <EditText
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:backgroundTint="@android:color/transparent"
-            android:hint="Name"
-            android:inputType="textEmailAddress"
-            android:padding="15dp"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="Nom complet"
+                    android:inputType="textPassword"
+                    android:padding="15dp"
+                    android:textColor="#292929"
+                    android:textColorHint="#797979"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="30dp"
-            android:background="#B1B1B1" />
-        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:backgroundTint="@android:color/transparent"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="15dp"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:padding="15dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:entries="@array/phoneCountryCodes" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/spinner"
+                        android:layout_toRightOf="@+id/spinner"
+                        android:backgroundTint="@android:color/transparent"
+                        android:hint="Téléphone"
+                        android:inputType="textEmailAddress"
+                        android:padding="15dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textColor="#292929"
+                        android:textColorHint="#797979" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="30dp"
-            android:background="#B1B1B1" />
-        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:backgroundTint="@android:color/transparent"
-            android:hint="Password"
-            android:inputType="textEmailAddress"
-            android:padding="15dp"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="Mot de passe"
+                    android:inputType="textPassword"
+                    android:padding="15dp"
+                    android:textColor="#292929"
+                    android:textColorHint="#797979"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="30dp"
-            android:background="#B1B1B1" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
+                android:layout_alignParentRight="true"
                 android:src="@drawable/ic_arrow_right"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="30dp"
                 android:tint="@android:color/white"
-                android:layout_marginBottom="20dp"
-                android:elevation="0dp"
                 app:elevation="0dp"
                 android:backgroundTint="#4E525B"
-                app:fabCustomSize="80dp"
-                tools:ignore="RelativeOverlap" />
+                app:fabCustomSize="40dp"
+                tools:ignore="RelativeOverlap"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
-                android:layout_marginStart="30dp"
                 android:text="Sign up"
-                android:textColor="@android:color/white"
-                android:textSize="25sp"
+                android:textColor="#191919"
+                android:textSize="18sp"
                 android:padding="15dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginStart="30dp"
                 android:padding="15dp"
-                android:text="Sign in"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
+                android:text="Ayant déjà un compte?"
+                android:textSize="13sp" />
         </RelativeLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

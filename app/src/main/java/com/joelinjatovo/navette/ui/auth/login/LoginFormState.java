@@ -1,40 +1,40 @@
-package com.joelinjatovo.navette.ui.login;
+package com.joelinjatovo.navette.ui.auth.login;
 
 import androidx.annotation.Nullable;
 
 /**
  * Data validation state of the login form.
  */
-class LoginFormState {
+public class LoginFormState {
     @Nullable
-    private Integer usernameError;
+    private Integer phoneError;
     @Nullable
     private Integer passwordError;
     private boolean isDataValid;
 
-    LoginFormState(@Nullable Integer usernameError, @Nullable Integer passwordError) {
-        this.usernameError = usernameError;
+    LoginFormState(@Nullable Integer phoneError, @Nullable Integer passwordError) {
+        this.phoneError = phoneError;
         this.passwordError = passwordError;
         this.isDataValid = false;
     }
 
     LoginFormState(boolean isDataValid) {
-        this.usernameError = null;
+        this.phoneError = null;
         this.passwordError = null;
         this.isDataValid = isDataValid;
     }
 
     @Nullable
-    Integer getUsernameError() {
-        return usernameError;
+    public Integer getPhoneError() {
+        return phoneError;
     }
 
     @Nullable
-    Integer getPasswordError() {
+    public Integer getPasswordError() {
         return passwordError;
     }
 
-    boolean isDataValid() {
+    public boolean isDataValid() {
         return isDataValid;
     }
 }

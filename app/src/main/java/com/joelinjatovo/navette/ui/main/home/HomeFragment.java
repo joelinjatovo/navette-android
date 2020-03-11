@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.home;
+package com.joelinjatovo.navette.ui.main.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

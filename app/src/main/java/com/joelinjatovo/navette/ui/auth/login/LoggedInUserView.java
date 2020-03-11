@@ -1,9 +1,9 @@
-package com.joelinjatovo.navette.ui.login;
+package com.joelinjatovo.navette.ui.auth.login;
 
 /**
  * Class exposing authenticated user details to the UI.
  */
-class LoggedInUserView {
+public class LoggedInUserView {
     private String displayName;
     //... other data fields that may be accessible to the UI
 

@@ -1,8 +1,9 @@
-package com.joelinjatovo.navette;
+package com.joelinjatovo.navette.ui.main;
 
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.joelinjatovo.navette.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;

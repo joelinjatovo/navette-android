@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.login;
+package com.joelinjatovo.navette.ui.auth.login;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
