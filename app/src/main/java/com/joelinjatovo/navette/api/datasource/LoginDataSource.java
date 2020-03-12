@@ -23,7 +23,7 @@ public class LoginDataSource implements LoginDataSourceBase {
     public void login(String phone, String password,  MutableLiveData<LoginResult> loginResultMutableLiveData) {
         Login login = new Login(phone, password);
 
-        Log.d("LoginDataSource", phone + " " + password);
+        Log.d("LoginDataSource", "service.getToken");
 
         TokenApiService service = RetrofitClient.getInstance().create(TokenApiService.class);
         Call<User> call = service.getToken(login);

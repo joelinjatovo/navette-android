@@ -1,5 +1,6 @@
 package com.joelinjatovo.navette.ui.auth.login;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +29,8 @@ public class LoginFragment extends Fragment {
     private FragmentLoginBinding mBinding;
 
     private LoginViewModel loginViewModel;
+
+    private ProgressDialog progressDialog;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -73,6 +76,8 @@ public class LoginFragment extends Fragment {
                     return;
                 }
 
+                progressDialog.hide();
+
                 //loadingProgressBar.setVisibility(View.GONE);
 
                 if (loginResult.getError() != null) {
@@ -109,8 +114,8 @@ public class LoginFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if(mBinding.loginButton.isEnabled()) {
-                        //progressDialog.show();
-                        loginViewModel.login(mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                        progressDialog.show();
+                        loginViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
                     }
                 }
                 return false;
@@ -121,10 +126,14 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //loadingProgressBar.setVisibility(View.VISIBLE);
-                //progressDialog.show();
-                loginViewModel.login(mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                progressDialog.show();
+                loginViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
             }
         });
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
     }
 
     private void setLoggedInUser(User user) {

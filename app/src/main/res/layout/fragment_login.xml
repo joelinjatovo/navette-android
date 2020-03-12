@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content">
 
                         <Spinner
-                            android:id="@+id/spinner"
+                            android:id="@+id/phoneCountryCodeSpinner"
                             android:layout_width="90dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
@@ -82,7 +82,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:layout_toEndOf="@+id/spinner"
-                            android:layout_toRightOf="@+id/spinner"
+                            android:layout_toRightOf="@+id/phoneCountryCodeSpinner"
                             android:backgroundTint="@android:color/transparent"
                             android:hint="Téléphone"
                             android:inputType="phone"
@@ -90,7 +90,8 @@
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:textColor="#292929"
-                            android:textColorHint="#797979" />
+                            android:textColorHint="#797979"
+                            android:text="331377768"/>
 
                     </RelativeLayout>
 
@@ -125,7 +126,8 @@
                         android:textColor="#292929"
                         android:textColorHint="#797979"
                         android:paddingLeft="5dp"
-                        android:paddingRight="5dp"/>
+                        android:paddingRight="5dp"
+                        android:text="admin!"/>
 
                 </androidx.cardview.widget.CardView>
 
