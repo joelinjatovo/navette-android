@@ -1,14 +1,15 @@
 package com.joelinjatovo.navette.api.datasource;
 
+import androidx.lifecycle.MutableLiveData;
+
+import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.data.Login;
 import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
-import com.joelinjatovo.navette.data.Result;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.ui.auth.login.LoginResult;
 import com.joelinjatovo.navette.utils.Log;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,7 +20,7 @@ import retrofit2.Response;
  */
 public class LoginDataSource implements LoginDataSourceBase {
 
-    public Result<User> login(String phone, String password) {
+    public void login(String phone, String password,  MutableLiveData<LoginResult> loginResultMutableLiveData) {
         Login login = new Login(phone, password);
 
         Log.d("LoginDataSource", phone + " " + password);
@@ -30,16 +31,16 @@ public class LoginDataSource implements LoginDataSourceBase {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("LoginDataSource", response.message());
-                //return new Result.Success<User>(response.body());
+                User data = response.body();
+                loginResultMutableLiveData.setValue(new LoginResult(data));
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable throwable) {
-                //return new Result.Error(new IOException("Error logging in", throwable));
+                Log.w("LoginDataSource", throwable);
+                loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
             }
         });
-
-        return new Result.Error(new IOException("Error logging in"));
     }
 
     public void logout() {

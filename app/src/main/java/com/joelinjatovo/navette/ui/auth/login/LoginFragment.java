@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
 
 public class LoginFragment extends Fragment {
@@ -79,6 +80,7 @@ public class LoginFragment extends Fragment {
                 }
 
                 if (loginResult.getSuccess() != null) {
+                    setLoggedInUser(loginResult.getSuccess());
                     updateUiWithUser(loginResult.getSuccess());
                 }
             }
@@ -125,8 +127,13 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome);
+    private void setLoggedInUser(User user) {
+        // If user credentials will be cached in local storage, it is recommended it be encrypted
+        // @see https://developer.android.com/training/articles/keystore
+    }
+
+    private void updateUiWithUser(User model) {
+        String welcome = getString(R.string.welcome) + model.getName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getContext(), welcome, Toast.LENGTH_LONG).show();
     }

@@ -2,25 +2,28 @@ package com.joelinjatovo.navette.ui.auth.login;
 
 import androidx.annotation.Nullable;
 
+import com.joelinjatovo.navette.database.entity.User;
+
 /**
  * Authentication result : success (user details) or error message.
  */
 public class LoginResult {
     @Nullable
-    private LoggedInUserView success;
-    @Nullable
-    private Integer error;
+    private User success;
 
-    LoginResult(@Nullable Integer error) {
+    @Nullable
+    private int error;
+
+    public LoginResult(@Nullable Integer error) {
         this.error = error;
     }
 
-    LoginResult(@Nullable LoggedInUserView success) {
+    public LoginResult(@Nullable User success) {
         this.success = success;
     }
 
     @Nullable
-    public LoggedInUserView getSuccess() {
+    public User getSuccess() {
         return success;
     }
 

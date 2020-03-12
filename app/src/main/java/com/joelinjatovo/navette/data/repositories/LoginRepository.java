@@ -1,8 +1,11 @@
 package com.joelinjatovo.navette.data.repositories;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
 import com.joelinjatovo.navette.data.Result;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.ui.auth.login.LoginResult;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -28,24 +31,9 @@ public class LoginRepository {
         return instance;
     }
 
-    public boolean isLoggedIn() {
-        return user != null;
-    }
-
-    private void setLoggedInUser(User user) {
-        this.user = user;
-
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
-    }
-
-    public Result<User> login(String username, String password) {
+    public void login(String username, String password, MutableLiveData<LoginResult> loginResultMutableLiveData) {
         // handle login
-        Result<User> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<User>) result).getData());
-        }
-        return result;
+        dataSource.login(username, password, loginResultMutableLiveData);
     }
 
     public void logout() {
