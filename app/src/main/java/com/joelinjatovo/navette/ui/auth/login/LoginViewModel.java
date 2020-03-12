@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.joelinjatovo.navette.data.LoginRepository;
+import com.joelinjatovo.navette.api.data.Login;
+import com.joelinjatovo.navette.data.repositories.LoginRepository;
 import com.joelinjatovo.navette.data.Result;
-import com.joelinjatovo.navette.data.model.LoggedInUser;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.database.entity.User;
 
 public class LoginViewModel extends ViewModel {
 
@@ -29,13 +30,13 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password) {
+    public void login(String phone, String password) {
         // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+        Result<User> result = loginRepository.login(phone, password);
 
         if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
+            User data = ((Result.Success<User>) result).getData();
+            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getName())));
         } else {
             loginResult.setValue(new LoginResult(R.string.login_failed));
         }

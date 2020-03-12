@@ -24,7 +24,7 @@ public class Result<T> {
     public final static class Success<T> extends Result {
         private T data;
 
-        Success(T data) {
+        public Success(T data) {
             this.data = data;
         }
 
@@ -37,7 +37,7 @@ public class Result<T> {
     public final static class Error extends Result {
         private Exception error;
 
-        Error(Exception error) {
+        public Error(Exception error) {
             this.error = error;
         }
 

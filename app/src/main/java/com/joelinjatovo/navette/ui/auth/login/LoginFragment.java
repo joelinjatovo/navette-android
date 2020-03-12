@@ -52,10 +52,13 @@ public class LoginFragment extends Fragment {
                 if (loginFormState == null) {
                     return;
                 }
+
                 mBinding.loginButton.setEnabled(loginFormState.isDataValid());
+
                 if (loginFormState.getPhoneError() != null) {
                     mBinding.phoneEditText.setError(getString(loginFormState.getPhoneError()));
                 }
+
                 if (loginFormState.getPasswordError() != null) {
                     mBinding.passwordEditText.setError(getString(loginFormState.getPasswordError()));
                 }
@@ -68,10 +71,13 @@ public class LoginFragment extends Fragment {
                 if (loginResult == null) {
                     return;
                 }
+
                 //loadingProgressBar.setVisibility(View.GONE);
+
                 if (loginResult.getError() != null) {
                     showLoginFailed(loginResult.getError());
                 }
+
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                 }
@@ -100,7 +106,10 @@ public class LoginFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login( mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                    if(mBinding.loginButton.isEnabled()) {
+                        //progressDialog.show();
+                        loginViewModel.login(mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                    }
                 }
                 return false;
             }
@@ -110,6 +119,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //loadingProgressBar.setVisibility(View.VISIBLE);
+                //progressDialog.show();
                 loginViewModel.login(mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
             }
         });
