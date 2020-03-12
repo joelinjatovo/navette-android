@@ -23,6 +23,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
+import com.joelinjatovo.navette.utils.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
 
 public class LoginFragment extends Fragment {
 
@@ -136,6 +139,13 @@ public class LoginFragment extends Fragment {
         progressDialog.setMessage(getString(R.string.signing));
     }
 
+    private void connectPush(User user) {
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        pusher.connect();
+    }
     private void setLoggedInUser(User user) {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
