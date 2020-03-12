@@ -26,6 +26,9 @@ import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
 import com.joelinjatovo.navette.utils.Constants;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
 
 public class LoginFragment extends Fragment {
 
@@ -139,13 +142,23 @@ public class LoginFragment extends Fragment {
         progressDialog.setMessage(getString(R.string.signing));
     }
 
-    private void connectPush(User user) {
+    private void connectPush() {
         PusherOptions options = new PusherOptions();
         options.setCluster(Constants.PUSHER_APP_CLUSTER);
 
         Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
         pusher.connect();
+
+        Channel channel = pusher.subscribe("my-channel");
+
+        channel.bind("my-event", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                System.out.println(event.getData());
+            }
+        });
     }
+
     private void setLoggedInUser(User user) {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
