@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.joelinjatovo.navette.api.data.Login;
 import com.joelinjatovo.navette.data.repositories.LoginRepository;
-import com.joelinjatovo.navette.data.Result;
 import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.ui.auth.login.LoginFormState;
+import com.joelinjatovo.navette.ui.auth.login.LoginResult;
 
 public class LoginViewModel extends ViewModel {
 

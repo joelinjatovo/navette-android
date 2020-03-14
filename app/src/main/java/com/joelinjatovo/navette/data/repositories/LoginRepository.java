@@ -3,7 +3,6 @@ package com.joelinjatovo.navette.data.repositories;
 import androidx.lifecycle.MutableLiveData;
 
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
-import com.joelinjatovo.navette.data.Result;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.ui.auth.login.LoginResult;
 
@@ -31,9 +30,9 @@ public class LoginRepository {
         return instance;
     }
 
-    public void login(String username, String password, MutableLiveData<LoginResult> loginResultMutableLiveData) {
+    public void login(String phone, String password, MutableLiveData<LoginResult> loginResultMutableLiveData) {
         // handle login
-        dataSource.login(username, password, loginResultMutableLiveData);
+        dataSource.login(phone, password, loginResultMutableLiveData);
     }
 
     public void logout() {

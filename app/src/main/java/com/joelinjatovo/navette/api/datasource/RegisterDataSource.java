@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.data.Login;
+import com.joelinjatovo.navette.api.data.Register;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.TokenApiService;
-import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
+import com.joelinjatovo.navette.api.services.UserApiService;
+import com.joelinjatovo.navette.data.source.RegisterDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.auth.register.RegisterResult;
 import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;
@@ -20,37 +22,33 @@ import retrofit2.Response;
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
-public class LoginDataSource implements LoginDataSourceBase {
+public class RegisterDataSource implements RegisterDataSourceBase {
 
-    public void login(String phone, String password,  MutableLiveData<LoginResult> loginResultMutableLiveData) {
-        Login login = new Login(phone, password);
+    public void register(String name, String phone, String password,  MutableLiveData<RegisterResult> registerResultMutableLiveData) {
+        Register registrationData = new Register(name, phone, password);
 
-        Log.d("LoginDataSource", "service.getToken" + phone + " " + password);
+        Log.d("RegisterDataSource", "service.register" + name + " "+ phone + " " + password);
 
-        TokenApiService service = RetrofitClient.getInstance().create(TokenApiService.class);
-        Call<RetrofitResponse<User>> call = service.getToken(login);
+        UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
+        Call<RetrofitResponse<User>> call = service.register(registrationData);
         call.enqueue(new Callback<RetrofitResponse<User>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
-                Log.d("LoginDataSource", response.toString());
+                Log.d("RegisterDataSource", response.toString());
                 RetrofitResponse<User> data = response.body();
                 if(null != data && null != data.getData()){
-                    Log.d("LoginDataSource", data.toString());
-                    loginResultMutableLiveData.setValue(new LoginResult(data.getData()));
+                    Log.d("RegisterDataSource", data.toString());
+                    registerResultMutableLiveData.setValue(new RegisterResult(data.getData()));
                 }else{
-                    loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
+                    registerResultMutableLiveData.setValue(new RegisterResult(R.string.register_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable throwable) {
                 Log.w("LoginDataSource", throwable);
-                loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
+                registerResultMutableLiveData.setValue(new RegisterResult(R.string.register_failed));
             }
         });
-    }
-
-    public void logout() {
-        // TODO: revoke authentication
     }
 }

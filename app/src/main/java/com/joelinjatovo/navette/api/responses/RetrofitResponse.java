@@ -6,11 +6,11 @@ import java.util.Arrays;
 
 public class RetrofitResponse<T> {
 
+    @SerializedName("status")
+    private int status;
+
     @SerializedName("code")
     private int code;
-
-    @SerializedName("status")
-    private String status;
 
     @SerializedName("message")
     private String message;
@@ -37,11 +37,11 @@ public class RetrofitResponse<T> {
         this.code = code;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -63,6 +63,6 @@ public class RetrofitResponse<T> {
 
     @Override
     public String toString() {
-        return "RetrofitResponse[errors=" + Arrays.toString(this.getErrors()) + "; status=" + getStatus() + "; message=" + getMessage() + "]";
+        return "RetrofitResponse[errors=" + Arrays.toString(this.getErrors()) + "; status=" + getStatus()  + "; status=" + getCode() + "; message=" + getMessage() + "]";
     }
 }
