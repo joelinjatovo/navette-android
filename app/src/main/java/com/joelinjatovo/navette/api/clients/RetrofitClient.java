@@ -27,6 +27,7 @@ public class RetrofitClient {
                     .readTimeout(60, TimeUnit.SECONDS)
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .addInterceptor(new UserAgentAndApiKeyInterceptor())
+                    //.addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     .retryOnConnectionFailure(true)
                     .build();
 

@@ -30,9 +30,22 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.api.clients.RetrofitClient;
+import com.joelinjatovo.navette.api.responses.RetrofitResponse;
+import com.joelinjatovo.navette.api.services.TokenApiService;
+import com.joelinjatovo.navette.api.services.UserApiService;
+import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.auth.register.RegisterResult;
 import com.joelinjatovo.navette.ui.main.MainActivity;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LocationUpdatesService extends Service {
 
@@ -312,6 +325,41 @@ public class LocationUpdatesService extends Service {
         if (serviceIsRunningInForeground(this)) {
             mNotificationManager.notify(NOTIFICATION_ID, getNotification());
         }
+
+        // Send User location to the server
+        sendLocationToServer(location);
+    }
+
+    private void sendLocationToServer(Location location) {
+        UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
+        String token = "Bearer e4c96253e6d917784890ee61d3060868LvkR0c122uE378MBiWdvrZaJLZ2FKASySBK4IPzABVGZYlraFX6vPoW8dIM8JfSAqdNz3R7zVocYxL3yFlsbMnNuXocJIHiQ5x8EG4ffcmjrRIHiolhWkZOtyYlyP4xEY1hfJnr24WcZSIfeQ4JHEVibw6sPQlly1Xgqo5Z5peSGx7HlXpUoLNKU91rOPMf4NurGvyaEgL8CNCwoSc4iWuVs7POitl2z3dE3VWZRlQiCajZ4ZBNQGqkTD7mgu1dYWmSw03MiPPtvCELwAcoAGMe8vXBwekDFfDYv2CzjjIVQb9V8N7MbtoNzGI75mfiGmi5xkPmv33DG3uPkWLSChPF8D1I09jzD9ooLTsXXBUSxSZ2OTygyC3jCrgx8SNixUjy0gPmeLLr7P7c4GensaHLRRcFeEe6ua4wrU7BFWROVR9YmZvYqITKI7XEC8IJnhUzi4DhJpcADVzJvvQ0Gt79SasFu5lWXThTg4p7w6aWhCpiLCOlUcc28be1207067962fd95e4e17b35436a";
+        Call<RetrofitResponse<User>> call = service.addPosition(token, new com.joelinjatovo.navette.api.data.Location(location));
+        /*
+        try {
+            Response<RetrofitResponse<User>> response = call.execute();
+            Log.d(TAG, response.toString());
+        } catch (IOException e) {
+            Log.w(TAG, e);
+        }
+        */
+        call.enqueue(new Callback<RetrofitResponse<User>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
+                Log.d(TAG, response.code() + response.message());
+                Log.d(TAG, response.toString());
+                RetrofitResponse<User> data = response.body();
+                if(null != data && null != data.getData()){
+                    Log.d("RegisterDataSource", data.toString());
+                }else{
+                    Log.w(TAG, "Invalid data");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable throwable) {
+                Log.w(TAG, throwable);
+            }
+        });
     }
 
     /**
