@@ -16,7 +16,7 @@ public class RetrofitResponse<T> {
     private String message;
 
     @SerializedName("errors")
-    private String[] errors;
+    private Object[] errors;
 
     @SerializedName("data")
     private T data;
@@ -53,11 +53,11 @@ public class RetrofitResponse<T> {
         this.message = message;
     }
 
-    public String[] getErrors() {
+    public Object[] getErrors() {
         return errors;
     }
 
-    public void setErrors(String[] errors) {
+    public void setErrors(Object[] errors) {
         this.errors = errors;
     }
 

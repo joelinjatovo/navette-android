@@ -259,6 +259,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (location != null) {
                 Toast.makeText(MapsActivity.this, Utils.getLocationText(location),
                         Toast.LENGTH_SHORT).show();
+
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in my location"));
             }
         }
     }

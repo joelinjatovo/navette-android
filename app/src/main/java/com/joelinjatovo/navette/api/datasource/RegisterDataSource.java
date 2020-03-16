@@ -12,6 +12,7 @@ import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.api.services.UserApiService;
 import com.joelinjatovo.navette.data.source.RegisterDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.ui.auth.login.LoginResult;
 import com.joelinjatovo.navette.ui.auth.register.RegisterResult;
 import com.joelinjatovo.navette.utils.Log;
 
@@ -36,11 +37,17 @@ public class RegisterDataSource implements RegisterDataSourceBase {
             public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
                 Log.d("RegisterDataSource", response.toString());
                 RetrofitResponse<User> data = response.body();
-                if(null != data && null != data.getData()){
+                if(null != data){
                     Log.d("RegisterDataSource", data.toString());
-                    registerResultMutableLiveData.setValue(new RegisterResult(data.getData()));
+                    User user = data.getData();
+                    if( 0 != data.getCode() && null != user){
+                        registerResultMutableLiveData.setValue(new RegisterResult(user));
+                    }else{
+                        Log.d("RegisterDataSource", response.code() + "  " + response.message());
+                        registerResultMutableLiveData.setValue(new RegisterResult(R.string.login_failed));
+                    }
                 }else{
-                    registerResultMutableLiveData.setValue(new RegisterResult(R.string.register_failed));
+                    registerResultMutableLiveData.setValue(new RegisterResult(R.string.login_failed));
                 }
             }
 

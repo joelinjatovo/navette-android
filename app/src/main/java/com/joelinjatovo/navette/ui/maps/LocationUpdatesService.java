@@ -332,26 +332,18 @@ public class LocationUpdatesService extends Service {
 
     private void sendLocationToServer(Location location) {
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
-        String token = "Bearer e4c96253e6d917784890ee61d3060868LvkR0c122uE378MBiWdvrZaJLZ2FKASySBK4IPzABVGZYlraFX6vPoW8dIM8JfSAqdNz3R7zVocYxL3yFlsbMnNuXocJIHiQ5x8EG4ffcmjrRIHiolhWkZOtyYlyP4xEY1hfJnr24WcZSIfeQ4JHEVibw6sPQlly1Xgqo5Z5peSGx7HlXpUoLNKU91rOPMf4NurGvyaEgL8CNCwoSc4iWuVs7POitl2z3dE3VWZRlQiCajZ4ZBNQGqkTD7mgu1dYWmSw03MiPPtvCELwAcoAGMe8vXBwekDFfDYv2CzjjIVQb9V8N7MbtoNzGI75mfiGmi5xkPmv33DG3uPkWLSChPF8D1I09jzD9ooLTsXXBUSxSZ2OTygyC3jCrgx8SNixUjy0gPmeLLr7P7c4GensaHLRRcFeEe6ua4wrU7BFWROVR9YmZvYqITKI7XEC8IJnhUzi4DhJpcADVzJvvQ0Gt79SasFu5lWXThTg4p7w6aWhCpiLCOlUcc28be1207067962fd95e4e17b35436a";
+        String token = "Bearer ca9405b381b53d8c5aeec0ac644f7f0cl5uVcbTxOeHUIKJ3evk5uWuWv3eQMVXfTp0HigDs7aZU1xdudsAgu5T4O9zF2IbmUHtkDXsxCaKij37AcXqCFXvHIRy8SDGGV6J1X7LJt5VP4t8LipzJjcNSa7CrsJmoARzCMeadgPkXFajdCm6eSLeTRRPkZ0YZxconxwAnA3q7dZqHWweSyTL6rVhc7ftzuKcitkDxa6sur0uW89YYdNtLUJLVWfGDrsy6u1YX2Qj5bJX1b4I2CjKqWIEl4TICSSaR11ao2q13YFrFqtBm5XNljD4qHQuJKEfZ8jUEGxNL8mTRFIeDjer41o7iSDFB5dMm6WEtjmUP4b3gyPVY3ihTnmO7N1b3p7pmPBUgB44yz5I7YQfh5rQuxQJwtiN7opv4rFFwmfqK21SgJY3gleKI7fjiS4CUCGsp30pIEeun5wFrjJmFypUZNGKANgjAH8yMg3Ht6G5ZbQHQObQshTpBschiI5e94vkJADtMg4b078wl44JY99318fb9a07b84bc63677d6b22e38a15";
         Call<RetrofitResponse<User>> call = service.addPosition(token, new com.joelinjatovo.navette.api.data.Location(location));
-        /*
-        try {
-            Response<RetrofitResponse<User>> response = call.execute();
-            Log.d(TAG, response.toString());
-        } catch (IOException e) {
-            Log.w(TAG, e);
-        }
-        */
         call.enqueue(new Callback<RetrofitResponse<User>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
-                Log.d(TAG, response.code() + response.message());
                 Log.d(TAG, response.toString());
                 RetrofitResponse<User> data = response.body();
-                if(null != data && null != data.getData()){
-                    Log.d("RegisterDataSource", data.toString());
+                if(null != data){
+                    Log.d(TAG, data.toString());
+                    User user = data.getData();
                 }else{
-                    Log.w(TAG, "Invalid data");
+                    Log.d(TAG, response.code() + "  " + response.message());
                 }
             }
 

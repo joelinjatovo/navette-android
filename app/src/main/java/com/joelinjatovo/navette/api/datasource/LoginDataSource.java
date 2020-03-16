@@ -34,9 +34,15 @@ public class LoginDataSource implements LoginDataSourceBase {
             public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
                 Log.d("LoginDataSource", response.toString());
                 RetrofitResponse<User> data = response.body();
-                if(null != data && null != data.getData()){
+                if(null != data){
                     Log.d("LoginDataSource", data.toString());
-                    loginResultMutableLiveData.setValue(new LoginResult(data.getData()));
+                    User user = data.getData();
+                    if( 0 != data.getCode() && null != user){
+                        loginResultMutableLiveData.setValue(new LoginResult(user));
+                    }else{
+                        Log.d("LoginDataSource", response.code() + "  " + response.message());
+                        loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
+                    }
                 }else{
                     loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
                 }
