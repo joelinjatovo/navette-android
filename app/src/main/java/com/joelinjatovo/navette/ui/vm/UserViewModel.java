@@ -11,8 +11,20 @@ import com.joelinjatovo.navette.database.repository.UserRepository;
 import java.util.List;
 
 public class UserViewModel  extends ViewModel {
+
+    private static UserViewModel instance;
+
     private UserRepository repository;
+
     private LiveData<List<User>> listLiveData;
+
+    public static synchronized UserViewModel getInstance(Application application) {
+        if (instance == null) {
+            instance = new UserViewModel(application);
+            return instance;
+        }
+        return instance;
+    }
 
     UserViewModel(Application application){
         repository = new UserRepository(application);
