@@ -23,7 +23,7 @@ import java.util.Date;
 public class User {
     @PrimaryKey
     @SerializedName("id")
-    private int id;
+    private Long id;
 
     @SerializedName("facebook_id")
     @ColumnInfo(name = "facebook_id")
@@ -61,11 +61,11 @@ public class User {
     @ColumnInfo(name = "refresh_token_expires")
     private Date refreshTokenExpires;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -6,41 +6,60 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.joelinjatovo.navette.database.entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
-public interface UserDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Long[] insert(User... entities);
+public abstract class UserDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    public abstract Long insert(User user);
 
     @Update
-    int update(User... entities);
+    public abstract int update(User user);
 
     @Delete
-    int delete(User... entities);
+    public abstract int delete(User user);
 
     @Query("SELECT * FROM users")
-    List<User> find();
+    public abstract List<User> find();
 
     @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-    User find(Integer id);
+    public abstract User find(Long id);
 
     @Query("SELECT * FROM users WHERE id IN (:ids)")
-    User find(int[] ids);
+    public abstract User[] find(Long[] ids);
 
     @Query("SELECT * FROM users")
-    LiveData<List<User>> load();
+    public abstract LiveData<List<User>> load();
 
     @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-    LiveData<User> load(int id);
+    public abstract LiveData<User> load(Long id);
 
     @Query("SELECT * FROM users WHERE id IN (:ids)")
-    LiveData<List<User>> load(int[] ids);
+    public abstract LiveData<List<User>> load(Long[] ids);
 
     @Query("SELECT COUNT(users.id) FROM users")
-    Integer count();
+    public abstract int count();
+
+    @Transaction
+    public List<User> upsert(User... users) {
+        List<User> output = new ArrayList<>(users.length);
+        for(User user: users){
+            Long id = insert(user);
+            if(id == -1) {
+                int res = update(user);
+                if(res > 0 ) {
+                    output.add(find(user.getId()));
+                }
+            }else{
+                output.add(find(user.getId()));
+            }
+        }
+        return output;
+    }
 }

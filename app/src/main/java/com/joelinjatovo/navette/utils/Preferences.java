@@ -17,17 +17,17 @@ public class Preferences {
     public static class Auth{
 
         public static void setCurrentUser(Context context, User user) {
-            setCurrentUser(context, user.getId());
+            setCurrentUser(context, (long) user.getId());
         }
 
-        public static void setCurrentUser(Context context, Integer userId) {
+        public static void setCurrentUser(Context context, Long userId) {
             SharedPreferences.Editor editor = getPreferences(context).edit();
-            editor.putInt(USER, userId);
+            editor.putLong(USER, userId);
             editor.apply();
         }
 
-        public static Integer getCurrentUser(Context context) {
-            return getPreferences(context).getInt(USER, 0);
+        public static Long getCurrentUser(Context context) {
+            return getPreferences(context).getLong(USER, 0);
         }
     }
 }

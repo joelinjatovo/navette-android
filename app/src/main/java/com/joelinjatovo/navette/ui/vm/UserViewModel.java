@@ -3,13 +3,14 @@ package com.joelinjatovo.navette.ui.vm;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repository.UserRepository;
 
 import java.util.List;
 
-public class UserViewModel {
+public class UserViewModel  extends ViewModel {
     private UserRepository repository;
     private LiveData<List<User>> listLiveData;
 
@@ -22,7 +23,7 @@ public class UserViewModel {
         return listLiveData;
     }
 
-    void insert(User... users){
-        repository.insert(users);
+    public void insert(UserRepository.Callback callback, User... users){
+        repository.insert(callback, users);
     }
 }
