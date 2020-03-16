@@ -332,18 +332,16 @@ public class LocationUpdatesService extends Service {
 
     private void sendLocationToServer(Location location) {
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
-        String token = "Bearer ca9405b381b53d8c5aeec0ac644f7f0cl5uVcbTxOeHUIKJ3evk5uWuWv3eQMVXfTp0HigDs7aZU1xdudsAgu5T4O9zF2IbmUHtkDXsxCaKij37AcXqCFXvHIRy8SDGGV6J1X7LJt5VP4t8LipzJjcNSa7CrsJmoARzCMeadgPkXFajdCm6eSLeTRRPkZ0YZxconxwAnA3q7dZqHWweSyTL6rVhc7ftzuKcitkDxa6sur0uW89YYdNtLUJLVWfGDrsy6u1YX2Qj5bJX1b4I2CjKqWIEl4TICSSaR11ao2q13YFrFqtBm5XNljD4qHQuJKEfZ8jUEGxNL8mTRFIeDjer41o7iSDFB5dMm6WEtjmUP4b3gyPVY3ihTnmO7N1b3p7pmPBUgB44yz5I7YQfh5rQuxQJwtiN7opv4rFFwmfqK21SgJY3gleKI7fjiS4CUCGsp30pIEeun5wFrjJmFypUZNGKANgjAH8yMg3Ht6G5ZbQHQObQshTpBschiI5e94vkJADtMg4b078wl44JY99318fb9a07b84bc63677d6b22e38a15";
+        String token = "Bearer 1f54a985e9da62c4e5e8a59994159e88qUmWvE3gUOt9c7lA7FL4lgbOQQw4GyNv4PbL6QoqnrQsmLZBPcDdE5CLNRK9WieSvCnlPhlPDgvr6r3zLKDsnbKNO32LZBTehkrsoyzakVD6dAfJTPqIMAPjvoi7eXTdx8oLaIvI68yUfsSsY58CtUvEBx46aMZoSadsCCFYgsjAooJd6vxgCxOaMlFq0IWvXz9CpwoAZAfRifrcEuMjFiz846aID8RRx8NRAOYbbwdmGsIX2x4j00QFDTj5huS0N06n3KtdNNGaF4wb5Za3m94OrW82v5jDK6QXPIo159KD5hVNBMSb8e373VKR2UDSPrmyfWt3OKKOp4t024Wtyr1gl4EtCufIO2u4oNGAWuSftBHZOJ36kkdVSJAV3QIhEhaM8uTu1gaS56MwkWNNwaJKOBKyTpO2EHg6F79mRPwyCHwB2xKM2LhYYKxI01N7xgFddpsqd5MUW6TZAbVJWIQV5RzdkqR6EfCJP9lXfmVuF3rm4cR86b29be7dd0ca68ff7e896524b096fd11";
         Call<RetrofitResponse<User>> call = service.addPosition(token, new com.joelinjatovo.navette.api.data.Location(location));
         call.enqueue(new Callback<RetrofitResponse<User>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
                 Log.d(TAG, response.toString());
                 RetrofitResponse<User> data = response.body();
+                Log.d(TAG, response.code() + "  " + response.message());
                 if(null != data){
                     Log.d(TAG, data.toString());
-                    User user = data.getData();
-                }else{
-                    Log.d(TAG, response.code() + "  " + response.message());
                 }
             }
 

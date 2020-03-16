@@ -63,6 +63,6 @@ public class RetrofitResponse<T> {
 
     @Override
     public String toString() {
-        return "RetrofitResponse[errors=" + Arrays.toString(this.getErrors()) + "; status=" + getStatus()  + "; status=" + getCode() + "; message=" + getMessage() + "]";
+        return "RetrofitResponse[errors=" + Arrays.toString(this.getErrors()) + "; status=" + getStatus()  + "; code=" + getCode() + "; message=" + getMessage() +"; data=" + getData() + "]";
     }
 }

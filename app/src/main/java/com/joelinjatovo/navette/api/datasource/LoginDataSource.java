@@ -33,19 +33,34 @@ public class LoginDataSource implements LoginDataSourceBase {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
                 Log.d("LoginDataSource", response.toString());
+
                 RetrofitResponse<User> data = response.body();
                 if(null != data){
                     Log.d("LoginDataSource", data.toString());
                     User user = data.getData();
-                    if( 0 != data.getCode() && null != user){
-                        loginResultMutableLiveData.setValue(new LoginResult(user));
-                    }else{
-                        Log.d("LoginDataSource", response.code() + "  " + response.message());
-                        loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
+                    switch(data.getCode()){
+                        case 0:
+                            if(null != user){
+                                loginResultMutableLiveData.setValue(new LoginResult(user));
+                                return;
+                            }
+                        break;
+                        case 100:
+                            loginResultMutableLiveData.setValue(new LoginResult(R.string.invalid_phone_and_password));
+                        return;
+                        case 101:
+                            loginResultMutableLiveData.setValue(new LoginResult(R.string.error_unauthorized));
+                        return;
+                        case 102:
+                            loginResultMutableLiveData.setValue(new LoginResult(R.string.error_bad_request));
+                        return;
+                        case 500:
+                            loginResultMutableLiveData.setValue(new LoginResult(R.string.error_500));
+                        return;
                     }
-                }else{
-                    loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
                 }
+
+                loginResultMutableLiveData.setValue(new LoginResult(R.string.login_failed));
             }
 
             @Override

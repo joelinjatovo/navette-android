@@ -34,8 +34,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.BuildConfig;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.ui.main.MainActivity;
+import com.joelinjatovo.navette.utils.Constants;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -93,6 +99,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 requestPermissions();
             }
         }
+
+        connectPush();
     }
 
     @Override
@@ -282,5 +290,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mRequestLocationUpdatesButton.setEnabled(true);
             mRemoveLocationUpdatesButton.setEnabled(false);
         }
+    }
+
+    private void connectPush() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        pusher.connect();
+
+        Channel channel = pusher.subscribe("my-channel");
+        channel.bind("user.point.created", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG, event.getData());
+            }
+        });
     }
 }

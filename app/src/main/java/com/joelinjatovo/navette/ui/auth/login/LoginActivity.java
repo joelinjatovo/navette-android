@@ -90,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (loginResult.getSuccess() != null) {
                 setLoggedInUser(loginResult.getSuccess());
-                updateUiWithUser(loginResult.getSuccess());
             }
         });
 
@@ -147,34 +146,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void connectPush() {
-        PusherOptions options = new PusherOptions();
-        options.setCluster(Constants.PUSHER_APP_CLUSTER);
-
-        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
-        pusher.connect();
-
-        Channel channel = pusher.subscribe("my-channel");
-
-        channel.bind("my-event", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d("PUSHER_APP", event.getData());
-            }
-        });
-    }
-
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(this, errorString, Toast.LENGTH_SHORT).show();
     }
 
     private void setLoggedInUser(User user) {
         userViewModel.insert(insertUserCallback, user);
-    }
-
-    private void updateUiWithUser(User model) {
-        String welcome = getString(R.string.welcome) + model.getName();
-        Toast.makeText(this, welcome, Toast.LENGTH_LONG).show();
     }
 
     private UserRepository.Callback insertUserCallback = new UserRepository.Callback() {
@@ -186,6 +163,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onSuccess(List<User> users) {
             Preferences.Auth.setCurrentUser(LoginActivity.this, users.get(0));
+            updateUiWithUser(users.get(0));
             openMapActivity();
         }
 
@@ -193,6 +171,11 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
             startActivity(intent);
             LoginActivity.this.finish();
+        }
+
+        private void updateUiWithUser(User model) {
+            String welcome = getString(R.string.welcome) + model.getName();
+            Toast.makeText(LoginActivity.this, welcome, Toast.LENGTH_LONG).show();
         }
     };
 }
