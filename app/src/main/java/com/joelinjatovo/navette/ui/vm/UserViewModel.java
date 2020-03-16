@@ -3,6 +3,7 @@ package com.joelinjatovo.navette.ui.vm;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.joelinjatovo.navette.database.entity.User;
@@ -15,6 +16,8 @@ public class UserViewModel  extends ViewModel {
     private static UserViewModel instance;
 
     private UserRepository repository;
+
+    private MutableLiveData<User> currentUser;
 
     private LiveData<List<User>> listLiveData;
 
@@ -37,5 +40,13 @@ public class UserViewModel  extends ViewModel {
 
     public void insert(UserRepository.Callback callback, User... users){
         repository.insert(callback, users);
+    }
+
+    public LiveData<User> getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser.setValue(currentUser);
     }
 }
