@@ -54,7 +54,10 @@ public class LoginDataSource implements LoginDataSourceBase {
                         case 102:
                             loginResultMutableLiveData.setValue(new LoginResult(R.string.error_bad_request));
                         return;
-                        case 500:
+                        case 103:
+                            loginResultMutableLiveData.setValue(new LoginResult(R.string.error_not_found));
+                        return;
+                        case 104:
                             loginResultMutableLiveData.setValue(new LoginResult(R.string.error_500));
                         return;
                     }

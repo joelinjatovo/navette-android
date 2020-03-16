@@ -43,4 +43,6 @@
     <string name="error_unauthorized">Unauthorized</string>
     <string name="error_bad_request">Invalid Input</string>
     <string name="error_500">Internal Server Error</string>
+    <string name="error_not_found">Not Found</string>
+    <string name="title_maps" />
 </resources>
