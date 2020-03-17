@@ -22,37 +22,10 @@ import retrofit2.Response;
  */
 public class RegisterDataSource implements RegisterDataSourceBase {
 
-    public void register(String name, String phone, String password,  MutableLiveData<RegisterResult> registerResultMutableLiveData) {
+    public void register(String name, String phone, String password, Callback<RetrofitResponse<User>> callback) {
         Register registrationData = new Register(name, phone, password);
-
-        Log.d("RegisterDataSource", "service.register" + name + " "+ phone + " " + password);
-
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
         Call<RetrofitResponse<User>> call = service.register(registrationData);
-        call.enqueue(new Callback<RetrofitResponse<User>>() {
-            @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
-                Log.d("RegisterDataSource", response.toString());
-                RetrofitResponse<User> data = response.body();
-                if(null != data){
-                    Log.d("RegisterDataSource", data.toString());
-                    User user = data.getData();
-                    if( 0 != data.getCode() && null != user){
-                        registerResultMutableLiveData.setValue(new RegisterResult(user));
-                    }else{
-                        Log.d("RegisterDataSource", response.code() + "  " + response.message());
-                        registerResultMutableLiveData.setValue(new RegisterResult(R.string.login_failed));
-                    }
-                }else{
-                    registerResultMutableLiveData.setValue(new RegisterResult(R.string.login_failed));
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable throwable) {
-                Log.w("LoginDataSource", throwable);
-                registerResultMutableLiveData.setValue(new RegisterResult(R.string.register_failed));
-            }
-        });
+        call.enqueue(callback);
     }
 }

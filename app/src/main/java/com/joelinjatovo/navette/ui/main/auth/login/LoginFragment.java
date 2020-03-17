@@ -1,7 +1,6 @@
 package com.joelinjatovo.navette.ui.main.auth.login;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +22,7 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repository.UserRepository;
 import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
@@ -39,9 +39,11 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
     private FragmentLoginBinding mBinding;
 
-    private AuthViewModel authViewModel;
+    private LoginViewModel loginViewModel;
 
     private UserViewModel userViewModel;
+
+    private AuthViewModel authViewModel;
 
     private ProgressDialog progressDialog;
 
@@ -60,9 +62,11 @@ public class LoginFragment extends Fragment implements TextWatcher {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
-        authViewModel = new ViewModelProvider(this, new AuthViewModelFactory()).get(AuthViewModel.class);
+        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory()).get(LoginViewModel.class);
 
         userViewModel = new ViewModelProvider(this, new UserViewModelFactory(getActivity().getApplication())).get(UserViewModel.class);
+
+        authViewModel = new ViewModelProvider(this, new AuthViewModelFactory()).get(AuthViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         final View root = view;
@@ -90,7 +94,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     }
                 });
 
-        authViewModel.getLoginFormState().observe(getViewLifecycleOwner(),
+        loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(),
                 loginFormState -> {
                     if (loginFormState == null) {
                         return;
@@ -107,7 +111,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     }
                 });
 
-        authViewModel.getLoginResult().observe(getViewLifecycleOwner(),
+        loginViewModel.getLoginResult().observe(getViewLifecycleOwner(),
                 loginResult -> {
                     if (loginResult == null) {
                         return;
@@ -133,7 +137,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         if(mBinding.loginButton.isEnabled()) {
                             progressDialog.show();
-                            authViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                            loginViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
                         }
                     }
                     return false;
@@ -143,7 +147,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                 v -> {
                     //loadingProgressBar.setVisibility(View.VISIBLE);
                     progressDialog.show();
-                    authViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                    loginViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
                 });
 
         mBinding.registerButton.setOnClickListener(
@@ -170,7 +174,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable editable) {
-        authViewModel.loginDataChanged(
+        loginViewModel.loginDataChanged(
                 mBinding.phoneEditText.getText().toString(),
                 mBinding.passwordEditText.getText().toString()
             );
@@ -181,17 +185,17 @@ public class LoginFragment extends Fragment implements TextWatcher {
     }
 
     private void setLoggedInUser(User user) {
-        userViewModel.insert(insertUserCallback, user);
+        userViewModel.insert(upsertCallback, user);
     }
 
-    private UserRepository.Callback insertUserCallback = new UserRepository.Callback() {
+    private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
         @Override
-        public void onError() {
+        public void onUpsertError() {
             Toast.makeText(getContext(), getString(R.string.error_database), Toast.LENGTH_LONG).show();
         }
 
         @Override
-        public void onSuccess(List<User> users) {
+        public void onUpsertSuccess(List<User> users) {
             Preferences.Auth.setCurrentUser(getContext(), users.get(0));
             updateUiWithUser(users.get(0));
         }

@@ -1,12 +1,13 @@
 package com.joelinjatovo.navette.data.source;
 
-import androidx.lifecycle.MutableLiveData;
+import com.joelinjatovo.navette.api.responses.RetrofitResponse;
+import com.joelinjatovo.navette.database.entity.User;
 
-import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
+import retrofit2.Callback;
 
 public interface LoginDataSourceBase {
 
-    public void login(String phone, String password, MutableLiveData<LoginResult> resultMutableLiveData);
+    void login(String phone, String password, Callback<RetrofitResponse<User>> callback);
 
-    public void logout() ;
+    void logout() ;
 }

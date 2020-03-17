@@ -15,15 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Dao
-public abstract class UserDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    public abstract Long insert(User user);
-
-    @Update
-    public abstract int update(User user);
-
-    @Delete
-    public abstract int delete(User user);
+public abstract class UserDao extends BaseDao<User> {
 
     @Query("SELECT * FROM users")
     public abstract List<User> find();
