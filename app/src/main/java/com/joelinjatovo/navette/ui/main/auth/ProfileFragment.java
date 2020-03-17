@@ -9,15 +9,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.databinding.FragmentProfileBinding;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginViewModel;
+import com.joelinjatovo.navette.utils.Log;
+import com.joelinjatovo.navette.utils.Preferences;
 
 public class ProfileFragment extends Fragment {
+
+    private static final String TAG = ProfileFragment.class.getSimpleName();
 
     private FragmentProfileBinding mBinding;
 
@@ -32,7 +36,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        authViewModel = new ViewModelProvider(requireActivity(), new AuthViewModelFactory()).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), new AuthViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
@@ -41,13 +45,17 @@ public class ProfileFragment extends Fragment {
                         case AUTHENTICATED:
                             showWelcomeMessage();
                             break;
+                        case INVALID_AUTHENTICATION:
                         case UNAUTHENTICATED:
                             navController.navigate(R.id.login_fragment);
                             break;
                     }
                 });
+
+        authViewModel.isAuthenticated(Preferences.Auth.getCurrentUser(requireContext()));
     }
 
     private void showWelcomeMessage() {
+        Log.d(TAG, "OK");
     }
 }

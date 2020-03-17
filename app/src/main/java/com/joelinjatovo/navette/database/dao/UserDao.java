@@ -24,7 +24,7 @@ public abstract class UserDao extends BaseDao<User> {
     public abstract User find(Long id);
 
     @Query("SELECT * FROM users WHERE id IN (:ids)")
-    public abstract User[] find(Long[] ids);
+    public abstract List<User> find(Long... ids);
 
     @Query("SELECT * FROM users")
     public abstract LiveData<List<User>> load();

@@ -1,5 +1,6 @@
 package com.joelinjatovo.navette.ui.main.auth.login;
 
+import android.util.MalformedJsonException;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.data.repositories.LoginRepository;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
 import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;
@@ -18,6 +20,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginViewModel extends ViewModel implements Callback<RetrofitResponse<User>> {
+
+    private static final String TAG = LoginViewModel.class.getSimpleName();
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
 
@@ -70,11 +74,11 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
 
     @Override
     public void onResponse(@NonNull Call<RetrofitResponse<User>> call, Response<RetrofitResponse<User>> response) {
-        Log.d("LoginDataSource", response.toString());
+        Log.d(TAG, response.toString());
 
         RetrofitResponse<User> data = response.body();
         if(null != data){
-            Log.d("LoginDataSource", data.toString());
+            Log.d(TAG, data.toString());
             User user = data.getData();
             switch(data.getCode()){
                 case 0:
@@ -106,6 +110,11 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
 
     @Override
     public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable t) {
-        loginResult.setValue(new LoginResult(R.string.login_failed));
+        Log.e(TAG, t.getMessage(), t);
+        if(t instanceof MalformedJsonException){
+            loginResult.setValue(new LoginResult(R.string.invalid_json_response));
+        }else{
+            loginResult.setValue(new LoginResult(R.string.login_failed));
+        }
     }
 }

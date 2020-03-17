@@ -1,27 +1,30 @@
 package com.joelinjatovo.navette.ui.main.auth;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.joelinjatovo.navette.api.clients.RetrofitClient;
-import com.joelinjatovo.navette.api.datasource.LoginDataSource;
-import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.data.repositories.LoginRepository;
-import com.joelinjatovo.navette.database.entity.User;
-
-import retrofit2.Callback;
+import com.joelinjatovo.navette.database.repository.UserRepository;
 
 public class AuthViewModelFactory implements ViewModelProvider.Factory {
 
     private static AuthViewModel authViewModel;
+
+    private Application application;
+
+    public AuthViewModelFactory(Application application) {
+        this.application = application;
+    }
+
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(AuthViewModel.class)) {
             if(authViewModel == null){
-                authViewModel = new AuthViewModel();
+                authViewModel = new AuthViewModel(UserRepository.getInstance(application));
             }
             return (T) authViewModel;
         } else {

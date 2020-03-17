@@ -24,7 +24,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.database.repository.UserRepository;
 import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
 import com.joelinjatovo.navette.ui.main.auth.forgot.ForgotFragment;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
@@ -58,30 +57,22 @@ public class LoginFragment extends Fragment implements TextWatcher {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progressDialog = new ProgressDialog(getContext());
+        progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory()).get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(requireActivity(), new LoginViewModelFactory()).get(LoginViewModel.class);
 
-        userViewModel = new ViewModelProvider(this, new UserViewModelFactory(getActivity().getApplication())).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider(requireActivity(), new UserViewModelFactory(requireActivity().getApplication())).get(UserViewModel.class);
 
-        authViewModel = new ViewModelProvider(this, new AuthViewModelFactory()).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), new AuthViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         final View root = view;
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
-                    switch (authenticationState) {
-                        case AUTHENTICATED:
-                            navController.popBackStack();
-                            break;
-                        case INVALID_AUTHENTICATION:
-                            Snackbar.make(root,
-                                    R.string.invalid_credentials,
-                                    Snackbar.LENGTH_SHORT
-                            ).show();
-                            break;
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        navController.popBackStack();
                     }
                 });
 
@@ -120,11 +111,11 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     progressDialog.hide();
 
                     if (loginResult.getError() != null) {
-                        showLoginFailed(loginResult.getError());
+                        Snackbar.make(mBinding.getRoot(), loginResult.getError(), Snackbar.LENGTH_SHORT).show();
                     }
 
                     if (loginResult.getSuccess() != null) {
-                        setLoggedInUser(loginResult.getSuccess());
+                        userViewModel.insert(upsertCallback, loginResult.getSuccess());
                     }
                 });
 
@@ -180,14 +171,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
             );
     }
 
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
-
-    private void setLoggedInUser(User user) {
-        userViewModel.insert(upsertCallback, user);
-    }
-
     private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
         @Override
         public void onUpsertError() {
@@ -197,6 +180,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
         @Override
         public void onUpsertSuccess(List<User> users) {
             Preferences.Auth.setCurrentUser(getContext(), users.get(0));
+            authViewModel.authenticate(users.get(0));
             updateUiWithUser(users.get(0));
         }
 

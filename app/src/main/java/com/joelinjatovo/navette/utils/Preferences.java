@@ -17,7 +17,7 @@ public class Preferences {
     public static class Auth{
 
         public static void setCurrentUser(Context context, User user) {
-            setCurrentUser(context, (long) user.getId());
+            setCurrentUser(context, (Long) user.getId());
         }
 
         public static void setCurrentUser(Context context, Long userId) {

@@ -53,13 +53,13 @@ public class User {
     private String token;
 
     @ColumnInfo(name = "token_expires")
-    private Date tokenExpires;
+    private Long tokenExpires;
 
     @ColumnInfo(name = "refresh_token")
     private String refreshToken;
 
     @ColumnInfo(name = "refresh_token_expires")
-    private Date refreshTokenExpires;
+    private Long refreshTokenExpires;
 
     public Long getId() {
         return id;
@@ -125,11 +125,11 @@ public class User {
         this.token = token;
     }
 
-    public Date getTokenExpires() {
+    public Long getTokenExpires() {
         return tokenExpires;
     }
 
-    public void setTokenExpires(Date tokenExpires) {
+    public void setTokenExpires(Long tokenExpires) {
         this.tokenExpires = tokenExpires;
     }
 
@@ -141,16 +141,16 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public Date getRefreshTokenExpires() {
+    public Long getRefreshTokenExpires() {
         return refreshTokenExpires;
     }
 
-    public void setRefreshTokenExpires(Date refreshTokenExpires) {
+    public void setRefreshTokenExpires(Long refreshTokenExpires) {
         this.refreshTokenExpires = refreshTokenExpires;
     }
 
     @NonNull
     public String toString(){
-        return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "]";
+        return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "; tokenExpires=" + tokenExpires + "]";
     }
 }

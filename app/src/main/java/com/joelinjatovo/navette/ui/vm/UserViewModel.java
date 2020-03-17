@@ -9,10 +9,13 @@ import androidx.lifecycle.ViewModel;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repository.UserRepository;
+import com.joelinjatovo.navette.ui.main.maps.LocationUpdatesService;
 
 import java.util.List;
 
 public class UserViewModel  extends ViewModel {
+
+    private static final String TAG = UserViewModel.class.getSimpleName();
 
     private static UserViewModel instance;
 
