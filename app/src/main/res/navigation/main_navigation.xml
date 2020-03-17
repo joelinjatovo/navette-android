@@ -33,6 +33,31 @@
         android:id="@+id/login_fragment"
         android:name="com.joelinjatovo.navette.ui.main.auth.login.LoginFragment"
         android:label="@string/title_login"
-        tools:layout="@layout/fragment_login"/>
+        tools:layout="@layout/fragment_login">
+
+        <action android:id="@+id/action_login_to_register"
+            app:destination="@id/registration_graph" />
+    </fragment>
+
+    <navigation android:id="@+id/registration_graph"
+        app:startDestination="@id/register_fragment">
+
+        <fragment
+            android:id="@+id/register_fragment"
+            android:name="com.joelinjatovo.navette.ui.main.auth.register.RegisterFragment"
+            android:label="@string/title_register"
+            tools:layout="@layout/fragment_register">
+
+            <action android:id="@+id/action_register_to_verify_phone"
+                app:destination="@id/verify_phone_fragment" />
+
+        </fragment>
+
+        <fragment android:id="@+id/verify_phone_fragment"
+            android:name="com.joelinjatovo.navette.ui.main.auth.verify.VerifyPhoneFragment"
+            android:label="Choose User + Password"
+            tools:layout="@layout/fragment_verify_phone" />
+
+    </navigation>
 
 </navigation>

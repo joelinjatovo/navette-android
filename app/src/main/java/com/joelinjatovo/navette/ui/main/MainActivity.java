@@ -1,14 +1,20 @@
 package com.joelinjatovo.navette.ui.main;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joelinjatovo.navette.R;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -32,6 +38,22 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller,
+                                             @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                if(destination.getId() == R.id.navigation_maps) {
+                    navView.setVisibility(View.GONE);
+                    //requestWindowFeature( Window.FEATURE_NO_TITLE );
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                } else {
+                    navView.setVisibility(View.VISIBLE);
+                    //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE );
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
+            }
+        });
     }
 
 }

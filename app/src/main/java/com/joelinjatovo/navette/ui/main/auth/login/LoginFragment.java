@@ -143,7 +143,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
         mBinding.registerButton.setOnClickListener(
                 v -> {
-                    // @TODO
+                    Navigation.findNavController(v).navigate(R.id.register_fragment);
                 });
 
         mBinding.forgotButton.setOnClickListener(
