@@ -18,8 +18,6 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AuthViewModel authViewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
         ).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
-
-        authViewModel = new ViewModelProvider(this, new AuthViewModelFactory()).get(AuthViewModel.class);
     }
 
 }
