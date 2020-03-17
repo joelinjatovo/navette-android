@@ -50,13 +50,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.auth.login.LoginActivity"
-            android:label="@string/title_activity_auth"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.auth.register.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ui.maps.MapsActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -65,7 +58,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"/> <!-- Foreground services in Q+ require type. -->
         <service
-            android:name=".ui.maps.LocationUpdatesService"
+            android:name=".ui.main.maps.LocationUpdatesService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />

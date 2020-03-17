@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.main.auth;
+package com.joelinjatovo.navette.ui.main.auth.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -27,12 +26,9 @@ import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repository.UserRepository;
 import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
-import com.joelinjatovo.navette.ui.auth.forgot.ForgotFragment;
-import com.joelinjatovo.navette.ui.auth.login.LoginActivity;
-import com.joelinjatovo.navette.ui.auth.login.LoginViewModel;
-import com.joelinjatovo.navette.ui.auth.login.LoginViewModelFactory;
-import com.joelinjatovo.navette.ui.auth.register.RegisterActivity;
-import com.joelinjatovo.navette.ui.maps.MapsActivity;
+import com.joelinjatovo.navette.ui.main.auth.forgot.ForgotFragment;
+import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
+import com.joelinjatovo.navette.ui.main.auth.AuthViewModelFactory;
 import com.joelinjatovo.navette.ui.vm.UserViewModel;
 import com.joelinjatovo.navette.ui.vm.UserViewModelFactory;
 import com.joelinjatovo.navette.utils.Preferences;
@@ -54,11 +50,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -157,9 +148,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
         mBinding.registerButton.setOnClickListener(
                 v -> {
-                    Intent intent = new Intent(getContext(), RegisterActivity.class);
-                    startActivity(intent);
-                    //this.finish();
+                    // @TODO
                 });
 
         mBinding.forgotButton.setOnClickListener(

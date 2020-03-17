@@ -3,7 +3,7 @@ package com.joelinjatovo.navette.data.repositories;
 import androidx.lifecycle.MutableLiveData;
 
 import com.joelinjatovo.navette.data.source.RegisterDataSourceBase;
-import com.joelinjatovo.navette.ui.auth.register.RegisterResult;
+import com.joelinjatovo.navette.ui.main.auth.register.RegisterResult;
 
 public class RegisterRepository {
 

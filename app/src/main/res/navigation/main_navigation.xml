@@ -17,29 +17,16 @@
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_maps" />
 
-
     <fragment
-        android:id="@+id/navigation_account"
-        android:name="com.joelinjatovo.navette.ui.main.auth.AccountFragment"
-        android:label="@string/title_account"
-        tools:layout="@layout/fragment_account" >
-
-        <action
-            android:id="@+id/navigate_to_profile_fragment"
-            app:destination="@id/profile_fragment"/>
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/login_fragment"
-        android:name="com.joelinjatovo.navette.ui.main.auth.LoginFragment"
-        android:label="@string/title_login"
-        tools:layout="@layout/fragment_login"/>
-
-    <fragment
-        android:id="@+id/profile_fragment"
+        android:id="@+id/navigation_profile"
         android:name="com.joelinjatovo.navette.ui.main.auth.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.joelinjatovo.navette.ui.main.auth.login.LoginFragment"
+        android:label="@string/title_login"
+        tools:layout="@layout/fragment_login"/>
 
 </navigation>

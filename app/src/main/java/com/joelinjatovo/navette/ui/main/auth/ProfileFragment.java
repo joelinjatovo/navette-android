@@ -32,7 +32,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), new AuthViewModelFactory()).get(AuthViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),

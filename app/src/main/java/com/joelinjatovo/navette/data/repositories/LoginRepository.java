@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
 
 /**
  * Class that requests authentication and user information from the remote data source and

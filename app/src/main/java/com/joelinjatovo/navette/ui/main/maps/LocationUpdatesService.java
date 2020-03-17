@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.maps;
+package com.joelinjatovo.navette.ui.main.maps;
 
 import android.app.ActivityManager;
 import android.app.Notification;
@@ -18,7 +18,6 @@ import android.os.IBinder;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -32,16 +31,11 @@ import com.google.android.gms.tasks.Task;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.api.services.UserApiService;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
-import com.joelinjatovo.navette.ui.auth.register.RegisterResult;
 import com.joelinjatovo.navette.ui.main.MainActivity;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -2,7 +2,7 @@ package com.joelinjatovo.navette.data.source;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
 
 public interface LoginDataSourceBase {
 

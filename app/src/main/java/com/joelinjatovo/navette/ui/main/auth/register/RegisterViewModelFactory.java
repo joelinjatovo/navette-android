@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.auth.register;
+package com.joelinjatovo.navette.ui.main.auth.register;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.joelinjatovo.navette.api.datasource.RegisterDataSource;
 import com.joelinjatovo.navette.data.repositories.RegisterRepository;
-import com.joelinjatovo.navette.ui.auth.register.RegisterViewModel;
+import com.joelinjatovo.navette.ui.main.auth.register.RegisterViewModel;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

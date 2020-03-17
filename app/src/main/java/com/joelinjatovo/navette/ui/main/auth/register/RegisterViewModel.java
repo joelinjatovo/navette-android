@@ -1,10 +1,11 @@
-package com.joelinjatovo.navette.ui.auth.register;
+package com.joelinjatovo.navette.ui.main.auth.register;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.joelinjatovo.navette.data.repositories.RegisterRepository;
+import com.joelinjatovo.navette.ui.main.auth.register.RegisterResult;
 
 public class RegisterViewModel extends ViewModel {
 

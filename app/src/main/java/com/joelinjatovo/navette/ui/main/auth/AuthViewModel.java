@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModel;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.data.repositories.LoginRepository;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.database.repository.UserRepository;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginFormState;
+
+import java.util.Date;
 
 public class AuthViewModel extends ViewModel {
 
@@ -32,6 +34,15 @@ public class AuthViewModel extends ViewModel {
 
     AuthViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
+        authenticationState.setValue(AuthenticationState.UNAUTHENTICATED);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public MutableLiveData<AuthenticationState> getAuthenticationState() {
@@ -46,8 +57,8 @@ public class AuthViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void authenticate(String username, String password) {
-        if (passwordIsValidForUsername(username, password)) {
+    public void authenticate(User user) {
+        if (!isTokenExpired(user)) {
             authenticationState.setValue(AuthenticationState.AUTHENTICATED);
         } else {
             authenticationState.setValue(AuthenticationState.INVALID_AUTHENTICATION);
@@ -90,7 +101,7 @@ public class AuthViewModel extends ViewModel {
         return password != null && password.trim().length() > 5;
     }
 
-    private boolean passwordIsValidForUsername(String username, String password) {
-        return true;
+    private boolean isTokenExpired(User user) {
+        return new Date().after(user.getTokenExpires());
     }
 }

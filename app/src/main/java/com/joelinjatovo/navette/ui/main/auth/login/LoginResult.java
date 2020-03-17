@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.auth.login;
+package com.joelinjatovo.navette.ui.main.auth.login;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;

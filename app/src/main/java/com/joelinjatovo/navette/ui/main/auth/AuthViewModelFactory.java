@@ -15,9 +15,9 @@ public class AuthViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(AuthViewModel.class)) {
-            if(authViewModel == null){
+            //if(authViewModel == null){
                 authViewModel = new AuthViewModel(LoginRepository.getInstance(new LoginDataSource()));
-            }
+            //}
             return (T) authViewModel;
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");

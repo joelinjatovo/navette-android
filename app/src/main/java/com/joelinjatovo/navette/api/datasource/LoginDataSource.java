@@ -10,7 +10,7 @@ import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
 import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;

@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.ui.maps.LocationUpdatesService;
 
 import java.text.DateFormat;
 import java.util.Date;

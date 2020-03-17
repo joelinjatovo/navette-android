@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.auth.forgot;
+package com.joelinjatovo.navette.ui.main.auth.forgot;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

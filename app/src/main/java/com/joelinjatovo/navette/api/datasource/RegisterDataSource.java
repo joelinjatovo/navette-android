@@ -5,15 +5,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
-import com.joelinjatovo.navette.api.data.Login;
 import com.joelinjatovo.navette.api.data.Register;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.api.services.UserApiService;
 import com.joelinjatovo.navette.data.source.RegisterDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
-import com.joelinjatovo.navette.ui.auth.register.RegisterResult;
+import com.joelinjatovo.navette.ui.main.auth.register.RegisterResult;
 import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;

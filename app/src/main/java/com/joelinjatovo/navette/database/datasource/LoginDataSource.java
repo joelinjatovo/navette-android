@@ -3,7 +3,7 @@ package com.joelinjatovo.navette.database.datasource;
 import androidx.lifecycle.MutableLiveData;
 
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
-import com.joelinjatovo.navette.ui.auth.login.LoginResult;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
