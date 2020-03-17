@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_maps" />
 
     <fragment
+        android:id="@+id/navigation_notification"
+        android:name="com.joelinjatovo.navette.ui.main.notification.NotificationFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_notification"/>
+
+    <fragment
         android:id="@+id/navigation_profile"
         android:name="com.joelinjatovo.navette.ui.main.auth.ProfileFragment"
         android:label="@string/title_profile"

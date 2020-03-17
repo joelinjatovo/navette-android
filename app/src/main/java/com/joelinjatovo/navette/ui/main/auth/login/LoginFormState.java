@@ -15,13 +15,13 @@ public class LoginFormState {
 
     private boolean isDataValid;
 
-    LoginFormState(@Nullable Integer phoneError, @Nullable Integer passwordError) {
+    public LoginFormState(@Nullable Integer phoneError, @Nullable Integer passwordError) {
         this.phoneError = phoneError;
         this.passwordError = passwordError;
         this.isDataValid = false;
     }
 
-    LoginFormState(boolean isDataValid) {
+    public LoginFormState(boolean isDataValid) {
         this.phoneError = null;
         this.passwordError = null;
         this.isDataValid = isDataValid;

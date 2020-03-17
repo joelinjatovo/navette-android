@@ -6,11 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.joelinjatovo.navette.api.datasource.LoginDataSource;
-import com.joelinjatovo.navette.data.repositories.LoginRepository;
-import com.joelinjatovo.navette.database.repository.UserRepository;
-import com.joelinjatovo.navette.ui.auth.login.LoginViewModel;
-
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
  * Required given LoginViewModel has a non-empty constructor
