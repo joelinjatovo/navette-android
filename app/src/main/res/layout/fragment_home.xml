@@ -97,7 +97,8 @@
                             app:boxBackgroundColor="@color/colorBackground"
                             app:startIconTint="@color/colorPrimary"
                             app:startIconDrawable="@drawable/outline_trip_origin_black_18"
-                            android:hint="Destination">
+                            android:hint="Destination"
+                            style="@style/Widget.App.TextInputLayout">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/destinationLocationEditText"
