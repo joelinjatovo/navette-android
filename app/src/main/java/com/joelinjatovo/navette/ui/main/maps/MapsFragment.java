@@ -38,6 +38,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.BuildConfig;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.api.services.GoogleApiService;
+import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.databinding.FragmentMapsBinding;
 import com.joelinjatovo.navette.ui.main.MainActivity;
 import com.joelinjatovo.navette.ui.maps.MapsActivity;
@@ -49,6 +51,12 @@ import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.Channel;
 import com.pusher.client.channel.PusherEvent;
 import com.pusher.client.channel.SubscriptionEventListener;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -340,5 +348,54 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
                 }
             }
         }
+    }
+
+    private void build_retrofit_and_get_response(String type, LatLng origin, LatLng destination) {
+        String url = "https://maps.googleapis.com/maps/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        GoogleApiService service = retrofit.create(GoogleApiService.class);
+        Call<Object> call = service.getDistanceDuration("metric", origin.latitude + "," + origin.longitude,destination.latitude + "," + destination.longitude, type);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                /*
+                try {
+                    //Remove previous line from map
+                    if (line != null) {
+                        line.remove();
+                    }
+                    // This loop will go through all the results and add marker on each location.
+                    for (int i = 0; i < response.body().getRoutes().size(); i++) {
+                        String distance = response.body().getRoutes().get(i).getLegs().get(i).getDistance().getText();
+                        String time = response.body().getRoutes().get(i).getLegs().get(i).getDuration().getText();
+                        ShowDistanceDuration.setText("Distance:" + distance + ", Duration:" + time);
+                        String encodedString = response.body().getRoutes().get(0).getOverviewPolyline().getPoints();
+                        List<LatLng> list = decodePoly(encodedString);
+                        line = mMap.addPolyline(new PolylineOptions()
+                                .addAll(list)
+                                .width(20)
+                                .color(Color.RED)
+                                .geodesic(true)
+                        );
+                    }
+                } catch (Exception e) {
+                    Log.d("onResponse", "There is an error");
+                    e.printStackTrace();
+                }
+
+                 */
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            Log.d("onFailure", t.toString());
+            }
+        });
+
     }
 }
