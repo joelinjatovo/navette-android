@@ -6,23 +6,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.data.repositories.LoginRepository;
 import com.joelinjatovo.navette.database.callback.FindCallback;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repository.UserRepository;
-import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
-import com.joelinjatovo.navette.ui.main.auth.login.LoginFormState;
-import com.joelinjatovo.navette.ui.vm.UserViewModel;
+import com.joelinjatovo.navette.ui.main.auth.login.LoginFragment;
 import com.joelinjatovo.navette.utils.Log;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 public class AuthViewModel extends ViewModel implements FindCallback<User> {
 
+    private static final String TAG = AuthViewModel.class.getSimpleName();
+
     private UserRepository userRepository;
+
+    private User user = null;
 
     public enum AuthenticationState {
         UNAUTHENTICATED,        // Initial state, the user needs to authenticate
@@ -36,6 +34,14 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
         this.userRepository = userRepository;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public MutableLiveData<AuthenticationState> getAuthenticationState() {
         return authenticationState;
     }
@@ -45,7 +51,8 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
     }
 
     public void authenticate(User user) {
-        Log.e("AuthViewModel", "user=" + user);
+        Log.d(TAG, "user = " + user);
+        setUser(user);
         if(user == null) {
             authenticationState.setValue(AuthenticationState.UNAUTHENTICATED);
         }else if (!isTokenExpired(user)) {
@@ -60,7 +67,7 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
     }
 
     private boolean isTokenExpired(User user) {
-        return  false; //user.getTokenExpires() == null || System.currentTimeMillis() > user.getTokenExpires();
+        return false; // user.getTokenExpires() == null || System.currentTimeMillis() > user.getTokenExpires();
     }
 
     private boolean isRefreshTokenExpired(User user) {

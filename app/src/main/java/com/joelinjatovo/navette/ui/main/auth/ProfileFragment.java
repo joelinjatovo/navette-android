@@ -14,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.databinding.FragmentProfileBinding;
 import com.joelinjatovo.navette.ui.main.auth.login.LoginViewModel;
 import com.joelinjatovo.navette.utils.Log;
@@ -43,16 +44,19 @@ public class ProfileFragment extends Fragment {
                 authenticationState -> {
                     switch (authenticationState) {
                         case AUTHENTICATED:
+                            Log.d(TAG, "'AUTHENTICATED'");
                             showWelcomeMessage();
                             break;
                         case INVALID_AUTHENTICATION:
                         case UNAUTHENTICATED:
+                            Log.d(TAG, "'UNAUTHENTICATED'");
                             navController.navigate(R.id.login_fragment);
                             break;
                     }
                 });
 
-        authViewModel.isAuthenticated(Preferences.Auth.getCurrentUser(requireContext()));
+        //User user = authViewModel.getUser();
+        //authViewModel.isAuthenticated(Preferences.Auth.getCurrentUser(requireContext()));
     }
 
     private void showWelcomeMessage() {

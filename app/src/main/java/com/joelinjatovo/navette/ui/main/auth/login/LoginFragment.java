@@ -30,11 +30,14 @@ import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModelFactory;
 import com.joelinjatovo.navette.ui.vm.UserViewModel;
 import com.joelinjatovo.navette.ui.vm.UserViewModelFactory;
+import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Preferences;
 
 import java.util.List;
 
 public class LoginFragment extends Fragment implements TextWatcher {
+
+    private static final String TAG = LoginFragment.class.getSimpleName();
 
     private FragmentLoginBinding mBinding;
 
@@ -72,6 +75,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        Log.d(TAG, "'AUTHENTICATED'");
                         navController.popBackStack();
                     }
                 });
