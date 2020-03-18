@@ -46,6 +46,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/remove_location_updates" />
+
+            <Button
+                android:id="@+id/show_direction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/show_direction" />
+
+            <TextView
+                android:id="@+id/durationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

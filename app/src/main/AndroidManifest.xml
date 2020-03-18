@@ -49,14 +49,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.maps.MapsActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/> <!-- Foreground services in Q+ require type. -->
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <!-- Foreground services in Q+ require type. -->
         <service
             android:name=".ui.main.maps.LocationUpdatesService"
             android:enabled="true"

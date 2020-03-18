@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,25 +32,22 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.BuildConfig;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.api.data.google.GoogleDirectionResponse;
 import com.joelinjatovo.navette.api.services.GoogleApiService;
-import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.databinding.FragmentMapsBinding;
-import com.joelinjatovo.navette.ui.main.MainActivity;
-import com.joelinjatovo.navette.ui.maps.MapsActivity;
-import com.joelinjatovo.navette.utils.Constants;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
-import com.pusher.client.Pusher;
-import com.pusher.client.PusherOptions;
-import com.pusher.client.channel.Channel;
-import com.pusher.client.channel.PusherEvent;
-import com.pusher.client.channel.SubscriptionEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -99,6 +96,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
 
     private FragmentMapsBinding mBinding;
 
+    Polyline line;
+    LatLng origin;
+    LatLng dest;
+    ArrayList<LatLng> markerPoints;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -120,6 +122,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        markerPoints = new ArrayList<>();
 
         myReceiver = new MyReceiver();
 
@@ -157,6 +161,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
                 Toast.makeText(requireContext(), "removeLocationUpdatesButton.click",
                         Toast.LENGTH_SHORT).show();
                 mService.removeLocationUpdates();
+            }
+        });
+
+        mBinding.showDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(requireContext(), "showDirection.click",
+                        Toast.LENGTH_SHORT).show();
+                build_retrofit_and_get_response("driving", origin, dest);
             }
         });
 
@@ -206,6 +219,52 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
          */
+
+        // Setting onclick event listener for the map
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+
+                // clearing map and generating new marker points if user clicks on map more than two times
+                if (markerPoints.size() > 1) {
+                    mMap.clear();
+                    markerPoints.clear();
+                    markerPoints = new ArrayList<>();
+                    mBinding.durationTextView.setText("");
+                }
+
+                // Adding new item to the ArrayList
+                markerPoints.add(point);
+
+                // Creating MarkerOptions
+                MarkerOptions options = new MarkerOptions();
+
+                // Setting the position of the marker
+                options.position(point);
+
+                /**
+                 * For the start location, the color of marker is GREEN and
+                 * for the end location, the color of marker is RED.
+                 */
+                if (markerPoints.size() == 1) {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                } else if (markerPoints.size() == 2) {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+
+
+                // Add new marker to the Google Map Android API V2
+                mMap.addMarker(options);
+
+                // Checks, whether start and end locations are captured
+                if (markerPoints.size() >= 2) {
+                    origin = markerPoints.get(0);
+                    dest = markerPoints.get(1);
+                }
+
+            }
+        });
     }
 
     @Override
@@ -357,23 +416,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        String key = getString(R.string.google_maps_key);
+
         GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<Object> call = service.getDistanceDuration("metric", origin.latitude + "," + origin.longitude,destination.latitude + "," + destination.longitude, type);
-        call.enqueue(new Callback<Object>() {
+        Call<GoogleDirectionResponse> call = service.getDirection(key,"metric", origin.latitude + "," + origin.longitude,destination.latitude + "," + destination.longitude, type);
+        call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                /*
+            public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
                 try {
                     //Remove previous line from map
                     if (line != null) {
                         line.remove();
                     }
                     // This loop will go through all the results and add marker on each location.
-                    for (int i = 0; i < response.body().getRoutes().size(); i++) {
-                        String distance = response.body().getRoutes().get(i).getLegs().get(i).getDistance().getText();
-                        String time = response.body().getRoutes().get(i).getLegs().get(i).getDuration().getText();
-                        ShowDistanceDuration.setText("Distance:" + distance + ", Duration:" + time);
-                        String encodedString = response.body().getRoutes().get(0).getOverviewPolyline().getPoints();
+                    GoogleDirectionResponse googleDirectionResponse = response.body();
+
+                    Log.e(TAG, "googleDirectionResponse = " + googleDirectionResponse);
+                    for (int i = 0; i < googleDirectionResponse.getRoutes().size(); i++) {
+                        String distance = googleDirectionResponse.getRoutes().get(i).getLegs().get(i).getDistance().getText();
+                        String time = googleDirectionResponse.getRoutes().get(i).getLegs().get(i).getDuration().getText();
+                        mBinding.durationTextView.setText(String.format("Distance:%s, Duration:%s", distance, time));
+                        String encodedString = googleDirectionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
                         List<LatLng> list = decodePoly(encodedString);
                         line = mMap.addPolyline(new PolylineOptions()
                                 .addAll(list)
@@ -383,19 +446,49 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
                         );
                     }
                 } catch (Exception e) {
-                    Log.d("onResponse", "There is an error");
-                    e.printStackTrace();
+                    Log.e(TAG, "There is an error", e);
                 }
-
-                 */
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-
-            Log.d("onFailure", t.toString());
+            public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, t.toString(), t);
             }
         });
 
     }
+    private List<LatLng> decodePoly(String encoded) {
+        List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng( (((double) lat / 1E5)),
+                    (((double) lng / 1E5) ));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+
+
 }
