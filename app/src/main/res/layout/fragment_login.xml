@@ -22,11 +22,11 @@
             android:src="@drawable/bg" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageView
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_left"
+            android:src="@drawable/outline_arrow_back_ios_black_24"
             android:tint="@android:color/white"
             app:elevation="0dp"
             android:backgroundTint="@android:color/transparent"
@@ -43,8 +43,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
             android:text="Login with your\nphone number"
             android:textColor="@android:color/white"
             android:textSize="30sp"
