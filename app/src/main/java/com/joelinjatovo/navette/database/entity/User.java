@@ -49,15 +49,19 @@ public class User {
     @ColumnInfo(name = "verified")
     private Boolean verified;
 
+    @SerializedName("token")
     @ColumnInfo(name = "token")
     private String token;
 
+    @SerializedName("token_expires")
     @ColumnInfo(name = "token_expires")
     private Long tokenExpires;
 
+    @SerializedName("refresh_token")
     @ColumnInfo(name = "refresh_token")
     private String refreshToken;
 
+    @SerializedName("refresh_token_expires")
     @ColumnInfo(name = "refresh_token_expires")
     private Long refreshTokenExpires;
 
