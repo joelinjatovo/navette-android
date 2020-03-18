@@ -57,4 +57,5 @@
     <string name="permission_rationale">Permission Rationale</string>
     <string name="ok">OK</string>
     <string name="show_direction">Show Direction</string>
+    <string name="where_you_want_to_go">Ou allez vous?</string>
 </resources>
