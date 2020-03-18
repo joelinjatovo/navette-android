@@ -9,7 +9,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModelFactory;
+import com.joelinjatovo.navette.utils.Constants;
+import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Preferences;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +31,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private AuthViewModel authViewModel;
 
@@ -62,6 +71,24 @@ public class MainActivity extends AppCompatActivity {
                     //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE );
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 }
+            }
+        });
+
+        connectPush();
+    }
+
+    private void connectPush() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        pusher.connect();
+
+        Channel channel = pusher.subscribe("my-channel");
+        channel.bind("user.point.created", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG, event.getData());
             }
         });
     }

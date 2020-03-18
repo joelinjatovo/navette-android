@@ -41,7 +41,7 @@ import com.pusher.client.channel.PusherEvent;
 import com.pusher.client.channel.SubscriptionEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MapsActivity.class.getSimpleName();
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
