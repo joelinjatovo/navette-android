@@ -12,16 +12,16 @@ public class GoogleDirectionResponse {
     private String status;
 
     @SerializedName("geocoded_waypoints")
-    private GeocodedWaypoints geocodedWaypoints;
+    private GeocodedWaypoints[] geocodedWaypoints;
 
     @SerializedName("routes")
     private List<Route> routes;
 
-    public GeocodedWaypoints getGeocodedWaypoints() {
+    public GeocodedWaypoints[] getGeocodedWaypoints() {
         return geocodedWaypoints;
     }
 
-    public void setGeocodedWaypoints(GeocodedWaypoints geocodedWaypoints) {
+    public void setGeocodedWaypoints(GeocodedWaypoints[] geocodedWaypoints) {
         this.geocodedWaypoints = geocodedWaypoints;
     }
 
