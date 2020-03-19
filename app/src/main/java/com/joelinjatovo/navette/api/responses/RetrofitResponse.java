@@ -1,6 +1,7 @@
 package com.joelinjatovo.navette.api.responses;
 
 import com.google.gson.annotations.SerializedName;
+import com.joelinjatovo.navette.api.data.Pagination;
 
 import java.util.Arrays;
 
@@ -20,6 +21,9 @@ public class RetrofitResponse<T> {
 
     @SerializedName("data")
     private T data;
+
+    @SerializedName("pagination")
+    private Pagination pagination;
 
     public RetrofitResponse(T data) {
         this.data = data;
