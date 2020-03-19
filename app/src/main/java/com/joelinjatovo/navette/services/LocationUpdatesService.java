@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.main.maps;
+package com.joelinjatovo.navette.services;
 
 import android.app.ActivityManager;
 import android.app.Notification;

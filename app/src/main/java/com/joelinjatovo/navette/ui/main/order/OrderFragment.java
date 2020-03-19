@@ -79,7 +79,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding.originLocationTextInputLayout.setEndIconOnClickListener(
                 v->{
-                        mBinding.originLocationTextInputEditText.setText(R.string.my_location);
                         getDeviceLocation();
                 });
 
@@ -116,6 +115,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), 10));
+
+                                mBinding.originLocationTextInputEditText.setText(R.string.my_location);
                             }
                         } else {
                             //Log.d(TAG, "Current location is null. Using defaults.");

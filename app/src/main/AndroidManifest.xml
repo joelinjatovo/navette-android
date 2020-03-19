@@ -62,7 +62,7 @@
 
         <!-- Foreground services in Q+ require type. -->
         <service
-            android:name=".ui.main.maps.LocationUpdatesService"
+            android:name=".services.LocationUpdatesService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />

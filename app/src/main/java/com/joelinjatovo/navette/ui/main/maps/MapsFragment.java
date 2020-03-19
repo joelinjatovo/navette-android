@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +42,7 @@ import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.data.google.GoogleDirectionResponse;
 import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.databinding.FragmentMapsBinding;
+import com.joelinjatovo.navette.services.LocationUpdatesService;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 

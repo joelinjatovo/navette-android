@@ -3,13 +3,11 @@ package com.joelinjatovo.navette.ui.vm;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repository.UserRepository;
-import com.joelinjatovo.navette.ui.main.maps.LocationUpdatesService;
 
 import java.util.List;
 
