@@ -42,6 +42,6 @@ public class ClubRepository {
     }
 
     public void upsert(UpsertCallback<Club> callback, Club... items){
-        (new UpsertAsyncTask(clubDao, callback)).execute(items);
+        (new UpsertAsyncTask<Club>(clubDao, callback)).execute(items);
     }
 }
