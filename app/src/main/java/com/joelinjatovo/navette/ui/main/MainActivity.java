@@ -41,7 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements Callback<RetrofitResponse<List<Club>>>, UpsertCallback<Club> {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements Callback<Retrofit
 
         connectPush();
 
-        clubViewModel.load(this);
+        clubViewModel.load();
     }
 
     private void connectPush() {
@@ -104,27 +104,5 @@ public class MainActivity extends AppCompatActivity implements Callback<Retrofit
                 Log.d(TAG, event.getData());
             }
         });
-    }
-
-    @Override
-    public void onResponse(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Response<RetrofitResponse<List<Club>>> response) {
-        if (response.body() != null) {
-            clubViewModel.upsert(MainActivity.this, response.body().getData());
-        }
-    }
-
-    @Override
-    public void onFailure(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Throwable t) {
-
-    }
-
-    @Override
-    public void onUpsertError() {
-
-    }
-
-    @Override
-    public void onUpsertSuccess(List<Club> items) {
-
     }
 }

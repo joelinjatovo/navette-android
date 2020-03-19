@@ -16,11 +16,11 @@ import java.util.List;
 
 public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Club> mValues;
+    private List<Club> mItems;
+
     private final OnListFragmentInteractionListener mListener;
 
-    public ClubRecyclerViewAdapter(List<Club> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public ClubRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
         mListener = listener;
     }
 
@@ -34,9 +34,9 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getName());
-        holder.mContentView.setText(mValues.get(position).getCreatedAt().toString());
+        holder.mItem = mItems.get(position);
+        holder.mIdView.setText(mItems.get(position).getName());
+        holder.mContentView.setText(mItems.get(position).getCreatedAt().toString());
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -49,7 +49,11 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mItems.size();
+    }
+
+    public void setItems(List<Club> items){
+        mItems = items;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
