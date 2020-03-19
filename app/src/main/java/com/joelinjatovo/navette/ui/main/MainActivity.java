@@ -7,8 +7,13 @@ import android.view.WindowManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.api.responses.RetrofitResponse;
+import com.joelinjatovo.navette.database.callback.UpsertCallback;
+import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModelFactory;
+import com.joelinjatovo.navette.ui.vm.ClubViewModel;
+import com.joelinjatovo.navette.ui.vm.ClubViewModelFactory;
 import com.joelinjatovo.navette.utils.Constants;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Preferences;
@@ -30,16 +35,26 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity implements Callback<RetrofitResponse<List<Club>>>, UpsertCallback<Club> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private AuthViewModel authViewModel;
 
+    private ClubViewModel clubViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        clubViewModel = new ViewModelProvider(this, new ClubViewModelFactory(getApplication())).get(ClubViewModel.class);
 
         authViewModel = new ViewModelProvider(this, new AuthViewModelFactory(getApplication())).get(AuthViewModel.class);
 
@@ -71,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         connectPush();
+
+        clubViewModel.load(this);
     }
 
     private void connectPush() {
@@ -89,4 +106,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResponse(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Response<RetrofitResponse<List<Club>>> response) {
+        if (response.body() != null) {
+            clubViewModel.upsert(MainActivity.this, response.body().getData());
+        }
+    }
+
+    @Override
+    public void onFailure(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Throwable t) {
+
+    }
+
+    @Override
+    public void onUpsertError() {
+
+    }
+
+    @Override
+    public void onUpsertSuccess(List<Club> items) {
+
+    }
 }
