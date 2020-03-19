@@ -68,13 +68,14 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.2.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
+    // View
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
     //Room
     def room_version = "2.2.4"
     implementation "androidx.room:room-runtime:$room_version"
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
@@ -89,10 +90,8 @@ dependencies {
     implementation 'com.pusher:pusher-java-client:2.0.2'
 
     //Maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-
-    //Motion
-    implementation 'com.github.material-motion:material-motion-android:1.0.0'
 
     // Test
     testImplementation 'junit:junit:4.12'
