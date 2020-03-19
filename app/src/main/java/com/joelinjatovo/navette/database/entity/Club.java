@@ -2,6 +2,7 @@ package com.joelinjatovo.navette.database.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -22,6 +23,10 @@ public class Club {
 
     @ColumnInfo(name = "point_id")
     private Long pointId;
+
+    @Ignore
+    @SerializedName("point")
+    private Point point;
 
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
@@ -60,5 +65,13 @@ public class Club {
 
     public void setPointId(Long pointId) {
         this.pointId = pointId;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
     }
 }

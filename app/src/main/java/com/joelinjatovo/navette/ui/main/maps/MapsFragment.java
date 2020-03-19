@@ -59,9 +59,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
 
     private static final String TAG = MapsFragment.class.getSimpleName();
 
+
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
     private MapsViewModel mapsViewModel;
 
     // The BroadcastReceiver used to listen from broadcasts from the service.
@@ -440,8 +440,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Shared
                         List<LatLng> list = decodePoly(encodedString);
                         line = mMap.addPolyline(new PolylineOptions()
                                 .addAll(list)
-                                .width(20)
-                                .color(Color.RED)
+                                .width(5)
+                                .color(R.color.colorAccent)
                                 .geodesic(true)
                         );
                     }

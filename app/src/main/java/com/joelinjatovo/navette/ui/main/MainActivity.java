@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 navView.setVisibility(View.GONE);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 //requestWindowFeature( Window.FEATURE_NO_TITLE );
+            } else if(destination.getId() == R.id.navigation_home) {
+                navView.setVisibility(View.VISIBLE);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                //requestWindowFeature( Window.FEATURE_NO_TITLE );
             } else {
                 navView.setVisibility(View.VISIBLE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);

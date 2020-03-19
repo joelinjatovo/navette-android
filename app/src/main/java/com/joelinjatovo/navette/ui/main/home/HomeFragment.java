@@ -26,9 +26,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,15 +42,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.BuildConfig;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.data.google.GoogleDirectionResponse;
 import com.joelinjatovo.navette.api.services.GoogleApiService;
+import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.databinding.FragmentHomeBinding;
 import com.joelinjatovo.navette.databinding.FragmentMapsBinding;
 import com.joelinjatovo.navette.ui.main.maps.LocationUpdatesService;
 import com.joelinjatovo.navette.ui.main.maps.MapsViewModel;
+import com.joelinjatovo.navette.ui.vm.ClubViewModel;
+import com.joelinjatovo.navette.ui.vm.ClubViewModelFactory;
+import com.joelinjatovo.navette.ui.vm.RemoteLoaderResult;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 
@@ -63,9 +73,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
+    // Used in checking for runtime permissions.
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
     private GoogleMap mMap;
 
     private FragmentHomeBinding mBinding;
+
+    private Location mLastKnownLocation;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private ClubViewModel clubViewModel;
+
+    private List<Club> mClubs;
 
     @Nullable
     @Override
@@ -83,11 +104,41 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        // Check that the user hasn't revoked permissions by going to Settings.
+        if (Utils.requestingLocationUpdates(requireContext())) {
+            if (!checkPermissions()) {
+                requestPermissions();
+            }
+        }
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        clubViewModel = new ViewModelProvider(requireActivity(), new ClubViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
+
+        clubViewModel.getClubs().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<Club>>>() {
+            @Override
+            public void onChanged(RemoteLoaderResult<List<Club>> result) {
+                if (result == null) {
+                    return;
+                }
+
+                if (result.getError() != null) {
+                    Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                }
+
+                if (result.getSuccess() != null) {
+                    mClubs = result.getSuccess();
+
+                    updateClubUI();
+                }
+            }
+        });
 
         mBinding.createOrderButton.setOnClickListener(
                 v -> {
@@ -99,10 +150,119 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+
+        // Show club in map
+        updateClubUI();
+    }
+
+    private void updateClubUI() {
+        if(mMap!=null && mClubs!=null) {
+            for(Club club: mClubs){
+                if(club.getPoint()!=null){
+                    LatLng latLng = new LatLng(club.getPoint().getAlt(), club.getPoint().getLng());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(club.getName()));
+                }
+            }
+        }
+    }
+
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (checkPermissions()) {
+                Task locationResult = fusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(requireActivity(), new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        Log.d(TAG, "locationResult.addOnCompleteListener");
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            mLastKnownLocation = (Location) task.getResult();
+                            if (mLastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(mLastKnownLocation.getLatitude(),
+                                                mLastKnownLocation.getLongitude()), 10));
+                            }
+                        } else {
+                            //Log.d(TAG, "Current location is null. Using defaults.");
+                            //Log.e(TAG, "Exception: %s", task.getException());
+                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch(SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void updateLocationUI() {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (checkPermissions()) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                requestPermissions();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    /**
+     * Returns the current state of the permissions needed.
+     */
+    private boolean checkPermissions() {
+        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    private void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+            Log.i(TAG, "Displaying permission rationale to provide additional context.");
+            Snackbar.make(
+                    mBinding.getRoot(),
+                    R.string.permission_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(requireActivity(),
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    })
+                    .show();
+        } else {
+            Log.i(TAG, "Requesting permission");
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
     }
 
 }
