@@ -13,15 +13,20 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.joelinjatovo.navette.database.converter.ArrayConverter;
 import com.joelinjatovo.navette.database.converter.DateConverter;
+import com.joelinjatovo.navette.database.dao.ClubDao;
+import com.joelinjatovo.navette.database.dao.OrderPointDao;
+import com.joelinjatovo.navette.database.dao.PointDao;
 import com.joelinjatovo.navette.database.dao.UserDao;
 import com.joelinjatovo.navette.database.entity.Club;
+import com.joelinjatovo.navette.database.entity.OrderPoint;
 import com.joelinjatovo.navette.database.entity.Point;
 import com.joelinjatovo.navette.database.entity.User;
 
 @Database(entities = {
-        User.class,
         Club.class,
+        OrderPoint.class,
         Point.class,
+        User.class,
 },version = 1)
 @TypeConverters({DateConverter.class, ArrayConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
@@ -30,6 +35,12 @@ public abstract class AppDatabase extends RoomDatabase {
 
     @VisibleForTesting
     private static final String DATABASE_NAME = "navette-db";
+
+    public abstract ClubDao clubDao();
+
+    public abstract OrderPointDao orderPointDao();
+
+    public abstract PointDao pointDao();
 
     public abstract UserDao userDao();
 

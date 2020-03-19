@@ -20,13 +20,15 @@ public class Club {
     @ColumnInfo(name = "name")
     private String name;
 
-    @SerializedName("point")
-    @ColumnInfo(name = "point")
-    private Point point;
+    @ColumnInfo(name = "point_id")
+    private Long pointId;
 
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
+
+    public Club() {
+    }
 
     public Long getId() {
         return id;
@@ -52,11 +54,11 @@ public class Club {
         this.createdAt = createdAt;
     }
 
-    public Point getPoint() {
-        return point;
+    public Long getPointId() {
+        return pointId;
     }
 
-    public void setPoint(Point point) {
-        this.point = point;
+    public void setPointId(Long pointId) {
+        this.pointId = pointId;
     }
 }
