@@ -25,6 +25,7 @@ public interface UserApiService {
     @POST("api/v1/user/position")
     Call<RetrofitResponse<User>> addPosition(@Header("Authorization") String token, @Body Location location);
 
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/user")
     Call<RetrofitResponse<User>> getUser();
 }
