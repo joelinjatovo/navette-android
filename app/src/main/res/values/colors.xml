@@ -6,5 +6,6 @@
     <color name="colorText">#2a2a2a</color>
     <color name="colorIcon">#D6D6D6</color>
     <color name="colorBackground">#FFFFFF</color>
+    <color name="colorAlert">#fb0066</color>
     <color name="white">#FFFFFF</color>
 </resources>

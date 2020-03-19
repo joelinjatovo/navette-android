@@ -52,25 +52,21 @@ public class MainActivity extends AppCompatActivity {
             R.id.navigation_home,
             R.id.navigation_maps,
             R.id.navigation_notification,
-            R.id.navigation_profile
+            R.id.navigation_account
         ).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller,
-                                             @NonNull NavDestination destination, @Nullable Bundle arguments) {
-                if(destination.getId() == R.id.navigation_maps) {
-                    navView.setVisibility(View.GONE);
-                    //requestWindowFeature( Window.FEATURE_NO_TITLE );
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                } else {
-                    navView.setVisibility(View.VISIBLE);
-                    //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE );
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                }
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if(destination.getId() == R.id.navigation_maps) {
+                navView.setVisibility(View.GONE);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                //requestWindowFeature( Window.FEATURE_NO_TITLE );
+            } else {
+                navView.setVisibility(View.VISIBLE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE );
             }
         });
 

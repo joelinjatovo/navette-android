@@ -74,6 +74,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
@@ -89,6 +90,9 @@ dependencies {
 
     //Maps
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    //Motion
+    implementation 'com.github.material-motion:material-motion-android:1.0.0'
 
     // Test
     testImplementation 'junit:junit:4.12'
