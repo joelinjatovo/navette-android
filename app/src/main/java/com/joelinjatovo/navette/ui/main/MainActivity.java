@@ -102,9 +102,10 @@ public class MainActivity extends AppCompatActivity {
         pusher.connect();
 
         Channel channel = pusher.subscribe("my-channel");
-        channel.bind("user.point.created", new SubscriptionEventListener() {
+        channel.bind("my-event", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
+                Log.d(TAG, "my-event");
                 Log.d(TAG, event.getData());
             }
         });
