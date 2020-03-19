@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                             if (mLastKnownLocation != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), 100));
+                                                mLastKnownLocation.getLongitude()), 15));
                             }
                         } else {
                             //Log.d(TAG, "Current location is null. Using defaults.");
