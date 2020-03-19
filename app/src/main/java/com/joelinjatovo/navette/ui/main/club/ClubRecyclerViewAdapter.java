@@ -1,6 +1,7 @@
 package com.joelinjatovo.navette.ui.main.club;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -49,11 +50,43 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mItems==null?0:mItems.size();
     }
 
     public void setItems(List<Club> items){
-        mItems = items;
+        if (mItems == null) {
+            mItems = items;
+            notifyItemRangeInserted(0, mItems.size());
+        } else {
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                @Override
+                public int getOldListSize() {
+                    return mItems.size();
+                }
+
+                @Override
+                public int getNewListSize() {
+                    return items.size();
+                }
+
+                @Override
+                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                    Club oldItem = mItems.get(oldItemPosition);
+                    Club newItem = mItems.get(newItemPosition);
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @Override
+                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                    Club oldItem = mItems.get(oldItemPosition);
+                    Club newItem = mItems.get(newItemPosition);
+                    return oldItem.getName()!=null && oldItem.getName().equals(newItem.getName());
+                }
+            });
+
+            mItems = items;
+            diffResult.dispatchUpdatesTo(this);
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

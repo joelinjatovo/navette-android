@@ -59,4 +59,5 @@
     <string name="where_you_want_to_go">Ou allez vous?</string>
     <string name="title_order">Create Order</string>
     <string name="title_profile">Profile</string>
+    <string name="error_loading_clubs">Error Loading Clubs</string>
 </resources>
