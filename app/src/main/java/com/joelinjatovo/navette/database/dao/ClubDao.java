@@ -31,7 +31,7 @@ public abstract class ClubDao extends BaseDao<Club> {
     @Query("SELECT * FROM clubs WHERE id IN (:ids)")
     public abstract LiveData<List<Club>> load(Long[] ids);
 
-    @Query("SELECT COUNT(clubs.id) FROM users")
+    @Query("SELECT COUNT(clubs.id) FROM clubs")
     public abstract int count();
 
     @Transaction

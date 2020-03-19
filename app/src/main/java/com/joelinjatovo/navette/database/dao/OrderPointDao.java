@@ -32,7 +32,7 @@ public abstract class OrderPointDao extends BaseDao<OrderPoint> {
     @Query("SELECT * FROM order_point WHERE id IN (:ids)")
     public abstract LiveData<List<OrderPoint>> load(Long[] ids);
 
-    @Query("SELECT COUNT(order_point.id) FROM users")
+    @Query("SELECT COUNT(order_point.id) FROM order_point")
     public abstract int count();
 
     @Transaction
