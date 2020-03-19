@@ -32,19 +32,19 @@
             android:backgroundTint="@android:color/transparent"
             app:fabCustomSize="50dp"
             tools:ignore="RelativeOverlap"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toTopOf="@id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="20dp" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="60dp"
             android:text="Login with your\nphone number"
             android:textColor="@android:color/white"
             android:textSize="30sp"
@@ -52,7 +52,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/backButton"
             android:layout_marginLeft="40dp" />
 
         <LinearLayout
@@ -208,7 +208,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginBottom="0dp">
+                android:layout_marginBottom="50dp">
 
                 <TextView
                     android:layout_width="match_parent"
