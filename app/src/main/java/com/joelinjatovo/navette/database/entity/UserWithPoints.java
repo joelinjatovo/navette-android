@@ -12,14 +12,9 @@ public class UserWithPoints {
     private User user;
 
     @Relation(
-            parentColumn = "point_id",
-            entity = User.class,
-            entityColumn = "user_id",
-            associateBy = @Junction(
-                    value = UserPoint.class,
-                    parentColumn = "point_id",
-                    entityColumn = "user_id"
-            )
+            parentColumn = "id",
+            entityColumn = "point_id",
+            associateBy = @Junction(UserPoint.class)
     )
     private List<Point> points;
 

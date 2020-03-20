@@ -5,7 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.database.entity.OrderWithPoints;
 
 import java.util.ArrayList;

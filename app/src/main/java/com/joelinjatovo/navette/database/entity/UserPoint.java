@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(
-    tableName = "order_point"
+    tableName = "user_point"
 )
 public class UserPoint {
     @PrimaryKey

@@ -8,21 +8,17 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class UserWithDatas {
+public class UserWithRoles {
 
     @SerializedName("user")
     @Embedded private User user;
 
     @SerializedName("roles")
+
     @Relation(
-            parentColumn = "role_id",
-            entity = Role.class,
-            entityColumn = "user_id",
-            associateBy = @Junction(
-                    value = UserPoint.class,
-                    parentColumn = "user_id",
-                    entityColumn = "role_id"
-            )
+            parentColumn = "id",
+            entityColumn = "role_id",
+            associateBy = @Junction(UserRole.class)
     )
     private List<Role> roles;
 
