@@ -16,6 +16,9 @@ public class RetrofitResponse<T> {
     @SerializedName("message")
     private String message;
 
+    @SerializedName("validation")
+    private Object validation;
+
     @SerializedName("errors")
     private Object[] errors;
 
@@ -63,6 +66,14 @@ public class RetrofitResponse<T> {
 
     public void setErrors(Object[] errors) {
         this.errors = errors;
+    }
+
+    public Object getValidation() {
+        return validation;
+    }
+
+    public void setValidation(Object validation) {
+        this.validation = validation;
     }
 
     @Override
