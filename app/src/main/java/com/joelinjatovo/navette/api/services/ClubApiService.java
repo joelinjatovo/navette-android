@@ -19,5 +19,5 @@ public interface ClubApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/club/{club}/cars")
-    Call<RetrofitResponse<List<CarAndModel>>> getCars(@Query("club") Integer clubId);
+    Call<RetrofitResponse<List<CarAndModel>>> getCars(@Query("club") Long clubId);
 }

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,7 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.database.entity.CarAndModel;
+import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
+import com.joelinjatovo.navette.ui.vm.ClubViewModel;
+import com.joelinjatovo.navette.ui.vm.ClubViewModelFactory;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 
@@ -45,6 +50,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     private FragmentOrderBinding mBinding;
+
+    private OrderViewModel orderViewModel;
 
     @Nullable
     @Override
@@ -77,6 +84,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        orderViewModel = new ViewModelProvider(this, new OrderViewModelFactory()).get(OrderViewModel.class);
+
         mBinding.originLocationTextInputLayout.setEndIconOnClickListener(
                 v->{
                         getDeviceLocation();
@@ -86,6 +95,26 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 v->{
                         Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
+
+        orderViewModel.getClub().observe(getViewLifecycleOwner(),
+                clubAndPoint -> {
+                    orderViewModel.loadCars(clubAndPoint.getClub());
+                });
+
+        orderViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), listRemoteLoaderResult -> {
+            if(listRemoteLoaderResult == null){
+                return;
+            }
+
+            if(listRemoteLoaderResult.getError()!=null){
+                // show error
+            }
+
+            if(listRemoteLoaderResult.getSuccess()!=null){
+                // show car list
+            }
+
+        });
     }
 
     @Override
@@ -172,6 +201,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    public interface OnListFragmentInteractionListener {
+        void onListFragmentInteraction(CarAndModel item);
     }
 
 }
