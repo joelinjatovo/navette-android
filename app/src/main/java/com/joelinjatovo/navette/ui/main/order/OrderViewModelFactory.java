@@ -17,7 +17,7 @@ public class OrderViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(ClubViewModel.class)) {
+        if (modelClass.isAssignableFrom(OrderViewModel.class)) {
             if(orderViewModel == null){
                 orderViewModel = new OrderViewModel();
             }
