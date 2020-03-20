@@ -3,11 +3,15 @@ package com.joelinjatovo.navette.database.entity;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ClubAndPoint {
 
+    @SerializedName("point")
     @Embedded
     private Point point;
 
+    @SerializedName("club")
     @Relation(
             parentColumn = "id",
             entityColumn =  "point_id"

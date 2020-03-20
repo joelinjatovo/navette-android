@@ -21,12 +21,12 @@ public class Club {
     @ColumnInfo(name = "name")
     private String name;
 
+    @SerializedName("image_url")
+    @ColumnInfo(name = "image_url")
+    private String imageUrl;
+
     @ColumnInfo(name = "point_id")
     private Long pointId;
-
-    @Ignore
-    @SerializedName("point")
-    private Point point;
 
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
@@ -67,11 +67,11 @@ public class Club {
         this.pointId = pointId;
     }
 
-    public Point getPoint() {
-        return point;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPoint(Point point) {
-        this.point = point;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

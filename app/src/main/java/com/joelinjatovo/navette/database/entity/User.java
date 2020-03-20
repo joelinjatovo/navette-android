@@ -65,17 +65,9 @@ public class User {
     @ColumnInfo(name = "refresh_token_expires")
     private Long refreshTokenExpires;
 
-    @SerializedName("is_admin")
-    @ColumnInfo(name = "is_admin")
-    private Boolean isAdmin;
-
-    @SerializedName("is_driver")
-    @ColumnInfo(name = "is_driver")
-    private Boolean isDriver;
-
-    @SerializedName("is_customer")
-    @ColumnInfo(name = "is_customer")
-    private Boolean isCustomer;
+    @SerializedName("image_url")
+    @ColumnInfo(name = "image_url")
+    private String imageUrl;
 
     public Long getId() {
         return id;
@@ -165,32 +157,16 @@ public class User {
         this.refreshTokenExpires = refreshTokenExpires;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @NonNull
     public String toString(){
         return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "; tokenExpires=" + tokenExpires + "]";
-    }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
-
-    public Boolean getDriver() {
-        return isDriver;
-    }
-
-    public void setDriver(Boolean driver) {
-        isDriver = driver;
-    }
-
-    public Boolean getCustomer() {
-        return isCustomer;
-    }
-
-    public void setCustomer(Boolean customer) {
-        isCustomer = customer;
     }
 }
