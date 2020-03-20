@@ -3,6 +3,7 @@ package com.joelinjatovo.navette.api.services;
 import com.joelinjatovo.navette.api.data.Login;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,11 +17,11 @@ public interface TokenApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/token")
-    Call<RetrofitResponse<User>> getToken(@Body Login login);
+    Call<RetrofitResponse<UserWithRoles>> getToken(@Body Login login);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/token/refresh")
-    Call<User> refreshToken(@Field("refresh_token") String refreshToken);
+    void refreshToken(@Field("refresh_token") String refreshToken);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/logout")

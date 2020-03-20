@@ -1,7 +1,7 @@
 package com.joelinjatovo.navette.api.services;
 
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.database.entity.Club;
+import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface ClubApiService {
     
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/clubs")
-    Call<RetrofitResponse<List<Club>>> getClubs();
+    Call<RetrofitResponse<List<ClubAndPoint>>> getClubs();
 }

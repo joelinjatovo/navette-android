@@ -6,6 +6,8 @@ import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithPoints;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;
@@ -16,10 +18,10 @@ import retrofit2.Callback;
  */
 public class LoginDataSource implements LoginDataSourceBase {
 
-    public void login(String phone, String password, Callback<RetrofitResponse<User>> callback) {
+    public void login(String phone, String password, Callback<RetrofitResponse<UserWithRoles>> callback) {
         Login login = new Login(phone, password);
         TokenApiService service = RetrofitClient.getInstance().create(TokenApiService.class);
-        Call<RetrofitResponse<User>> call = service.getToken(login);
+        Call<RetrofitResponse<UserWithRoles>> call = service.getToken(login);
         call.enqueue(callback);
         /*
         call.enqueue(new Callback<RetrofitResponse<User>>() {

@@ -30,7 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.database.entity.Club;
+import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentHomeBinding;
 import com.joelinjatovo.navette.ui.vm.ClubViewModel;
 import com.joelinjatovo.navette.ui.vm.ClubViewModelFactory;
@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private ClubViewModel clubViewModel;
 
-    private List<Club> mClubs;
+    private List<ClubAndPoint> mClubs;
 
     @Nullable
     @Override
@@ -92,9 +92,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         clubViewModel = new ViewModelProvider(requireActivity(), new ClubViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<Club>>>() {
+        clubViewModel.getClubs().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
             @Override
-            public void onChanged(RemoteLoaderResult<List<Club>> result) {
+            public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
                 if (result == null) {
                     return;
                 }
@@ -133,10 +133,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private void updateClubUI() {
         if(mMap!=null && mClubs!=null) {
-            for(Club club: mClubs){
-                if(club.getPoint()!=null){
-                    LatLng latLng = new LatLng(club.getPoint().getAlt(), club.getPoint().getLng());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(club.getName()));
+            for(ClubAndPoint item: mClubs){
+                if(item.getClub()!=null && item.getPoint()!=null){
+                    LatLng latLng = new LatLng(item.getPoint().getAlt(), item.getPoint().getLng());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(item.getClub().getName()));
                 }
             }
         }

@@ -5,6 +5,7 @@ import com.joelinjatovo.navette.api.data.Login;
 import com.joelinjatovo.navette.api.data.Register;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.utils.Preferences;
 import com.joelinjatovo.navette.utils.Utils;
 
@@ -19,13 +20,13 @@ public interface UserApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/register")
-    Call<RetrofitResponse<User>> register(@Body Register register);
+    Call<RetrofitResponse<UserWithRoles>>  register(@Body Register register);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/user/position")
-    Call<RetrofitResponse<User>> addPosition(@Header("Authorization") String token, @Body Location location);
+    Call<RetrofitResponse<UserWithRoles>> addPosition(@Header("Authorization") String token, @Body Location location);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/user")
-    Call<RetrofitResponse<User>> getUser();
+    Call<RetrofitResponse<UserWithRoles>> getUser();
 }

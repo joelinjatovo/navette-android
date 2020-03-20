@@ -10,6 +10,7 @@ import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.UserApiService;
 import com.joelinjatovo.navette.data.source.RegisterDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.ui.main.auth.register.RegisterResult;
 import com.joelinjatovo.navette.utils.Log;
 
@@ -22,10 +23,10 @@ import retrofit2.Response;
  */
 public class RegisterDataSource implements RegisterDataSourceBase {
 
-    public void register(String name, String phone, String password, Callback<RetrofitResponse<User>> callback) {
+    public void register(String name, String phone, String password, Callback<RetrofitResponse<UserWithRoles>> callback) {
         Register registrationData = new Register(name, phone, password);
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
-        Call<RetrofitResponse<User>> call = service.register(registrationData);
+        Call<RetrofitResponse<UserWithRoles>> call = service.register(registrationData);
         call.enqueue(callback);
     }
 }

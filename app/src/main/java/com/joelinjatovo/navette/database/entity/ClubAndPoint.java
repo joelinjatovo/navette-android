@@ -5,7 +5,7 @@ import androidx.room.Relation;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PointAndClub {
+public class ClubAndPoint {
 
     @SerializedName("point")
     @Embedded

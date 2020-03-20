@@ -16,5 +16,5 @@ public interface OrderApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/order")
-    Call<RetrofitResponse<User>> createOrder();
+    void createOrder();
 }

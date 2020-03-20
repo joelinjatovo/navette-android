@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.Club;
+import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentClubsListBinding;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
 import com.joelinjatovo.navette.ui.main.auth.login.LoginViewModel;
@@ -62,9 +63,9 @@ public class ClubsFragment extends Fragment {
 
         clubViewModel = new ViewModelProvider(requireActivity(), new ClubViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<Club>>>() {
+        clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
             @Override
-            public void onChanged(RemoteLoaderResult<List<Club>> result) {
+            public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
                 if (result == null) {
                     return;
                 }
@@ -83,12 +84,12 @@ public class ClubsFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
-        public void onListFragmentInteraction(Club item) {
+        public void onListFragmentInteraction(ClubAndPoint item) {
 
         }
     };
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Club item);
+        void onListFragmentInteraction(ClubAndPoint item);
     }
 }

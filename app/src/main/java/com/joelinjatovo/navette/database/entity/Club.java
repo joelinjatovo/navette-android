@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +13,9 @@ import java.util.Date;
 
 @Entity(
     tableName = "clubs",
+    indices = {
+            @Index(value = {"point_id"})
+    },
     foreignKeys = @ForeignKey(
             entity = Point.class,
             parentColumns = "id",

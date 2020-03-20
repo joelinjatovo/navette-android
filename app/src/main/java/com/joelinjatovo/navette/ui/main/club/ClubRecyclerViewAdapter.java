@@ -11,13 +11,14 @@ import android.widget.TextView;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.Club;
+import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.ui.main.club.ClubsFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
 public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerViewAdapter.ViewHolder> {
 
-    private List<Club> mItems;
+    private List<ClubAndPoint> mItems;
 
     private final OnListFragmentInteractionListener mListener;
 
@@ -36,8 +37,8 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        holder.mIdView.setText(mItems.get(position).getName());
-        holder.mContentView.setText(mItems.get(position).getCreatedAt().toString());
+        holder.mIdView.setText(mItems.get(position).getClub().getName());
+        holder.mContentView.setText(mItems.get(position).getClub().getCreatedAt().toString());
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -53,7 +54,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<Club> items){
+    public void setItems(List<ClubAndPoint> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -71,16 +72,16 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    Club oldItem = mItems.get(oldItemPosition);
-                    Club newItem = mItems.get(newItemPosition);
-                    return oldItem.getId() == newItem.getId();
+                    ClubAndPoint oldItem = mItems.get(oldItemPosition);
+                    ClubAndPoint newItem = mItems.get(newItemPosition);
+                    return oldItem.getClub().getId() == newItem.getClub().getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    Club oldItem = mItems.get(oldItemPosition);
-                    Club newItem = mItems.get(newItemPosition);
-                    return oldItem.getName()!=null && oldItem.getName().equals(newItem.getName());
+                    ClubAndPoint oldItem = mItems.get(oldItemPosition);
+                    ClubAndPoint newItem = mItems.get(newItemPosition);
+                    return oldItem.getClub().getName()!=null && oldItem.getClub().getName().equals(newItem.getClub().getName());
                 }
             });
 
@@ -93,7 +94,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         final View mView;
         final TextView mIdView;
         final TextView mContentView;
-        Club mItem;
+        ClubAndPoint mItem;
 
         ViewHolder(View view) {
             super(view);
