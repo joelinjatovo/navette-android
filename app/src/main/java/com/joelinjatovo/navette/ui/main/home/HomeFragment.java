@@ -92,24 +92,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         clubViewModel = new ViewModelProvider(requireActivity(), new ClubViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
-            @Override
-            public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
-                if (result == null) {
-                    return;
-                }
+        clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result == null) {
+                        return;
+                    }
 
-                if (result.getError() != null) {
-                    Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
-                }
+                    if (result.getError() != null) {
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
 
-                if (result.getSuccess() != null) {
-                    mClubs = result.getSuccess();
+                    if (result.getSuccess() != null) {
+                        mClubs = result.getSuccess();
 
-                    updateClubUI();
-                }
-            }
-        });
+                        updateClubUI();
+                    }
+                });
 
         mBinding.createOrderButton.setOnClickListener(
                 v -> {

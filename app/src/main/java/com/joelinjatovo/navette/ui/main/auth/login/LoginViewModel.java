@@ -12,13 +12,14 @@ import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.data.repositories.LoginRepository;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginViewModel extends ViewModel implements Callback<RetrofitResponse<User>> {
+public class LoginViewModel extends ViewModel implements Callback<RetrofitResponse<UserWithRoles>> {
 
     private static final String TAG = LoginViewModel.class.getSimpleName();
 
@@ -72,17 +73,17 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
     }
 
     @Override
-    public void onResponse(@NonNull Call<RetrofitResponse<User>> call, Response<RetrofitResponse<User>> response) {
+    public void onResponse(@NonNull Call<RetrofitResponse<UserWithRoles>> call, Response<RetrofitResponse<UserWithRoles>> response) {
         Log.d(TAG, response.toString());
 
-        RetrofitResponse<User> data = response.body();
+        RetrofitResponse<UserWithRoles> data = response.body();
         if(null != data){
             Log.d(TAG, data.toString());
-            User user = data.getData();
+            UserWithRoles item = data.getData();
             switch(data.getCode()){
                 case 0:
-                    if(null != user){
-                        loginResult.setValue(new LoginResult(user));
+                    if(null != item){
+                        loginResult.setValue(new LoginResult(item.getUser()));
                         return;
                     }
                     break;
@@ -108,7 +109,7 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
     }
 
     @Override
-    public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable t) {
+    public void onFailure(@NonNull Call<RetrofitResponse<UserWithRoles>> call, @NonNull Throwable t) {
         Log.e(TAG, t.getMessage(), t);
         if(t instanceof MalformedJsonException){
             loginResult.setValue(new LoginResult(R.string.invalid_json_response));

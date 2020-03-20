@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.ui.main.auth.login.LoginResult;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class LoginRepository {
         return instance;
     }
 
-    public void login(String phone, String password, Callback<RetrofitResponse<User>> callback) {
+    public void login(String phone, String password, Callback<RetrofitResponse<UserWithRoles>> callback) {
         dataSource.login(phone, password, callback);
     }
 
