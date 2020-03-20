@@ -20,6 +20,11 @@ public class UserRole {
     @ColumnInfo(name = "role_id")
     private Long roleId;
 
+    public UserRole(User user, Role role) {
+        setUserId(user.getId());
+        setRoleId(role.getId());
+    }
+
     public Long getId() {
         return id;
     }
