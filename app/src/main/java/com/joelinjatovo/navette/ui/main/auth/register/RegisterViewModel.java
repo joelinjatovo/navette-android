@@ -43,7 +43,7 @@ public class RegisterViewModel extends ViewModel implements Callback<RetrofitRes
         if(response.body()!=null){
             if( null != response.body().getData()){
                 Log.d(TAG, response.body().getData().toString());
-                registerResult.setValue(new RegisterResult(response.body().getData().getUser()));
+                registerResult.setValue(new RegisterResult(response.body().getData()));
             }else{
                 registerResult.setValue(new RegisterResult(R.string.login_failed));
             }

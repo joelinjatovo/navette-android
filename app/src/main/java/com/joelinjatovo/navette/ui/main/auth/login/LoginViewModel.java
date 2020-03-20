@@ -83,7 +83,7 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
             switch(data.getCode()){
                 case 0:
                     if(null != item){
-                        loginResult.setValue(new LoginResult(item.getUser()));
+                        loginResult.setValue(new LoginResult(item));
                         return;
                     }
                     break;

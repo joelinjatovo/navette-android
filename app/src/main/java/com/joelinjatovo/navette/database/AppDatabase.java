@@ -18,9 +18,7 @@ import com.joelinjatovo.navette.database.dao.OrderPointDao;
 import com.joelinjatovo.navette.database.dao.PointDao;
 import com.joelinjatovo.navette.database.dao.UserDao;
 import com.joelinjatovo.navette.database.entity.Car;
-import com.joelinjatovo.navette.database.entity.CarBrand;
 import com.joelinjatovo.navette.database.entity.CarModel;
-import com.joelinjatovo.navette.database.entity.CarType;
 import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.Order;
 import com.joelinjatovo.navette.database.entity.OrderPoint;
@@ -32,9 +30,7 @@ import com.joelinjatovo.navette.database.entity.UserRole;
 
 @Database(entities = {
         Car.class,
-        CarBrand.class,
         CarModel.class,
-        CarType.class,
         Club.class,
         Order.class,
         OrderPoint.class,

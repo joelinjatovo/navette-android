@@ -20,7 +20,7 @@ public abstract class UserDao extends BaseDao<User> {
     @Transaction
     @Insert
     public void insertUserWithRoles(User user, List<Role> roles){
-        insert(user);
+        Long userId = insert(user);
         for(Role role: roles){
             _insertRole(role);
             _insertUserRole(new UserRole(user,role));

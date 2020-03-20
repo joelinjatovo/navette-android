@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.databinding.FragmentRegisterBinding;
 
 public class RegisterFragment  extends Fragment {
@@ -57,7 +58,7 @@ public class RegisterFragment  extends Fragment {
 
                     if (registerResult.getSuccess() != null) {
                         setRegisteredInUser(registerResult.getSuccess());
-                        updateUiWithUser(registerResult.getSuccess());
+                        updateUiWithUser(registerResult.getSuccess().getUser());
                     }
                 });
 
@@ -77,7 +78,7 @@ public class RegisterFragment  extends Fragment {
             });
     }
 
-    private void setRegisteredInUser(User user) {
+    private void setRegisteredInUser(UserWithRoles user) {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }

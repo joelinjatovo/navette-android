@@ -4,13 +4,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 
 /**
  * Registration result : success (user details) or error message.
  */
 public class RegisterResult {
     @Nullable
-    private User success;
+    private UserWithRoles success;
 
     @Nullable
     @StringRes
@@ -20,12 +21,12 @@ public class RegisterResult {
         this.error = error;
     }
 
-    public RegisterResult(@Nullable User success) {
+    public RegisterResult(@Nullable UserWithRoles success) {
         this.success = success;
     }
 
     @Nullable
-    public User getSuccess() {
+    public UserWithRoles getSuccess() {
         return success;
     }
 

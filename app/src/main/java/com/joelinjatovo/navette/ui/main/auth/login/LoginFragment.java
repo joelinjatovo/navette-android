@@ -24,6 +24,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.database.entity.UserWithPoints;
+import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.databinding.FragmentLoginBinding;
 import com.joelinjatovo.navette.ui.main.auth.forgot.ForgotFragment;
 import com.joelinjatovo.navette.ui.main.auth.AuthViewModel;
@@ -119,7 +121,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     }
 
                     if (loginResult.getSuccess() != null) {
-                        userViewModel.insert(upsertCallback, loginResult.getSuccess());
+                        userViewModel.insertUserWithRoles(upsertCallback, loginResult.getSuccess());
                     }
                 });
 
@@ -175,17 +177,17 @@ public class LoginFragment extends Fragment implements TextWatcher {
             );
     }
 
-    private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
+    private UpsertCallback<UserWithRoles> upsertCallback = new UpsertCallback<UserWithRoles>() {
         @Override
         public void onUpsertError() {
             Toast.makeText(getContext(), getString(R.string.error_database), Toast.LENGTH_LONG).show();
         }
 
         @Override
-        public void onUpsertSuccess(List<User> users) {
-            Preferences.Auth.setCurrentUser(getContext(), users.get(0));
-            authViewModel.authenticate(users.get(0));
-            updateUiWithUser(users.get(0));
+        public void onUpsertSuccess(List<UserWithRoles> users) {
+            Preferences.Auth.setCurrentUser(getContext(), users.get(0).getUser());
+            authViewModel.authenticate(users.get(0).getUser());
+            updateUiWithUser(users.get(0).getUser());
         }
 
         private void updateUiWithUser(User model) {

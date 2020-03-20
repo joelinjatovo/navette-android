@@ -29,6 +29,14 @@ public class CarModel {
     @ColumnInfo(name = "place")
     private Integer place;
 
+    @SerializedName("type")
+    @ColumnInfo(name = "type")
+    private String type;
+
+    @SerializedName("brand")
+    @ColumnInfo(name = "brand")
+    private String brand;
+
     @ColumnInfo(name = "car_brand_id")
     private Long carBrandId;
 
@@ -81,5 +89,21 @@ public class CarModel {
 
     public void setCarTypeId(Long carTypeId) {
         this.carTypeId = carTypeId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 }
