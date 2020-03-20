@@ -12,13 +12,13 @@ public class OrderWithPoints {
     private Order order;
 
     @Relation(
-            parentColumn = "point_id",
-            entity = Order.class,
-            entityColumn = "order_id",
+            parentColumn = "order_id",
+            entity = Point.class,
+            entityColumn = "point_id",
             associateBy = @Junction(
                     value = OrderPoint.class,
-                    parentColumn = "point_id",
-                    entityColumn = "order_id"
+                    parentColumn = "order_id",
+                    entityColumn = "point_id"
             )
     )
     private List<Point> points;
