@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 @Entity(
-    tableName = "clubs"
+    tableName = "orders"
 )
 public class Order {
     @PrimaryKey
