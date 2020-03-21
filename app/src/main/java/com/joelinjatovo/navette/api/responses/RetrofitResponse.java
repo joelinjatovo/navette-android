@@ -1,7 +1,7 @@
 package com.joelinjatovo.navette.api.responses;
 
 import com.google.gson.annotations.SerializedName;
-import com.joelinjatovo.navette.api.data.Pagination;
+import com.joelinjatovo.navette.api.models.Pagination;
 
 import java.util.Arrays;
 

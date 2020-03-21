@@ -1,6 +1,6 @@
 package com.joelinjatovo.navette.api.services;
 
-import com.joelinjatovo.navette.api.data.google.GoogleDirectionResponse;
+import com.joelinjatovo.navette.api.models.google.GoogleDirectionResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

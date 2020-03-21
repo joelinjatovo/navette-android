@@ -32,9 +32,8 @@ import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.UserApiService;
-import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
-import com.joelinjatovo.navette.ui.main.MainActivity;
+import com.joelinjatovo.navette.ui.MainActivity;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 
@@ -328,7 +327,7 @@ public class LocationUpdatesService extends Service {
     private void sendLocationToServer(Location location) {
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
         String token = "Bearer eb4a3da423d675017434f2c6d08dc7b0F3tY0Z5tkvAZmvXt9ZKlBhwKl2ZIPh4CDZx9Rq75ziyjWO1YuHMZbENA0mjghCHqOtu3kZQ2Sq8KOIPA8up2urdYCV0P1x9aJwX9guwPixScm0qkZ6S9JYw45hFsvEPRnaNjGycoB5KbD9lfESX6Gfh2NgPjf5YtqcJBlxudU4aOsCNuzNJ1SfDIlHhwQeAQTJdM5thECcFqLTrwNryxoUqRw70q2QmWzNPWDmGgFU2v2RxaVnsuJPBIbfR5SI71FL9XnYfkQ5f5lerFCIs8OJl1yiP3Lu2fCFQoLejNwTxue25cA8WifYXbK1zQkLRH0cTgHzNotxwFqqvDcBqhObVmTYvWUhOVA3IYWaRj2Tjq9hNoiJcIMfsG60RHtmkyJVspGvfdHaR6qi9WWSjrCfewsMQRt5IxFuce5Y6yjFl8h5kgl25yG4kCRgSEntfNAmHt5voJhVR3QoqxvzsDWPLxDIoBFxxLXhiKDN92bb87Q9sPvghaca90d70c5b3eb1da48b505f0add2dafb";
-        Call<RetrofitResponse<UserWithRoles>> call = service.addPosition(token, new com.joelinjatovo.navette.api.data.Location(location));
+        Call<RetrofitResponse<UserWithRoles>> call = service.addPosition(token, new com.joelinjatovo.navette.api.models.Location(location));
         call.enqueue(new Callback<RetrofitResponse<UserWithRoles>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<UserWithRoles>> call, @NonNull Response<RetrofitResponse<UserWithRoles>> response) {

@@ -1,14 +1,11 @@
 package com.joelinjatovo.navette.api.datasource;
 
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
-import com.joelinjatovo.navette.api.data.Login;
+import com.joelinjatovo.navette.api.models.Login;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.TokenApiService;
 import com.joelinjatovo.navette.data.source.LoginDataSourceBase;
-import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.database.entity.UserWithPoints;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
-import com.joelinjatovo.navette.utils.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;

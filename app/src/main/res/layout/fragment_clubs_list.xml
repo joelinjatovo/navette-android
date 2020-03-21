@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.joelinjatovo.navette.ui.main.club.ClubsFragment"
+        tools:context="com.joelinjatovo.navette.ui.club.ClubsFragment"
         tools:listitem="@layout/fragment_clubs"/>
 
 </layout>

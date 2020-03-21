@@ -1,14 +1,12 @@
 package com.joelinjatovo.navette.api.services;
 
-import com.joelinjatovo.navette.api.data.Login;
+import com.joelinjatovo.navette.api.models.Login;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;

@@ -4,8 +4,6 @@ import android.os.AsyncTask;
 
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.dao.BaseDao;
-import com.joelinjatovo.navette.database.dao.UserDao;
-import com.joelinjatovo.navette.ui.main.auth.login.LoginViewModel;
 import com.joelinjatovo.navette.utils.Log;
 
 import java.util.List;

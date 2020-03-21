@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.joelinjatovo.navette.ui.main.home.HomeFragment"
+        android:name="com.joelinjatovo.navette.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
 
@@ -18,13 +18,13 @@
 
     <fragment
         android:id="@+id/navigation_maps"
-        android:name="com.joelinjatovo.navette.ui.main.maps.MapsFragment"
+        android:name="com.joelinjatovo.navette.ui.map.MapsFragment"
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_maps" />
 
     <fragment
         android:id="@+id/navigation_notification"
-        android:name="com.joelinjatovo.navette.ui.main.notification.NotificationFragment"
+        android:name="com.joelinjatovo.navette.ui.notification.NotificationFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_notification"/>
 
@@ -33,13 +33,13 @@
 
         <fragment
             android:id="@+id/fragment_profile"
-            android:name="com.joelinjatovo.navette.ui.main.auth.ProfileFragment"
+            android:name="com.joelinjatovo.navette.ui.auth.ProfileFragment"
             android:label="@string/title_profile"
             tools:layout="@layout/fragment_profile"/>
 
         <fragment
             android:id="@+id/login_fragment"
-            android:name="com.joelinjatovo.navette.ui.main.auth.login.LoginFragment"
+            android:name="com.joelinjatovo.navette.ui.auth.LoginFragment"
             android:label="@string/title_login"
             tools:layout="@layout/fragment_login">
 
@@ -53,7 +53,7 @@
 
             <fragment
                 android:id="@+id/register_fragment"
-                android:name="com.joelinjatovo.navette.ui.main.auth.register.RegisterFragment"
+                android:name="com.joelinjatovo.navette.ui.auth.RegisterFragment"
                 android:label="@string/title_register"
                 tools:layout="@layout/fragment_register">
 
@@ -63,7 +63,7 @@
             </fragment>
 
             <fragment android:id="@+id/verify_phone_fragment"
-                android:name="com.joelinjatovo.navette.ui.main.auth.verify.VerifyPhoneFragment"
+                android:name="com.joelinjatovo.navette.ui.auth.VerifyPhoneFragment"
                 android:label="Choose User + Password"
                 tools:layout="@layout/fragment_verify_phone" />
 
@@ -76,7 +76,7 @@
 
         <fragment
             android:id="@+id/order_fragment"
-            android:name="com.joelinjatovo.navette.ui.main.order.OrderFragment"
+            android:name="com.joelinjatovo.navette.ui.order.OrderFragment"
             android:label="@string/title_order"
             tools:layout="@layout/fragment_order">
 
@@ -86,7 +86,7 @@
         </fragment>
 
         <fragment android:id="@+id/clubs_fragment"
-            android:name="com.joelinjatovo.navette.ui.main.club.ClubsFragment"
+            android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
             android:label="Choose Destination"
             tools:layout="@layout/fragment_clubs" />
 
