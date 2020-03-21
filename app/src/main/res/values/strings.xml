@@ -61,4 +61,7 @@
     <string name="title_profile">Profile</string>
     <string name="error_loading_clubs">Error Loading Clubs</string>
     <string name="my_location">My Current Location</string>
+    <string name="logout">Logout</string>
+    <string name="histories">Histories</string>
+    <string name="image">Image</string>
 </resources>

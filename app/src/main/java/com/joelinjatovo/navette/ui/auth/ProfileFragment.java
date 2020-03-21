@@ -60,5 +60,6 @@ public class ProfileFragment extends Fragment {
 
     private void showWelcomeMessage() {
         Log.d(TAG, "OK");
+        mBinding.setUser(authViewModel.getUser());
     }
 }
