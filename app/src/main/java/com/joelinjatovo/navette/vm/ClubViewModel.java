@@ -10,7 +10,7 @@ import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.ClubApiService;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
-import com.joelinjatovo.navette.database.repository.ClubRepository;
+import com.joelinjatovo.navette.database.repositories.ClubRepository;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
 

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
-import com.joelinjatovo.navette.database.repository.UserRepository;
+import com.joelinjatovo.navette.database.repositories.UserRepository;
 
 import java.util.List;
 

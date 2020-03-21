@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.data.repositories.LoginRepository;
+import com.joelinjatovo.navette.api.repositories.LoginRepository;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.models.LoginFormState;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;

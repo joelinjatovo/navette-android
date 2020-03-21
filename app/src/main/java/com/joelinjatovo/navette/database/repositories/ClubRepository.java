@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.database.repository;
+package com.joelinjatovo.navette.database.repositories;
 
 import android.app.Application;
 

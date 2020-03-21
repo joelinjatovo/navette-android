@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.joelinjatovo.navette.database.callback.FindCallback;
 import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.database.repository.UserRepository;
+import com.joelinjatovo.navette.database.repositories.UserRepository;
 import com.joelinjatovo.navette.utils.Log;
 
 import java.util.List;

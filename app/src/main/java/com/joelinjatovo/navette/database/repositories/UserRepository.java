@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.database.repository;
+package com.joelinjatovo.navette.database.repositories;
 
 import android.app.Application;
 
@@ -8,7 +8,6 @@ import com.joelinjatovo.navette.database.AppDatabase;
 import com.joelinjatovo.navette.database.callback.FindCallback;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.dao.UserDao;
-import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
 import com.joelinjatovo.navette.database.task.UpsertAsyncTask;

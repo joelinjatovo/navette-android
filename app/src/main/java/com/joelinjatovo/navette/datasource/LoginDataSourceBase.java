@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.data.source;
+package com.joelinjatovo.navette.datasource;
 
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.database.entity.User;

@@ -1,7 +1,7 @@
-package com.joelinjatovo.navette.data.repositories;
+package com.joelinjatovo.navette.api.repositories;
 
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.data.source.RegisterDataSourceBase;
+import com.joelinjatovo.navette.datasource.RegisterDataSourceBase;
 import com.joelinjatovo.navette.database.entity.UserWithRoles;
 
 import retrofit2.Callback;
