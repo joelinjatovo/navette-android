@@ -20,7 +20,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentClubsListBinding;
-import com.joelinjatovo.navette.ui.club.ClubRecyclerViewAdapter;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;

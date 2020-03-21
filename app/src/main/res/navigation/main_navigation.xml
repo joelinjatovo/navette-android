@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/navigation_maps"
-        android:name="com.joelinjatovo.navette.ui.map.MapsFragment"
+        android:name="com.joelinjatovo.navette.ui.maps.MapsFragment"
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_maps" />
 

@@ -24,9 +24,9 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     private static final String TAG = OrderViewModel.class.getSimpleName();
 
-    private MutableLiveData<ClubAndPoint> club;
+    private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult;
+    private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult = new MutableLiveData<>();
 
     public MutableLiveData<ClubAndPoint> getClub() {
         return club;
