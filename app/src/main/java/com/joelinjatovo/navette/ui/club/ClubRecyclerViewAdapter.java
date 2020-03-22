@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joelinjatovo.navette.R;
@@ -28,16 +29,15 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_clubs, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_club, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        holder.mIdView.setText(mItems.get(position).getClub().getName());
-        holder.mContentView.setText(mItems.get(position).getClub().getCreatedAt().toString());
+        //holder.mClubImageView.setImageDrawable(mItems.get(position).getClub().getName());
+        holder.mNameTextView.setText(mItems.get(position).getClub().getName());
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -91,21 +91,21 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final TextView mIdView;
-        final TextView mContentView;
+        final ImageView mClubImageView;
+        final TextView mNameTextView;
         ClubAndPoint mItem;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
-            mContentView = view.findViewById(R.id.content);
+            mClubImageView = view.findViewById(R.id.clubImageView);
+            mNameTextView = view.findViewById(R.id.nameTextView);
         }
 
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mNameTextView.getText() + "'";
         }
     }
 }

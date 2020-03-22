@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
-import com.joelinjatovo.navette.databinding.FragmentClubsListBinding;
+import com.joelinjatovo.navette.databinding.FragmentClubsBinding;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
@@ -34,7 +34,7 @@ public class ClubsFragment extends Fragment {
 
     private OrderViewModel orderViewModel;
 
-    private FragmentClubsListBinding mBinding;
+    private FragmentClubsBinding mBinding;
 
     private ClubRecyclerViewAdapter mAdapter;
 
@@ -45,7 +45,7 @@ public class ClubsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_clubs_list, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_clubs, container, false);
 
         // Set the adapter
         mAdapter = new ClubRecyclerViewAdapter(mListener);
@@ -64,6 +64,15 @@ public class ClubsFragment extends Fragment {
 
         orderViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
+        clubViewModel.getClubs().observe(getViewLifecycleOwner(),
+                clubAndPointList -> {
+                    if (clubAndPointList == null) {
+                        return;
+                    }
+
+                    mAdapter.setItems(clubAndPointList);
+                });
+
         clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
             @Override
             public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
@@ -74,10 +83,6 @@ public class ClubsFragment extends Fragment {
                 if (result.getError() != null) {
                     Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     Snackbar.make(mBinding.getRoot(), result.getError(), Snackbar.LENGTH_SHORT).show();
-                }
-
-                if (result.getSuccess() != null) {
-                    mAdapter.setItems(result.getSuccess());
                 }
             }
         });

@@ -97,7 +97,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
+            mIdView = view.findViewById(R.id.clubImageView);
             mContentView = view.findViewById(R.id.content);
         }
 
