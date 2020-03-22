@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -96,7 +97,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getClub().observe(getViewLifecycleOwner(),
                 clubAndPoint -> {
-                    orderViewModel.loadCars(clubAndPoint.getClub());
+                    if (clubAndPoint == null){
+                        return;
+                    }
+
+                    Log.d(TAG, clubAndPoint.getClub().getName());
+
+                    mBinding.destinationLocationTextInputEditText.setText(clubAndPoint.getClub().getName());
                 });
 
         orderViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), listRemoteLoaderResult -> {
@@ -106,10 +113,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
             if(listRemoteLoaderResult.getError()!=null){
                 // show error
+                Toast.makeText(requireContext(), listRemoteLoaderResult.getError(), Toast.LENGTH_SHORT).show();
             }
 
             if(listRemoteLoaderResult.getSuccess()!=null){
                 // show car list
+                Toast.makeText(requireContext(), "Success loading cars", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -138,6 +147,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
+
                             if (mLastKnownLocation != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),

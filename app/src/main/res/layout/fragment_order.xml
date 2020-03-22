@@ -64,6 +64,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
+                            android:contentDescription="@string/image"
                             android:tint="@color/colorIcon"
                             android:src="@drawable/outline_trip_origin_black_18"
                             android:layout_centerVertical="true"/>
@@ -104,7 +105,8 @@
                             android:layout_alignParentStart="true"
                             android:src="@drawable/outline_place_black_18"
                             android:tint="@color/colorPrimary"
-                            android:layout_centerVertical="true"/>
+                            android:layout_centerVertical="true"
+                            android:contentDescription="@string/image" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/destinationLocationTextInputLayout"
@@ -114,7 +116,7 @@
                             app:endIconMode="custom"
                             app:endIconTint="@color/colorAlert"
                             app:endIconDrawable="@drawable/outline_add_black_18"
-                            android:hint="Destination"
+                            android:hint="@string/destination"
                             style="@style/Widget.App.TextInputLayout"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
@@ -126,7 +128,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/colorText"
-                                android:text="Where to go?"/>
+                                android:text="@string/where_you_want_to_go"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,5 +140,18 @@
 
         </RelativeLayout>
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/phoneCountryCodes"
+            android:orientation="horizontal"
+            android:scrollbars="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/listitem_club" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

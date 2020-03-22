@@ -10,6 +10,7 @@ import com.joelinjatovo.navette.database.dao.ClubDao;
 import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.database.task.UpsertAsyncTask;
+import com.joelinjatovo.navette.database.task.UpsertClubAndPointAsyncTask;
 
 import java.util.List;
 
@@ -35,7 +36,13 @@ public class ClubRepository {
         return clubDao.loadPointAndClub();
     }
 
+    /*
     public void upsert(UpsertCallback<Club> callback, Club... items){
         (new UpsertAsyncTask<Club>(clubDao, callback)).execute(items);
+    }
+     */
+
+    public void upsert(UpsertCallback<ClubAndPoint> callback, ClubAndPoint... items){
+        (new UpsertClubAndPointAsyncTask(clubDao, callback)).execute(items);
     }
 }

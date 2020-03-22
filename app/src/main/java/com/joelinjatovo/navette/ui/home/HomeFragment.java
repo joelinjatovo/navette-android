@@ -53,8 +53,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    private ClubViewModel clubViewModel;
-
     private List<ClubAndPoint> mClubs;
 
     @Nullable
@@ -88,7 +86,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
+        ClubViewModel clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
         clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(),
                 result -> {
@@ -99,13 +97,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     if (result.getError() != null) {
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
-
-                    if (result.getSuccess() != null) {
-                        mClubs = result.getSuccess();
-
-                        updateClubUI();
-                    }
                 });
+
+        clubViewModel.getClubs().observe(getViewLifecycleOwner(), clubAndPoints -> {
+            if (clubAndPoints == null) {
+                return;
+            }
+
+            mClubs = clubAndPoints;
+
+            updateClubUI();
+        });
 
         mBinding.createOrderButton.setOnClickListener(
                 v -> {

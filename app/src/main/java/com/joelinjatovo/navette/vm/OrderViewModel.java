@@ -36,6 +36,13 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         return retrofitResult;
     }
 
+
+    public void setClub(ClubAndPoint item) {
+        club.setValue(item);
+
+        loadCars(item.getClub());
+    }
+
     public void loadCars(Club club){
         Log.d(TAG, "service.getCars()");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);

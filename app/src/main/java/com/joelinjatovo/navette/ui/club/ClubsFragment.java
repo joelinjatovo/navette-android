@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,12 +24,15 @@ import com.joelinjatovo.navette.databinding.FragmentClubsListBinding;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
+import com.joelinjatovo.navette.vm.OrderViewModel;
 
 import java.util.List;
 
 public class ClubsFragment extends Fragment {
 
     private ClubViewModel clubViewModel;
+
+    private OrderViewModel orderViewModel;
 
     private FragmentClubsListBinding mBinding;
 
@@ -58,6 +62,8 @@ public class ClubsFragment extends Fragment {
 
         clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
+        orderViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+
         clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
             @Override
             public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
@@ -79,12 +85,14 @@ public class ClubsFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
-        public void onListFragmentInteraction(ClubAndPoint item) {
-
+        public void onListFragmentInteraction(View v, ClubAndPoint item) {
+            Toast.makeText(requireContext(), item.getClub().getName(), Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(v).navigate(R.id.navigation_order);
+            orderViewModel.setClub(item);
         }
     };
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ClubAndPoint item);
+        void onListFragmentInteraction(View v, ClubAndPoint item);
     }
 }
