@@ -11,6 +11,7 @@ import com.joelinjatovo.navette.api.services.ClubApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
+import com.joelinjatovo.navette.database.repositories.CarRepository;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
 import com.joelinjatovo.navette.utils.Log;
 
@@ -26,10 +27,22 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
 
+    private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
+
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult = new MutableLiveData<>();
+
+    private CarRepository carRepository;
+
+    public OrderViewModel(CarRepository carRepository) {
+        this.carRepository = carRepository;
+    }
 
     public MutableLiveData<ClubAndPoint> getClub() {
         return club;
+    }
+
+    public MutableLiveData<List<CarAndModel>> getCars() {
+        return cars;
     }
 
     public MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> getRetrofitResult() {
@@ -55,7 +68,11 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         Log.e(TAG, response.toString());
         if (response.body() != null) {
             Log.e(TAG, response.body().toString());
-            retrofitResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+            CarAndModel[] items = new CarAndModel[response.body().getData().size()];
+            for(int i = 0 ; i < response.body().getData().size(); i++){
+                items[i] = response.body().getData().get(i);
+            }
+            carRepository.upsert(club, this, items);
         }else{
             retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
         }
@@ -66,4 +83,5 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         Log.e(TAG, t.getMessage(), t);
         retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
     }
+
 }

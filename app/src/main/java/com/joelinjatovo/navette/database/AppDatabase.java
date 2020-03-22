@@ -13,6 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.joelinjatovo.navette.database.converter.ArrayConverter;
 import com.joelinjatovo.navette.database.converter.DateConverter;
+import com.joelinjatovo.navette.database.dao.CarDao;
 import com.joelinjatovo.navette.database.dao.ClubDao;
 import com.joelinjatovo.navette.database.dao.OrderPointDao;
 import com.joelinjatovo.navette.database.dao.PointDao;
@@ -48,6 +49,8 @@ public abstract class AppDatabase extends RoomDatabase {
     @VisibleForTesting
     private static final String DATABASE_NAME = "navette-db";
 
+    public abstract CarDao carDao();
+
     public abstract ClubDao clubDao();
 
     public abstract OrderPointDao orderPointDao();
@@ -82,4 +85,5 @@ public abstract class AppDatabase extends RoomDatabase {
 
         }
     };
+
 }

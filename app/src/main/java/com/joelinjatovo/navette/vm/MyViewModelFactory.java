@@ -52,7 +52,7 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
             return (T) clubViewModel;
         } else if (modelClass.isAssignableFrom(OrderViewModel.class)) {
             if(orderViewModel == null){
-                orderViewModel = new OrderViewModel();
+                orderViewModel = new OrderViewModel(carRepository);
             }
             return (T) orderViewModel;
         } else if (modelClass.isAssignableFrom(AuthViewModel.class)) {
