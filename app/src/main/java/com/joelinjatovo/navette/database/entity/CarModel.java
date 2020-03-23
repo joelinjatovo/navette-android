@@ -37,12 +37,6 @@ public class CarModel {
     @ColumnInfo(name = "brand")
     private String brand;
 
-    @ColumnInfo(name = "car_brand_id")
-    private Long carBrandId;
-
-    @ColumnInfo(name = "car_type_id")
-    private Long carTypeId;
-
     public Long getId() {
         return id;
     }
@@ -73,22 +67,6 @@ public class CarModel {
 
     public void setPlace(Integer place) {
         this.place = place;
-    }
-
-    public Long getCarBrandId() {
-        return carBrandId;
-    }
-
-    public void setCarBrandId(Long carBrandId) {
-        this.carBrandId = carBrandId;
-    }
-
-    public Long getCarTypeId() {
-        return carTypeId;
-    }
-
-    public void setCarTypeId(Long carTypeId) {
-        this.carTypeId = carTypeId;
     }
 
     public String getType() {
