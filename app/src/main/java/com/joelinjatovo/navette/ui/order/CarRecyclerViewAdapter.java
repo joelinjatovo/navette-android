@@ -3,6 +3,7 @@ package com.joelinjatovo.navette.ui.order;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
+import com.joelinjatovo.navette.database.entity.ClubAndPoint;
+import com.joelinjatovo.navette.utils.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -28,15 +32,20 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_clubs, parent, false);
+                .inflate(R.layout.viewholder_car, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        holder.mIdView.setText(mItems.get(position).getCar().getName());
-        holder.mContentView.setText(mItems.get(position).getCar().getCreatedAt().toString());
+        holder.mNameTextView.setText(mItems.get(position).getCar().getName());
+        /*
+        new Picasso.Builder(holder.mClubImageView.getContext())
+                .build()
+                .load(Constants.BASE_URL + mItems.get(position).getCar().getImageUrl())
+                .resize(200,200).into(holder.mClubImageView);
+         */
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -90,21 +99,21 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final TextView mIdView;
-        final TextView mContentView;
+        final ImageView mCarImageView;
+        final TextView mNameTextView;
         CarAndModel mItem;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.clubImageView);
-            mContentView = view.findViewById(R.id.content);
+            mCarImageView = view.findViewById(R.id.carImageView);
+            mNameTextView = view.findViewById(R.id.nameTextView);
         }
 
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mNameTextView.getText() + "'";
         }
     }
 }

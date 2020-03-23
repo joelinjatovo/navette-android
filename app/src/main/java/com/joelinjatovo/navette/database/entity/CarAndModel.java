@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class CarAndModel {
 
-    @SerializedName("model")
+    @SerializedName("car_model")
     @Embedded
     private CarModel model;
 

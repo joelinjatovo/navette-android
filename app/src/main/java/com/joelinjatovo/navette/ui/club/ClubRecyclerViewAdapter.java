@@ -103,7 +103,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mClubImageView = view.findViewById(R.id.clubImageView);
+            mClubImageView = view.findViewById(R.id.carImageView);
             mNameTextView = view.findViewById(R.id.nameTextView);
         }
 

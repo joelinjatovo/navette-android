@@ -152,7 +152,6 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:listitem="@layout/viewholder_club" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -17,7 +17,6 @@ import com.joelinjatovo.navette.models.RemoteLoaderResult;
 import com.joelinjatovo.navette.utils.Log;
 
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,7 +73,9 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
             for(int i = 0 ; i < response.body().getData().size(); i++){
                 items[i] = response.body().getData().get(i);
             }
-            carRepository.upsert(Objects.requireNonNull(club.getValue()).getClub(), this, items);
+            carRepository.upsert(club.getValue().getClub(), this, items);
+
+            retrofitResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
         }else{
             retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
         }
@@ -93,6 +94,6 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     @Override
     public void onUpsertSuccess(List<CarAndModel> items) {
-
+        cars.setValue(items);
     }
 }
