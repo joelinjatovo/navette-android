@@ -16,6 +16,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -35,6 +37,8 @@ import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
+import com.joelinjatovo.navette.ui.club.ClubRecyclerViewAdapter;
+import com.joelinjatovo.navette.ui.club.ClubsFragment;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
@@ -72,12 +76,21 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     ArrayList<LatLng> markerPoints;
 
+    private CarRecyclerViewAdapter mAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false);
+
+        // Set the adapter
+        mAdapter = new CarRecyclerViewAdapter(mListener);
+        RecyclerView recyclerView = mBinding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(mAdapter);
+
         return mBinding.getRoot();
     }
 
@@ -146,6 +159,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(requireContext(), "Success loading cars", Toast.LENGTH_SHORT).show();
             }
 
+        });
+
+        orderViewModel.getCars().observe(getViewLifecycleOwner(), carAndModels -> {
+            if(carAndModels == null){
+                return;
+            }
+
+            mAdapter.setItems(carAndModels);
         });
     }
 
@@ -329,8 +350,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         return poly;
     }
 
+    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
+        @Override
+        public void onListFragmentInteraction(View v, CarAndModel item) {
+        }
+    };
+
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(CarAndModel item);
+        void onListFragmentInteraction(View view, CarAndModel item);
     }
 
 }

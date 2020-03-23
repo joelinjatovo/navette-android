@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.ui.club.ClubsFragment.OnListFragmentInteractionListener;
+import com.joelinjatovo.navette.utils.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -36,8 +38,11 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        //holder.mClubImageView.setImageDrawable(mItems.get(position).getClub().getName());
         holder.mNameTextView.setText(mItems.get(position).getClub().getName());
+        new Picasso.Builder(holder.mClubImageView.getContext())
+                .build()
+                .load(Constants.BASE_URL + mItems.get(position).getClub().getImageUrl())
+                .resize(200,200).into(holder.mClubImageView);
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {

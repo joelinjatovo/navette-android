@@ -10,6 +10,7 @@ import com.joelinjatovo.navette.api.datasources.LoginDataSource;
 import com.joelinjatovo.navette.api.datasources.RegisterDataSource;
 import com.joelinjatovo.navette.api.repositories.LoginRepository;
 import com.joelinjatovo.navette.api.repositories.RegisterRepository;
+import com.joelinjatovo.navette.database.repositories.CarRepository;
 import com.joelinjatovo.navette.database.repositories.ClubRepository;
 import com.joelinjatovo.navette.database.repositories.UserRepository;
 
@@ -52,7 +53,7 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
             return (T) clubViewModel;
         } else if (modelClass.isAssignableFrom(OrderViewModel.class)) {
             if(orderViewModel == null){
-                orderViewModel = new OrderViewModel(carRepository);
+                orderViewModel = new OrderViewModel(CarRepository.getInstance(application));
             }
             return (T) orderViewModel;
         } else if (modelClass.isAssignableFrom(AuthViewModel.class)) {
