@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
@@ -27,6 +28,12 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
     private static final String TAG = OrderViewModel.class.getSimpleName();
 
     private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
+
+    private MutableLiveData<String> originText = new MutableLiveData<>();
+
+    private MutableLiveData<LatLng> origin = new MutableLiveData<>();
+
+    private MutableLiveData<LatLng> destination = new MutableLiveData<>();
 
     private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
 
@@ -95,5 +102,29 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
     @Override
     public void onUpsertSuccess(List<CarAndModel> items) {
         cars.setValue(items);
+    }
+
+    public MutableLiveData<LatLng> getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(LatLng origin) {
+        this.origin.setValue(origin);
+    }
+
+    public MutableLiveData<LatLng> getDestination() {
+        return destination;
+    }
+
+    public void setDestination(LatLng destination) {
+        this.destination.setValue(destination);
+    }
+
+    public MutableLiveData<String> getOriginText() {
+        return originText;
+    }
+
+    public void setOriginText(String originText) {
+        this.originText.setValue(originText);
     }
 }

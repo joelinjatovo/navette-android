@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         if(mMap!=null && mClubs!=null) {
             for(ClubAndPoint item: mClubs){
                 if(item.getClub()!=null && item.getPoint()!=null){
-                    LatLng latLng = new LatLng(item.getPoint().getAlt(), item.getPoint().getLng());
+                    LatLng latLng = new LatLng(item.getPoint().getLat(), item.getPoint().getLng());
                     mMap.addMarker(new MarkerOptions().position(latLng).title(item.getClub().getName()));
                 }
             }

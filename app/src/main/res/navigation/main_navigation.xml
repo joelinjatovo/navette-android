@@ -87,12 +87,20 @@
             <action android:id="@+id/action_order_to_clubs"
                 app:destination="@id/clubs_fragment" />
 
+            <action android:id="@+id/action_order_to_search"
+                app:destination="@id/search_fragment" />
+
         </fragment>
 
         <fragment android:id="@+id/clubs_fragment"
             android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
             android:label="Choose Destination"
             tools:layout="@layout/fragment_clubs" />
+
+        <fragment android:id="@+id/search_fragment"
+            android:name="com.joelinjatovo.navette.ui.order.SearchFragment"
+            android:label="Search"
+            tools:layout="@layout/fragment_search" />
 
     </navigation>
 

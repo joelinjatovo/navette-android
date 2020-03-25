@@ -1,6 +1,8 @@
 package com.joelinjatovo.navette.ui.order;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -19,6 +22,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,9 +34,16 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.models.google.GoogleDirectionResponse;
+import com.joelinjatovo.navette.api.models.google.Leg;
+import com.joelinjatovo.navette.api.models.google.Route;
 import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
@@ -45,6 +56,7 @@ import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.OrderViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,6 +72,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+
     private GoogleMap mMap;
 
     private Location mLastKnownLocation;
@@ -74,9 +88,15 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private Polyline line;
 
-    ArrayList<LatLng> markerPoints;
-
     private CarRecyclerViewAdapter mAdapter;
+
+    private LatLng mOrigin;
+
+    private LatLng mDestination;
+
+    private BottomSheetBehavior sheetBehavior;
+
+    private ConstraintLayout bottom_sheet;
 
     @Nullable
     @Override
@@ -87,9 +107,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         // Set the adapter
         mAdapter = new CarRecyclerViewAdapter(mListener);
-        RecyclerView recyclerView = mBinding.recyclerView;
+        RecyclerView recyclerView = mBinding.getRoot().findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(mAdapter);
+
+        bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
 
         return mBinding.getRoot();
     }
@@ -116,15 +139,72 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // click event for show-dismiss bottom sheet
+        mBinding.showCarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+
+        // callback for do something
+        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        mBinding.showCarButton.setText("Close Sheet");
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        mBinding.showCarButton.setText("Expand Sheet");
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+
+
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        mBinding.originLocationTextInputLayout.setEndIconOnClickListener(
-                v->{
+        mBinding.originEndIcon.setOnClickListener(
+                v -> {
                         getDeviceLocation();
                 });
 
-        mBinding.destinationLocationTextInputLayout.setEndIconOnClickListener(
-                v->{
+        mBinding.originText.setOnClickListener(
+                v -> {
+                        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+
+                        // Start the autocomplete intent.
+                        Intent intent = new Autocomplete.IntentBuilder(
+                                AutocompleteActivityMode.OVERLAY, fields)
+                                .build(requireContext());
+                        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                });
+
+        mBinding.destinationText.setOnClickListener(
+                v -> {
+                        Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                });
+
+        mBinding.destinationEndIcon.setOnClickListener(
+                v -> {
                         Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
 
@@ -138,11 +218,28 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                     Log.d(TAG, clubAndPoint.getClub().getName());
 
-                    mBinding.destinationLocationTextInputEditText.setText(clubAndPoint.getClub().getName());
+                    Log.d(TAG, "Origin " + mOrigin);
 
-                    getDirectionAndDistance("driving");
+                    mBinding.destinationText.setText(clubAndPoint.getClub().getName());
 
+                    LatLng latLng = new LatLng(clubAndPoint.getPoint().getLat(),clubAndPoint.getPoint().getLng());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    orderViewModel.setDestination(latLng);
                 });
+
+        orderViewModel.getDestination().observe(getViewLifecycleOwner(), latLng -> {
+            mOrigin = latLng;
+            getDirectionAndDistance("driving");
+        });
+
+        orderViewModel.getOrigin().observe(getViewLifecycleOwner(), latLng -> {
+            mDestination = latLng;
+            getDirectionAndDistance("driving");
+        });
+
+        orderViewModel.getOriginText().observe(getViewLifecycleOwner(), label -> {
+            mBinding.originText.setText(label);
+        });
 
         orderViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), listRemoteLoaderResult -> {
             if(listRemoteLoaderResult == null){
@@ -162,12 +259,30 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         });
 
         orderViewModel.getCars().observe(getViewLifecycleOwner(), carAndModels -> {
-            if(carAndModels == null){
+            if(carAndModels == null || mAdapter == null){
                 return;
             }
 
             mAdapter.setItems(carAndModels);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
+
+                orderViewModel.setOriginText(place.getName());
+                orderViewModel.setOrigin(place.getLatLng());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i(TAG, "The user canceled the operation.");
+            }
+        }
     }
 
     @Override
@@ -199,13 +314,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), 10));
 
-                                mBinding.originLocationTextInputEditText.setText(R.string.my_location);
-
-                                getDirectionAndDistance("driving");
+                                LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                                orderViewModel.setOriginText(getString(R.string.my_location));
+                                orderViewModel.setOrigin(latLng);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
                         } else {
-                            //Log.d(TAG, "Current location is null. Using defaults.");
-                            //Log.e(TAG, "Exception: %s", task.getException());
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
                             //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
@@ -260,15 +376,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getDirectionAndDistance(String type) {
-        if(mLastKnownLocation == null ){
+        if(mOrigin == null ){
             return;
         }
-        if(mClubAndPoint == null ){
+        if(mDestination == null ){
             return;
         }
-
-        LatLng origin = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-        LatLng destination = new LatLng(mClubAndPoint.getPoint().getLat(), mClubAndPoint.getPoint().getLng());
 
         String url = "https://maps.googleapis.com/maps/";
         Retrofit retrofit = new Retrofit.Builder()
@@ -279,7 +392,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         String key = getString(R.string.google_maps_key);
 
         GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<GoogleDirectionResponse> call = service.getDirection(key,"metric", origin.latitude + "," + origin.longitude,destination.latitude + "," + destination.longitude, type);
+        Call<GoogleDirectionResponse> call = service.getDirection(
+                key,
+                "metric",
+                mOrigin.latitude + "," + mOrigin.longitude,
+                mDestination.latitude + "," + mDestination.longitude,
+                type
+        );
+
         call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
             public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
@@ -293,9 +413,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                     Log.e(TAG, "googleDirectionResponse = " + googleDirectionResponse);
                     for (int i = 0; i < googleDirectionResponse.getRoutes().size(); i++) {
-                        String distance = googleDirectionResponse.getRoutes().get(i).getLegs().get(i).getDistance().getText();
-                        String time = googleDirectionResponse.getRoutes().get(i).getLegs().get(i).getDuration().getText();
-                        //mBinding.durationTextView.setText(String.format("Distance:%s, Duration:%s", distance, time));
+                        Route route = googleDirectionResponse.getRoutes().get(i);
+                        for(Leg leg: route.getLegs()){
+                            String distance = leg.getDistance().getText();
+                            String time = leg.getDuration().getText();
+                            //mBinding.durationTextView.setText(String.format("Distance:%s, Duration:%s", distance, time));
+                            Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
+                        }
                         String encodedString = googleDirectionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
                         List<LatLng> list = decodePoly(encodedString);
                         line = mMap.addPolyline(new PolylineOptions()

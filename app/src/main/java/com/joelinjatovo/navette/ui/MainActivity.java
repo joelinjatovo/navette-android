@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.vm.AuthViewModel;
@@ -88,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
         connectPush();
 
         clubViewModel.load();
+
+        // Initialize the SDK
+        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+
+        // Create a new Places client instance
+        PlacesClient placesClient = Places.createClient(this);
     }
 
     private void connectPush() {
