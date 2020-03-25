@@ -40,12 +40,10 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
         holder.mNameTextView.setText(mItems.get(position).getCar().getName());
-        /*
-        new Picasso.Builder(holder.mClubImageView.getContext())
+        new Picasso.Builder(holder.mCarImageView.getContext())
                 .build()
                 .load(Constants.BASE_URL + mItems.get(position).getCar().getImageUrl())
-                .resize(200,200).into(holder.mClubImageView);
-         */
+                .resize(360,180).into(holder.mCarImageView);
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {

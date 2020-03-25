@@ -16,7 +16,7 @@ android {
         def date = new Date()
         def formattedDate = date.format('yyyy-MM-dd')
         applicationId "com.joelinjatovo.navette"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0.0 (${formattedDate})"
@@ -89,6 +89,7 @@ dependencies {
     //Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.libraries.places:places:2.2.0'
 
     // Push Notification
     implementation 'com.pusher:pusher-java-client:2.0.2'

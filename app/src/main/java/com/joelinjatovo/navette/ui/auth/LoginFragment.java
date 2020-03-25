@@ -139,6 +139,11 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     return false;
                 });
 
+        mBinding.backButton.setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.action_login_to_home);
+                });
+
         mBinding.loginButton.setOnClickListener(
                 v -> {
                     //loadingProgressBar.setVisibility(View.VISIBLE);

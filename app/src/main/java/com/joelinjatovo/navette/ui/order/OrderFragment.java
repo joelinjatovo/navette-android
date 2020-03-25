@@ -88,7 +88,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         // Set the adapter
         mAdapter = new CarRecyclerViewAdapter(mListener);
         RecyclerView recyclerView = mBinding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(mAdapter);
 
         return mBinding.getRoot();

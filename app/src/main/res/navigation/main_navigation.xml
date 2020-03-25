@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -29,10 +29,10 @@
         tools:layout="@layout/fragment_notification"/>
 
     <navigation android:id="@+id/navigation_account"
-        app:startDestination="@id/fragment_profile">
+        app:startDestination="@id/profile_fragment">
 
         <fragment
-            android:id="@+id/fragment_profile"
+            android:id="@+id/profile_fragment"
             android:name="com.joelinjatovo.navette.ui.auth.ProfileFragment"
             android:label="@string/title_profile"
             tools:layout="@layout/fragment_profile"/>
@@ -45,6 +45,10 @@
 
             <action android:id="@+id/action_login_to_register"
                 app:destination="@id/navigation_register" />
+
+            <action android:id="@+id/action_login_to_home"
+                app:popUpTo="@id/navigation_home"
+                app:popUpToInclusive="true"/>
 
         </fragment>
 

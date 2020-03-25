@@ -60,18 +60,28 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if(destination.getId() == R.id.navigation_maps) {
-                navView.setVisibility(View.GONE);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                //requestWindowFeature( Window.FEATURE_NO_TITLE );
-            } else if(destination.getId() == R.id.navigation_home) {
-                navView.setVisibility(View.VISIBLE);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                //requestWindowFeature( Window.FEATURE_NO_TITLE );
-            } else {
-                navView.setVisibility(View.VISIBLE);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE );
+            switch (destination.getId()){
+                case R.id.profile_fragment:
+                case R.id.login_fragment:
+                case R.id.register_fragment:
+                case R.id.verify_phone_fragment:
+                case R.id.clubs_fragment:
+                case R.id.order_fragment:
+                    navView.setVisibility(View.GONE);
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    //requestWindowFeature( Window.FEATURE_NO_TITLE );
+                    break;
+                case R.id.main_navigation:
+                case R.id.navigation_home:
+                    navView.setVisibility(View.VISIBLE);
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    //requestWindowFeature( Window.FEATURE_NO_TITLE );
+                    break;
+                default:
+                    navView.setVisibility(View.VISIBLE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE );
+                    break;
             }
         });
 

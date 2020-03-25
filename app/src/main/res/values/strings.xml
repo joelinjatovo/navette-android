@@ -44,7 +44,7 @@
     <string name="error_bad_request">Invalid Input</string>
     <string name="error_500">Internal Server Error</string>
     <string name="error_not_found">Not Found</string>
-    <string name="title_maps" >Maps</string>
+    <string name="title_maps">Maps</string>
     <string name="invalid_credentials">Invalid Credentials</string>
     <string name="title_login">Login</string>
     <string name="title_account">Account</string>

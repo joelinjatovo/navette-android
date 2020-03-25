@@ -31,6 +31,10 @@ public class Car {
     @ColumnInfo(name = "place")
     private Integer place;
 
+    @SerializedName("image_url")
+    @ColumnInfo(name = "image_url")
+    private String imageUrl;
+
     @ColumnInfo(name = "club_id")
     private Long clubId;
 
@@ -98,5 +102,13 @@ public class Car {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
