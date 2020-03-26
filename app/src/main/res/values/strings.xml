@@ -66,4 +66,9 @@
     <string name="image">Image</string>
     <string name="destination">Destination</string>
     <string name="error_inserting_clubs">Error Inserting Clubs</string>
+    <string name="car">Voiture</string>
+    <string name="car_model">Model du voiture</string>
+    <string name="car_place">Nombre de place: %s</string>
+    <string name="car_model_name">Model: %s</string>
+    <string name="order">Commander</string>
 </resources>

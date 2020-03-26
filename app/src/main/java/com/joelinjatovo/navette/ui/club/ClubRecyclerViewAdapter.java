@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,11 +18,14 @@ import com.joelinjatovo.navette.ui.club.ClubsFragment.OnListFragmentInteractionL
 import com.joelinjatovo.navette.utils.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerViewAdapter.ViewHolder> {
+public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerViewAdapter.ViewHolder>  implements Filterable {
 
     private List<ClubAndPoint> mItems;
+
+    private List<ClubAndPoint> mOriginItems;
 
     private final OnListFragmentInteractionListener mListener;
 
@@ -53,6 +58,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         });
     }
 
+
     @Override
     public int getItemCount() {
         return mItems==null?0:mItems.size();
@@ -61,6 +67,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
     public void setItems(List<ClubAndPoint> items){
         if (mItems == null) {
             mItems = items;
+            mOriginItems = items;
             notifyItemRangeInserted(0, mItems.size());
         } else {
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -77,14 +84,14 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     ClubAndPoint oldItem = mItems.get(oldItemPosition);
-                    ClubAndPoint newItem = mItems.get(newItemPosition);
+                    ClubAndPoint newItem = items.get(newItemPosition);
                     return oldItem.getClub().getId() == newItem.getClub().getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     ClubAndPoint oldItem = mItems.get(oldItemPosition);
-                    ClubAndPoint newItem = mItems.get(newItemPosition);
+                    ClubAndPoint newItem = items.get(newItemPosition);
                     return oldItem.getClub().getName()!=null && oldItem.getClub().getName().equals(newItem.getClub().getName());
                 }
             });
@@ -92,6 +99,49 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
             mItems = items;
             diffResult.dispatchUpdatesTo(this);
         }
+    }
+
+    void filter(String query) {
+        getFilter().filter(query);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                final FilterResults oReturn = new FilterResults();
+                final ArrayList<ClubAndPoint> results = new ArrayList<>();
+
+                if (mOriginItems == null)
+                    mOriginItems = new ArrayList<>(mItems);
+
+                if (constraint != null && constraint.length() > 0) {
+                    if (mOriginItems != null && mOriginItems.size() > 0) {
+                        for (final ClubAndPoint cd : mOriginItems) {
+                            if (cd.getClub().getName().toLowerCase()
+                                    .contains(constraint.toString().toLowerCase()))
+                                results.add(cd);
+                        }
+                    }
+                    oReturn.values = results;
+                    oReturn.count = results.size();//newly Aded by ZA
+                } else {
+                    oReturn.values = mOriginItems;
+                    oReturn.count = mOriginItems.size();//newly added by ZA
+                }
+                return oReturn;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(final CharSequence constraint,
+                                          FilterResults results) {
+                ArrayList<ClubAndPoint> itemList = new ArrayList<>((ArrayList<ClubAndPoint>) results.values);
+                ///Collections.sort(itemList);
+                setItems(itemList);
+            }
+        };
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

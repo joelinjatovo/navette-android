@@ -46,6 +46,10 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
         return clubs;
     }
 
+    public LiveData<List<ClubAndPoint>> search(String search) {
+        return clubRepository.search(search);
+    }
+
     public void load(){
         Log.d(TAG, "service.getClubs()");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);

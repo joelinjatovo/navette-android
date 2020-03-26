@@ -36,6 +36,10 @@ public class ClubRepository {
         return clubDao.loadPointAndClub();
     }
 
+    public LiveData<List<ClubAndPoint>> search(String search){
+        return clubDao.searchPointAndClub(search);
+    }
+
     /*
     public void upsert(UpsertCallback<Club> callback, Club... items){
         (new UpsertAsyncTask<Club>(clubDao, callback)).execute(items);

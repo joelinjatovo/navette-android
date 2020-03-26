@@ -10,6 +10,7 @@ import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.ClubApiService;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
+import com.joelinjatovo.navette.database.entity.Car;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
@@ -17,6 +18,7 @@ import com.joelinjatovo.navette.database.repositories.CarRepository;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
 import com.joelinjatovo.navette.utils.Log;
 
+import java.io.CharArrayReader;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,6 +30,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
     private static final String TAG = OrderViewModel.class.getSimpleName();
 
     private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
+
+    private MutableLiveData<CarAndModel> car = new MutableLiveData<>();
 
     private MutableLiveData<String> originText = new MutableLiveData<>();
 
@@ -126,5 +130,13 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     public void setOriginText(String originText) {
         this.originText.setValue(originText);
+    }
+
+    public MutableLiveData<CarAndModel> getCar() {
+        return car;
+    }
+
+    public void setCar(CarAndModel car) {
+        this.car.setValue(car);
     }
 }

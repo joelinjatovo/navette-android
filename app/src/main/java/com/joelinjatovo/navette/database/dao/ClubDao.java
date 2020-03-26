@@ -59,6 +59,10 @@ public abstract class ClubDao extends BaseDao<Club> {
     }
 
     @Transaction
+    @Query("SELECT * FROM points JOIN clubs ON clubs.point_id = points.id WHERE clubs.name LIKE :search")
+    public abstract LiveData<List<ClubAndPoint>> searchPointAndClub(String search);
+
+    @Transaction
     @Query("SELECT * FROM points")
     public abstract LiveData<List<ClubAndPoint>> loadPointAndClub();
 

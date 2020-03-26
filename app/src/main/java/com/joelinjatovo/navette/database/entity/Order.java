@@ -51,6 +51,12 @@ public class Order {
     @ColumnInfo(name = "preordered")
     private Boolean preordered;
 
+    @ColumnInfo(name = "club_id")
+    private Long clubId;
+
+    @ColumnInfo(name = "car_id")
+    private Long carId;
+
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
@@ -141,5 +147,21 @@ public class Order {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getClubId() {
+        return clubId;
+    }
+
+    public void setClubId(Long clubId) {
+        this.clubId = clubId;
+    }
+
+    public Long getCarId() {
+        return carId;
+    }
+
+    public void setCarId(Long carId) {
+        this.carId = carId;
     }
 }

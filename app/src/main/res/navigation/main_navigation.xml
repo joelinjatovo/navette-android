@@ -102,6 +102,11 @@
             android:label="Search"
             tools:layout="@layout/fragment_search" />
 
+        <dialog
+            android:id="@+id/car_fragment"
+            android:name="com.joelinjatovo.navette.ui.car.CarFragment"
+            tools:layout="@layout/fragment_car" />
+
     </navigation>
 
 </navigation>

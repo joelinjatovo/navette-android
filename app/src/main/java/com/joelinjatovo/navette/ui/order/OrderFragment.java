@@ -39,6 +39,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.models.google.GoogleDirectionResponse;
@@ -48,6 +49,7 @@ import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
+import com.joelinjatovo.navette.ui.car.CarFragment;
 import com.joelinjatovo.navette.ui.club.ClubRecyclerViewAdapter;
 import com.joelinjatovo.navette.ui.club.ClubsFragment;
 import com.joelinjatovo.navette.utils.Log;
@@ -484,6 +486,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
         public void onListFragmentInteraction(View v, CarAndModel item) {
+            orderViewModel.setCar(item);
+            Navigation.findNavController(v).navigate(R.id.car_fragment);
         }
     };
 
