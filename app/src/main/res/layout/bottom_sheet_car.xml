@@ -5,11 +5,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:minHeight="500dp"
+        android:layout_height="300dp"
+        android:paddingTop="40dp"
         android:background="@color/colorAccent"
-        android:orientation="vertical"
-        app:behavior_peekHeight="150dp"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <androidx.recyclerview.widget.RecyclerView

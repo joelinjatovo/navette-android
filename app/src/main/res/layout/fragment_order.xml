@@ -7,6 +7,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
+        <variable name="showChooseCarButton" type="boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -212,6 +213,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/settings"
+            android:visibility="@{showChooseCarButton ? View.VISIBLE : View.GONE}"
             app:layout_anchor="@id/bottom_sheet"
             app:layout_anchorGravity="right|top|end"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />

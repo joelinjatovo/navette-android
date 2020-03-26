@@ -17,8 +17,10 @@ import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PrivateChannelEventListener;
 import com.pusher.client.channel.PusherEvent;
 import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.util.HttpAuthorizer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -111,6 +113,31 @@ public class MainActivity extends AppCompatActivity {
             public void onEvent(PusherEvent event) {
                 Log.d(TAG, "my-event");
                 Log.d(TAG, event.getData());
+            }
+        });
+    }
+
+    private void connectPrivatePush() {
+        HttpAuthorizer authorizer = new HttpAuthorizer(Constants.BASE_URL + "broadcasting/auth");
+        PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        pusher.connect();
+
+        Channel channel = pusher.subscribePrivate("App.Travel.1", new PrivateChannelEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG, event.getEventName());
+                Log.d(TAG, event.getData());
+            }
+
+            @Override
+            public void onSubscriptionSucceeded(String channelName) {
+                Log.d(TAG, "onSubscriptionSucceeded " + channelName);
+            }
+
+            @Override
+            public void onAuthenticationFailure(String message, Exception e) {
+                Log.d(TAG, String.format("Authentication failure due to [%s], exception was [%s]", message,  e));
             }
         });
     }
