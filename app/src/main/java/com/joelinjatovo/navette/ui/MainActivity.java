@@ -20,6 +20,9 @@ import com.pusher.client.channel.Channel;
 import com.pusher.client.channel.PrivateChannelEventListener;
 import com.pusher.client.channel.PusherEvent;
 import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +31,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +55,24 @@ public class MainActivity extends AppCompatActivity {
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
 
         authViewModel.isAuthenticated(Preferences.Auth.getCurrentUser(this));
+
+        authViewModel.getAuthenticationState().observe(this,
+                authenticationState -> {
+                    switch (authenticationState) {
+                        case AUTHENTICATED:
+                            if(authViewModel.getUser() != null){
+                                connectPrivatePush(authViewModel.getUser().getToken());
+                            }
+                            Log.d(TAG, "'AUTHENTICATED'");
+                            break;
+                        case INVALID_AUTHENTICATION:
+                        case UNAUTHENTICATED:
+                            Log.d(TAG, "'UNAUTHENTICATED'");
+                            break;
+                    }
+                });
+
+        connectPush();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -89,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        connectPush();
-
         clubViewModel.load();
 
         // Initialize the SDK
@@ -111,21 +133,41 @@ public class MainActivity extends AppCompatActivity {
         channel.bind("my-event", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
-                Log.d(TAG, "my-event");
-                Log.d(TAG, event.getData());
+                Log.d(TAG, "my-event " + event.getData());
+            }
+        });
+        channel.bind("user.point.created", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG, "user.point.created " + event.getData());
             }
         });
     }
 
-    private void connectPrivatePush() {
+    private void connectPrivatePush(String authorization) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Authorization", "Bearer " + authorization);
         HttpAuthorizer authorizer = new HttpAuthorizer(Constants.BASE_URL + "broadcasting/auth");
+        authorizer.setHeaders(headers);
         PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
         Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
-        pusher.connect();
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                Log.i(TAG, "Connection State Change: " + change.toString());
+            }
 
-        Channel channel = pusher.subscribePrivate("App.Travel.1", new PrivateChannelEventListener() {
+            @Override
+            public void onError(String message, String code, Exception e) {
+                Log.i(TAG, String.format("Connection Error: [%s], exception was [%s]", message, e));
+            }
+        }, ConnectionState.ALL);
+
+        Channel channel = pusher.subscribePrivate("private-App.User.1", new PrivateChannelEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
+                Log.d(TAG, "onEvent");
                 Log.d(TAG, event.getEventName());
                 Log.d(TAG, event.getData());
             }
@@ -139,6 +181,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthenticationFailure(String message, Exception e) {
                 Log.d(TAG, String.format("Authentication failure due to [%s], exception was [%s]", message,  e));
             }
-        });
+        }, "user.point.created");
     }
 }
