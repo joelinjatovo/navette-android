@@ -6,7 +6,6 @@
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:paddingTop="40dp"
         android:background="@color/colorAccent"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"

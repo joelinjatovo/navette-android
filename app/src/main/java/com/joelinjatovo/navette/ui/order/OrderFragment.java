@@ -146,9 +146,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View view) {
                 if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    mBinding.showCarButton.setText("Close Sheet");
                 } else {
-                    mBinding.showCarButton.setText("Expand Sheet");
                     sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             }
@@ -159,16 +157,16 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onStateChanged(@NonNull View view, int newState) {
                 switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN: {
+                        mBinding.showCarButton.setText("Expand Sheet");
+                        mBinding.setShowChooseCarButton(true);
+                    }
+                    break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
-                        mBinding.showCarButton.setText("Close Sheet");
                         mBinding.setShowChooseCarButton(false);
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
-                        mBinding.showCarButton.setText("Expand Sheet");
-                        mBinding.setShowChooseCarButton(true);
                     }
                     break;
                     case BottomSheetBehavior.STATE_DRAGGING:
