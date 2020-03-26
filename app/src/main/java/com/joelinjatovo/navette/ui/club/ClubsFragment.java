@@ -91,16 +91,29 @@ public class ClubsFragment extends Fragment {
         mBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mAdapter.filter(query);
+                //mAdapter.filter(query); // <-- use adapter comparator
+                search(query);  // <-- use room dao
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                mAdapter.filter(query);
+                //mAdapter.filter(query); // <-- use adapter comparator
+                search(query);  // <-- use room dao
                 return true;
             }
         });
+    }
+
+    private void search(String search){
+         search = "%" + search + "%";
+         clubViewModel.search(search).observe(getViewLifecycleOwner(), clubAndPointList -> {
+             if (clubAndPointList == null) {
+                 return;
+             }
+
+             mAdapter.setItems(clubAndPointList);
+         });
     }
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
