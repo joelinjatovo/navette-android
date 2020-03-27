@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -69,6 +70,7 @@ public class CarsFragment extends BottomSheetDialogFragment implements OrderFrag
 
     @Override
     public void onListFragmentInteraction(View view, int position, CarAndModel item) {
-        //mBinding.viewPager.setCurrentItem(position);
+        orderViewModel.setCar(item);
+        NavHostFragment.findNavController(this).popBackStack(R.id.order_fragment, false);
     }
 }
