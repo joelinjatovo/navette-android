@@ -16,7 +16,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
-import com.joelinjatovo.navette.databinding.FragmentCarBinding;
 import com.joelinjatovo.navette.databinding.FragmentClubBinding;
 import com.joelinjatovo.navette.utils.Constants;
 import com.joelinjatovo.navette.vm.ClubViewModel;

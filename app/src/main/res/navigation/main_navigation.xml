@@ -115,15 +115,15 @@
             android:label="Search"
             tools:layout="@layout/fragment_search" />
 
-        <dialog
-            android:id="@+id/car_fragment"
-            android:name="com.joelinjatovo.navette.ui.car.CarFragment"
-            tools:layout="@layout/fragment_car" />
+        <fragment
+            android:id="@+id/cars_fragment"
+            android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
+            tools:layout="@layout/fragment_cars" />
 
         <dialog
             android:id="@+id/club_fragment"
             android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
-            tools:layout="@layout/fragment_car" >
+            tools:layout="@layout/fragment_cars" >
 
             <action
                 android:id="@+id/action_club_to_order"

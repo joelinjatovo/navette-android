@@ -1,5 +1,6 @@
-package com.joelinjatovo.navette.ui.order;
+package com.joelinjatovo.navette.ui.car;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,35 +10,37 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
-import com.joelinjatovo.navette.database.entity.ClubAndPoint;
+import com.joelinjatovo.navette.ui.order.CarRecyclerViewAdapter;
+import com.joelinjatovo.navette.ui.order.OrderFragment;
 import com.joelinjatovo.navette.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerViewAdapter.ViewHolder> {
+public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapter.ViewHolder> {
 
     private List<CarAndModel> mItems;
 
     private final OrderFragment.OnListFragmentInteractionListener mListener;
 
-    public CarRecyclerViewAdapter(OrderFragment.OnListFragmentInteractionListener listener) {
+    public CarViewPagerAdapter(OrderFragment.OnListFragmentInteractionListener listener) {
         mListener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CarViewPagerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.viewholder_car, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.viewpager_car, parent, false);
+        return new CarViewPagerAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final CarViewPagerAdapter.ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
         holder.mNameTextView.setText(mItems.get(position).getCar().getName());
         new Picasso.Builder(holder.mCarImageView.getContext())
@@ -115,4 +118,3 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         }
     }
 }
-
