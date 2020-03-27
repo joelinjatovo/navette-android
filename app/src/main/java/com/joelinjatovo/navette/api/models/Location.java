@@ -9,7 +9,7 @@ public class Location {
     @SerializedName("lat")
     public Double lat;
 
-    @SerializedName("long")
+    @SerializedName("lng")
     public Double lng;
 
     @SerializedName("alt")

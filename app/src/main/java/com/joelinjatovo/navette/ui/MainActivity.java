@@ -8,6 +8,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.vm.AuthViewModel;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.utils.Constants;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     switch (authenticationState) {
                         case AUTHENTICATED:
                             if(authViewModel.getUser() != null){
-                                connectPrivatePush(authViewModel.getUser().getToken());
+                                connectPrivatePush(authViewModel.getUser());
                             }
                             Log.d(TAG, "'AUTHENTICATED'");
                             break;
@@ -144,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void connectPrivatePush(String authorization) {
+    private void connectPrivatePush(User user) {
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", "Bearer " + authorization);
+        headers.put("Authorization", user.getAuthorizationToken());
         HttpAuthorizer authorizer = new HttpAuthorizer(Constants.BASE_URL + "broadcasting/auth");
         authorizer.setHeaders(headers);
         PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
@@ -155,31 +156,31 @@ public class MainActivity extends AppCompatActivity {
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
-                Log.i(TAG, "Connection State Change: " + change.toString());
+                Log.i(TAG + "Pusher", "Connection State Change: " + change.toString());
             }
 
             @Override
             public void onError(String message, String code, Exception e) {
-                Log.i(TAG, String.format("Connection Error: [%s], exception was [%s]", message, e));
+                Log.i(TAG + "Pusher", String.format("Connection Error: [%s], exception was [%s]", message, e));
             }
         }, ConnectionState.ALL);
 
-        Channel channel = pusher.subscribePrivate("private-App.User.1", new PrivateChannelEventListener() {
+        pusher.subscribePrivate("private-App.User."+ user.getId(), new PrivateChannelEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
-                Log.d(TAG, "onEvent");
-                Log.d(TAG, event.getEventName());
-                Log.d(TAG, event.getData());
+                Log.d(TAG + "Pusher", "onEvent");
+                Log.d(TAG + "Pusher", event.getEventName());
+                Log.d(TAG + "Pusher", event.getData());
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                Log.d(TAG, "onSubscriptionSucceeded " + channelName);
+                Log.d(TAG + "Pusher", "onSubscriptionSucceeded " + channelName);
             }
 
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                Log.d(TAG, String.format("Authentication failure due to [%s], exception was [%s]", message,  e));
+                Log.d(TAG + "Pusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
             }
         }, "user.point.created");
     }

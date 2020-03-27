@@ -129,6 +129,11 @@ public class User {
         return token;
     }
 
+
+    public String getAuthorizationToken() {
+        return "Bearer " + token;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
