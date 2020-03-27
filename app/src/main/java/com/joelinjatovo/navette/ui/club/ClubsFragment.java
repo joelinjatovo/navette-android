@@ -119,8 +119,8 @@ public class ClubsFragment extends Fragment {
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
         public void onListFragmentInteraction(View v, ClubAndPoint item) {
-            orderViewModel.setClub(item);
-            Navigation.findNavController(v).popBackStack();
+            clubViewModel.setClub(item);
+            Navigation.findNavController(v).navigate(R.id.club_fragment);
         }
     };
 

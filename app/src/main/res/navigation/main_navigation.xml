@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
@@ -11,7 +12,8 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
 
-        <action android:id="@+id/action_home_to_order"
+        <action
+            android:id="@+id/action_home_to_order"
             app:destination="@id/navigation_order" />
 
     </fragment>
@@ -28,7 +30,8 @@
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_notification"/>
 
-    <navigation android:id="@+id/navigation_account"
+    <navigation
+        android:id="@+id/navigation_account"
         app:startDestination="@id/profile_fragment">
 
         <fragment
@@ -43,16 +46,19 @@
             android:label="@string/title_login"
             tools:layout="@layout/fragment_login">
 
-            <action android:id="@+id/action_login_to_register"
+            <action
+                android:id="@+id/action_login_to_register"
                 app:destination="@id/navigation_register" />
 
-            <action android:id="@+id/action_login_to_home"
+            <action
+                android:id="@+id/action_login_to_home"
                 app:popUpTo="@id/navigation_home"
                 app:popUpToInclusive="true"/>
 
         </fragment>
 
-        <navigation android:id="@+id/navigation_register"
+        <navigation
+            android:id="@+id/navigation_register"
             app:startDestination="@id/register_fragment">
 
             <fragment
@@ -61,12 +67,14 @@
                 android:label="@string/title_register"
                 tools:layout="@layout/fragment_register">
 
-                <action android:id="@+id/action_register_to_verify_phone"
+                <action
+                    android:id="@+id/action_register_to_verify_phone"
                     app:destination="@id/verify_phone_fragment" />
 
             </fragment>
 
-            <fragment android:id="@+id/verify_phone_fragment"
+            <fragment
+                android:id="@+id/verify_phone_fragment"
                 android:name="com.joelinjatovo.navette.ui.auth.VerifyPhoneFragment"
                 android:label="Choose User + Password"
                 tools:layout="@layout/fragment_verify_phone" />
@@ -75,7 +83,8 @@
 
     </navigation>
 
-    <navigation android:id="@+id/navigation_order"
+    <navigation
+        android:id="@+id/navigation_order"
         app:startDestination="@id/order_fragment">
 
         <fragment
@@ -84,20 +93,24 @@
             android:label="@string/title_order"
             tools:layout="@layout/fragment_order">
 
-            <action android:id="@+id/action_order_to_clubs"
+            <action
+                android:id="@+id/action_order_to_clubs"
                 app:destination="@id/clubs_fragment" />
 
-            <action android:id="@+id/action_order_to_search"
+            <action
+                android:id="@+id/action_order_to_search"
                 app:destination="@id/search_fragment" />
 
         </fragment>
 
-        <fragment android:id="@+id/clubs_fragment"
+        <fragment
+            android:id="@+id/clubs_fragment"
             android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
             android:label="Choose Destination"
             tools:layout="@layout/fragment_clubs" />
 
-        <fragment android:id="@+id/search_fragment"
+        <fragment
+            android:id="@+id/search_fragment"
             android:name="com.joelinjatovo.navette.ui.order.SearchFragment"
             android:label="Search"
             tools:layout="@layout/fragment_search" />
@@ -106,6 +119,18 @@
             android:id="@+id/car_fragment"
             android:name="com.joelinjatovo.navette.ui.car.CarFragment"
             tools:layout="@layout/fragment_car" />
+
+        <dialog
+            android:id="@+id/club_fragment"
+            android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
+            tools:layout="@layout/fragment_car" >
+
+            <action
+                android:id="@+id/action_club_to_order"
+                app:popUpTo="@id/order_fragment"
+                app:popUpToInclusive="false"/>
+
+        </dialog>
 
     </navigation>
 

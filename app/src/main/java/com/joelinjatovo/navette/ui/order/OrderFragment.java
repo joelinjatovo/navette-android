@@ -228,8 +228,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     mBinding.destinationText.setText(clubAndPoint.getClub().getName());
 
                     LatLng latLng = new LatLng(clubAndPoint.getPoint().getLat(),clubAndPoint.getPoint().getLng());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     orderViewModel.setDestination(latLng);
+                    if(mMap!=null){
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    }
                 });
 
         orderViewModel.getDestination().observe(getViewLifecycleOwner(), latLng -> {
