@@ -7,7 +7,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
-        <variable name="showOrderDetailButton" type="boolean" />
+        <variable name="showMoreButton" type="boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -84,7 +84,7 @@
                                     android:id="@+id/originLabelText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Origin"
+                                    android:text="@string/origin"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
@@ -94,7 +94,7 @@
                                     android:id="@+id/originText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Value"
+                                    android:text="@string/search"
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
@@ -172,7 +172,7 @@
                                     android:id="@+id/destinationLabelText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Club de destination"
+                                    android:text="@string/destination"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
@@ -182,7 +182,7 @@
                                     android:id="@+id/destinationText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Value"
+                                    android:text="@string/search"
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
@@ -216,6 +216,16 @@
             </RelativeLayout>
 
         </RelativeLayout>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/moreButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/booking"
+            app:layout_anchor="@id/bottom_sheet"
+            app:layout_anchorGravity="right"
+            android:visibility="@{showMoreButton?View.VISIBLE:View.GONE}"/>
 
         <!-- Adding bottom sheet  -->
         <include layout="@layout/bottom_sheet_order" />

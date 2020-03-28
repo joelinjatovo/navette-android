@@ -105,6 +105,10 @@
                 android:id="@+id/action_order_to_cars"
                 app:destination="@id/cars_fragment" />
 
+            <action
+                android:id="@+id/action_order_to_place"
+                app:destination="@id/place_fragment" />
+
         </fragment>
 
         <dialog
@@ -123,6 +127,11 @@
             android:id="@+id/cars_fragment"
             android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
             tools:layout="@layout/fragment_cars" />
+
+        <dialog
+            android:id="@+id/place_fragment"
+            android:name="com.joelinjatovo.navette.ui.order.PlaceFragment"
+            tools:layout="@layout/fragment_place" />
 
         <dialog
             android:id="@+id/club_fragment"

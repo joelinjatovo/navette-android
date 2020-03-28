@@ -52,12 +52,14 @@ import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
+import com.joelinjatovo.navette.utils.CircleTransform;
 import com.joelinjatovo.navette.utils.Constants;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.OrderViewModel;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +113,25 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
+        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState){
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        mBinding.setShowMoreButton(true);
+                    break;
+                    default:
+                        mBinding.setShowMoreButton(false);
+                    break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
         return mBinding.getRoot();
     }
 
@@ -158,16 +179,25 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding.destinationText.setOnClickListener(
                 v -> {
-                        Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
 
         mBinding.destinationEndIcon.setOnClickListener(
                 v -> {
-                        Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                });
+
+        mBinding.moreButton.setOnClickListener(
+                v -> {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 });
 
         mBinding.getRoot().findViewById(R.id.carLayout).setOnClickListener(v->{
             Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
+        });
+
+        mBinding.getRoot().findViewById(R.id.placeLayout).setOnClickListener(v->{
+            Navigation.findNavController(v).navigate(R.id.action_order_to_place);
         });
 
         orderViewModel.getClub().observe(getViewLifecycleOwner(),
@@ -220,17 +250,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         });
 
-        orderViewModel.getCars().observe(getViewLifecycleOwner(), carAndModels -> {
-            if(carAndModels == null){
-                return;
-            }
-
-            mBinding.setShowOrderDetailButton(true);
-        });
-
         orderViewModel.getCar().observe(getViewLifecycleOwner(), carAndModel -> {
             ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
+
             Picasso.get().load(Constants.BASE_URL + carAndModel.getCar().getImageUrl())
+                    .transform(new CircleTransform())
                     .resize(360,180).into(imageView);
 
             TextView textView1 = mBinding.getRoot().findViewById(R.id.carNameTextView);

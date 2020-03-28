@@ -41,6 +41,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
 
+    private MutableLiveData<Integer> place = new MutableLiveData<>();
+
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult = new MutableLiveData<>();
 
     private CarRepository carRepository;
@@ -138,5 +140,13 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     public void setCar(CarAndModel car) {
         this.car.setValue(car);
+    }
+
+    public MutableLiveData<Integer> getPlace() {
+        return place;
+    }
+
+    public void setPlace(Integer place) {
+        this.place.setValue(place);
     }
 }

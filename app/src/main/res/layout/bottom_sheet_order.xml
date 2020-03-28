@@ -6,9 +6,9 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
+    android:background="@color/white"
     app:behavior_skipCollapsed="true"
-    app:behavior_peekHeight="40dp"
+    app:behavior_hideable="true"
     app:layout_behavior="@string/bottom_sheet_behavior"
     android:orientation="vertical">
 
@@ -16,7 +16,10 @@
         android:id="@+id/bsHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <View
             android:layout_width="64dp"
@@ -27,8 +30,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text="Order Details"
             android:layout_centerHorizontal="true" />
 
@@ -38,11 +41,15 @@
         android:id="@+id/orderInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorAccent"
             android:padding="10dp">
 
             <RelativeLayout
@@ -62,12 +69,14 @@
                         android:id="@+id/distanceLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:text="@string/distance"/>
 
                     <TextView
                         android:id="@+id/distanceValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:text="10 km"
                         android:textAppearance="?attr/textAppearanceHeadline5"/>
 
@@ -87,12 +96,14 @@
                         android:id="@+id/delayLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:text="@string/delay"/>
 
                     <TextView
                         android:id="@+id/delayValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:text="30 min"
                         android:textAppearance="?attr/textAppearanceHeadline6"/>
 
@@ -108,14 +119,17 @@
         android:id="@+id/carLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/carImageView"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:padding="10dp"
-            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/outline_directions_car_black_48"
             android:contentDescription="@string/image"
             android:layout_alignParentTop="true"
@@ -133,7 +147,7 @@
             android:layout_toLeftOf="@+id/iconArrowImageView"
             android:layout_toStartOf="@+id/iconArrowImageView"
             android:text="@string/car"
-            android:textAppearance="?attr/textAppearanceHeadline6"/>
+            android:textAppearance="?attr/textAppearanceBody1"/>
 
         <TextView
             android:id="@+id/carPlaceTextView"
@@ -155,7 +169,8 @@
             android:padding="10dp"
             android:layout_centerVertical="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/outline_arrow_forward_ios_black_36"
+            android:src="@drawable/outline_arrow_forward_ios_black_24"
+            android:tint="@color/colorIcon"
             android:contentDescription="@string/image"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>
@@ -166,7 +181,10 @@
         android:id="@+id/placeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/placeImageView"
@@ -193,12 +211,14 @@
             android:layout_toLeftOf="@+id/placeIconArrowImageView"
             android:layout_toStartOf="@+id/placeIconArrowImageView"
             android:text="@string/label_place_count"
-            android:textAppearance="?attr/textAppearanceHeadline6"/>
+            android:textAppearance="?attr/textAppearanceBody1"/>
 
         <TextView
             android:id="@+id/placeCountTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:layout_below="@+id/placeLabelTextView"
             android:layout_toEndOf="@+id/placeImageView"
             android:layout_toRightOf="@+id/placeImageView"
@@ -214,7 +234,8 @@
             android:padding="10dp"
             android:layout_centerVertical="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/outline_arrow_forward_ios_black_36"
+            android:src="@drawable/outline_arrow_forward_ios_black_24"
+            android:tint="@color/colorIcon"
             android:contentDescription="@string/image"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>
@@ -225,9 +246,10 @@
         android:id="@+id/bookNowButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorAccent"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center"
-        android:text="Reservez maintenant"/>
+        android:text="@string/order_now"/>
 
 </LinearLayout>
