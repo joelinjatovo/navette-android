@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomView">
+        <attr name="mTitle" format="string" />
+        <attr name="mSubtitle" format="string" />
+        <attr name="mIcon" format="color|reference" />
+        <attr name="mShowButton" format="boolean" />
+        <attr name="mButtonLabel" format="string" />
+    </declare-styleable>
+</resources>

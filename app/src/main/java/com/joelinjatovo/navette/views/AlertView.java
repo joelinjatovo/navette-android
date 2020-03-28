@@ -2,33 +2,35 @@ package com.joelinjatovo.navette.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.joelinjatovo.navette.R;
 
-public class IconView extends LinearLayout {
+public class AlertView extends LinearLayout {
+    private Drawable mIcon;
     private String mTitle;
     private String mSubtitle;
-    private Drawable mIcon;
+    private Boolean mShowButton;
+    private String mButtonLabel;
 
-    public IconView(Context context) {
+    public AlertView(Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    public IconView(Context context, AttributeSet attrs) {
+    public AlertView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0);
     }
 
-    public IconView(Context context, AttributeSet attrs, int defStyle) {
+    public AlertView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
     }
@@ -40,11 +42,12 @@ public class IconView extends LinearLayout {
             return;
         }
 
-        View view = mInflater.inflate(R.layout.view_icon, this, true);
+        View view = mInflater.inflate(R.layout.view_alert, this, true);
 
         ImageView imageView = view.findViewById(R.id.icon);
         TextView titleView = view.findViewById(R.id.title);
         TextView subtitleView = view.findViewById(R.id.subtitle);
+        Button button = view.findViewById(R.id.button);
 
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CustomView, defStyle, 0);
@@ -65,6 +68,18 @@ public class IconView extends LinearLayout {
         mSubtitle = a.getString(R.styleable.CustomView_mSubtitle);
         if (mSubtitle != null) {
             subtitleView.setText(mSubtitle);
+        }
+
+        mShowButton = a.getBoolean(R.styleable.CustomView_mShowButton, false);
+        if (mShowButton) {
+            button.setVisibility(View.VISIBLE);
+        }else{
+            button.setVisibility(View.GONE);
+        }
+
+        mButtonLabel = a.getString(R.styleable.CustomView_mButtonLabel);
+        if (mButtonLabel!=null) {
+            button.setText(mButtonLabel);
         }
 
         a.recycle();
