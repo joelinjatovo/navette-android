@@ -103,6 +103,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.d(TAG + "Cycle", "onCreateView");
+
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false);
 
         LinearLayout bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
@@ -114,6 +116,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG + "Cycle", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -133,6 +136,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG + "Cycle", "onViewCreated");
 
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
@@ -163,7 +167,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
 
         mBinding.getRoot().findViewById(R.id.carLayout).setOnClickListener(v->{
-            Navigation.findNavController(v).navigate(R.id.cars_fragment);
+            Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
         });
 
         orderViewModel.getClub().observe(getViewLifecycleOwner(),
@@ -222,10 +226,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             }
 
             mBinding.setShowOrderDetailButton(true);
-
-            if(sheetBehavior != null){
-                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
         });
 
         orderViewModel.getCar().observe(getViewLifecycleOwner(), carAndModel -> {
@@ -239,6 +239,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             TextView textView2 = mBinding.getRoot().findViewById(R.id.carPlaceTextView);
             textView2.setText(String.format(String.valueOf(R.string.car_place), carAndModel.getCar().getPlace()));
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        Log.d(TAG + "Cycle", "onDestroyView");
+    }
+
+    private void expandOrderDetails() {
+        if(sheetBehavior != null && mOrigin != null && mDestination != null){
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 
     @Override
@@ -353,6 +366,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         if(mOrigin == null ){
             return;
         }
+
         if(mDestination == null ){
             return;
         }
@@ -377,6 +391,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
             public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
+                expandOrderDetails();
                 try {
                     //Remove previous line from map
                     if (line != null) {
@@ -391,9 +406,17 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         for(Leg leg: route.getLegs()){
                             String distance = leg.getDistance().getText();
                             String time = leg.getDuration().getText();
-                            //mBinding.durationTextView.setText(String.format("Distance:%s, Duration:%s", distance, time));
+
+                            TextView textView1 = mBinding.getRoot().findViewById(R.id.distanceValue);
+                            textView1.setText(distance);
+
+                            TextView textView2 = mBinding.getRoot().findViewById(R.id.delayValue);
+                            textView2.setText(time);
+
                             Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
+
                         }
+
                         String encodedString = googleDirectionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
                         List<LatLng> list = decodePoly(encodedString);
                         line = mMap.addPolyline(new PolylineOptions()

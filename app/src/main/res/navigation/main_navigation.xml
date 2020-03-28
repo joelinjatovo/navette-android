@@ -101,6 +101,10 @@
                 android:id="@+id/action_order_to_search"
                 app:destination="@id/search_fragment" />
 
+            <action
+                android:id="@+id/action_order_to_cars"
+                app:destination="@id/cars_fragment" />
+
         </fragment>
 
         <dialog
@@ -115,7 +119,7 @@
             android:label="Search"
             tools:layout="@layout/fragment_search" />
 
-        <fragment
+        <dialog
             android:id="@+id/cars_fragment"
             android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
             tools:layout="@layout/fragment_cars" />

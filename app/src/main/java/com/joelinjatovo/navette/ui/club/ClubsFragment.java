@@ -60,7 +60,9 @@ public class ClubsFragment extends BottomSheetDialogFragment {
 
                 FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
-                    BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                    BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+                    sheetBehavior.setSkipCollapsed(true);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
         });

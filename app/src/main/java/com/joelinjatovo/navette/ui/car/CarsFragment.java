@@ -1,11 +1,14 @@
 package com.joelinjatovo.navette.ui.car;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,16 +17,21 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.databinding.FragmentCarsBinding;
-import com.joelinjatovo.navette.ui.order.CarRecyclerViewAdapter;
 import com.joelinjatovo.navette.ui.order.OrderFragment;
+import com.joelinjatovo.navette.utils.Log;
+import com.joelinjatovo.navette.utils.UiUtils;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.OrderViewModel;
 
 public class CarsFragment extends BottomSheetDialogFragment implements OrderFragment.OnListFragmentInteractionListener {
+
+    private static final String TAG = CarsFragment.class.getSimpleName();
 
     private FragmentCarsBinding mBinding;
 
@@ -50,7 +58,34 @@ public class CarsFragment extends BottomSheetDialogFragment implements OrderFrag
             }
         });
 
+        ViewPager2.LayoutParams params = mBinding.viewPager.getLayoutParams();
+        params.height = UiUtils.getScreenHeight();
+
         return mBinding.getRoot();
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+                    sheetBehavior.setSkipCollapsed(true);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }else{
+                    Log.d(TAG, "bottomSheet Null");
+                }
+            }
+        });
+
+        return dialog;
     }
 
     @Override
