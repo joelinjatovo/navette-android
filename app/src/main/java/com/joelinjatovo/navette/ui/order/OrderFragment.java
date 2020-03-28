@@ -5,10 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,10 +52,12 @@ import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
+import com.joelinjatovo.navette.utils.Constants;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.utils.Utils;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.OrderViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,15 +92,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private Polyline line;
 
-    private CarRecyclerViewAdapter mAdapter;
-
     private LatLng mOrigin;
 
     private LatLng mDestination;
 
     private BottomSheetBehavior sheetBehavior;
-
-    private ConstraintLayout bottom_sheet;
 
     @Nullable
     @Override
@@ -103,13 +105,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false);
 
-        // Set the adapter
-        mAdapter = new CarRecyclerViewAdapter(mListener);
-        RecyclerView recyclerView = mBinding.getRoot().findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(mAdapter);
-
-        bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
+        LinearLayout bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -137,49 +133,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // click event for show-dismiss bottom sheet
-        mBinding.showCarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-            }
-        });
-
-        // callback for do something
-        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN: {
-                        mBinding.showCarButton.setText("Expand Sheet");
-                        mBinding.setShowChooseCarButton(true);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        mBinding.setShowChooseCarButton(false);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
-
 
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
@@ -209,6 +162,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
 
+        mBinding.getRoot().findViewById(R.id.carLayout).setOnClickListener(v->{
+            Navigation.findNavController(v).navigate(R.id.cars_fragment);
+        });
+
         orderViewModel.getClub().observe(getViewLifecycleOwner(),
                 clubAndPoint -> {
                     if (clubAndPoint == null){
@@ -217,14 +174,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                     mClubAndPoint = clubAndPoint;
 
-                    Log.d(TAG, clubAndPoint.getClub().getName());
-
-                    Log.d(TAG, "Origin " + mOrigin);
-
                     mBinding.destinationText.setText(clubAndPoint.getClub().getName());
 
                     LatLng latLng = new LatLng(clubAndPoint.getPoint().getLat(),clubAndPoint.getPoint().getLng());
+
                     orderViewModel.setDestination(latLng);
+
                     if(mMap!=null){
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     }
@@ -262,15 +217,27 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         });
 
         orderViewModel.getCars().observe(getViewLifecycleOwner(), carAndModels -> {
-            if(carAndModels == null || mAdapter == null){
+            if(carAndModels == null){
                 return;
             }
 
-            mAdapter.setItems(carAndModels);
+            mBinding.setShowOrderDetailButton(true);
 
             if(sheetBehavior != null){
                 sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
+        });
+
+        orderViewModel.getCar().observe(getViewLifecycleOwner(), carAndModel -> {
+            ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
+            Picasso.get().load(Constants.BASE_URL + carAndModel.getCar().getImageUrl())
+                    .resize(360,180).into(imageView);
+
+            TextView textView1 = mBinding.getRoot().findViewById(R.id.carNameTextView);
+            textView1.setText(carAndModel.getCar().getName());
+
+            TextView textView2 = mBinding.getRoot().findViewById(R.id.carPlaceTextView);
+            textView2.setText(String.format(String.valueOf(R.string.car_place), carAndModel.getCar().getPlace()));
         });
     }
 

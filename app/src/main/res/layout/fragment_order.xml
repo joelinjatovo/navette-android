@@ -7,7 +7,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
-        <variable name="showChooseCarButton" type="boolean" />
+        <variable name="showOrderDetailButton" type="boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -74,8 +74,8 @@
                                 android:id="@+id/originLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originEndIcon"
-                                android:layout_toLeftOf="@+id/originEndIcon"
+                                android:layout_toStartOf="@+id/originSelectEndIcon"
+                                android:layout_toLeftOf="@+id/originSelectEndIcon"
                                 android:layout_toEndOf="@+id/originLocationIcon"
                                 android:layout_toRightOf="@+id/originLocationIcon"
                                 android:orientation="vertical">
@@ -103,6 +103,19 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/originSelectEndIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toStartOf="@+id/originEndIcon"
+                                android:layout_toLeftOf="@+id/originEndIcon"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:contentDescription="@string/image"
+                                android:src="@drawable/outline_near_me_black_24"
+                                android:tint="@color/colorText" />
 
                             <ImageView
                                 android:id="@+id/originEndIcon"
@@ -191,7 +204,7 @@
                                 android:layout_alignParentRight="true"
                                 android:contentDescription="@string/image"
                                 android:tint="@color/colorAlert"
-                                android:src="@drawable/outline_add_black_24"
+                                android:src="@drawable/baseline_list_black_24"
                                 android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
@@ -205,18 +218,7 @@
         </RelativeLayout>
 
         <!-- Adding bottom sheet  -->
-        <include layout="@layout/bottom_sheet_car" />
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/showCarButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/settings"
-            android:visibility="@{showChooseCarButton ? View.VISIBLE : View.GONE}"
-            app:layout_anchor="@id/bottom_sheet"
-            app:layout_anchorGravity="right|top|end"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <include layout="@layout/bottom_sheet_order" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
