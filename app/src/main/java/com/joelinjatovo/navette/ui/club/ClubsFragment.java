@@ -1,27 +1,33 @@
 package com.joelinjatovo.navette.ui.club;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentClubsBinding;
+import com.joelinjatovo.navette.utils.UiUtils;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
@@ -29,11 +35,9 @@ import com.joelinjatovo.navette.vm.OrderViewModel;
 
 import java.util.List;
 
-public class ClubsFragment extends Fragment {
+public class ClubsFragment extends BottomSheetDialogFragment {
 
     private ClubViewModel clubViewModel;
-
-    private OrderViewModel orderViewModel;
 
     private FragmentClubsBinding mBinding;
 
@@ -42,6 +46,26 @@ public class ClubsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
+
+        return dialog;
     }
 
     @Override
@@ -54,6 +78,9 @@ public class ClubsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
 
+        // Layout height
+        mBinding.linearLayout.setMinimumHeight(UiUtils.getScreenHeight());
+
         return mBinding.getRoot();
     }
 
@@ -62,8 +89,6 @@ public class ClubsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
-
-        orderViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
         clubViewModel.getClubs().observe(getViewLifecycleOwner(),
                 clubAndPointList -> {
@@ -120,7 +145,7 @@ public class ClubsFragment extends Fragment {
         @Override
         public void onListFragmentInteraction(View v, ClubAndPoint item) {
             clubViewModel.setClub(item);
-            Navigation.findNavController(v).navigate(R.id.club_fragment);
+            NavHostFragment.findNavController(ClubsFragment.this).navigate(R.id.club_fragment);
         }
     };
 

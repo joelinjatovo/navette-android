@@ -103,7 +103,7 @@
 
         </fragment>
 
-        <fragment
+        <dialog
             android:id="@+id/clubs_fragment"
             android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
             android:label="Choose Destination"
@@ -123,7 +123,7 @@
         <dialog
             android:id="@+id/club_fragment"
             android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
-            tools:layout="@layout/fragment_cars" >
+            tools:layout="@layout/fragment_club" >
 
             <action
                 android:id="@+id/action_club_to_order"
