@@ -1,5 +1,11 @@
 package com.joelinjatovo.navette.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -9,6 +15,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.utils.Utils;
+import com.joelinjatovo.navette.views.AlertView;
 import com.joelinjatovo.navette.vm.AuthViewModel;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.utils.Constants;
@@ -47,8 +55,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
+        setupUi();
+
+        setupViewModel();
+
+        initMapSdk();
+
+        connectPush();
+
+        registerNetworkBroadcastReceiver();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkBroadcastReceiver();
+    }
+
+    private void setupViewModel() {
         MyViewModelFactory factory = new MyViewModelFactory(getApplication());
 
         clubViewModel = new ViewModelProvider(this, factory).get(ClubViewModel.class);
@@ -73,16 +100,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        connectPush();
+        clubViewModel.load();
+    }
 
+    private void setupUi(){
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-            R.id.navigation_home,
-            R.id.navigation_maps,
-            R.id.navigation_notification,
-            R.id.navigation_account
+                R.id.navigation_home,
+                R.id.navigation_maps,
+                R.id.navigation_notification,
+                R.id.navigation_account
         ).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -113,14 +142,39 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
+    }
 
-        clubViewModel.load();
-
+    private void initMapSdk() {
         // Initialize the SDK
         Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
 
         // Create a new Places client instance
         PlacesClient placesClient = Places.createClient(this);
+
+    }
+
+    private void updateConnectionUi(Boolean connected) {
+        AlertView alertView = findViewById(R.id.alertView);
+        if(!connected){
+            alertView.setVisibility(View.VISIBLE);
+            alertView.setIcon(R.drawable.outline_wifi_off_black_18);
+            alertView.setTitle(R.string.internet_error_title);
+            alertView.setSubtitle(R.string.internet_error_subtitle);
+        }else{
+            alertView.setVisibility(View.GONE);
+        }
+    }
+
+    private void registerNetworkBroadcastReceiver() {
+        registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected void unregisterNetworkBroadcastReceiver() {
+        try {
+            unregisterReceiver(mNetworkReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
     private void connectPush() {
@@ -184,4 +238,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }, "user.point.created");
     }
+
+    private BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG + "Broadcast", "mNetworkReceiver.onReceive");
+            updateConnectionUi(Utils.haveNetworkConnection(MainActivity.this));
+        }
+    };
 }

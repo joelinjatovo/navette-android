@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+
 import com.joelinjatovo.navette.R;
 
 public class AlertView extends LinearLayout {
@@ -19,6 +22,11 @@ public class AlertView extends LinearLayout {
     private String mSubtitle;
     private Boolean mShowButton;
     private String mButtonLabel;
+
+    private ImageView imageView;
+    private TextView titleView;
+    private TextView subtitleView;
+    private Button button;
 
     public AlertView(Context context) {
         super(context);
@@ -44,10 +52,10 @@ public class AlertView extends LinearLayout {
 
         View view = mInflater.inflate(R.layout.view_alert, this, true);
 
-        ImageView imageView = view.findViewById(R.id.icon);
-        TextView titleView = view.findViewById(R.id.title);
-        TextView subtitleView = view.findViewById(R.id.subtitle);
-        Button button = view.findViewById(R.id.button);
+        imageView = view.findViewById(R.id.icon);
+        titleView = view.findViewById(R.id.title);
+        subtitleView = view.findViewById(R.id.subtitle);
+        button = view.findViewById(R.id.button);
 
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CustomView, defStyle, 0);
@@ -84,5 +92,36 @@ public class AlertView extends LinearLayout {
 
         a.recycle();
 
+    }
+
+    public AlertView setIcon(@DrawableRes Integer res) {
+        imageView.setImageResource(res);
+        return this;
+    }
+
+    public AlertView setTitle(@StringRes Integer res) {
+        titleView.setText(res);
+        return this;
+    }
+
+    public AlertView setSubtitle(@StringRes Integer res) {
+        subtitleView.setText(res);
+        return this;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public TextView getTitleView() {
+        return titleView;
+    }
+
+    public TextView getSubtitleView() {
+        return subtitleView;
+    }
+
+    public Button getButton() {
+        return button;
     }
 }

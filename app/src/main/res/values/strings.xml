@@ -87,4 +87,7 @@
     <string name="title">Title</string>
     <string name="subtitle">Subtitle</string>
     <string name="active">Active</string>
+    <string name="internet_error_title">Pas de connexion à Internet.</string>
+    <string name="internet_error_subtitle">Connectez-vous à l\'internet et reessayez!</string>
+    <string name="actualize">Actualiser</string>
 </resources>
