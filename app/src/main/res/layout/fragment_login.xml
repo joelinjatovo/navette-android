@@ -210,18 +210,13 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="50dp">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/facebook_connect"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="center_horizontal"
                     android:layout_centerInParent="true"
-                    android:padding="15dp"
-                    android:text="Facebook Connect"
-                    android:textColor="#191919"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center_horizontal" />
+                    android:layout_margin="15dp" />
 
             </RelativeLayout>
 

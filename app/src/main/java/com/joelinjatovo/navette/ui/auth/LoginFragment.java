@@ -1,6 +1,7 @@
 package com.joelinjatovo.navette.ui.auth;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +20,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
@@ -47,6 +53,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
     private AuthViewModel authViewModel;
 
     private ProgressDialog progressDialog;
+
+    private CallbackManager callbackManager;
 
     @Nullable
     @Override
@@ -161,6 +169,40 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     ForgotFragment fragment = new ForgotFragment();
                     fragment.show(getParentFragmentManager(), fragment.getTag());
                 });
+
+        setupFacebookConnect();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setupFacebookConnect() {
+        callbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = mBinding.facebookConnect;
+        loginButton.setPermissions("email");
+        // If using in a fragment
+        loginButton.setFragment(this);
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
     }
 
     @Override
