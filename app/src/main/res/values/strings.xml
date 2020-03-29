@@ -74,7 +74,8 @@
     <string name="car_model_name">Model: %s</string>
     <string name="order">Commander</string>
     <string name="label_place_count">Nombre de place à réserver</string>
-    <string name="place_count">%s</string>
+    <string name="place_count">%d</string>
+    <string name="person_count">%d personnes</string>
     <string name="distance">Distance</string>
     <string name="delay">Delay</string>
     <string name="plus">+</string>

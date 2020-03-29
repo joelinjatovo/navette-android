@@ -215,6 +215,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         return;
                     }
 
+                    // Order
+                    if(orderWithDatas.getOrder()!=null) {
+                        TextView textView = mBinding.getRoot().findViewById(R.id.placeCountTextView);
+                        textView.setText(String.format(getString(R.string.person_count), orderWithDatas.getOrder().getPlace()));
+                    }
+
                     // Car
                     if(orderWithDatas.getCar()!=null) {
                         ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
