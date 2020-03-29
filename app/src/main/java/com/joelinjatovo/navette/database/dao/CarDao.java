@@ -67,6 +67,7 @@ public abstract class CarDao extends BaseDao<Car> {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract Long _insertCarModel(CarModel model);
 
+    @Transaction
     @Query("SELECT * FROM car_models JOIN cars ON cars.car_model_id = car_models.id WHERE cars.club_id = :clubId")
     public abstract LiveData<List<CarAndModel>> loadCarAndClub(Long clubId);
 }

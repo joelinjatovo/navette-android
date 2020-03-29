@@ -1,5 +1,6 @@
 package com.joelinjatovo.navette.ui.notification;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -13,11 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.joelinjatovo.navette.R;
+import com.joelinjatovo.navette.databinding.FragmentNotificationBinding;
 import com.joelinjatovo.navette.vm.NotificationViewModel;
 
 public class NotificationFragment extends Fragment {
 
     private NotificationViewModel mViewModel;
+
+    private FragmentNotificationBinding mBinding;
 
     public static NotificationFragment newInstance() {
         return new NotificationFragment();
@@ -26,13 +30,16 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification, container, false);
+
+        return mBinding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
+
     }
 
 }

@@ -21,6 +21,7 @@ import com.joelinjatovo.navette.database.dao.UserDao;
 import com.joelinjatovo.navette.database.entity.Car;
 import com.joelinjatovo.navette.database.entity.CarModel;
 import com.joelinjatovo.navette.database.entity.Club;
+import com.joelinjatovo.navette.database.entity.Notification;
 import com.joelinjatovo.navette.database.entity.Order;
 import com.joelinjatovo.navette.database.entity.OrderPoint;
 import com.joelinjatovo.navette.database.entity.Point;
@@ -33,6 +34,7 @@ import com.joelinjatovo.navette.database.entity.UserRole;
         Car.class,
         CarModel.class,
         Club.class,
+        Notification.class,
         Order.class,
         OrderPoint.class,
         Point.class,
@@ -40,7 +42,7 @@ import com.joelinjatovo.navette.database.entity.UserRole;
         User.class,
         UserPoint.class,
         UserRole.class
-},version = 1)
+},version = 1, exportSchema = false)
 @TypeConverters({DateConverter.class, ArrayConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 

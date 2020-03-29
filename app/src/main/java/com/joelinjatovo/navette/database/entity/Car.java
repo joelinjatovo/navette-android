@@ -1,10 +1,8 @@
 package com.joelinjatovo.navette.database.entity;
 
-import android.media.Image;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -12,7 +10,12 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 @Entity(
-    tableName = "cars"
+        tableName = "cars",
+        foreignKeys = @ForeignKey(
+                entity = CarModel.class,
+                parentColumns = "id",
+                childColumns = "car_model_id"
+        )
 )
 public class Car {
     @PrimaryKey

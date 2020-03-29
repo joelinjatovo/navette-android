@@ -321,6 +321,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void drawMarker(LatLng point, int index) {
+        if(mMap==null){
+            return;
+        }
+
         // Creating MarkerOptions
         MarkerOptions options = new MarkerOptions();
 
