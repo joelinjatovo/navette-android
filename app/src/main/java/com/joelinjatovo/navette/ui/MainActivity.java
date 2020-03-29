@@ -1,5 +1,8 @@
 package com.joelinjatovo.navette.ui;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +16,10 @@ import android.view.WindowManager;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.User;
+import com.joelinjatovo.navette.services.LocationUpdatesService;
 import com.joelinjatovo.navette.utils.Utils;
 import com.joelinjatovo.navette.views.AlertView;
 import com.joelinjatovo.navette.vm.AuthViewModel;
@@ -35,6 +40,8 @@ import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ClubViewModel clubViewModel;
 
+    private NotificationManagerCompat mNotificationManagerCompat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         setupUi();
 
+        setupNotification();
+
         setupViewModel();
 
         initMapSdk();
@@ -67,6 +78,44 @@ public class MainActivity extends AppCompatActivity {
         connectPush();
 
         registerNetworkBroadcastReceiver();
+    }
+
+    private void setupNotification() {
+        mNotificationManagerCompat = NotificationManagerCompat.from(this);
+    }
+
+    public void showNotification(){
+        boolean areNotificationsEnabled = mNotificationManagerCompat.areNotificationsEnabled();
+
+        if (!areNotificationsEnabled) {
+            // Because the user took an action to create a notification, we create a prompt to let
+            // the user re-enable notifications for this application again.
+            Snackbar snackbar = Snackbar
+                    .make(
+                            findViewById(R.id.nav_view),
+                            "You need to enable notifications for this app",
+                            Snackbar.LENGTH_LONG)
+                    .setAction("ENABLE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Links to this app's notification settings
+                            openNotificationSettingsForApp();
+                        }
+                    });
+            snackbar.show();
+            return;
+        }
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this, "a")
+                        .setSmallIcon(R.drawable.outline_add_24)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!")
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText("Much longer text that cannot fit one line..."))
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        mNotificationManagerCompat.notify(1, mBuilder.build());
     }
 
     @Override
@@ -189,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onEvent(PusherEvent event) {
                 Log.d(TAG, "my-event " + event.getData());
+                showNotification();
             }
         });
         channel.bind("user.point.created", new SubscriptionEventListener() {
@@ -237,6 +287,24 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG + "Pusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
             }
         }, "user.point.created");
+    }
+
+    /**
+     * Helper method for the SnackBar action, i.e., if the user has this application's notifications
+     * disabled, this opens up the dialog to turn them back on after the user requests a
+     * Notification launch.
+     *
+     * IMPORTANT NOTE: You should not do this action unless the user takes an action to see your
+     * Notifications like this sample demonstrates. Spamming users to re-enable your notifications
+     * is a bad idea.
+     */
+    private void openNotificationSettingsForApp() {
+        // Links to this app's notification settings.
+        Intent intent = new Intent();
+        intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+        intent.putExtra("app_package", getPackageName());
+        intent.putExtra("app_uid", getApplicationInfo().uid);
+        startActivity(intent);
     }
 
     private BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
