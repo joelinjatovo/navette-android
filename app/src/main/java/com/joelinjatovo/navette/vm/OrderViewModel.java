@@ -19,6 +19,7 @@ import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.database.entity.Order;
 import com.joelinjatovo.navette.database.entity.OrderWithDatas;
+import com.joelinjatovo.navette.database.entity.OrderWithPoints;
 import com.joelinjatovo.navette.database.entity.Point;
 import com.joelinjatovo.navette.database.repositories.CarRepository;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
@@ -43,6 +44,8 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult = new MutableLiveData<>();
+
+    private MutableLiveData<RemoteLoaderResult<OrderWithPoints>> orderResult = new MutableLiveData<>();
 
     private CarRepository carRepository;
 
@@ -221,7 +224,6 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
                                   @NonNull Throwable throwable) {
-
                 Log.e(TAG, throwable.getMessage(), throwable);
                 retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
@@ -231,18 +233,25 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     public void placeOrder() {
         Log.d(TAG, "service.placeOrder()");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<Order>> call = service.createOrder(new OrderRequest(orderWithDatas));
-        call.enqueue(new Callback<RetrofitResponse<Order>>() {
+        Call<RetrofitResponse<OrderWithPoints>> call = service.createOrder(new OrderRequest(orderWithDatas));
+        call.enqueue(new Callback<RetrofitResponse<OrderWithPoints>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
-                                   @NonNull Response<RetrofitResponse<Order>> response) {
-
+            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithPoints>> call,
+                                   @NonNull Response<RetrofitResponse<OrderWithPoints>> response) {
+                Log.e(TAG, response.toString());
+                if (response.body() != null && response.body().isSuccess()) {
+                    Log.e(TAG, response.body().toString());
+                    orderResult.setValue(new RemoteLoaderResult<OrderWithPoints>(response.body().getData()));
+                }else{
+                    orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithPoints>> call,
                                   @NonNull Throwable throwable) {
-
+                Log.e(TAG, throwable.getMessage(), throwable);
+                orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
     }
@@ -253,6 +262,10 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
 
     public MutableLiveData<OrderWithDatas> getOrderWithDatasLiveData() {
         return orderWithDatasLiveData;
+    }
+
+    public MutableLiveData<RemoteLoaderResult<OrderWithPoints>> getOrderResult() {
+        return orderResult;
     }
 
     @Override

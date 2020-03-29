@@ -15,7 +15,7 @@ public class Order {
     @PrimaryKey
     private Long id;
 
-    @SerializedName("id")
+    @SerializedName("rid")
     @ColumnInfo(name = "rid")
     private String rid; // Remote id
 

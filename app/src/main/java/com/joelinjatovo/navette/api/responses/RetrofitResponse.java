@@ -76,6 +76,10 @@ public class RetrofitResponse<T> {
         this.validation = validation;
     }
 
+    public boolean isSuccess(){
+        return this.code == 0;
+    }
+
     @Override
     public String toString() {
         return "RetrofitResponse[errors=" + Arrays.toString(this.getErrors()) + "; status=" + getStatus()  + "; code=" + getCode() + "; message=" + getMessage() +"; data=" + getData() + "]";
