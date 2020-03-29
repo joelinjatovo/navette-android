@@ -63,6 +63,9 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         List<Point> points = orderWithDatas.getPoints();
         if(points==null){
             points = new ArrayList<>(3);
+            points.add(null);
+            points.add(null);
+            points.add(null);
         }
 
         Point point = points.get(0);
@@ -80,19 +83,24 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         points.set(0, point);
 
         orderWithDatas.setPoints(points);
+
+        orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public void setOrigin(Place place) {
         setOrigin(place.getName(), place.getLatLng());
     }
 
-    public void setDestination(String name, LatLng latLng) {
+    private void setDestination(String name, LatLng latLng) {
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
 
         List<Point> points = orderWithDatas.getPoints();
         if(points==null){
             points = new ArrayList<>(3);
+            points.add(null);
+            points.add(null);
+            points.add(null);
         }
 
         Point point = points.get(1);
@@ -120,6 +128,9 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         List<Point> points = orderWithDatas.getPoints();
         if(points==null){
             points = new ArrayList<>(3);
+            points.add(null);
+            points.add(null);
+            points.add(null);
         }
 
         Point point = points.get(2);
@@ -137,6 +148,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         points.set(2, point);
 
         orderWithDatas.setPoints(points);
+
+        orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public void setPlace(int place) {
@@ -150,6 +163,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         order.setPlace(place);
         orderWithDatas.setOrder(order);
 
+        orderWithDatasLiveData.setValue(orderWithDatas);
+
     }
 
     public void setCar(Car car) {
@@ -157,13 +172,13 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
             orderWithDatas = new OrderWithDatas();
         orderWithDatas.setCar(car);
 
+        orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public void setClub(Club club, Point point) {
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
         orderWithDatas.setClub(club);
-        orderWithDatasLiveData.setValue(orderWithDatas);
 
         LatLng latLng = new LatLng(
             point.getLat(),
@@ -172,15 +187,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         setDestination(club.getName(), latLng);
 
         loadCars(club);
-    }
 
-    public void setClub(Club club) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-        orderWithDatas.setClub(club);
         orderWithDatasLiveData.setValue(orderWithDatas);
-
-        loadCars(club);
     }
 
     public void loadCars(Club club){

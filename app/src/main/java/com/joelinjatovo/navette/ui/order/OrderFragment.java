@@ -17,14 +17,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -53,7 +50,6 @@ import com.joelinjatovo.navette.api.models.google.Leg;
 import com.joelinjatovo.navette.api.models.google.Route;
 import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
-import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.database.entity.Point;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
 import com.joelinjatovo.navette.utils.CircleTransform;
@@ -63,9 +59,7 @@ import com.joelinjatovo.navette.utils.Utils;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.OrderViewModel;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -198,13 +192,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState){
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        mBinding.setShowMoreButton(true);
-                        break;
-                    default:
-                        mBinding.setShowMoreButton(false);
-                        break;
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    mBinding.setShowMoreButton(true);
+                } else {
+                    mBinding.setShowMoreButton(false);
                 }
             }
 
@@ -224,11 +215,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         return;
                     }
 
-                    // Club
-                    if(orderWithDatas.getClub()!=null){
-                        mBinding.destinationText.setText(orderWithDatas.getClub().getName());
-                    }
-
                     // Car
                     if(orderWithDatas.getCar()!=null) {
                         ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
@@ -246,24 +232,25 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                     // Points
                     if(orderWithDatas.getPoints()!=null){
+                        Log.d(TAG, "Size=" + orderWithDatas.getPoints().size());
                         // Origin
                         if(orderWithDatas.getPoints().size()>0){
                             Point point = orderWithDatas.getPoints().get(0);
                             if(point!=null){
+                                mBinding.setOrigin(point);
+
                                 LatLng origin = new LatLng(
                                         point.getLat(),
                                         point.getLng()
                                 );
 
-                                mBinding.originText.setText(point.getName());
-
                                 mOrigin = origin;
+
+                                drawMarker(origin, 0);
 
                                 // Zoom map
                                 if(mMap!=null){
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 10));
-
-                                    drawMarker(origin, 0);
                                 }
                             }
                         }
@@ -272,14 +259,17 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         if(orderWithDatas.getPoints().size()>1) {
                             Point point = orderWithDatas.getPoints().get(1);
                             if(point!=null) {
+
+                                mBinding.setDestination(point);
+
                                 LatLng destination = new LatLng(
                                         point.getLat(),
                                         point.getLng()
                                 );
 
-                                mBinding.destinationText.setText(point.getName());
-
                                 mDestination = destination;
+
+                                drawMarker(destination, 1);
                             }
                         }
 
@@ -287,14 +277,17 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         if(orderWithDatas.getPoints().size()>2) {
                             Point point = orderWithDatas.getPoints().get(2);
                             if(point!=null) {
+
+                                mBinding.setRetours(point);
+
                                 LatLng retours = new LatLng(
                                         point.getLat(),
                                         point.getLng()
                                 );
 
-                                mBinding.retoursText.setText(point.getName());
+                                mRetours = retours;
 
-                                mRetours = retours;;
+                                drawMarker(retours, 2);
                             }
                         }
 

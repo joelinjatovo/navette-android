@@ -8,6 +8,9 @@
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
         <variable name="showMoreButton" type="boolean" />
+        <variable name="origin" type="com.joelinjatovo.navette.database.entity.Point" />
+        <variable name="destination" type="com.joelinjatovo.navette.database.entity.Point" />
+        <variable name="retours" type="com.joelinjatovo.navette.database.entity.Point" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -94,7 +97,7 @@
                                     android:id="@+id/originText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/search"
+                                    android:text="@{origin==null?@string/search:origin.name}"
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
@@ -182,7 +185,7 @@
                                     android:id="@+id/destinationText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/search"
+                                    android:text="@{destination==null?@string/search:destination.name}"
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
@@ -214,13 +217,15 @@
                             android:layout_height="1dp"
                             android:background="@color/colorAccent"
                             android:layout_marginLeft="28dp"
-                            android:layout_marginStart="28dp" />
+                            android:layout_marginStart="28dp"
+                            android:visibility="@{retours==null?View.GONE:View.VISIBLE}" />
 
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp">
+                            android:layout_marginBottom="5dp"
+                            android:visibility="@{retours==null?View.GONE:View.VISIBLE}">
 
                             <ImageView
                                 android:id="@+id/retoursLocationIcon"
@@ -257,7 +262,7 @@
                                     android:id="@+id/retoursText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/search"
+                                    android:text="@{retours==null?@string/search:retours.name}"
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="@color/colorText"
                                     android:paddingLeft="12dp"
