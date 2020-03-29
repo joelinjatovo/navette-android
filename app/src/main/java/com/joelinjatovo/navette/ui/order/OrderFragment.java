@@ -406,6 +406,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_to_place);
                 });
+
+        mBinding.getRoot().findViewById(R.id.bookNowButton).setOnClickListener(
+                v -> {
+                    orderViewModel.placeOrder();
+                });
     }
 
     private void expandOrderDetails() {

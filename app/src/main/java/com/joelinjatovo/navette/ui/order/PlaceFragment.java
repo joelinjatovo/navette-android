@@ -15,6 +15,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -108,6 +109,11 @@ public class PlaceFragment extends BottomSheetDialogFragment {
                     }else{
                         orderViewModel.setPlace( 1 );
                     }
+                });
+
+        mBinding.ok.setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack(R.id.order_fragment, false);
                 });
     }
 

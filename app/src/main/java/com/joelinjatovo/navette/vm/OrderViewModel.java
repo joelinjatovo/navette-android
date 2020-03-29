@@ -8,8 +8,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
+import com.joelinjatovo.navette.api.models.OrderRequest;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
 import com.joelinjatovo.navette.api.services.ClubApiService;
+import com.joelinjatovo.navette.api.services.OrderApiService;
 import com.joelinjatovo.navette.database.callback.UpsertCallback;
 import com.joelinjatovo.navette.database.entity.Car;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
@@ -30,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrderViewModel extends ViewModel implements Callback<RetrofitResponse<List<CarAndModel>>>, UpsertCallback<CarAndModel> {
+public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndModel> {
 
     private static final String TAG = OrderViewModel.class.getSimpleName();
 
@@ -46,6 +48,7 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     public OrderViewModel(CarRepository carRepository) {
         this.carRepository = carRepository;
+        this.setPlace(1);
     }
 
     public MutableLiveData<List<CarAndModel>> getCars() {
@@ -195,7 +198,53 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         Log.d(TAG, "service.getCars()");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
         Call<RetrofitResponse<List<CarAndModel>>> call = service.getCars(club.getId());
-        call.enqueue(this);
+        call.enqueue(new Callback<RetrofitResponse<List<CarAndModel>>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
+                                   @NonNull Response<RetrofitResponse<List<CarAndModel>>> response) {
+                Log.e(TAG, response.toString());
+                if (response.body() != null) {
+                    Log.e(TAG, response.body().toString());
+                    CarAndModel[] items = new CarAndModel[response.body().getData().size()];
+                    for(int i = 0 ; i < response.body().getData().size(); i++){
+                        items[i] = response.body().getData().get(i);
+                    }
+
+                    carRepository.upsert(orderWithDatas.getClub(), OrderViewModel.this, items);
+
+                    retrofitResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                }else{
+                    retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
+                                  @NonNull Throwable throwable) {
+
+                Log.e(TAG, throwable.getMessage(), throwable);
+                retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+            }
+        });
+    }
+
+    public void placeOrder() {
+        Log.d(TAG, "service.placeOrder()");
+        OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
+        Call<RetrofitResponse<Order>> call = service.createOrder(new OrderRequest(orderWithDatas));
+        call.enqueue(new Callback<RetrofitResponse<Order>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
+                                   @NonNull Response<RetrofitResponse<Order>> response) {
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
+                                  @NonNull Throwable throwable) {
+
+            }
+        });
     }
 
     public OrderWithDatas getOrderWithDatas() {
@@ -204,32 +253,6 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     public MutableLiveData<OrderWithDatas> getOrderWithDatasLiveData() {
         return orderWithDatasLiveData;
-    }
-
-    @Override
-    public void onResponse(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
-                           Response<RetrofitResponse<List<CarAndModel>>> response) {
-        Log.e(TAG, response.toString());
-        if (response.body() != null) {
-            Log.e(TAG, response.body().toString());
-            CarAndModel[] items = new CarAndModel[response.body().getData().size()];
-            for(int i = 0 ; i < response.body().getData().size(); i++){
-                items[i] = response.body().getData().get(i);
-            }
-
-            carRepository.upsert(orderWithDatas.getClub(), this, items);
-
-            retrofitResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
-        }else{
-            retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
-        }
-    }
-
-    @Override
-    public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
-                          @NonNull Throwable t) {
-        Log.e(TAG, t.getMessage(), t);
-        retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
     }
 
     @Override
