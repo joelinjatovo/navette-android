@@ -105,7 +105,7 @@ public class CarsFragment extends BottomSheetDialogFragment implements OrderFrag
 
     @Override
     public void onListFragmentInteraction(View view, int position, CarAndModel item) {
-        orderViewModel.setCar(item);
+        orderViewModel.setCar(item.getCar());
         NavHostFragment.findNavController(this).popBackStack(R.id.order_fragment, false);
     }
 }

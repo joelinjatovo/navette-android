@@ -114,9 +114,14 @@ public class PlaceFragment extends BottomSheetDialogFragment {
     private void setupViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        orderViewModel.getPlace().observe(getViewLifecycleOwner(),
-                place -> {
-                    this.place = place;
+        orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
+                orderWithDatas -> {
+                    if(orderWithDatas==null || orderWithDatas.getOrder()==null){
+                        return;
+                    }
+
+                    this.place = orderWithDatas.getOrder().getPlace();
+
                     mBinding.setPlace(place);
                 });
     }

@@ -33,7 +33,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,6 +54,7 @@ import com.joelinjatovo.navette.api.models.google.Route;
 import com.joelinjatovo.navette.api.services.GoogleApiService;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
+import com.joelinjatovo.navette.database.entity.Point;
 import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
 import com.joelinjatovo.navette.utils.CircleTransform;
 import com.joelinjatovo.navette.utils.Constants;
@@ -90,13 +94,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private OrderViewModel orderViewModel;
 
-    private ClubAndPoint mClubAndPoint;
-
     private Polyline line;
 
     private LatLng mOrigin;
 
     private LatLng mDestination;
+
+    private LatLng mRetours;
+
+    private Marker mOriginMarker;
+
+    private Marker mDestinationMarker;
+
+    private Marker mRetoursMarker;
 
     private BottomSheetBehavior sheetBehavior;
 
@@ -109,29 +119,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false);
 
-        LinearLayout bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState){
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        mBinding.setShowMoreButton(true);
-                    break;
-                    default:
-                        mBinding.setShowMoreButton(false);
-                    break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
         return mBinding.getRoot();
     }
 
@@ -139,6 +126,55 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG + "Cycle", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
+
+        setupMap();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG + "Cycle", "onViewCreated");
+
+        setupBottomSheet();
+
+        setupUi();
+
+        setupOrderViewModel();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        Log.d(TAG + "Cycle", "onDestroyView");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
+
+                orderViewModel.setOrigin(place);
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i(TAG, "The user canceled the operation.");
+            }
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+    }
+
+    private void setupMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
@@ -154,84 +190,118 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG + "Cycle", "onViewCreated");
+    private void setupBottomSheet() {
+        LinearLayout bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
+        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState){
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        mBinding.setShowMoreButton(true);
+                        break;
+                    default:
+                        mBinding.setShowMoreButton(false);
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+    }
+
+    private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        mBinding.originEndIcon.setOnClickListener(
-                v -> {
-                        getDeviceLocation();
-                });
-
-        mBinding.originText.setOnClickListener(
-                v -> {
-                        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-
-                        // Start the autocomplete intent.
-                        Intent intent = new Autocomplete.IntentBuilder(
-                                AutocompleteActivityMode.OVERLAY, fields)
-                                .build(requireContext());
-                        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-                });
-
-        mBinding.destinationText.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
-                });
-
-        mBinding.destinationEndIcon.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
-                });
-
-        mBinding.moreButton.setOnClickListener(
-                v -> {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                });
-
-        mBinding.getRoot().findViewById(R.id.carLayout).setOnClickListener(v->{
-            Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
-        });
-
-        mBinding.getRoot().findViewById(R.id.placeLayout).setOnClickListener(v->{
-            Navigation.findNavController(v).navigate(R.id.action_order_to_place);
-        });
-
-        orderViewModel.getClub().observe(getViewLifecycleOwner(),
-                clubAndPoint -> {
-                    if (clubAndPoint == null){
+        orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
+                orderWithDatas -> {
+                    if(orderWithDatas == null){
                         return;
                     }
 
-                    mClubAndPoint = clubAndPoint;
+                    // Club
+                    if(orderWithDatas.getClub()!=null){
+                        mBinding.destinationText.setText(orderWithDatas.getClub().getName());
+                    }
 
-                    mBinding.destinationText.setText(clubAndPoint.getClub().getName());
+                    // Car
+                    if(orderWithDatas.getCar()!=null) {
+                        ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
 
-                    LatLng latLng = new LatLng(clubAndPoint.getPoint().getLat(),clubAndPoint.getPoint().getLng());
+                        Picasso.get().load(Constants.BASE_URL + orderWithDatas.getCar().getImageUrl())
+                                .transform(new CircleTransform())
+                                .resize(360, 180).into(imageView);
 
-                    orderViewModel.setDestination(latLng);
+                        TextView textView1 = mBinding.getRoot().findViewById(R.id.carNameTextView);
+                        textView1.setText(orderWithDatas.getCar().getName());
 
-                    if(mMap!=null){
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                        TextView textView2 = mBinding.getRoot().findViewById(R.id.carPlaceTextView);
+                        textView2.setText(String.format(String.valueOf(R.string.car_place), orderWithDatas.getCar().getPlace()));
+                    }
+
+                    // Points
+                    if(orderWithDatas.getPoints()!=null){
+                        // Origin
+                        if(orderWithDatas.getPoints().size()>0){
+                            Point point = orderWithDatas.getPoints().get(0);
+                            if(point!=null){
+                                LatLng origin = new LatLng(
+                                        point.getLat(),
+                                        point.getLng()
+                                );
+
+                                mBinding.originText.setText(point.getName());
+
+                                mOrigin = origin;
+
+                                // Zoom map
+                                if(mMap!=null){
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 10));
+
+                                    drawMarker(origin, 0);
+                                }
+                            }
+                        }
+
+                        // Destination
+                        if(orderWithDatas.getPoints().size()>1) {
+                            Point point = orderWithDatas.getPoints().get(1);
+                            if(point!=null) {
+                                LatLng destination = new LatLng(
+                                        point.getLat(),
+                                        point.getLng()
+                                );
+
+                                mBinding.destinationText.setText(point.getName());
+
+                                mDestination = destination;
+                            }
+                        }
+
+                        // Retours
+                        if(orderWithDatas.getPoints().size()>2) {
+                            Point point = orderWithDatas.getPoints().get(2);
+                            if(point!=null) {
+                                LatLng retours = new LatLng(
+                                        point.getLat(),
+                                        point.getLng()
+                                );
+
+                                mBinding.retoursText.setText(point.getName());
+
+                                mRetours = retours;;
+                            }
+                        }
+
+                        // Distance & Delay
+                        getDirectionAndDistance("driving");
                     }
                 });
-
-        orderViewModel.getDestination().observe(getViewLifecycleOwner(), latLng -> {
-            mOrigin = latLng;
-            getDirectionAndDistance("driving");
-        });
-
-        orderViewModel.getOrigin().observe(getViewLifecycleOwner(), latLng -> {
-            mDestination = latLng;
-            getDirectionAndDistance("driving");
-        });
-
-        orderViewModel.getOriginText().observe(getViewLifecycleOwner(), label -> {
-            mBinding.originText.setText(label);
-        });
 
         orderViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), listRemoteLoaderResult -> {
             if(listRemoteLoaderResult == null){
@@ -249,59 +319,100 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             }
 
         });
-
-        orderViewModel.getCar().observe(getViewLifecycleOwner(), carAndModel -> {
-            ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
-
-            Picasso.get().load(Constants.BASE_URL + carAndModel.getCar().getImageUrl())
-                    .transform(new CircleTransform())
-                    .resize(360,180).into(imageView);
-
-            TextView textView1 = mBinding.getRoot().findViewById(R.id.carNameTextView);
-            textView1.setText(carAndModel.getCar().getName());
-
-            TextView textView2 = mBinding.getRoot().findViewById(R.id.carPlaceTextView);
-            textView2.setText(String.format(String.valueOf(R.string.car_place), carAndModel.getCar().getPlace()));
-        });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    private void drawMarker(LatLng point, int index) {
+        // Creating MarkerOptions
+        MarkerOptions options = new MarkerOptions();
 
-        Log.d(TAG + "Cycle", "onDestroyView");
+        // Setting the position of the marker
+        options.position(point);
+
+        Marker marker = null;
+        switch (index){
+            case 0: // Origin
+                marker = mOriginMarker;
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            break;
+            case 1: // Destination
+                marker = mDestinationMarker;
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            break;
+            case 2: // Retours
+                marker = mRetoursMarker;
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            break;
+        }
+
+        if(marker!=null){
+            // remove old marker
+            marker.remove();
+        }
+
+        // Add new marker to the Google Map Android API V2
+        marker = mMap.addMarker(options);
+
+        // Set marker
+        switch (index){
+            case 0: // Origin
+                mOriginMarker = marker;
+                break;
+            case 1: // Destination
+                mDestinationMarker = marker;
+                break;
+            case 2: // Retours
+                mRetoursMarker = marker;
+                break;
+        }
+    }
+
+    private void setupUi() {
+        mBinding.originEndIcon.setOnClickListener(
+                v -> {
+                    getDeviceLocation();
+                });
+
+        mBinding.originText.setOnClickListener(
+                v -> {
+                    List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+
+                    // Start the autocomplete intent.
+                    Intent intent = new Autocomplete.IntentBuilder(
+                            AutocompleteActivityMode.OVERLAY, fields)
+                            .build(requireContext());
+                    startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                });
+
+        mBinding.destinationText.setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                });
+
+        mBinding.destinationEndIcon.setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                });
+
+        mBinding.moreButton.setOnClickListener(
+                v -> {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                });
+
+        mBinding.getRoot().findViewById(R.id.carLayout).setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
+                });
+
+        mBinding.getRoot().findViewById(R.id.placeLayout).setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_place);
+                });
     }
 
     private void expandOrderDetails() {
         if(sheetBehavior != null && mOrigin != null && mDestination != null){
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
-
-                orderViewModel.setOriginText(place.getName());
-                orderViewModel.setOrigin(place.getLatLng());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.i(TAG, "The user canceled the operation.");
-            }
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
     }
 
     private void getDeviceLocation() {
@@ -326,8 +437,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                                 mLastKnownLocation.getLongitude()), 10));
 
                                 LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                orderViewModel.setOriginText(getString(R.string.my_location));
-                                orderViewModel.setOrigin(latLng);
+                                orderViewModel.setOrigin(getString(R.string.my_location), latLng);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
                         } else {
@@ -441,8 +551,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                         }
 
-                        String encodedString = googleDirectionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
-                        List<LatLng> list = decodePoly(encodedString);
+                        String encodedString = route.getOverviewPolyline().getPoints();
+                        List<LatLng> list = Utils.decodePoly(encodedString);
                         line = mMap.addPolyline(new PolylineOptions()
                                 .addAll(list)
                                 .width(5)
@@ -461,38 +571,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-    }
-    private List<LatLng> decodePoly(String encoded) {
-        List<LatLng> poly = new ArrayList<LatLng>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng( (((double) lat / 1E5)),
-                    (((double) lng / 1E5) ));
-            poly.add(p);
-        }
-
-        return poly;
     }
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {

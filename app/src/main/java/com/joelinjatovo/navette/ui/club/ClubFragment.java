@@ -73,7 +73,7 @@ public class ClubFragment extends BottomSheetDialogFragment {
 
 
         mBinding.confirmButton.setOnClickListener(v -> {
-            orderViewModel.setClub(mClubAndPoint);
+            orderViewModel.setClub(mClubAndPoint.getClub());
             NavHostFragment.findNavController(this).navigate(R.id.action_club_to_order);
         });
     }

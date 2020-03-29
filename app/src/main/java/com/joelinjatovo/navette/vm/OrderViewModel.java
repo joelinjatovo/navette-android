@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.model.Place;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.api.clients.RetrofitClient;
 import com.joelinjatovo.navette.api.responses.RetrofitResponse;
@@ -14,11 +15,15 @@ import com.joelinjatovo.navette.database.entity.Car;
 import com.joelinjatovo.navette.database.entity.CarAndModel;
 import com.joelinjatovo.navette.database.entity.Club;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
+import com.joelinjatovo.navette.database.entity.Order;
+import com.joelinjatovo.navette.database.entity.OrderWithDatas;
+import com.joelinjatovo.navette.database.entity.Point;
 import com.joelinjatovo.navette.database.repositories.CarRepository;
 import com.joelinjatovo.navette.models.RemoteLoaderResult;
 import com.joelinjatovo.navette.utils.Log;
 
 import java.io.CharArrayReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,19 +34,11 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     private static final String TAG = OrderViewModel.class.getSimpleName();
 
-    private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
+    private OrderWithDatas orderWithDatas;
 
-    private MutableLiveData<CarAndModel> car = new MutableLiveData<>();
-
-    private MutableLiveData<String> originText = new MutableLiveData<>();
-
-    private MutableLiveData<LatLng> origin = new MutableLiveData<>();
-
-    private MutableLiveData<LatLng> destination = new MutableLiveData<>();
+    private MutableLiveData<OrderWithDatas> orderWithDatasLiveData = new MutableLiveData<>();
 
     private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
-
-    private MutableLiveData<Integer> place = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult = new MutableLiveData<>();
 
@@ -49,10 +46,6 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
 
     public OrderViewModel(CarRepository carRepository) {
         this.carRepository = carRepository;
-    }
-
-    public MutableLiveData<ClubAndPoint> getClub() {
-        return club;
     }
 
     public MutableLiveData<List<CarAndModel>> getCars() {
@@ -63,11 +56,131 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         return retrofitResult;
     }
 
+    public void setOrigin(String name, LatLng latLng) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
 
-    public void setClub(ClubAndPoint item) {
-        club.setValue(item);
+        List<Point> points = orderWithDatas.getPoints();
+        if(points==null){
+            points = new ArrayList<>(3);
+        }
 
-        loadCars(item.getClub());
+        Point point = points.get(0);
+        if(point==null){
+            point = new Point();
+        }
+
+        point.setName(name);
+
+        if(latLng!=null){
+            point.setLat(latLng.latitude);
+            point.setLng(latLng.longitude);
+        }
+
+        points.set(0, point);
+
+        orderWithDatas.setPoints(points);
+    }
+
+    public void setOrigin(Place place) {
+        setOrigin(place.getName(), place.getLatLng());
+    }
+
+    public void setDestination(String name, LatLng latLng) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+
+        List<Point> points = orderWithDatas.getPoints();
+        if(points==null){
+            points = new ArrayList<>(3);
+        }
+
+        Point point = points.get(1);
+        if(point==null){
+            point = new Point();
+        }
+
+        point.setName(name);
+
+        if(latLng!=null){
+            point.setLat(latLng.latitude);
+            point.setLng(latLng.longitude);
+        }
+
+        points.set(1, point);
+
+        orderWithDatas.setPoints(points);
+
+    }
+
+    public void setReturn(String name, LatLng latLng) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+
+        List<Point> points = orderWithDatas.getPoints();
+        if(points==null){
+            points = new ArrayList<>(3);
+        }
+
+        Point point = points.get(2);
+        if(point==null){
+            point = new Point();
+        }
+
+        point.setName(name);
+
+        if(latLng!=null){
+            point.setLat(latLng.latitude);
+            point.setLng(latLng.longitude);
+        }
+
+        points.set(2, point);
+
+        orderWithDatas.setPoints(points);
+    }
+
+    public void setPlace(int place) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+
+        Order order = orderWithDatas.getOrder();
+        if(order==null){
+            order = new Order();
+        }
+        order.setPlace(place);
+        orderWithDatas.setOrder(order);
+
+    }
+
+    public void setCar(Car car) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+        orderWithDatas.setCar(car);
+
+    }
+
+    public void setClub(Club club, Point point) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+        orderWithDatas.setClub(club);
+        orderWithDatasLiveData.setValue(orderWithDatas);
+
+        LatLng latLng = new LatLng(
+            point.getLat(),
+            point.getLng()
+        );
+        setDestination(club.getName(), latLng);
+
+        loadCars(club);
+    }
+
+    public void setClub(Club club) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+        orderWithDatas.setClub(club);
+        orderWithDatasLiveData.setValue(orderWithDatas);
+
+        loadCars(club);
     }
 
     public void loadCars(Club club){
@@ -77,8 +190,17 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
         call.enqueue(this);
     }
 
+    public OrderWithDatas getOrderWithDatas() {
+        return orderWithDatas;
+    }
+
+    public MutableLiveData<OrderWithDatas> getOrderWithDatasLiveData() {
+        return orderWithDatasLiveData;
+    }
+
     @Override
-    public void onResponse(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call, Response<RetrofitResponse<List<CarAndModel>>> response) {
+    public void onResponse(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
+                           Response<RetrofitResponse<List<CarAndModel>>> response) {
         Log.e(TAG, response.toString());
         if (response.body() != null) {
             Log.e(TAG, response.body().toString());
@@ -86,7 +208,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
             for(int i = 0 ; i < response.body().getData().size(); i++){
                 items[i] = response.body().getData().get(i);
             }
-            carRepository.upsert(club.getValue().getClub(), this, items);
+
+            carRepository.upsert(orderWithDatas.getClub(), this, items);
 
             retrofitResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
         }else{
@@ -95,7 +218,8 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
     }
 
     @Override
-    public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call, @NonNull Throwable t) {
+    public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
+                          @NonNull Throwable t) {
         Log.e(TAG, t.getMessage(), t);
         retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
     }
@@ -108,45 +232,5 @@ public class OrderViewModel extends ViewModel implements Callback<RetrofitRespon
     @Override
     public void onUpsertSuccess(List<CarAndModel> items) {
         cars.setValue(items);
-    }
-
-    public MutableLiveData<LatLng> getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(LatLng origin) {
-        this.origin.setValue(origin);
-    }
-
-    public MutableLiveData<LatLng> getDestination() {
-        return destination;
-    }
-
-    public void setDestination(LatLng destination) {
-        this.destination.setValue(destination);
-    }
-
-    public MutableLiveData<String> getOriginText() {
-        return originText;
-    }
-
-    public void setOriginText(String originText) {
-        this.originText.setValue(originText);
-    }
-
-    public MutableLiveData<CarAndModel> getCar() {
-        return car;
-    }
-
-    public void setCar(CarAndModel car) {
-        this.car.setValue(car);
-    }
-
-    public MutableLiveData<Integer> getPlace() {
-        return place;
-    }
-
-    public void setPlace(Integer place) {
-        this.place.setValue(place);
     }
 }

@@ -209,6 +209,81 @@
 
                         </RelativeLayout>
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorAccent"
+                            android:layout_marginLeft="28dp"
+                            android:layout_marginStart="28dp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp">
+
+                            <ImageView
+                                android:id="@+id/retoursLocationIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:contentDescription="@string/image"
+                                android:tint="@color/colorAccent"
+                                android:src="@drawable/outline_place_black_24"
+                                android:layout_centerVertical="true"/>
+
+                            <LinearLayout
+                                android:id="@+id/retoursLinearLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toStartOf="@+id/retoursEndIcon"
+                                android:layout_toLeftOf="@+id/retoursEndIcon"
+                                android:layout_toEndOf="@+id/retoursLocationIcon"
+                                android:layout_toRightOf="@+id/retoursLocationIcon"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/retoursLabelText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/retours"
+                                    android:textAppearance="?attr/textAppearanceCaption"
+                                    android:textColor="@color/colorText"
+                                    android:paddingLeft="12dp"
+                                    android:paddingRight="12dp"/>
+
+                                <TextView
+                                    android:id="@+id/retoursText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/search"
+                                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                                    android:textColor="@color/colorText"
+                                    android:paddingLeft="12dp"
+                                    android:paddingRight="12dp"
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/retoursEndIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:contentDescription="@string/image"
+                                android:tint="@color/colorAlert"
+                                android:src="@drawable/baseline_list_black_24"
+                                android:layout_centerVertical="true"/>
+
+                        </RelativeLayout>
+
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
