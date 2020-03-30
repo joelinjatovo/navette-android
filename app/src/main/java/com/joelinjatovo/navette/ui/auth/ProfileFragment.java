@@ -12,7 +12,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.joelinjatovo.navette.R;
@@ -72,7 +74,7 @@ public class ProfileFragment extends Fragment implements NavigationView.OnNaviga
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.sync:
-                // Nothung
+                NavHostFragment.findNavController(this).navigate(R.id.orders_fragment);
             break;
             case R.id.logout:
                 loginViewModel.setLoginResult(null);

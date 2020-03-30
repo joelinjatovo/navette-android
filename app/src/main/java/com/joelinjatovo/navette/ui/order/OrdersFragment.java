@@ -1,56 +1,46 @@
-package com.joelinjatovo.navette.ui.notification;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+package com.joelinjatovo.navette.ui.order;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.database.entity.Notification;
+import com.joelinjatovo.navette.database.entity.OrderWithDatas;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.databinding.FragmentNotificationBinding;
-import com.joelinjatovo.navette.models.RemoteLoaderResult;
-import com.joelinjatovo.navette.ui.club.ClubRecyclerViewAdapter;
-import com.joelinjatovo.navette.ui.club.ClubsFragment;
-import com.joelinjatovo.navette.utils.Log;
+import com.joelinjatovo.navette.databinding.FragmentOrdersBinding;
+import com.joelinjatovo.navette.ui.notification.NotificationRecyclerViewAdapter;
 import com.joelinjatovo.navette.vm.AuthViewModel;
-import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.NotificationViewModel;
+import com.joelinjatovo.navette.vm.OrdersViewModel;
 
-import java.util.List;
+public class OrdersFragment extends Fragment {
 
-public class NotificationFragment extends Fragment {
+    private FragmentOrdersBinding mBinding;
 
-    private NotificationViewModel mViewModel;
+    private OrderRecyclerViewAdapter mAdapter;
 
-    private FragmentNotificationBinding mBinding;
-
-    private NotificationRecyclerViewAdapter mAdapter;
+    private OrdersViewModel mViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_orders, container, false);
 
-        // Set the adapter
-        mAdapter = new NotificationRecyclerViewAdapter(mListener);
+        mAdapter = new OrderRecyclerViewAdapter(mListener);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -63,9 +53,9 @@ public class NotificationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(NotificationViewModel.class);
+                new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
 
-        mViewModel.getNotificationsLiveData().observe(getViewLifecycleOwner(),
+        mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -86,7 +76,7 @@ public class NotificationFragment extends Fragment {
                     }
 
                     // Reset remote result
-                    mViewModel.setNotificationsLiveData(null);
+                    mViewModel.setOrdersLiveData(null);
                 });
 
         AuthViewModel authViewModel = new ViewModelProvider(requireActivity(),
@@ -128,12 +118,12 @@ public class NotificationFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
-        public void onListFragmentInteraction(View v, Notification item) {
+        public void onListFragmentInteraction(View v, OrderWithDatas item) {
         }
     };
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, Notification item);
+        void onListFragmentInteraction(View v, OrderWithDatas item);
     }
 
 }

@@ -29,6 +29,8 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private static OrderViewModel orderViewModel;
 
+    private static OrdersViewModel ordersViewModel;
+
     private static AuthViewModel authViewModel;
 
     public MyViewModelFactory(Application application){
@@ -59,6 +61,11 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
                 orderViewModel = new OrderViewModel(CarRepository.getInstance(application));
             }
             return (T) orderViewModel;
+        }  else if (modelClass.isAssignableFrom(OrdersViewModel.class)) {
+            if(ordersViewModel == null){
+                ordersViewModel = new OrdersViewModel();
+            }
+            return (T) ordersViewModel;
         } else if (modelClass.isAssignableFrom(AuthViewModel.class)) {
             if(authViewModel == null){
                 authViewModel = new AuthViewModel(UserRepository.getInstance(application));
