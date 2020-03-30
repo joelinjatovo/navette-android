@@ -22,6 +22,7 @@ public class OrderWithDatas {
     @Embedded
     private Car car;
 
+    @SerializedName("points")
     @Relation(
             parentColumn = "id",
             entityColumn = "point_id",

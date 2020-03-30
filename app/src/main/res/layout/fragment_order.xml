@@ -11,6 +11,12 @@
         <variable name="origin" type="com.joelinjatovo.navette.database.entity.Point" />
         <variable name="destination" type="com.joelinjatovo.navette.database.entity.Point" />
         <variable name="retours" type="com.joelinjatovo.navette.database.entity.Point" />
+
+        <variable name="isLoadingDirection" type="boolean" />
+        <variable name="car" type="com.joelinjatovo.navette.database.entity.Car" />
+        <variable name="place" type="int" />
+        <variable name="distance" type="String" />
+        <variable name="delay" type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -303,12 +309,19 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/booking"
-            app:layout_anchor="@id/bottom_sheet"
+            app:layout_anchor="@id/bottom_sheets"
             app:layout_anchorGravity="right"
             android:visibility="@{showMoreButton?View.VISIBLE:View.GONE}"/>
 
         <!-- Adding bottom sheet  -->
-        <include layout="@layout/bottom_sheet_order" />
+        <include
+            layout="@layout/bottom_sheet_order"
+            android:id="@+id/bottom_sheets"
+            app:isLoadingDirection="@{isLoadingDirection}"
+            app:car="@{car}"
+            app:place="@{place}"
+            app:distance="@{distance}"
+            app:delay="@{delay}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

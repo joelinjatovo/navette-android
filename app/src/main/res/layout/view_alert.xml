@@ -10,10 +10,15 @@
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/image"
         app:srcCompat="@drawable/outline_error_outline_24"
-        android:tint="@color/colorIcon"/>
+        android:tint="@color/colorIcon"
+        android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/title"
@@ -23,7 +28,8 @@
         android:layout_toEndOf="@+id/icon"
         android:layout_toStartOf="@id/button"
         android:layout_toLeftOf="@id/button"
-        android:textColor="@color/colorText"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:text="@string/title"/>
 
     <TextView
@@ -35,7 +41,7 @@
         android:layout_toEndOf="@+id/icon"
         android:layout_toStartOf="@id/button"
         android:layout_toLeftOf="@id/button"
-        android:textColor="@color/colorText"
+        android:textColor="@color/white"
         android:text="@string/subtitle"/>
 
     <Button

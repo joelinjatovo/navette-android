@@ -189,8 +189,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupBottomSheet() {
-        LinearLayout bottom_sheet = mBinding.getRoot().findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -221,23 +220,16 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                     // Order
                     if(orderWithDatas.getOrder()!=null) {
-                        TextView textView = mBinding.getRoot().findViewById(R.id.placeCountTextView);
-                        textView.setText(String.format(getString(R.string.person_count), orderWithDatas.getOrder().getPlace()));
+                        mBinding.setPlace(orderWithDatas.getOrder().getPlace());
                     }
 
                     // Car
                     if(orderWithDatas.getCar()!=null) {
-                        ImageView imageView = mBinding.getRoot().findViewById(R.id.carImageView);
-
                         Picasso.get().load(Constants.BASE_URL + orderWithDatas.getCar().getImageUrl())
                                 .transform(new CircleTransform())
-                                .resize(360, 180).into(imageView);
+                                .resize(360, 180).into(mBinding.bottomSheets.carImageView);
 
-                        TextView textView1 = mBinding.getRoot().findViewById(R.id.carNameTextView);
-                        textView1.setText(orderWithDatas.getCar().getName());
-
-                        TextView textView2 = mBinding.getRoot().findViewById(R.id.carPlaceTextView);
-                        textView2.setText(String.format(String.valueOf(R.string.car_place), orderWithDatas.getCar().getPlace()));
+                        mBinding.setCar(orderWithDatas.getCar());
                     }
 
                     // Points
@@ -423,7 +415,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private void expandOrderDetails() {
         if(sheetBehavior != null && mOrigin != null && mDestination != null){
+            mBinding.setIsLoadingDirection(true);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }else{
+            mBinding.setIsLoadingDirection(false);
         }
     }
 
@@ -546,10 +541,15 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 type
         );
 
+        // Show loader
+        expandOrderDetails();
+
         call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
             public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
-                expandOrderDetails();
+                // Hide loader
+                mBinding.setIsLoadingDirection(false);
+
                 try {
                     //Remove previous line from map
                     if (line != null) {
@@ -565,11 +565,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             String distance = leg.getDistance().getText();
                             String time = leg.getDuration().getText();
 
-                            TextView textView1 = mBinding.getRoot().findViewById(R.id.distanceValue);
-                            textView1.setText(distance);
-
-                            TextView textView2 = mBinding.getRoot().findViewById(R.id.delayValue);
-                            textView2.setText(time);
+                            mBinding.setDistance(distance);
+                            mBinding.setDelay(time);
 
                             Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
 
@@ -591,6 +588,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
+                mBinding.setIsLoadingDirection(false);
                 Log.e(TAG, t.toString(), t);
             }
         });

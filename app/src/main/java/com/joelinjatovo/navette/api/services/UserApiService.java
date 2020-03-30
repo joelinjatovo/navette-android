@@ -16,7 +16,7 @@ public interface UserApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/register")
-    Call<RetrofitResponse<UserWithRoles>>  register(@Body Register register);
+    Call<RetrofitResponse<UserWithRoles>> register(@Body Register register);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/user/position")
