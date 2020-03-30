@@ -90,7 +90,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private Polyline line;
 
+    private LatLng mOldOrigin;
+
     private LatLng mOrigin;
+
+    private LatLng mOldDestination;
 
     private LatLng mDestination;
 
@@ -512,6 +516,25 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         if(mDestination == null ){
             return;
         }
+
+        if(mOldOrigin != null && mOrigin.latitude == mOldOrigin.latitude && mOrigin.longitude == mOldOrigin.longitude){
+            return;
+        }
+
+        if(mOldDestination != null  && mDestination.latitude == mOldDestination.latitude && mDestination.longitude == mOldDestination.longitude){
+            return;
+        }
+
+        Log.e(TAG, "googleDirection = getDirection" );
+        Log.e(TAG, "mOldOrigin = " + mOldOrigin );
+        Log.e(TAG, "mOrigin = " + mOrigin );
+        Log.e(TAG, "-----------------------" );
+        Log.e(TAG, "mOldDestination = " + mOldDestination );
+        Log.e(TAG, "mDestination = " + mDestination );
+
+        mOldOrigin = mOrigin;
+
+        mOldDestination = mDestination;
 
         String url = "https://maps.googleapis.com/maps/";
         Retrofit retrofit = new Retrofit.Builder()
