@@ -38,6 +38,10 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
         return loginFormState;
     }
 
+    public void setLoginResult(RemoteLoaderResult<UserWithRoles> result) {
+        loginResult.setValue(result);
+    }
+
     public LiveData<RemoteLoaderResult<UserWithRoles>> getLoginResult() {
         return loginResult;
     }

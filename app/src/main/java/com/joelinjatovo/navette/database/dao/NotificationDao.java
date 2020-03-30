@@ -18,25 +18,25 @@ import java.util.List;
 @Dao
 public abstract class NotificationDao extends BaseDao<Notification> {
 
-    @Query("SELECT * FROM clubs")
+    @Query("SELECT * FROM notifications")
     public abstract List<Notification> find();
 
-    @Query("SELECT * FROM clubs WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM notifications WHERE id = :id LIMIT 1")
     public abstract Notification find(Long id);
 
-    @Query("SELECT * FROM clubs WHERE id IN (:ids)")
+    @Query("SELECT * FROM notifications WHERE id IN (:ids)")
     public abstract List<Notification> find(Long... ids);
 
-    @Query("SELECT * FROM clubs")
+    @Query("SELECT * FROM notifications")
     public abstract LiveData<List<Notification>> load();
 
-    @Query("SELECT * FROM clubs WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM notifications WHERE id = :id LIMIT 1")
     public abstract LiveData<Notification> load(Long id);
 
-    @Query("SELECT * FROM clubs WHERE id IN (:ids)")
+    @Query("SELECT * FROM notifications WHERE id IN (:ids)")
     public abstract LiveData<List<Notification>> load(Long[] ids);
 
-    @Query("SELECT COUNT(clubs.id) FROM clubs")
+    @Query("SELECT COUNT(notifications.id) FROM notifications")
     public abstract int count();
 
     @Transaction

@@ -80,7 +80,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
-        final View root = view;
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
@@ -93,8 +92,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        authViewModel.refuseAuthentication();
-                        navController.popBackStack(R.id.nav_host_fragment, false);
+                        //authViewModel.logout(requireContext());
+                        navController.popBackStack();
                     }
                 });
 
@@ -124,10 +123,12 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     progressDialog.hide();
 
                     if (loginResult.getError() != null) {
+                        Log.d(TAG, "'loginResult.getError()'");
                         Snackbar.make(mBinding.getRoot(), loginResult.getError(), Snackbar.LENGTH_SHORT).show();
                     }
 
                     if (loginResult.getSuccess() != null) {
+                        Log.d(TAG, "'loginResult.getSuccess()'");
                         userViewModel.insertUserWithRoles(upsertCallback, loginResult.getSuccess());
                     }
                 });

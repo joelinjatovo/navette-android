@@ -137,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
                 authenticationState -> {
                     switch (authenticationState) {
                         case AUTHENTICATED:
+                            Log.d(TAG, "'AUTHENTICATED'");
                             if(authViewModel.getUser() != null){
                                 connectPrivatePush(authViewModel.getUser());
                             }
-                            Log.d(TAG, "'AUTHENTICATED'");
                             break;
                         case INVALID_AUTHENTICATION:
                         case UNAUTHENTICATED:
@@ -168,19 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             switch (destination.getId()){
-                case R.id.profile_fragment:
-                case R.id.login_fragment:
-                case R.id.register_fragment:
-                case R.id.verify_phone_fragment:
-                case R.id.clubs_fragment:
                 case R.id.order_fragment:
                     navView.setVisibility(View.GONE);
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    //requestWindowFeature( Window.FEATURE_NO_TITLE );
-                    break;
-                case R.id.main_navigation:
-                case R.id.navigation_home:
-                    navView.setVisibility(View.VISIBLE);
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     //requestWindowFeature( Window.FEATURE_NO_TITLE );
                     break;

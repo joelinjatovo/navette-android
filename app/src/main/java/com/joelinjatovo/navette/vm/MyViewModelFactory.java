@@ -31,8 +31,6 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private static AuthViewModel authViewModel;
 
-    private static LoginViewModel loginViewModel;
-
     public MyViewModelFactory(Application application){
         this.application = application;
     }
@@ -45,10 +43,7 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
             return (T) new RegisterViewModel(RegisterRepository.getInstance(new RegisterDataSource()));
         } else if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-            if(loginViewModel == null){
-                loginViewModel = new LoginViewModel(LoginRepository.getInstance(new LoginDataSource()));
-            }
-            return (T) loginViewModel;
+            return (T) new LoginViewModel(LoginRepository.getInstance(new LoginDataSource()));
         } else if (modelClass.isAssignableFrom(NotificationViewModel.class)) {
             if(notificationViewModel == null){
                 notificationViewModel = new NotificationViewModel(NotificationRepository.getInstance(application));

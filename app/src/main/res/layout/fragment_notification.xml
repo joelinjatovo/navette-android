@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="@{showError||isLoading?View.GONE:View.VISIBLE}">
+            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"

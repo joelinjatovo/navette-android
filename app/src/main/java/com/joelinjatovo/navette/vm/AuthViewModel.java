@@ -1,5 +1,7 @@
 package com.joelinjatovo.navette.vm;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -7,6 +9,7 @@ import com.joelinjatovo.navette.database.callback.FindCallback;
 import com.joelinjatovo.navette.database.entity.User;
 import com.joelinjatovo.navette.database.repositories.UserRepository;
 import com.joelinjatovo.navette.utils.Log;
+import com.joelinjatovo.navette.utils.Preferences;
 
 import java.util.List;
 
@@ -58,8 +61,9 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
         }
     }
 
-    public void refuseAuthentication() {
-        authenticationState.setValue(AuthenticationState.UNAUTHENTICATED);
+    public void logout(Context context) {
+        Preferences.Auth.setCurrentUser(context, 0L);
+        authenticate(null);
     }
 
     private boolean isTokenExpired(User user) {

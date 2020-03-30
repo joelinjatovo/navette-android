@@ -7,7 +7,7 @@
             android:icon="@drawable/outline_my_location_black_24"
             android:title="@string/histories" />
         <item
-            android:id="@+id/sync"
+            android:id="@+id/location"
             android:icon="@drawable/outline_my_location_black_24"
             android:title="@string/settings" />
         <item

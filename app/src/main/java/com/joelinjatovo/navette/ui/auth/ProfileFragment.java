@@ -2,6 +2,7 @@ package com.joelinjatovo.navette.ui.auth;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,13 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.navigation.NavigationView;
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.databinding.FragmentProfileBinding;
 import com.joelinjatovo.navette.utils.Log;
 import com.joelinjatovo.navette.vm.AuthViewModel;
+import com.joelinjatovo.navette.vm.LoginViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = ProfileFragment.class.getSimpleName();
 
@@ -27,8 +30,11 @@ public class ProfileFragment extends Fragment {
 
     private AuthViewModel authViewModel;
 
+    private LoginViewModel loginViewModel;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
+
         return mBinding.getRoot();
     }
 
@@ -36,7 +42,11 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        authViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
+        loginViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(LoginViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
@@ -49,17 +59,31 @@ public class ProfileFragment extends Fragment {
                         case INVALID_AUTHENTICATION:
                         case UNAUTHENTICATED:
                             Log.d(TAG, "'UNAUTHENTICATED'");
+                            mBinding.setUser(null);
                             navController.navigate(R.id.login_fragment);
                             break;
                     }
                 });
 
-        //User user = authViewModel.getUser();
-        //authViewModel.isAuthenticated(Preferences.Auth.getCurrentUser(requireContext()));
+        mBinding.navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.sync:
+                // Nothung
+            break;
+            case R.id.logout:
+                loginViewModel.setLoginResult(null);
+                authViewModel.logout(requireContext());
+            break;
+        }
+        return false;
     }
 
     private void showWelcomeMessage() {
-        Log.d(TAG, "OK");
+        Log.d(TAG, "showWelcomeMessage()");
         mBinding.setUser(authViewModel.getUser());
     }
 }
