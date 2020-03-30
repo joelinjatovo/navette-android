@@ -13,6 +13,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.joelinjatovo.navette.database.converter.ArrayConverter;
 import com.joelinjatovo.navette.database.converter.DateConverter;
+import com.joelinjatovo.navette.database.converter.ObjectConverter;
 import com.joelinjatovo.navette.database.dao.CarDao;
 import com.joelinjatovo.navette.database.dao.ClubDao;
 import com.joelinjatovo.navette.database.dao.NotificationDao;
@@ -44,7 +45,7 @@ import com.joelinjatovo.navette.database.entity.UserRole;
         UserPoint.class,
         UserRole.class
 },version = 1, exportSchema = false)
-@TypeConverters({DateConverter.class, ArrayConverter.class})
+@TypeConverters({DateConverter.class, ArrayConverter.class, ObjectConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sInstance;

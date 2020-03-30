@@ -33,7 +33,7 @@ public class Notification {
 
     @SerializedName("data")
     @ColumnInfo(name = "data")
-    private String data;
+    private Object data;
 
     @SerializedName("read_at")
     @ColumnInfo(name = "read_at")
@@ -75,11 +75,11 @@ public class Notification {
         this.notifiableId = notifiableId;
     }
 
-    public String getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

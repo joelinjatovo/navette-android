@@ -36,7 +36,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        holder.mTitleTextView.setText(mItems.get(position).getData());
+        holder.mTitleTextView.setText(mItems.get(position).getData().toString());
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
