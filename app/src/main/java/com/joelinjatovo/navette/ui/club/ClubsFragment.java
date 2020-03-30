@@ -130,6 +130,11 @@ public class ClubsFragment extends BottomSheetDialogFragment {
                 return true;
             }
         });
+
+        mBinding.backButton.setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
+                });
     }
 
     private void search(String search){

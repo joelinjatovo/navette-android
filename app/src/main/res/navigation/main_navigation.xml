@@ -124,6 +124,18 @@
             android:label="Choose Destination"
             tools:layout="@layout/fragment_clubs" />
 
+        <dialog
+            android:id="@+id/club_fragment"
+            android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
+            tools:layout="@layout/fragment_club" >
+
+            <action
+                android:id="@+id/action_club_to_order"
+                app:popUpTo="@id/order_fragment"
+                app:popUpToInclusive="false"/>
+
+        </dialog>
+
         <fragment
             android:id="@+id/search_fragment"
             android:name="com.joelinjatovo.navette.ui.order.SearchFragment"
@@ -139,18 +151,6 @@
             android:id="@+id/place_fragment"
             android:name="com.joelinjatovo.navette.ui.order.PlaceFragment"
             tools:layout="@layout/fragment_place" />
-
-        <dialog
-            android:id="@+id/club_fragment"
-            android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
-            tools:layout="@layout/fragment_club" >
-
-            <action
-                android:id="@+id/action_club_to_order"
-                app:popUpTo="@id/order_fragment"
-                app:popUpToInclusive="false"/>
-
-        </dialog>
 
     </navigation>
 

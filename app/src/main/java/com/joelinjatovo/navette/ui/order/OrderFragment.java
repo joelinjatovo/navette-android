@@ -447,6 +447,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 orderViewModel.setOrigin(getString(R.string.my_location), latLng);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
