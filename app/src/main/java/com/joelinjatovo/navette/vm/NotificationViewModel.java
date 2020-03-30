@@ -65,4 +65,8 @@ public class NotificationViewModel extends ViewModel {
     public MutableLiveData<RemoteLoaderResult<List<Notification>>> getNotificationsLiveData() {
         return notificationsLiveData;
     }
+
+    public void setNotificationsLiveData(RemoteLoaderResult<List<Notification>> result) {
+        notificationsLiveData.setValue(result);
+    }
 }

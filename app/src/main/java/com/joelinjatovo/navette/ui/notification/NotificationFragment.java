@@ -44,10 +44,6 @@ public class NotificationFragment extends Fragment {
 
     private NotificationRecyclerViewAdapter mAdapter;
 
-    public static NotificationFragment newInstance() {
-        return new NotificationFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -89,6 +85,8 @@ public class NotificationFragment extends Fragment {
                         mAdapter.setItems(result.getSuccess());
                     }
 
+                    // Reset remote result
+                    mViewModel.setNotificationsLiveData(null);
                 });
 
         AuthViewModel authViewModel = new ViewModelProvider(requireActivity(),

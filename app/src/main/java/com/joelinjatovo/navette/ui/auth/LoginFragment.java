@@ -131,6 +131,9 @@ public class LoginFragment extends Fragment implements TextWatcher {
                         Log.d(TAG, "'loginResult.getSuccess()'");
                         userViewModel.insertUserWithRoles(upsertCallback, loginResult.getSuccess());
                     }
+
+                    // Reset remote result
+                    loginViewModel.setLoginResult(null);
                 });
 
         mBinding.phoneEditText.addTextChangedListener(this);
