@@ -8,6 +8,7 @@
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
         <variable name="isUnauthenticated" type="boolean" />
+        <variable name="showError" type="boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -18,10 +19,46 @@
         tools:context="com.joelinjatovo.navette.ui.MainActivity">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loading_notification"
+                android:gravity="center_horizontal" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <com.joelinjatovo.navette.views.LoaderErrorView
+            android:id="@+id/loaderErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{showError?View.VISIBLE:View.GONE}"
+            app:mTitle="@string/loader_error_title"
+            app:mSubtitle="@string/loader_error_subtitle"/>
+
+        <com.joelinjatovo.navette.views.AuthErrorView
+            android:id="@+id/authErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
+
+        <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="@{showError||isLoading?View.GONE:View.VISIBLE}">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
@@ -36,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/viewholder_club" />
+                tools:listitem="@layout/viewholder_notification" />
 
         </LinearLayout>
 

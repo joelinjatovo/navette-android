@@ -23,7 +23,7 @@ import retrofit2.Response;
 
 public class NotificationViewModel extends ViewModel {
 
-    private static final String TAG = ClubViewModel.class.getSimpleName();
+    private static final String TAG = NotificationViewModel.class.getSimpleName();
 
     private final NotificationRepository notificationRepository;
 
@@ -38,7 +38,7 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void load(User user){
-        Log.d(TAG, "service.getClubs()");
+        Log.d(TAG, "service.load()");
         NotificationApiService service = RetrofitClient.getInstance().create(NotificationApiService.class);
         Call<RetrofitResponse<List<Notification>>> call = service.getAll(user.getAuthorizationToken());
         call.enqueue(new Callback<RetrofitResponse<List<Notification>>>() {

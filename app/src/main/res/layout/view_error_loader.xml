@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:contentDescription="@string/image"
-            android:src="@drawable/outline_wifi_off_black_48"
+            android:src="@drawable/outline_error_outline_black_48"
             android:tint="@color/colorIcon" />
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="@string/internet_error_title"
+            android:text="@string/loader_error_title"
             android:textColor="@color/black" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="@string/internet_error_subtitle"
+            android:text="@string/loader_error_subtitle"
             android:textColor="@color/gray" />
 
     </LinearLayout>

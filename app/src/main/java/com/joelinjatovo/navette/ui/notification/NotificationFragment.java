@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
@@ -60,8 +63,8 @@ public class NotificationFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(NotificationViewModel.class);
@@ -74,9 +77,15 @@ public class NotificationFragment extends Fragment {
 
                     if(result.getError()!=null){
                         // Error loading
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(true);
+                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
 
                     if(result.getSuccess()!=null){
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(false);
                         mAdapter.setItems(result.getSuccess());
                     }
 
@@ -90,12 +99,34 @@ public class NotificationFragment extends Fragment {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         User user = authViewModel.getUser();
                         mViewModel.load(user);
+                        mBinding.setIsLoading(true);
+                        mBinding.setShowError(false);
                         mBinding.setIsUnauthenticated(false);
                     }else{
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(false);
                         mBinding.setIsUnauthenticated(true);
                     }
                 });
 
+        mBinding.loaderErrorView.getButton().setOnClickListener(
+                v -> {
+                    User user = authViewModel.getUser();
+                    if(user!=null){
+                        mBinding.setIsLoading(true);
+                        mBinding.setShowError(false);
+                        mViewModel.load(user);
+                    }else{
+                        mBinding.setIsLoading(false);
+                    }
+                }
+        );
+
+        mBinding.authErrorView.getButton().setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.login_fragment);
+                }
+        );
     }
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {

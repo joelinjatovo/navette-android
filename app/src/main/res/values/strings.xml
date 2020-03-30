@@ -95,5 +95,8 @@
     <string name="facebook_app_id">app_id</string>
     <string name="fb_login_protocol_scheme">fb_app_id</string>
     <string name="retours">Retours</string>
+    <string name="loader_error_title">Erreur de chargement</string>
+    <string name="loader_error_subtitle">Une erreur s\'est produite.</string>
+    <string name="loading_notification">Chargement des notifications</string>
 
 </resources>
