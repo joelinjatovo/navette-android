@@ -12,6 +12,7 @@ import com.joelinjatovo.navette.api.repositories.LoginRepository;
 import com.joelinjatovo.navette.api.repositories.RegisterRepository;
 import com.joelinjatovo.navette.database.repositories.CarRepository;
 import com.joelinjatovo.navette.database.repositories.ClubRepository;
+import com.joelinjatovo.navette.database.repositories.NotificationRepository;
 import com.joelinjatovo.navette.database.repositories.UserRepository;
 
 /**
@@ -21,6 +22,8 @@ import com.joelinjatovo.navette.database.repositories.UserRepository;
 public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private Application application;
+
+    private static NotificationViewModel notificationViewModel;
 
     private static ClubViewModel clubViewModel;
 
@@ -46,7 +49,12 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
                 loginViewModel = new LoginViewModel(LoginRepository.getInstance(new LoginDataSource()));
             }
             return (T) loginViewModel;
-        } else if (modelClass.isAssignableFrom(ClubViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(NotificationViewModel.class)) {
+            if(notificationViewModel == null){
+                notificationViewModel = new NotificationViewModel(NotificationRepository.getInstance(application));
+            }
+            return (T) notificationViewModel;
+        }  else if (modelClass.isAssignableFrom(ClubViewModel.class)) {
             if(clubViewModel == null){
                 clubViewModel = new ClubViewModel(ClubRepository.getInstance(application));
             }

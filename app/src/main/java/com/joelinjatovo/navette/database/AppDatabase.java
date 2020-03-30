@@ -15,6 +15,7 @@ import com.joelinjatovo.navette.database.converter.ArrayConverter;
 import com.joelinjatovo.navette.database.converter.DateConverter;
 import com.joelinjatovo.navette.database.dao.CarDao;
 import com.joelinjatovo.navette.database.dao.ClubDao;
+import com.joelinjatovo.navette.database.dao.NotificationDao;
 import com.joelinjatovo.navette.database.dao.OrderPointDao;
 import com.joelinjatovo.navette.database.dao.PointDao;
 import com.joelinjatovo.navette.database.dao.UserDao;
@@ -54,6 +55,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CarDao carDao();
 
     public abstract ClubDao clubDao();
+
+    public abstract NotificationDao notificationDao();
 
     public abstract OrderPointDao orderPointDao();
 
