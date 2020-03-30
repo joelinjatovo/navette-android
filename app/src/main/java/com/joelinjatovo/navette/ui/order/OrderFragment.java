@@ -525,13 +525,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
-        Log.e(TAG, "googleDirection = getDirection" );
-        Log.e(TAG, "mOldOrigin = " + mOldOrigin );
-        Log.e(TAG, "mOrigin = " + mOrigin );
-        Log.e(TAG, "-----------------------" );
-        Log.e(TAG, "mOldDestination = " + mOldDestination );
-        Log.e(TAG, "mDestination = " + mDestination );
-
         mOldOrigin = mOrigin;
 
         mOldDestination = mDestination;
