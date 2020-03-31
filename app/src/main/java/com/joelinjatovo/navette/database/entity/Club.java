@@ -37,7 +37,7 @@ public class Club {
     private String imageUrl;
 
     @ColumnInfo(name = "point_id")
-    private Long pointId;
+    private String pointId;
 
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
@@ -70,11 +70,11 @@ public class Club {
         this.createdAt = createdAt;
     }
 
-    public Long getPointId() {
+    public String getPointId() {
         return pointId;
     }
 
-    public void setPointId(Long pointId) {
+    public void setPointId(String pointId) {
         this.pointId = pointId;
     }
 

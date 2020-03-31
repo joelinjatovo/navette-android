@@ -67,11 +67,11 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
     }
 
     private boolean isTokenExpired(User user) {
-        return false; // user.getTokenExpires() == null || System.currentTimeMillis() > user.getTokenExpires();
+        return user.getTokenExpires() == null ||  ( System.currentTimeMillis() / 1000 ) > user.getTokenExpires();
     }
 
     private boolean isRefreshTokenExpired(User user) {
-        return  System.currentTimeMillis() > user.getRefreshTokenExpires();
+        return  ( System.currentTimeMillis() / 1000 ) > user.getRefreshTokenExpires();
     }
 
     @Override

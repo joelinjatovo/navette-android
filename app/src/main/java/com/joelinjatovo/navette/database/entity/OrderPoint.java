@@ -27,7 +27,7 @@ public class OrderPoint {
     private Long orderId;
 
     @ColumnInfo(name = "point_id")
-    private Long pointId;
+    private String pointId;
 
     public Long getId() {
         return id;
@@ -61,11 +61,11 @@ public class OrderPoint {
         this.orderId = orderId;
     }
 
-    public Long getPointId() {
+    public String getPointId() {
         return pointId;
     }
 
-    public void setPointId(Long pointId) {
+    public void setPointId(String pointId) {
         this.pointId = pointId;
     }
 }

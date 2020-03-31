@@ -1,5 +1,6 @@
 package com.joelinjatovo.navette.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,14 +8,16 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity(
     tableName = "points"
 )
 public class Point {
-    @PrimaryKey
     @SerializedName("id")
-    private Long id;
+    @PrimaryKey
+    @NonNull
+    private String id = UUID.randomUUID().toString();
 
     @SerializedName("name")
     @ColumnInfo(name = "name")
@@ -40,11 +43,11 @@ public class Point {
     @ColumnInfo(name = "created_at")
     private Date createdAt;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

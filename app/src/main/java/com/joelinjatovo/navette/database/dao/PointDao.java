@@ -19,19 +19,19 @@ public abstract class PointDao extends BaseDao<Point> {
     public abstract List<Point> find();
 
     @Query("SELECT * FROM points WHERE id = :id LIMIT 1")
-    public abstract Point find(Long id);
+    public abstract Point find(String id);
 
     @Query("SELECT * FROM points WHERE id IN (:ids)")
-    public abstract List<Point> find(Long... ids);
+    public abstract List<Point> find(String... ids);
 
     @Query("SELECT * FROM points")
     public abstract LiveData<List<Point>> load();
 
     @Query("SELECT * FROM points WHERE id = :id LIMIT 1")
-    public abstract LiveData<Point> load(Long id);
+    public abstract LiveData<Point> load(String id);
 
     @Query("SELECT * FROM points WHERE id IN (:ids)")
-    public abstract LiveData<List<Point>> load(Long[] ids);
+    public abstract LiveData<List<Point>> load(String[] ids);
 
     @Query("SELECT COUNT(points.id) FROM points")
     public abstract int count();

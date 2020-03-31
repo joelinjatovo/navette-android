@@ -68,11 +68,11 @@ public abstract class ClubDao extends BaseDao<Club> {
 
     @Transaction
     public void insertClubAndPoint(Club club, Point point) {
-        Long pointId = _insertPoint(point);
-        club.setPointId(pointId);
+        _insertPoint(point);
+        club.setPointId(point.getId());
         Long clubId = insert(club);
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract Long _insertPoint(Point point);
+    abstract void _insertPoint(Point point);
 }

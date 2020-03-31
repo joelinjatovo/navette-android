@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -23,6 +25,7 @@ import com.joelinjatovo.navette.R;
 import com.joelinjatovo.navette.database.entity.ClubAndPoint;
 import com.joelinjatovo.navette.databinding.FragmentClubBinding;
 import com.joelinjatovo.navette.utils.Constants;
+import com.joelinjatovo.navette.utils.UiUtils;
 import com.joelinjatovo.navette.vm.ClubViewModel;
 import com.joelinjatovo.navette.vm.MyViewModelFactory;
 import com.joelinjatovo.navette.vm.OrderViewModel;
@@ -53,11 +56,20 @@ public class ClubFragment extends BottomSheetDialogFragment {
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
+                CoordinatorLayout coordinatorLayout = d.findViewById(R.id.coordinatorLayout);
+                FrameLayout.LayoutParams params = null;
+                if (coordinatorLayout != null) {
+                    params = (FrameLayout.LayoutParams) coordinatorLayout.getLayoutParams();
+                    params.height = UiUtils.getScreenHeight();
+                    coordinatorLayout.setLayoutParams(params);
+                }
+
                 FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
                     BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
                     sheetBehavior.setSkipCollapsed(true);
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    //sheetBehavior.setPeekHeight(UiUtils.getScreenHeight(), true);
                 }
             }
         });
