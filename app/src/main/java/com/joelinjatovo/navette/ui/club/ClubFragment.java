@@ -43,14 +43,6 @@ public class ClubFragment extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_club, container, false);
-
-        return mBinding.getRoot();
-    }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -71,6 +63,13 @@ public class ClubFragment extends BottomSheetDialogFragment {
         });
 
         return dialog;
+    }
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_club, container, false);
+
+        return mBinding.getRoot();
     }
 
     @Override

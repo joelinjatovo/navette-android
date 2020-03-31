@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:name="com.joelinjatovo.navette.ui.main.order.ClubsFragment"
-        tools:context="com.joelinjatovo.navette.ui.MainActivity">
+        android:name="ui.club.ClubsFragment"
+        tools:context="ui.MainActivity">
 
         <LinearLayout
             android:id="@+id/linearLayout"
