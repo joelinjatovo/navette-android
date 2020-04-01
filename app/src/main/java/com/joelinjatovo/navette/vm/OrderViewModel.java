@@ -230,19 +230,23 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         });
     }
 
-    public void placeOrder() {
+    public void placeOrder(Club club) {
         Log.d(TAG, "service.placeOrder()");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(new OrderRequest(orderWithDatas));
+        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(club.getId(), new OrderRequest(orderWithDatas));
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
                                    @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
                 Log.e(TAG, response.toString());
-                if (response.body() != null && response.body().isSuccess()) {
+                if (response.body() != null){
                     Log.e(TAG, response.body().toString());
-                    orderResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
-                }else{
+                    if(response.body().isSuccess()) {
+                        orderResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                    }else{
+                        orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                    }
+                } else {
                     orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
                 }
             }

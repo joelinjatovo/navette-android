@@ -152,6 +152,11 @@
             android:name="com.joelinjatovo.navette.ui.order.PlaceFragment"
             tools:layout="@layout/fragment_place" />
 
+        <fragment
+            android:id="@+id/process_fragment"
+            android:name="com.joelinjatovo.navette.ui.order.ProcessFragment"
+            tools:layout="@layout/fragment_process" />
+
     </navigation>
 
 </navigation>

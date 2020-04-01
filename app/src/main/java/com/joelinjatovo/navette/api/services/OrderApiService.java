@@ -14,12 +14,13 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface OrderApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("api/v1/order")
-    Call<RetrofitResponse<OrderWithDatas>> createOrder(@Body OrderRequest orderRequest);
+    @POST("api/v1/club/{club}/order")
+    Call<RetrofitResponse<OrderWithDatas>> createOrder(@Path("club") Long clubId, @Body OrderRequest orderRequest);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/orders")

@@ -21,7 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -312,8 +314,22 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 // show car list
                 Toast.makeText(requireContext(), "Success loading cars", Toast.LENGTH_SHORT).show();
             }
-
         });
+
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
+                orderResult -> {
+                    if(orderResult==null){
+                        return;
+                    }
+
+                    if(orderResult.getError()!=null) {
+                        Toast.makeText(requireContext(), orderResult.getError(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(orderResult.getSuccess()!=null){
+                        NavHostFragment.findNavController(this).navigate(R.id.process_fragment);
+                    }
+                });
     }
 
     private void drawMarker(LatLng point, int index) {
@@ -409,7 +425,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding.getRoot().findViewById(R.id.bookNowButton).setOnClickListener(
                 v -> {
-                    orderViewModel.placeOrder();
+                    orderViewModel.placeOrder(orderViewModel.getOrderWithDatas().getClub());
                 });
     }
 
