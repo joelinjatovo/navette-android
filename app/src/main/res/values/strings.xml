@@ -101,5 +101,6 @@
     <string name="loading_direction">Calcul de la distance et durée du trajet</string>
     <string name="visit_club">Allez à ce club</string>
     <string name="choose_lub">Choisir club</string>
+    <string name="next">Suivant</string>
 
 </resources>

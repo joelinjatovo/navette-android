@@ -7,8 +7,8 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
-        tools:context="com.joelinjatovo.navette.ui.MainActivity">
+        android:name="com.navetteclub.ui.car.CarsFragment"
+        tools:context="com.navetteclub.ui.MainActivity">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"

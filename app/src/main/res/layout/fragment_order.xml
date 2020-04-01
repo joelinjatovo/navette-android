@@ -13,8 +13,6 @@
         <variable name="retours" type="com.joelinjatovo.navette.database.entity.Point" />
 
         <variable name="isLoadingDirection" type="boolean" />
-        <variable name="car" type="com.joelinjatovo.navette.database.entity.Car" />
-        <variable name="place" type="int" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
     </data>
@@ -318,8 +316,6 @@
             layout="@layout/bottom_sheet_order"
             android:id="@+id/bottom_sheets"
             app:isLoadingDirection="@{isLoadingDirection}"
-            app:car="@{car}"
-            app:place="@{place}"
             app:distance="@{distance}"
             app:delay="@{delay}"/>
 

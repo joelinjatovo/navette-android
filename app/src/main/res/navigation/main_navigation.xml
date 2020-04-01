@@ -25,12 +25,6 @@
         tools:layout="@layout/fragment_maps" />
 
     <fragment
-        android:id="@+id/orders_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.OrdersFragment"
-        android:label="@string/title_maps"
-        tools:layout="@layout/fragment_orders" />
-
-    <fragment
         android:id="@+id/navigation_notification"
         android:name="com.joelinjatovo.navette.ui.notification.NotificationFragment"
         android:label="@string/title_profile"
@@ -45,118 +39,20 @@
             android:name="com.joelinjatovo.navette.ui.auth.ProfileFragment"
             android:label="@string/title_profile"
             tools:layout="@layout/fragment_profile"/>
+        <action
+            android:id="@+id/action_global_orders_fragment"
+            app:destination="@id/orders_fragment" />
 
     </navigation>
+
+    <include app:graph="@navigation/auth_navigation" />
+
+    <include app:graph="@navigation/order_navigation" />
 
     <fragment
-        android:id="@+id/login_fragment"
-        android:name="com.joelinjatovo.navette.ui.auth.LoginFragment"
-        android:label="@string/title_login"
-        tools:layout="@layout/fragment_login">
-
-        <action
-            android:id="@+id/action_login_to_register"
-            app:destination="@id/navigation_register" />
-
-        <action
-            android:id="@+id/action_login_to_home"
-            app:popUpTo="@id/navigation_home"
-            app:popUpToInclusive="true"/>
-
-    </fragment>
-
-    <navigation
-        android:id="@+id/navigation_register"
-        app:startDestination="@id/register_fragment">
-
-        <fragment
-            android:id="@+id/register_fragment"
-            android:name="com.joelinjatovo.navette.ui.auth.RegisterFragment"
-            android:label="@string/title_register"
-            tools:layout="@layout/fragment_register">
-
-            <action
-                android:id="@+id/action_register_to_verify_phone"
-                app:destination="@id/verify_phone_fragment" />
-
-        </fragment>
-
-        <fragment
-            android:id="@+id/verify_phone_fragment"
-            android:name="com.joelinjatovo.navette.ui.auth.VerifyPhoneFragment"
-            android:label="Choose User + Password"
-            tools:layout="@layout/fragment_verify_phone" />
-
-    </navigation>
-
-
-    <navigation
-        android:id="@+id/navigation_order"
-        app:startDestination="@id/order_fragment">
-
-        <fragment
-            android:id="@+id/order_fragment"
-            android:name="com.joelinjatovo.navette.ui.order.OrderFragment"
-            android:label="@string/title_order"
-            tools:layout="@layout/fragment_order">
-
-            <action
-                android:id="@+id/action_order_to_clubs"
-                app:destination="@id/clubs_fragment" />
-
-            <action
-                android:id="@+id/action_order_to_search"
-                app:destination="@id/search_fragment" />
-
-            <action
-                android:id="@+id/action_order_to_cars"
-                app:destination="@id/cars_fragment" />
-
-            <action
-                android:id="@+id/action_order_to_place"
-                app:destination="@id/place_fragment" />
-
-        </fragment>
-
-        <dialog
-            android:id="@+id/clubs_fragment"
-            android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
-            android:label="Choose Destination"
-            tools:layout="@layout/fragment_clubs" />
-
-        <dialog
-            android:id="@+id/club_fragment"
-            android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
-            tools:layout="@layout/fragment_club" >
-
-            <action
-                android:id="@+id/action_club_to_order"
-                app:popUpTo="@id/order_fragment"
-                app:popUpToInclusive="false"/>
-
-        </dialog>
-
-        <fragment
-            android:id="@+id/search_fragment"
-            android:name="com.joelinjatovo.navette.ui.order.SearchFragment"
-            android:label="Search"
-            tools:layout="@layout/fragment_search" />
-
-        <dialog
-            android:id="@+id/cars_fragment"
-            android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
-            tools:layout="@layout/fragment_cars" />
-
-        <dialog
-            android:id="@+id/place_fragment"
-            android:name="com.joelinjatovo.navette.ui.order.PlaceFragment"
-            tools:layout="@layout/fragment_place" />
-
-        <fragment
-            android:id="@+id/process_fragment"
-            android:name="com.joelinjatovo.navette.ui.order.ProcessFragment"
-            tools:layout="@layout/fragment_process" />
-
-    </navigation>
+        android:id="@+id/orders_fragment"
+        android:name="com.joelinjatovo.navette.ui.order.OrdersFragment"
+        android:label="@string/title_maps"
+        tools:layout="@layout/fragment_orders" />
 
 </navigation>

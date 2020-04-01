@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_order"
+    app:startDestination="@id/order_fragment">
+
+    <fragment
+        android:id="@+id/order_fragment"
+        android:name="com.joelinjatovo.navette.ui.order.OrderFragment"
+        android:label="@string/title_order"
+        tools:layout="@layout/fragment_order">
+
+        <action
+            android:id="@+id/action_order_to_clubs"
+            app:destination="@id/clubs_fragment" />
+
+        <action
+            android:id="@+id/action_order_to_search"
+            app:destination="@id/search_fragment" />
+
+        <action
+            android:id="@+id/action_order_to_cars"
+            app:destination="@id/cars_fragment" />
+
+    </fragment>
+
+    <dialog
+        android:id="@+id/clubs_fragment"
+        android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
+        android:label="Choose Destination"
+        tools:layout="@layout/fragment_clubs" >
+        <action
+            android:id="@+id/action_clubs_fragment_to_club_fragment"
+            app:destination="@id/club_fragment" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/club_fragment"
+        android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
+        tools:layout="@layout/fragment_club" >
+
+        <action
+            android:id="@+id/action_club_to_order"
+            app:popUpTo="@id/order_fragment"
+            app:popUpToInclusive="false"/>
+
+    </dialog>
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.joelinjatovo.navette.ui.order.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_fragment_to_order_fragment"
+            app:destination="@id/order_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cars_fragment"
+        android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
+        tools:layout="@layout/fragment_cars" >
+        <action
+            android:id="@+id/action_cars_fragment_to_place_fragment"
+            app:destination="@id/place_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/place_fragment"
+        android:name="com.joelinjatovo.navette.ui.order.PlaceFragment"
+        tools:layout="@layout/fragment_place" >
+        <action
+            android:id="@+id/action_place_fragment_to_privatize_fragment"
+            app:destination="@id/privatize_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/privatize_fragment"
+        android:name="com.joelinjatovo.navette.ui.order.PrivatizeFragment"
+        tools:layout="@layout/fragment_privatize">
+        <action
+            android:id="@+id/action_privatize_fragment_to_travel_fragment"
+            app:destination="@id/privatize_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/travel_fragment"
+        android:name="com.joelinjatovo.navette.ui.order.TravelFragment"
+        tools:layout="@layout/fragment_travel">
+
+    </fragment>
+
+</navigation>

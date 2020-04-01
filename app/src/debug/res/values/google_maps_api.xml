@@ -4,12 +4,12 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=BE:27:85:70:4E:4A:A9:7B:15:A6:9B:D7:77:6E:3D:F0:16:A4:33:80%3Bcom.joelinjatovo.navette.ui
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=BE:27:85:70:4E:4A:A9:7B:15:A6:9B:D7:77:6E:3D:F0:16:A4:33:80%3Bcom.navetteclub.ui
 
     You can also add your credentials to an existing key, using these values:
 
     Package name:
-    com.joelinjatovo.navette.ui
+    com.navetteclub.ui
 
     SHA-1 certificate fingerprint:
     BE:27:85:70:4E:4A:A9:7B:15:A6:9B:D7:77:6E:3D:F0:16:A4:33:80

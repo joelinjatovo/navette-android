@@ -15,7 +15,7 @@ android {
     defaultConfig {
         def date = new Date()
         def formattedDate = date.format('yyyy-MM-dd')
-        applicationId "com.joelinjatovo.navette"
+        applicationId "com.navetteclub"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
