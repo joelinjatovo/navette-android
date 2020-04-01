@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.joelinjatovo.navette.ui.home.HomeFragment"
+        android:name="com.navetteclub.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
 
@@ -20,13 +20,13 @@
 
     <fragment
         android:id="@+id/navigation_maps"
-        android:name="com.joelinjatovo.navette.ui.maps.MapsFragment"
+        android:name="com.navetteclub.ui.maps.MapsFragment"
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_maps" />
 
     <fragment
         android:id="@+id/navigation_notification"
-        android:name="com.joelinjatovo.navette.ui.notification.NotificationFragment"
+        android:name="com.navetteclub.ui.notification.NotificationFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_notification"/>
 
@@ -36,7 +36,7 @@
 
         <fragment
             android:id="@+id/profile_fragment"
-            android:name="com.joelinjatovo.navette.ui.auth.ProfileFragment"
+            android:name="com.navetteclub.ui.auth.ProfileFragment"
             android:label="@string/title_profile"
             tools:layout="@layout/fragment_profile"/>
         <action
@@ -51,7 +51,7 @@
 
     <fragment
         android:id="@+id/orders_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.OrdersFragment"
+        android:name="com.navetteclub.ui.order.OrdersFragment"
         android:label="@string/title_maps"
         tools:layout="@layout/fragment_orders" />
 

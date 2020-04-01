@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/login_fragment"
-        android:name="com.joelinjatovo.navette.ui.auth.LoginFragment"
+        android:name="com.navetteclub.ui.auth.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login">
 
@@ -27,7 +27,7 @@
 
         <fragment
             android:id="@+id/register_fragment"
-            android:name="com.joelinjatovo.navette.ui.auth.RegisterFragment"
+            android:name="com.navetteclub.ui.auth.RegisterFragment"
             android:label="@string/title_register"
             tools:layout="@layout/fragment_register">
 
@@ -39,7 +39,7 @@
 
         <fragment
             android:id="@+id/verify_phone_fragment"
-            android:name="com.joelinjatovo.navette.ui.auth.VerifyPhoneFragment"
+            android:name="com.navetteclub.ui.auth.VerifyPhoneFragment"
             android:label="Choose User + Password"
             tools:layout="@layout/fragment_verify_phone" />
 

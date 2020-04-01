@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.utils;
+package com.navetteclub.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import com.joelinjatovo.navette.ui.order.OrderFragment;
+import com.navetteclub.ui.order.OrderFragment;
 import com.squareup.picasso.Transformation;
 
 import java.util.List;

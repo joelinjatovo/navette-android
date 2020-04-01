@@ -6,7 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="club" type="com.joelinjatovo.navette.database.entity.Club" />
+        <variable name="club" type="com.navetteclub.database.entity.Club" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

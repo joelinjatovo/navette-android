@@ -43,7 +43,7 @@ import retrofit2.Response;
 
 public class LocationUpdatesService extends Service {
 
-    private static final String PACKAGE_NAME = "com.joelinjatovo.navette";
+    private static final String PACKAGE_NAME = "com.navetteclub";
 
     private static final String TAG = LocationUpdatesService.class.getSimpleName();
 

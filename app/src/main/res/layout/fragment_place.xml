@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="50dp"
-        android:name="com.joelinjatovo.navette.ui.main.order.PlaceFragment"
-        tools:context="com.joelinjatovo.navette.ui.MainActivity"
+        android:name="com.navetteclub.ui.main.order.PlaceFragment"
+        tools:context="com.navetteclub.ui.MainActivity"
         android:gravity="center">
         
         <ImageView

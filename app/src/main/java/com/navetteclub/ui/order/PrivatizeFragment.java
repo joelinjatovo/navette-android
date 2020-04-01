@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.order;
+package com.navetteclub.ui.order;
 
 import android.os.Bundle;
 
@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.databinding.FragmentPrivatizeBinding;
+import com.navetteclub.R;
+import com.navetteclub.databinding.FragmentPrivatizeBinding;
 
 public class PrivatizeFragment extends Fragment {
 

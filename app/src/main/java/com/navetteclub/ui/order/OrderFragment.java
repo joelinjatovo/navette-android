@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.order;
+package com.navetteclub.ui.order;
 
 import android.Manifest;
 import android.app.Activity;
@@ -46,18 +46,18 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.api.models.google.GoogleDirectionResponse;
-import com.joelinjatovo.navette.api.models.google.Leg;
-import com.joelinjatovo.navette.api.models.google.Route;
-import com.joelinjatovo.navette.api.services.GoogleApiService;
-import com.joelinjatovo.navette.database.entity.CarAndModel;
-import com.joelinjatovo.navette.database.entity.Point;
-import com.joelinjatovo.navette.databinding.FragmentOrderBinding;
-import com.joelinjatovo.navette.utils.Log;
-import com.joelinjatovo.navette.utils.Utils;
-import com.joelinjatovo.navette.vm.MyViewModelFactory;
-import com.joelinjatovo.navette.vm.OrderViewModel;
+import com.navetteclub.R;
+import com.navetteclub.api.models.google.GoogleDirectionResponse;
+import com.navetteclub.api.models.google.Leg;
+import com.navetteclub.api.models.google.Route;
+import com.navetteclub.api.services.GoogleApiService;
+import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Point;
+import com.navetteclub.databinding.FragmentOrderBinding;
+import com.navetteclub.utils.Log;
+import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.MyViewModelFactory;
+import com.navetteclub.vm.OrderViewModel;
 
 import java.util.Arrays;
 import java.util.List;

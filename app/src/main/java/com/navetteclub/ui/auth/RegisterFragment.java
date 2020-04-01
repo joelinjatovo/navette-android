@@ -14,10 +14,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.joelinjatovo.navette.R;
+import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.database.entity.UserWithRoles;
-import com.joelinjatovo.navette.databinding.FragmentRegisterBinding;
+import com.navetteclub.databinding.FragmentRegisterBinding;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.RegisterViewModel;
 

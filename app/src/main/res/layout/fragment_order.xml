@@ -8,9 +8,9 @@
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
         <variable name="showMoreButton" type="boolean" />
-        <variable name="origin" type="com.joelinjatovo.navette.database.entity.Point" />
-        <variable name="destination" type="com.joelinjatovo.navette.database.entity.Point" />
-        <variable name="retours" type="com.joelinjatovo.navette.database.entity.Point" />
+        <variable name="origin" type="com.navetteclub.database.entity.Point" />
+        <variable name="destination" type="com.navetteclub.database.entity.Point" />
+        <variable name="retours" type="com.navetteclub.database.entity.Point" />
 
         <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />

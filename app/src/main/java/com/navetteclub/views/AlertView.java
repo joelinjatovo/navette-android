@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.views;
+package com.navetteclub.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
-import com.joelinjatovo.navette.R;
+import com.navetteclub.R;
 
 public class AlertView extends LinearLayout {
     private Drawable mIcon;

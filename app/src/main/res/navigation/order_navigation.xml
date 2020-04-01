@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/order_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.OrderFragment"
+        android:name="com.navetteclub.ui.order.OrderFragment"
         android:label="@string/title_order"
         tools:layout="@layout/fragment_order">
 
@@ -27,7 +27,7 @@
 
     <dialog
         android:id="@+id/clubs_fragment"
-        android:name="com.joelinjatovo.navette.ui.club.ClubsFragment"
+        android:name="com.navetteclub.ui.club.ClubsFragment"
         android:label="Choose Destination"
         tools:layout="@layout/fragment_clubs" >
         <action
@@ -37,7 +37,7 @@
 
     <dialog
         android:id="@+id/club_fragment"
-        android:name="com.joelinjatovo.navette.ui.club.ClubFragment"
+        android:name="com.navetteclub.ui.club.ClubFragment"
         tools:layout="@layout/fragment_club" >
 
         <action
@@ -49,7 +49,7 @@
 
     <fragment
         android:id="@+id/search_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.SearchFragment"
+        android:name="com.navetteclub.ui.order.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -59,7 +59,7 @@
 
     <fragment
         android:id="@+id/cars_fragment"
-        android:name="com.joelinjatovo.navette.ui.car.CarsFragment"
+        android:name="com.navetteclub.ui.car.CarsFragment"
         tools:layout="@layout/fragment_cars" >
         <action
             android:id="@+id/action_cars_fragment_to_place_fragment"
@@ -68,7 +68,7 @@
 
     <fragment
         android:id="@+id/place_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.PlaceFragment"
+        android:name="com.navetteclub.ui.order.PlaceFragment"
         tools:layout="@layout/fragment_place" >
         <action
             android:id="@+id/action_place_fragment_to_privatize_fragment"
@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/privatize_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.PrivatizeFragment"
+        android:name="com.navetteclub.ui.order.PrivatizeFragment"
         tools:layout="@layout/fragment_privatize">
         <action
             android:id="@+id/action_privatize_fragment_to_travel_fragment"
@@ -86,7 +86,7 @@
 
     <fragment
         android:id="@+id/travel_fragment"
-        android:name="com.joelinjatovo.navette.ui.order.TravelFragment"
+        android:name="com.navetteclub.ui.order.TravelFragment"
         tools:layout="@layout/fragment_travel">
 
     </fragment>

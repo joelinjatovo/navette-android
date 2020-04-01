@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.ui.car;
+package com.navetteclub.ui.car;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.database.entity.CarAndModel;
-import com.joelinjatovo.navette.ui.order.CarRecyclerViewAdapter;
-import com.joelinjatovo.navette.ui.order.OrderFragment;
-import com.joelinjatovo.navette.utils.Constants;
+import com.navetteclub.R;
+import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.ui.order.CarRecyclerViewAdapter;
+import com.navetteclub.ui.order.OrderFragment;
+import com.navetteclub.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.views;
+package com.navetteclub.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.joelinjatovo.navette.R;
+import com.navetteclub.R;
 
 public class AuthErrorView extends LinearLayout {
     private Drawable mIcon;
