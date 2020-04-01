@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.database;
+package com.navetteclub.database;
 
 import android.content.Context;
 
@@ -11,26 +11,26 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.joelinjatovo.navette.database.converter.ArrayConverter;
-import com.joelinjatovo.navette.database.converter.DateConverter;
-import com.joelinjatovo.navette.database.converter.ObjectConverter;
-import com.joelinjatovo.navette.database.dao.CarDao;
-import com.joelinjatovo.navette.database.dao.ClubDao;
-import com.joelinjatovo.navette.database.dao.NotificationDao;
-import com.joelinjatovo.navette.database.dao.OrderPointDao;
-import com.joelinjatovo.navette.database.dao.PointDao;
-import com.joelinjatovo.navette.database.dao.UserDao;
-import com.joelinjatovo.navette.database.entity.Car;
-import com.joelinjatovo.navette.database.entity.CarModel;
-import com.joelinjatovo.navette.database.entity.Club;
-import com.joelinjatovo.navette.database.entity.Notification;
-import com.joelinjatovo.navette.database.entity.Order;
-import com.joelinjatovo.navette.database.entity.OrderPoint;
-import com.joelinjatovo.navette.database.entity.Point;
-import com.joelinjatovo.navette.database.entity.Role;
-import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.database.entity.UserPoint;
-import com.joelinjatovo.navette.database.entity.UserRole;
+import com.navetteclub.database.converter.ArrayConverter;
+import com.navetteclub.database.converter.DateConverter;
+import com.navetteclub.database.converter.ObjectConverter;
+import com.navetteclub.database.dao.CarDao;
+import com.navetteclub.database.dao.ClubDao;
+import com.navetteclub.database.dao.NotificationDao;
+import com.navetteclub.database.dao.OrderPointDao;
+import com.navetteclub.database.dao.PointDao;
+import com.navetteclub.database.dao.UserDao;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.CarModel;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Notification;
+import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderPoint;
+import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.Role;
+import com.navetteclub.database.entity.User;
+import com.navetteclub.database.entity.UserPoint;
+import com.navetteclub.database.entity.UserRole;
 
 @Database(entities = {
         Car.class,

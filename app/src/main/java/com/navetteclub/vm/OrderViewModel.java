@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.vm;
+package com.navetteclub.vm;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -6,24 +6,24 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.api.clients.RetrofitClient;
-import com.joelinjatovo.navette.api.models.OrderRequest;
-import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.api.services.ClubApiService;
-import com.joelinjatovo.navette.api.services.OrderApiService;
-import com.joelinjatovo.navette.database.callback.UpsertCallback;
-import com.joelinjatovo.navette.database.entity.Car;
-import com.joelinjatovo.navette.database.entity.CarAndModel;
-import com.joelinjatovo.navette.database.entity.Club;
-import com.joelinjatovo.navette.database.entity.ClubAndPoint;
-import com.joelinjatovo.navette.database.entity.Order;
-import com.joelinjatovo.navette.database.entity.OrderWithDatas;
-import com.joelinjatovo.navette.database.entity.OrderWithPoints;
-import com.joelinjatovo.navette.database.entity.Point;
-import com.joelinjatovo.navette.database.repositories.CarRepository;
-import com.joelinjatovo.navette.models.RemoteLoaderResult;
-import com.joelinjatovo.navette.utils.Log;
+import com.navetteclub.R;
+import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.OrderRequest;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.api.services.ClubApiService;
+import com.navetteclub.api.services.OrderApiService;
+import com.navetteclub.database.callback.UpsertCallback;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.OrderWithPoints;
+import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.repositories.CarRepository;
+import com.navetteclub.models.RemoteLoaderResult;
+import com.navetteclub.utils.Log;
 
 import java.io.CharArrayReader;
 import java.util.ArrayList;

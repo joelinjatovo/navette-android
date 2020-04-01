@@ -1,6 +1,6 @@
 package com.navetteclub.api.clients;
 
-import com.joelinjatovo.navette.BuildConfig;
+import com.navetteclub.BuildConfig;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.api.interceptors.UserAgentAndApiKeyInterceptor;
 

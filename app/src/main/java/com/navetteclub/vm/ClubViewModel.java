@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.joelinjatovo.navette.R;
+import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.ClubApiService;

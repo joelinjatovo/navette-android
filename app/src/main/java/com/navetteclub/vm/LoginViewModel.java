@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.vm;
+package com.navetteclub.vm;
 
 import android.util.MalformedJsonException;
 import android.util.Patterns;
@@ -8,13 +8,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.api.repositories.LoginRepository;
+import com.navetteclub.R;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.api.repositories.LoginRepository;
 import com.navetteclub.database.entity.UserWithRoles;
-import com.joelinjatovo.navette.models.LoginFormState;
-import com.joelinjatovo.navette.models.RemoteLoaderResult;
-import com.joelinjatovo.navette.utils.Log;
+import com.navetteclub.models.LoginFormState;
+import com.navetteclub.models.RemoteLoaderResult;
+import com.navetteclub.utils.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;

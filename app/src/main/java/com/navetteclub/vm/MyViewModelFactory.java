@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.vm;
+package com.navetteclub.vm;
 
 import android.app.Application;
 
@@ -6,14 +6,14 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.joelinjatovo.navette.api.datasources.LoginDataSource;
-import com.joelinjatovo.navette.api.datasources.RegisterDataSource;
-import com.joelinjatovo.navette.api.repositories.LoginRepository;
-import com.joelinjatovo.navette.api.repositories.RegisterRepository;
-import com.joelinjatovo.navette.database.repositories.CarRepository;
-import com.joelinjatovo.navette.database.repositories.ClubRepository;
-import com.joelinjatovo.navette.database.repositories.NotificationRepository;
-import com.joelinjatovo.navette.database.repositories.UserRepository;
+import com.navetteclub.api.datasources.LoginDataSource;
+import com.navetteclub.api.datasources.RegisterDataSource;
+import com.navetteclub.api.repositories.LoginRepository;
+import com.navetteclub.api.repositories.RegisterRepository;
+import com.navetteclub.database.repositories.CarRepository;
+import com.navetteclub.database.repositories.ClubRepository;
+import com.navetteclub.database.repositories.NotificationRepository;
+import com.navetteclub.database.repositories.UserRepository;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

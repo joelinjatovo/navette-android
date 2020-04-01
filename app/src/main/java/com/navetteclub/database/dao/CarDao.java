@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.database.dao;
+package com.navetteclub.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,10 +7,10 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.joelinjatovo.navette.database.entity.Car;
-import com.joelinjatovo.navette.database.entity.CarAndModel;
-import com.joelinjatovo.navette.database.entity.CarModel;
-import com.joelinjatovo.navette.database.entity.Club;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.CarModel;
+import com.navetteclub.database.entity.Club;
 
 import java.util.ArrayList;
 import java.util.List;

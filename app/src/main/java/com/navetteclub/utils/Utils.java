@@ -1,4 +1,4 @@
-package com.joelinjatovo.navette.utils;
+package com.navetteclub.utils;
 
 import android.content.Context;
 import android.location.Location;
@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.joelinjatovo.navette.R;
+import com.navetteclub.R;
 
 import java.text.DateFormat;
 import java.util.ArrayList;

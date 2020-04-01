@@ -28,7 +28,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.joelinjatovo.navette.R;
+import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.UserApiService;

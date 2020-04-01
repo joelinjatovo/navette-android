@@ -1,7 +1,7 @@
-package com.joelinjatovo.navette.api.services;
+package com.navetteclub.api.services;
 
-import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.database.entity.Notification;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.database.entity.Notification;
 
 import java.util.List;
 

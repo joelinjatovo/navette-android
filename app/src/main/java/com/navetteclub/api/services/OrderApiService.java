@@ -1,10 +1,10 @@
-package com.joelinjatovo.navette.api.services;
+package com.navetteclub.api.services;
 
-import com.joelinjatovo.navette.api.models.OrderRequest;
-import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.database.entity.Order;
-import com.joelinjatovo.navette.database.entity.OrderWithDatas;
-import com.joelinjatovo.navette.database.entity.OrderWithPoints;
+import com.navetteclub.api.models.OrderRequest;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.OrderWithPoints;
 
 import java.util.List;
 

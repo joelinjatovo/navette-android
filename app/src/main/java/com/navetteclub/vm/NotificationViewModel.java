@@ -1,19 +1,19 @@
-package com.joelinjatovo.navette.vm;
+package com.navetteclub.vm;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.joelinjatovo.navette.R;
-import com.joelinjatovo.navette.api.clients.RetrofitClient;
-import com.joelinjatovo.navette.api.responses.RetrofitResponse;
-import com.joelinjatovo.navette.api.services.NotificationApiService;
-import com.joelinjatovo.navette.database.entity.Notification;
-import com.joelinjatovo.navette.database.entity.User;
-import com.joelinjatovo.navette.database.repositories.NotificationRepository;
-import com.joelinjatovo.navette.models.RemoteLoaderResult;
-import com.joelinjatovo.navette.utils.Log;
+import com.navetteclub.R;
+import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.api.services.NotificationApiService;
+import com.navetteclub.database.entity.Notification;
+import com.navetteclub.database.entity.User;
+import com.navetteclub.database.repositories.NotificationRepository;
+import com.navetteclub.models.RemoteLoaderResult;
+import com.navetteclub.utils.Log;
 
 import java.util.List;
 
