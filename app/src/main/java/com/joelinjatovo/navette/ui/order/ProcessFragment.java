@@ -47,6 +47,8 @@ public class ProcessFragment extends Fragment {
         ScreenSlidePagerAdapter  mAdapter = new ScreenSlidePagerAdapter(requireActivity());
         mBinding.viewPager2.setAdapter(mAdapter);
 
+
+
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override

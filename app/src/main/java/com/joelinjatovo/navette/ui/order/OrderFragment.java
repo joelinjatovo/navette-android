@@ -329,6 +329,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     if(orderResult.getSuccess()!=null){
                         NavHostFragment.findNavController(this).navigate(R.id.process_fragment);
                     }
+
+                    // refresh result
+                    orderViewModel.setOrderResult(null);
                 });
     }
 

@@ -272,6 +272,10 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         return orderResult;
     }
 
+    public void setOrderResult(RemoteLoaderResult<OrderWithDatas> data) {
+        orderResult.setValue(data);
+    }
+
     @Override
     public void onUpsertError() {
 

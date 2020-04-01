@@ -45,11 +45,11 @@ public class Order {
 
     @SerializedName("privatized")
     @ColumnInfo(name = "privatized")
-    private Boolean privatized;
+    private Boolean privatized = false;
 
     @SerializedName("preordered")
     @ColumnInfo(name = "preordered")
-    private Boolean preordered;
+    private Boolean preordered = false;
 
     @ColumnInfo(name = "club_id")
     private Long clubId;
