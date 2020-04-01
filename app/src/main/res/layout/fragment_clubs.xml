@@ -4,6 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <import type="android.view.View"/>
+        <variable name="isLoading" type="boolean" />
+        <variable name="showError" type="boolean" />
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,10 +18,42 @@
         tools:context="ui.MainActivity">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loading_notification"
+                android:gravity="center_horizontal" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <com.navetteclub.views.LoaderErrorView
+            android:id="@+id/loaderErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{showError?View.VISIBLE:View.GONE}"
+            app:mTitle="@string/loader_error_title"
+            app:mSubtitle="@string/loader_error_subtitle"/>
+
+        <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="@{showError||isLoading?View.GONE:View.VISIBLE}">
 
             <RelativeLayout
                 android:id="@+id/relativeLayout"

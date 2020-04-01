@@ -62,7 +62,7 @@ public class ProfileFragment extends Fragment implements NavigationView.OnNaviga
                         case UNAUTHENTICATED:
                             Log.d(TAG, "'UNAUTHENTICATED'");
                             mBinding.setUser(null);
-                            navController.navigate(R.id.login_fragment);
+                            navController.navigate(R.id.action_global_navigation_auth);
                             break;
                     }
                 });

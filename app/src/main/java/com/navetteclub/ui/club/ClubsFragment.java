@@ -64,6 +64,7 @@ public class ClubsFragment extends BottomSheetDialogFragment {
                     BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
                     sheetBehavior.setSkipCollapsed(true);
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    sheetBehavior.setPeekHeight(UiUtils.getScreenHeight());
                 }
             }
         });
@@ -100,21 +101,34 @@ public class ClubsFragment extends BottomSheetDialogFragment {
                     }
 
                     mAdapter.setItems(clubAndPointList);
+
+                    mBinding.setShowError(clubAndPointList.isEmpty());
                 });
 
-        clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
+        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
             @Override
             public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
                 if (result == null) {
                     return;
                 }
 
+                mBinding.setIsLoading(false);
+
                 if (result.getError() != null) {
-                    Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
-                    Snackbar.make(mBinding.getRoot(), result.getError(), Snackbar.LENGTH_SHORT).show();
+                    mBinding.setShowError(true);
+                    mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                }else{
+                    mBinding.setShowError(false);
                 }
             }
         });
+
+        mBinding.loaderErrorView.getButton().setOnClickListener(
+                v -> {
+                    mBinding.setShowError(false);
+                    mBinding.setIsLoading(true);
+                    clubViewModel.load();
+                });
 
         mBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

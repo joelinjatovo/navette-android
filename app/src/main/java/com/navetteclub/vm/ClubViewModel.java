@@ -27,7 +27,7 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
 
     private ClubRepository clubRepository;
 
-    private MutableLiveData<RemoteLoaderResult<List<ClubAndPoint>>> retrofitResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<ClubAndPoint>>> clubsResult = new MutableLiveData<>();
 
     private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
 
@@ -36,10 +36,6 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
     ClubViewModel(ClubRepository clubRepository) {
         this.clubRepository = clubRepository;
         this.clubs = clubRepository.getList();
-    }
-
-    public MutableLiveData<RemoteLoaderResult<List<ClubAndPoint>>> getRetrofitResult() {
-        return retrofitResult;
     }
 
     public LiveData<List<ClubAndPoint>> getClubs() {
@@ -68,24 +64,24 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
             }
             clubRepository.upsert(this, items);
         }else{
-            retrofitResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
+            clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
         }
     }
 
     @Override
     public void onFailure(@NonNull Call<RetrofitResponse<List<ClubAndPoint>>> call, @NonNull Throwable t) {
         Log.e(TAG, t.toString());
-        retrofitResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
+        clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
     }
 
     @Override
     public void onUpsertError() {
-        retrofitResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_inserting_clubs));
+        clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_inserting_clubs));
     }
 
     @Override
     public void onUpsertSuccess(List<ClubAndPoint> items) {
-        retrofitResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(items));
+        clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(items));
     }
 
     public MutableLiveData<ClubAndPoint> getClub() {
@@ -94,5 +90,9 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
 
     public void setClub(ClubAndPoint club) {
         this.club.setValue(club);
+    }
+
+    public MutableLiveData<RemoteLoaderResult<List<ClubAndPoint>>> getClubsResult() {
+        return clubsResult;
     }
 }

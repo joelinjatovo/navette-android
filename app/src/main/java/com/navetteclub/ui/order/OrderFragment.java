@@ -541,14 +541,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 .geodesic(true)
                         );
                     }
+
+                    mBinding.setShowMoreButton(true);
+
                 } catch (Exception e) {
                     Log.e(TAG, "There is an error", e);
+                    mBinding.setShowMoreButton(false);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
                 mBinding.setIsLoadingDirection(false);
+                mBinding.setShowMoreButton(false);
                 Log.e(TAG, t.toString(), t);
             }
         });

@@ -28,7 +28,11 @@
         android:id="@+id/navigation_notification"
         android:name="com.navetteclub.ui.notification.NotificationFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_notification"/>
+        tools:layout="@layout/fragment_notification">
+        <action
+            android:id="@+id/action_global_navigation_auth"
+            app:destination="@id/navigation_auth" />
+    </fragment>
 
     <navigation
         android:id="@+id/navigation_account"
@@ -39,9 +43,14 @@
             android:name="com.navetteclub.ui.auth.ProfileFragment"
             android:label="@string/title_profile"
             tools:layout="@layout/fragment_profile"/>
+
         <action
             android:id="@+id/action_global_orders_fragment"
             app:destination="@id/orders_fragment" />
+
+        <action
+            android:id="@+id/action_global_navigation_auth"
+            app:destination="@id/navigation_auth" />
 
     </navigation>
 

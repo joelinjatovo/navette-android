@@ -121,7 +121,7 @@ public class NotificationFragment extends Fragment {
 
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.login_fragment);
+                    Navigation.findNavController(v).navigate(R.id.action_global_navigation_auth);
                 }
         );
     }

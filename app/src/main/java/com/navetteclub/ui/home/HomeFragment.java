@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         ClubViewModel clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
-        clubViewModel.getRetrofitResult().observe(getViewLifecycleOwner(),
+        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result == null) {
                         return;
