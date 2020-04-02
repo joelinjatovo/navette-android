@@ -37,6 +37,16 @@
         <item>+504</item>>
         <item>+263</item>
     </string-array>
+
+    <string-array name="order_steps">
+        <item>Car</item>
+        <item>Privatize</item>
+        <item>Place</item>>
+        <item>Go and Back</item>
+        <item>Order</item>
+        <item>Pay</item>
+        <item>End</item>
+    </string-array>
     <string name="title_activity_maps">Map</string>
     <string name="error_database">Database Error.</string>
     <string name="invalid_phone_and_password">Invalid Phone and/or Password</string>

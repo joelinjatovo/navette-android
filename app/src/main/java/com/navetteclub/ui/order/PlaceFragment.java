@@ -48,6 +48,8 @@ public class PlaceFragment extends Fragment {
     }
 
     private void setupUi() {
+        mBinding.stepView.go(2, true);
+
         mBinding.plus.setOnClickListener(
                 v -> {
                     if( place < max ) {

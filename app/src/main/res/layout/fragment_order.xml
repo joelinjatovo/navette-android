@@ -7,7 +7,6 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
-        <variable name="showMoreButton" type="boolean" />
         <variable name="origin" type="com.navetteclub.database.entity.Point" />
         <variable name="destination" type="com.navetteclub.database.entity.Point" />
         <variable name="retours" type="com.navetteclub.database.entity.Point" />
@@ -300,16 +299,6 @@
             </RelativeLayout>
 
         </RelativeLayout>
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/moreButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/booking"
-            app:layout_anchor="@id/bottom_sheets"
-            app:layout_anchorGravity="right"
-            android:visibility="@{showMoreButton?View.VISIBLE:View.GONE}"/>
 
         <!-- Adding bottom sheet  -->
         <include

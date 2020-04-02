@@ -100,6 +100,8 @@ public class TravelFragment extends Fragment {
     }
 
     private void setupUi() {
+        mBinding.stepView.go(3, true);
+
         mBinding.yesButton.setOnClickListener(
                 v -> {
                     // reset return point

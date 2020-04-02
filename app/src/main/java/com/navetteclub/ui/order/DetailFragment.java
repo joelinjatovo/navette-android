@@ -122,6 +122,8 @@ public class DetailFragment extends Fragment {
 
 
     private void setupUi() {
+        mBinding.stepView.go(5, true);
+
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
                     orderViewModel.placeOrder();

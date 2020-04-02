@@ -18,7 +18,7 @@
         android:orientation="vertical"
         android:background="@color/white"
         app:behavior_skipCollapsed="true"
-        app:behavior_hideable="true"
+        app:behavior_peekHeight="50dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <RelativeLayout

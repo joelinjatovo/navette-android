@@ -189,23 +189,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupBottomSheet() {
         sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    mBinding.setShowMoreButton(true);
-                } else {
-                    mBinding.setShowMoreButton(false);
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
+        //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private void setupOrderViewModel() {
@@ -359,11 +343,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         mBinding.destinationEndIcon.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
-                });
-
-        mBinding.moreButton.setOnClickListener(
-                v -> {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 });
 
         mBinding.bottomSheets.bookNowButton.setOnClickListener(

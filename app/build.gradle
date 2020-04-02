@@ -111,6 +111,9 @@ dependencies {
     // Facebook
     implementation 'com.facebook.android:facebook-login:5.15.3'
 
+    // Step view
+    implementation 'com.shuhart.stepview:stepview:1.5.1'
+
     // Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

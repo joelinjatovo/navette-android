@@ -49,6 +49,8 @@ public class PrivatizeFragment extends Fragment {
     }
 
     private void setupUi() {
+        mBinding.stepView.go(1, true);
+
         mBinding.yesButton.setOnClickListener(
                 v -> {
                     orderViewModel.setPrivatized(true);
