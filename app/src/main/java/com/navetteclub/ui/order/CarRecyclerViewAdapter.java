@@ -41,7 +41,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         holder.mNameTextView.setText(mItems.get(position).getCar().getName());
         new Picasso.Builder(holder.mCarImageView.getContext())
                 .build()
-                .load(Constants.BASE_URL + mItems.get(position).getCar().getImageUrl())
+                .load(Constants.getBaseUrl() + mItems.get(position).getCar().getImageUrl())
                 .resize(360,180).into(holder.mCarImageView);
 
         holder.mView.setOnClickListener(v -> {

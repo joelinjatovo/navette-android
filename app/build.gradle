@@ -16,7 +16,7 @@ android {
         def date = new Date()
         def formattedDate = date.format('yyyy-MM-dd')
         applicationId "com.navetteclub"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0.0 (${formattedDate})"
@@ -91,6 +91,9 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
 
+    // Stripe Android SDK
+    implementation 'com.stripe:stripe-android:14.2.1'
+
     //Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
@@ -106,7 +109,7 @@ dependencies {
     implementation 'com.github.f0ris.sweetalert:library:1.5.6'
 
     // Facebook
-    implementation 'com.facebook.android:facebook-login:[5,6)'
+    implementation 'com.facebook.android:facebook-login:5.15.3'
 
     // Test
     testImplementation 'junit:junit:4.12'

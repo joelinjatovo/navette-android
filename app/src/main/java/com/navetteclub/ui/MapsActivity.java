@@ -290,9 +290,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void connectPush() {
         PusherOptions options = new PusherOptions();
-        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        options.setCluster(Constants.getPusherAppCluster());
 
-        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
         pusher.connect();
 
         Channel channel = pusher.subscribe("my-channel");

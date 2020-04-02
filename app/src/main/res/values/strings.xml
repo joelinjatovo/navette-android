@@ -106,5 +106,6 @@
     <string name="question_privatize_car">Voulez-vous privatiser la voiture?</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>
+    <string name="pay_now">Payer maintenant</string>
 
 </resources>

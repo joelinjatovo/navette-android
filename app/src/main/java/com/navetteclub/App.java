@@ -2,6 +2,9 @@ package com.navetteclub;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.navetteclub.utils.Constants;
+import com.stripe.android.PaymentConfiguration;
+
 public class App extends MultiDexApplication {
 
     private static App instance;
@@ -13,6 +16,15 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Stripe
+        PaymentConfiguration.init(
+                getApplicationContext(),
+                Constants.getStripeApiKey()
+        );
+
         instance = this;
+
+
     }
 }

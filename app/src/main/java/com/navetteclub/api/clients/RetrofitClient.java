@@ -1,6 +1,5 @@
 package com.navetteclub.api.clients;
 
-import com.navetteclub.BuildConfig;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.api.interceptors.UserAgentAndApiKeyInterceptor;
 
@@ -14,12 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static Retrofit retrofit;
 
-    private static String getBaseUrl() {
-        if (BuildConfig.DEBUG) {
-            return Constants.BASE_URL;
-        }
-        return Constants.BASE_URL;
-    }
     public static Retrofit getInstance() {
         if (retrofit == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -32,7 +25,7 @@ public class RetrofitClient {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(getBaseUrl())
+                    .baseUrl(Constants.getBaseUrl())
                     .client(okHttpClient)
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create()) //Add the converter//

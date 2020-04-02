@@ -218,9 +218,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void connectPush() {
         PusherOptions options = new PusherOptions();
-        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        options.setCluster(Constants.getPusherAppCluster());
 
-        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
         pusher.connect();
 
         Channel channel = pusher.subscribe("my-channel");
@@ -242,11 +242,11 @@ public class MainActivity extends AppCompatActivity {
     private void connectPrivatePush(User user) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", user.getAuthorizationToken());
-        HttpAuthorizer authorizer = new HttpAuthorizer(Constants.BASE_URL + "broadcasting/auth");
+        HttpAuthorizer authorizer = new HttpAuthorizer(Constants.getBaseUrl() + "broadcasting/auth");
         authorizer.setHeaders(headers);
         PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
-        options.setCluster(Constants.PUSHER_APP_CLUSTER);
-        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        options.setCluster(Constants.getPusherAppCluster());
+        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {

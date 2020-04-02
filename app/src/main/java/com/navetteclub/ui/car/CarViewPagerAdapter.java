@@ -46,7 +46,7 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
         holder.mTextView.setText(mItems.get(position).getCar().getName());
         new Picasso.Builder(holder.mImageView.getContext())
                 .build()
-                .load(Constants.BASE_URL + mItems.get(position).getCar().getImageUrl())
+                .load(Constants.getBaseUrl() + mItems.get(position).getCar().getImageUrl())
                 .resize(360,180).into(holder.mImageView);
 
         holder.mView.setOnClickListener(v -> {

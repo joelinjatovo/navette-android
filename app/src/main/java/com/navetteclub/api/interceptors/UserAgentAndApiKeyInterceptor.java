@@ -37,7 +37,7 @@ public class UserAgentAndApiKeyInterceptor implements Interceptor {
         Request originRequest = chain.request();
         Request requestWithUserAgent = originRequest.newBuilder()
                 .header("User-Agent", userAgent)
-                .header("x-api-key", Constants.API_KEY)
+                .header("x-api-key", Constants.getApiKey())
                 .build();
         return chain.proceed(requestWithUserAgent);
     }

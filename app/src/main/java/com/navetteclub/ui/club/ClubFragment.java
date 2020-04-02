@@ -103,7 +103,7 @@ public class ClubFragment extends BottomSheetDialogFragment {
                         mBinding.setClub(clubAndPoint.getClub());
 
                         Picasso.get()
-                                .load(Constants.BASE_URL + clubAndPoint.getClub().getImageUrl())
+                                .load(Constants.getBaseUrl() + clubAndPoint.getClub().getImageUrl())
                                 .into(mBinding.imageView);
                     }
                 });
