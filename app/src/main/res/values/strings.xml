@@ -102,5 +102,9 @@
     <string name="visit_club">Allez à ce club</string>
     <string name="choose_lub">Choisir club</string>
     <string name="next">Suivant</string>
+    <string name="ok_and_next">Ok et suivant</string>
+    <string name="question_privatize_car">Voulez-vous privatiser la voiture?</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
 
 </resources>

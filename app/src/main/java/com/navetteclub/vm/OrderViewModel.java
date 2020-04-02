@@ -158,6 +158,29 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
+    public void setReturn(Place place) {
+        if(place==null){
+            if(orderWithDatas==null)
+                orderWithDatas = new OrderWithDatas();
+
+            List<Point> points = orderWithDatas.getPoints();
+            if(points==null){
+                points = new ArrayList<>(3);
+                points.add(null);
+                points.add(null);
+                points.add(null);
+            }
+
+            points.set(2, null);
+
+            orderWithDatas.setPoints(points);
+
+            orderWithDatasLiveData.setValue(orderWithDatas);
+        }else {
+            setReturn(place.getName(), place.getLatLng());
+        }
+    }
+
     public void setPlace(int place) {
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
@@ -166,7 +189,26 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         if(order==null){
             order = new Order();
         }
+
         order.setPlace(place);
+
+        orderWithDatas.setOrder(order);
+
+        orderWithDatasLiveData.setValue(orderWithDatas);
+
+    }
+
+    public void setPrivatized(boolean privatized) {
+        if(orderWithDatas==null)
+            orderWithDatas = new OrderWithDatas();
+
+        Order order = orderWithDatas.getOrder();
+        if(order==null){
+            order = new Order();
+        }
+
+        order.setPrivatized(privatized);
+
         orderWithDatas.setOrder(order);
 
         orderWithDatasLiveData.setValue(orderWithDatas);
@@ -176,6 +218,7 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     public void setCar(Car car) {
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
+
         orderWithDatas.setCar(car);
 
         orderWithDatasLiveData.setValue(orderWithDatas);
@@ -184,6 +227,7 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     public void setClub(Club club, Point point) {
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
+
         orderWithDatas.setClub(club);
 
         LatLng latLng = new LatLng(

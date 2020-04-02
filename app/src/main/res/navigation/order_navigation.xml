@@ -89,6 +89,19 @@
         android:name="com.navetteclub.ui.order.TravelFragment"
         tools:layout="@layout/fragment_travel">
 
+        <action
+            android:id="@+id/action_travel_fragment_to_search_fragment"
+            app:destination="@id/search_fragment" />
+
+        <action
+            android:id="@+id/action_travel_fragment_to_detail_fragment"
+            app:destination="@id/detail_fragment" />
+
     </fragment>
+
+    <fragment
+        android:id="@+id/detail_fragment"
+        android:name="com.navetteclub.ui.order.DetailFragment"
+        tools:layout="@layout/fragment_detail"/>
 
 </navigation>
