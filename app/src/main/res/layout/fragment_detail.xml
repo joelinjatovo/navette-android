@@ -372,13 +372,13 @@
             </RelativeLayout>
 
             <Button
-                android:id="@+id/payNowButton"
+                android:id="@+id/bookNowButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_gravity="center"
-                android:text="@string/pay_now"/>
+                android:text="@string/book_now"/>
 
         </LinearLayout>
 

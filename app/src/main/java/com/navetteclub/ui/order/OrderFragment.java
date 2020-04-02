@@ -374,10 +374,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private void expandOrderDetails() {
         if(sheetBehavior != null && mOrigin != null && mDestination != null){
-            mBinding.setIsLoadingDirection(true);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }else{
-            mBinding.setIsLoadingDirection(false);
         }
     }
 
@@ -503,6 +500,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         // Show loader
         expandOrderDetails();
+        mBinding.setIsLoadingDirection(true);
 
         call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
@@ -541,19 +539,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 .geodesic(true)
                         );
                     }
-
-                    mBinding.setShowMoreButton(true);
-
                 } catch (Exception e) {
                     Log.e(TAG, "There is an error", e);
-                    mBinding.setShowMoreButton(false);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
                 mBinding.setIsLoadingDirection(false);
-                mBinding.setShowMoreButton(false);
                 Log.e(TAG, t.toString(), t);
             }
         });

@@ -162,7 +162,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_gravity="center"
-                android:text="@string/order_now"/>
+                android:text="@string/book"/>
 
         </LinearLayout>
 

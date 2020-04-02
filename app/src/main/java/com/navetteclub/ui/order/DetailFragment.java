@@ -122,9 +122,9 @@ public class DetailFragment extends Fragment {
 
 
     private void setupUi() {
-        mBinding.payNowButton.setOnClickListener(
+        mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    // Open stripe fragment
+                    orderViewModel.placeOrder();
                 });
     }
 

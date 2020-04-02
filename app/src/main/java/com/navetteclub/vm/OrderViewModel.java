@@ -274,7 +274,9 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         });
     }
 
-    public void placeOrder(Club club) {
+    public void placeOrder() {
+        Club club = orderWithDatas.getClub();
+
         Log.d(TAG, "service.placeOrder()");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
         Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(club.getId(), new OrderRequest(orderWithDatas));

@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="@string/question_privatize_car"
+                android:text="@string/question_go_and_back"
                 android:gravity="center"/>
 
             <RelativeLayout

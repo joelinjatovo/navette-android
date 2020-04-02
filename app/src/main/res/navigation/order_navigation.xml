@@ -62,16 +62,7 @@
         android:name="com.navetteclub.ui.car.CarsFragment"
         tools:layout="@layout/fragment_cars" >
         <action
-            android:id="@+id/action_cars_fragment_to_place_fragment"
-            app:destination="@id/place_fragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/place_fragment"
-        android:name="com.navetteclub.ui.order.PlaceFragment"
-        tools:layout="@layout/fragment_place" >
-        <action
-            android:id="@+id/action_place_fragment_to_privatize_fragment"
+            android:id="@+id/action_cars_fragment_to_privatize_fragment"
             app:destination="@id/privatize_fragment" />
     </fragment>
 
@@ -80,8 +71,17 @@
         android:name="com.navetteclub.ui.order.PrivatizeFragment"
         tools:layout="@layout/fragment_privatize">
         <action
-            android:id="@+id/action_privatize_fragment_to_travel_fragment"
-            app:destination="@id/privatize_fragment" />
+            android:id="@+id/action_privatize_fragment_to_place_fragment"
+            app:destination="@id/place_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/place_fragment"
+        android:name="com.navetteclub.ui.order.PlaceFragment"
+        tools:layout="@layout/fragment_place" >
+        <action
+            android:id="@+id/action_place_fragment_to_travel_fragment"
+            app:destination="@id/travel_fragment" />
     </fragment>
 
     <fragment

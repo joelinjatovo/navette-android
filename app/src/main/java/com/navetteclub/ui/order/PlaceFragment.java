@@ -68,7 +68,7 @@ public class PlaceFragment extends Fragment {
 
         mBinding.ok.setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_place_fragment_to_privatize_fragment);
+                    Navigation.findNavController(v).navigate(R.id.action_place_fragment_to_travel_fragment);
                 });
     }
 

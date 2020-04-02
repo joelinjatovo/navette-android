@@ -17,6 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.databinding.FragmentCarsBinding;
@@ -95,6 +97,6 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
     @Override
     public void onListFragmentInteraction(View view, int position, CarAndModel item) {
         orderViewModel.setCar(item.getCar());
-        Navigation.findNavController(view).navigate(R.id.action_cars_fragment_to_place_fragment);
+        Navigation.findNavController(view).navigate(R.id.action_cars_fragment_to_privatize_fragment);
     }
 }
