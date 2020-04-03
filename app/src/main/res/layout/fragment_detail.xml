@@ -15,6 +15,7 @@
         <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
+        <variable name="amount" type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -394,6 +395,53 @@
                                 android:textColor="@color/white"
                                 android:text="@{delay}"
                                 android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/orderPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/colorAccent"
+                    android:padding="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <LinearLayout
+                            android:id="@+id/amountLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="10dp">
+
+                            <TextView
+                                android:id="@+id/amountLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:text="@string/amount"/>
+
+                            <TextView
+                                android:id="@+id/amountValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:text="@{amount}"
+                                android:textAppearance="?attr/textAppearanceHeadline5"/>
 
                         </LinearLayout>
 

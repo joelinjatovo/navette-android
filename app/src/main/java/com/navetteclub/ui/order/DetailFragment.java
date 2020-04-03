@@ -2,6 +2,7 @@ package com.navetteclub.ui.order;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -44,6 +45,7 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.databinding.FragmentOrderBinding;
@@ -56,8 +58,11 @@ import com.navetteclub.vm.OrderViewModel;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.PaymentIntent;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,6 +77,9 @@ public class DetailFragment extends Fragment {
     private FragmentDetailBinding mBinding;
 
     private OrderViewModel orderViewModel;
+
+    private ProgressDialog progressDialog;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -94,6 +102,10 @@ public class DetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG + "Cycle", "onViewCreated");
 
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
+
         setupUi();
 
         setupOrderViewModel();
@@ -115,7 +127,68 @@ public class DetailFragment extends Fragment {
                         return;
                     }
 
+                    if(orderWithDatas.getOrder()!=null){
+                        Double amount = orderWithDatas.getOrder().getAmount();
+                        if( amount != null && amount > 0 ){
+                            String currency = orderWithDatas.getOrder().getCurrency();
+                            NumberFormat format = NumberFormat.getCurrencyInstance();
+                            //format.setMaximumFractionDigits(2);
+                            //format.setMinimumFractionDigits(2);
+                            format.setCurrency(Currency.getInstance(currency));
+                            mBinding.setAmount(format.format(amount));
 
+                            switch (orderWithDatas.getOrder().getStatus()){
+                                case Order.STATUS_PING:
+                                    mBinding.bookNowButton.setText(R.string.pay_now);
+                                break;
+                                case Order.STATUS_OK:
+                                    mBinding.bookNowButton.setText(R.string.view);
+                                break;
+                                default:
+                                    mBinding.bookNowButton.setText(R.string.book_now);
+                                break;
+                            }
+                        }
+                    }
+
+                });
+
+
+        orderViewModel.getDistance().observe(getViewLifecycleOwner(),
+                distance -> {
+                    if(distance == null){
+                        return;
+                    }
+
+                    mBinding.setDistance(distance);
+                });
+
+        orderViewModel.getDelay().observe(getViewLifecycleOwner(),
+                delay -> {
+                    if(delay == null){
+                        return;
+                    }
+
+                    mBinding.setDelay(delay);
+                });
+
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
+                orderResult -> {
+                    if(orderResult == null){
+                        return;
+                    }
+
+                    progressDialog.hide();
+
+                    if (orderResult.getError() != null) {
+                        Log.d(TAG, "'orderResult.getError()'");
+                        Snackbar.make(mBinding.getRoot(), orderResult.getError(), Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    if (orderResult.getSuccess() != null) {
+                        Log.d(TAG, "'orderResult.getSuccess()'");
+                        orderViewModel.setOrder(orderResult.getSuccess());
+                    }
                 });
 
     }
@@ -126,7 +199,10 @@ public class DetailFragment extends Fragment {
 
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    orderViewModel.placeOrder();
+                    if(mBinding.getAmount()==null){
+                        progressDialog.show();
+                        orderViewModel.placeOrder();
+                    }
                 });
     }
 

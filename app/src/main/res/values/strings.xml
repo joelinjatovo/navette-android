@@ -120,5 +120,7 @@
     <string name="question_go_and_back">Aller et retours?</string>
     <string name="book">Reservez</string>
     <string name="book_now">Reservez maintenant</string>
+    <string name="amount">Montant</string>
+    <string name="view">Voir</string>
 
 </resources>

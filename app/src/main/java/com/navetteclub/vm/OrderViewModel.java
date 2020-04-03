@@ -353,4 +353,8 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         return delayLiveData;
     }
 
+    public void setOrder(OrderWithDatas order) {
+        orderWithDatas = order;
+        orderWithDatasLiveData.setValue(orderWithDatas);
+    }
 }

@@ -12,12 +12,31 @@ import java.util.Date;
     tableName = "orders"
 )
 public class Order {
+
+    public static final String STATUS_PING = "ping";
+
+    public static final String STATUS_PROCESSING = "processing";
+
+    public static final String STATUS_OK = "ok";
+
+    public static final String STATUS_ACTIVE = "active";
+
+    public static final String STATUS_CANCELED = "canceled";
+
+    public static final String STATUS_TERMINATED = "terminated";
+
+    public static final String STATUS_CLOSED = "closed";
+
     @PrimaryKey
     private Long id;
 
     @SerializedName("rid")
     @ColumnInfo(name = "rid")
     private String rid; // Remote id
+
+    @SerializedName("status")
+    @ColumnInfo(name = "status")
+    private String status;
 
     @SerializedName("place")
     @ColumnInfo(name = "place")
@@ -163,5 +182,13 @@ public class Order {
 
     public void setCarId(Long carId) {
         this.carId = carId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
