@@ -122,5 +122,18 @@
     <string name="book_now">Reservez maintenant</string>
     <string name="amount">Montant</string>
     <string name="view">Voir</string>
+    <string name="checkout">Checkout</string>
+    <string name="total_price">Montant total</string>
+    <string name="payment_methods">Moyens de paiement</string>
+    <string name="espece">Espece</string>
+    <string name="card">Carte bancaire</string>
+    <string name="paypal">PayPal</string>
+    <string name="confirm">Confirmer</string>
+    <string name="card_number">Card number</string>
+    <string name="save_card_number_for_future_payment">Sauvegarder la carte pour un paiement futur</string>
+    <string name="thanks_you_for_purchasing">Thank you for purchasing</string>
+    <string name="thanks">Thanks</string>
+    <string name="title_checkout">Checkout</string>
+    <string name="error_invalid_access_token">Invalid Access Token</string>
 
 </resources>

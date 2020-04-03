@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment implements NavigationView.OnNaviga
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.sync:
-                NavHostFragment.findNavController(this).navigate(R.id.orders_fragment);
+                NavHostFragment.findNavController(this).navigate(R.id.navigation_orders);
             break;
             case R.id.logout:
                 loginViewModel.setLoginResult(null);

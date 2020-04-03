@@ -11,7 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,7 @@ import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.NotificationViewModel;
+import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.OrdersViewModel;
 
 public class OrdersFragment extends Fragment {
@@ -34,6 +37,8 @@ public class OrdersFragment extends Fragment {
     private OrderRecyclerViewAdapter mAdapter;
 
     private OrdersViewModel mViewModel;
+
+    private OrderViewModel orderViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -54,6 +59,9 @@ public class OrdersFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
+
+        orderViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
         mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {
@@ -119,6 +127,8 @@ public class OrdersFragment extends Fragment {
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
         public void onListFragmentInteraction(View v, OrderWithDatas item) {
+            orderViewModel.setOrderWithDatasLiveData(item);
+            NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
         }
     };
 

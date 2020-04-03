@@ -30,7 +30,7 @@ public class OrdersViewModel extends ViewModel {
     private MutableLiveData<RemoteLoaderResult<List<OrderWithDatas>>> ordersLiveData = new MutableLiveData<>();
 
     public void load(User user){
-        Log.d(TAG, "service.load()");
+        Log.d(TAG, "OrderApiService.getAll( " +  user.getAuthorizationToken() + ")");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
         Call<RetrofitResponse<List<OrderWithDatas>>> call = service.getAll(user.getAuthorizationToken());
         call.enqueue(new Callback<RetrofitResponse<List<OrderWithDatas>>>() {
@@ -38,9 +38,20 @@ public class OrdersViewModel extends ViewModel {
             public void onResponse(@NonNull Call<RetrofitResponse<List<OrderWithDatas>>> call,
                                    @NonNull Response<RetrofitResponse<List<OrderWithDatas>>> response) {
                 Log.d(TAG, response.toString());
-                if (response.body() != null && response.body().isSuccess()) {
+                if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
-                    ordersLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    if(response.body().isSuccess()) {
+                        ordersLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    }else{
+                        switch (response.body().getCode()){
+                            case 103:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_invalid_access_token));
+                            break;
+                            default:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                            break;
+                        }
+                    }
                 }else{
                     ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
                 }

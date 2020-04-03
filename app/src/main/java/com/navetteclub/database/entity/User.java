@@ -170,6 +170,6 @@ public class User {
 
     @NonNull
     public String toString(){
-        return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "; tokenExpires=" + tokenExpires + "]";
+        return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "; token=" + token  + "; tokenExpires=" + tokenExpires + "]";
     }
 }

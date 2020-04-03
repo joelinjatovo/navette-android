@@ -27,6 +27,14 @@ public class Order {
 
     public static final String STATUS_CLOSED = "closed";
 
+    public static final String PAYMENT_TYPE_CASH = "cash";
+
+    public static final String PAYMENT_TYPE_STRIPE = "stripe";
+
+    public static final String PAYMENT_TYPE_PAYPAL = "paypal";
+
+    public static final String PAYMENT_TYPE_APPLE_PAY = "apple_pay";
+
     @PrimaryKey
     private Long id;
 
@@ -45,6 +53,10 @@ public class Order {
     @SerializedName("amount")
     @ColumnInfo(name = "amount")
     private Double amount;
+
+    @SerializedName("payment_type")
+    @ColumnInfo(name = "payment_type")
+    private String paymentType;
 
     @SerializedName("subtotal")
     @ColumnInfo(name = "subtotal")
@@ -190,5 +202,13 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
     }
 }

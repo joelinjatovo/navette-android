@@ -104,4 +104,6 @@
         android:name="com.navetteclub.ui.order.DetailFragment"
         tools:layout="@layout/fragment_detail"/>
 
+    <include app:graph="@navigation/checkout_navigation" />
+
 </navigation>

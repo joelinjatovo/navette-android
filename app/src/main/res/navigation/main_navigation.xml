@@ -58,10 +58,6 @@
 
     <include app:graph="@navigation/order_navigation" />
 
-    <fragment
-        android:id="@+id/orders_fragment"
-        android:name="com.navetteclub.ui.order.OrdersFragment"
-        android:label="@string/title_maps"
-        tools:layout="@layout/fragment_orders" />
+    <include app:graph="@navigation/orders_navigation" />
 
 </navigation>

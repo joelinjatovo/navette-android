@@ -311,8 +311,45 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         });
     }
 
+    public void pay(String paymentType) {
+        Order order = orderWithDatas.getOrder();
+
+        Log.d(TAG, "service.pay(" + paymentType + ")");
+        OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
+        Call<RetrofitResponse<OrderWithDatas>> call = service.confirmPayment(order.getRid(), paymentType);
+        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+                Log.e(TAG, response.toString());
+                if (response.body() != null){
+                    Log.e(TAG, response.body().toString());
+                    if(response.body().isSuccess()) {
+                        orderResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                    }else{
+                        orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                    }
+                } else {
+                    orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+                                  @NonNull Throwable throwable) {
+                Log.e(TAG, throwable.getMessage(), throwable);
+                orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+            }
+        });
+    }
+
     public OrderWithDatas getOrderWithDatas() {
         return orderWithDatas;
+    }
+
+    public void setOrderWithDatasLiveData(OrderWithDatas orderWithDatas) {
+        this.orderWithDatas = orderWithDatas;
+        orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public MutableLiveData<OrderWithDatas> getOrderWithDatasLiveData() {
