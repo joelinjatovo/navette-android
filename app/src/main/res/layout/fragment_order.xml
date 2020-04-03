@@ -11,6 +11,7 @@
         <variable name="destination" type="com.navetteclub.database.entity.Point" />
         <variable name="retours" type="com.navetteclub.database.entity.Point" />
 
+        <variable name="showErrorLoader" type="boolean" />
         <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
@@ -304,6 +305,7 @@
         <include
             layout="@layout/bottom_sheet_order"
             android:id="@+id/bottom_sheets"
+            app:showErrorLoader="@{showErrorLoader}"
             app:isLoadingDirection="@{isLoadingDirection}"
             app:distance="@{distance}"
             app:delay="@{delay}"/>

@@ -195,6 +195,24 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
+        orderViewModel.getDistance().observe(getViewLifecycleOwner(),
+                distance -> {
+                    if(distance == null){
+                        return;
+                    }
+
+                    mBinding.setDistance(distance);
+                });
+
+        orderViewModel.getDelay().observe(getViewLifecycleOwner(),
+                delay -> {
+                    if(delay == null){
+                        return;
+                    }
+
+                    mBinding.setDelay(delay);
+                });
+
         orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
@@ -448,11 +466,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
-        if(mOldOrigin != null && mOrigin.latitude == mOldOrigin.latitude && mOrigin.longitude == mOldOrigin.longitude){
-            return;
-        }
-
-        if(mOldDestination != null  && mDestination.latitude == mOldDestination.latitude && mDestination.longitude == mOldDestination.longitude){
+        if(mOldOrigin != null
+                && mOrigin.latitude == mOldOrigin.latitude
+                && mOrigin.longitude == mOldOrigin.longitude
+                && mOldDestination != null
+                && mDestination.latitude == mOldDestination.latitude
+                && mDestination.longitude == mOldDestination.longitude){
             return;
         }
 
@@ -480,6 +499,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         // Show loader
         expandOrderDetails();
         mBinding.setIsLoadingDirection(true);
+        mBinding.setShowErrorLoader(false);
 
         call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
@@ -502,8 +522,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             String distance = leg.getDistance().getText();
                             String time = leg.getDuration().getText();
 
-                            mBinding.setDistance(distance);
-                            mBinding.setDelay(time);
+                            orderViewModel.setDistance(distance);
+                            orderViewModel.setDelay(time);
 
                             Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
 
@@ -518,15 +538,20 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 .geodesic(true)
                         );
                     }
+
+                    mBinding.setShowErrorLoader(false);
                 } catch (Exception e) {
                     Log.e(TAG, "There is an error", e);
+                    mBinding.setShowErrorLoader(true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
-                mBinding.setIsLoadingDirection(false);
                 Log.e(TAG, t.toString(), t);
+
+                mBinding.setIsLoadingDirection(false);
+                mBinding.setShowErrorLoader(true);
             }
         });
 

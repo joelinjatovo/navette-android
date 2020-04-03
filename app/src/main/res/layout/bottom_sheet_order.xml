@@ -6,6 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <variable name="showErrorLoader" type="boolean" />
         <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
@@ -46,126 +47,134 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="@{isLoadingDirection?View.VISIBLE:View.GONE}">
+            android:layout_height="wrap_content">
 
-            <TextView
+            <com.navetteclub.views.LoaderErrorView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/loading_direction"
-                android:gravity="center_horizontal" />
+                android:layout_height="match_parent"
+                android:visibility="@{showErrorLoader?View.VISIBLE:View.GONE}"/>
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="@{isLoadingDirection?View.GONE:View.VISIBLE}">
-
-            <RelativeLayout
-                android:id="@+id/orderInfo"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp">
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{isLoadingDirection?View.VISIBLE:View.GONE}">
 
-                <androidx.cardview.widget.CardView
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorAccent"
-                    android:padding="10dp">
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/loading_direction"
+                    android:gravity="center_horizontal" />
 
-                    <RelativeLayout
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="@{isLoadingDirection||showErrorLoader?View.GONE:View.VISIBLE}">
+
+                <RelativeLayout
+                    android:id="@+id/orderInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
                         android:padding="10dp">
 
-                        <LinearLayout
-                            android:id="@+id/distanceLayout"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginEnd="10dp">
+                            android:padding="10dp">
 
-                            <TextView
-                                android:id="@+id/distanceLabel"
+                            <LinearLayout
+                                android:id="@+id/distanceLayout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/distance"/>
+                                android:orientation="vertical"
+                                android:layout_marginEnd="10dp">
 
-                            <TextView
-                                android:id="@+id/distanceValue"
+                                <TextView
+                                    android:id="@+id/distanceLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:text="@string/distance"/>
+
+                                <TextView
+                                    android:id="@+id/distanceValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:text="@{distance}"
+                                    android:textAppearance="?attr/textAppearanceHeadline5"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/delayLayout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{distance}"
-                                android:textAppearance="?attr/textAppearanceHeadline5"/>
+                                android:orientation="vertical"
+                                android:layout_marginStart="10dp"
+                                android:layout_toEndOf="@+id/distanceLayout">
 
-                        </LinearLayout>
+                                <TextView
+                                    android:id="@+id/delayLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:text="@string/delay"/>
 
-                        <LinearLayout
-                            android:id="@+id/delayLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_toEndOf="@+id/distanceLayout"
-                            android:layout_toRightOf="@+id/distanceLayout">
+                                <TextView
+                                    android:id="@+id/delayValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:text="@{delay}"
+                                    android:textAppearance="?attr/textAppearanceHeadline6"/>
 
-                            <TextView
-                                android:id="@+id/delayLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/delay"/>
+                            </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/delayValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{delay}"
-                                android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        </RelativeLayout>
 
-                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
-                    </RelativeLayout>
+                </RelativeLayout>
 
-                </androidx.cardview.widget.CardView>
+                <Button
+                    android:id="@+id/bookNowButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"
+                    android:text="@string/book"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/bookNowButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_gravity="center"
-                android:text="@string/book"/>
 
-        </LinearLayout>
-
+        </RelativeLayout>
     </LinearLayout>
 
 </layout>

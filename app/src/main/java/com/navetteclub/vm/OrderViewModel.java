@@ -9,6 +9,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.OrderRequest;
+import com.navetteclub.api.models.google.Distance;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.api.services.OrderApiService;
@@ -48,6 +49,10 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
     private CarRepository carRepository;
+
+    private MutableLiveData<String> distanceLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<String> delayLiveData = new MutableLiveData<>();
 
     public OrderViewModel(CarRepository carRepository) {
         this.carRepository = carRepository;
@@ -331,4 +336,21 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     public void onUpsertSuccess(List<CarAndModel> items) {
         cars.setValue(items);
     }
+
+    public MutableLiveData<String> getDistance() {
+        return distanceLiveData;
+    }
+
+    public void setDistance(String distance) {
+        distanceLiveData.setValue(distance);
+    }
+
+    public void setDelay(String delay) {
+        delayLiveData.setValue(delay);
+    }
+
+    public MutableLiveData<String> getDelay() {
+        return delayLiveData;
+    }
+
 }
