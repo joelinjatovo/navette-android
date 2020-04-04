@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 import com.navetteclub.R;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.repositories.LoginRepository;
-import com.navetteclub.database.entity.UserWithRoles;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.models.LoginFormState;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.utils.Log;
@@ -20,13 +20,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginViewModel extends ViewModel implements Callback<RetrofitResponse<UserWithRoles>> {
+public class LoginViewModel extends ViewModel implements Callback<RetrofitResponse<User>> {
 
     private static final String TAG = LoginViewModel.class.getSimpleName();
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<UserWithRoles>> loginResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<User>> loginResult = new MutableLiveData<>();
 
     private LoginRepository loginRepository;
 
@@ -38,11 +38,11 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
         return loginFormState;
     }
 
-    public void setLoginResult(RemoteLoaderResult<UserWithRoles> result) {
+    public void setLoginResult(RemoteLoaderResult<User> result) {
         loginResult.setValue(result);
     }
 
-    public LiveData<RemoteLoaderResult<UserWithRoles>> getLoginResult() {
+    public LiveData<RemoteLoaderResult<User>> getLoginResult() {
         return loginResult;
     }
 
@@ -78,13 +78,13 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
     }
 
     @Override
-    public void onResponse(@NonNull Call<RetrofitResponse<UserWithRoles>> call, Response<RetrofitResponse<UserWithRoles>> response) {
+    public void onResponse(@NonNull Call<RetrofitResponse<User>> call, Response<RetrofitResponse<User>> response) {
         Log.d(TAG, response.toString());
 
-        RetrofitResponse<UserWithRoles> data = response.body();
+        RetrofitResponse<User> data = response.body();
         if(null != data){
             Log.d(TAG, data.toString());
-            UserWithRoles item = data.getData();
+            User item = data.getData();
             switch(data.getCode()){
                 case 0:
                     if(null != item){
@@ -114,7 +114,7 @@ public class LoginViewModel extends ViewModel implements Callback<RetrofitRespon
     }
 
     @Override
-    public void onFailure(@NonNull Call<RetrofitResponse<UserWithRoles>> call, @NonNull Throwable t) {
+    public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable t) {
         Log.e(TAG, t.getMessage(), t);
         if(t instanceof MalformedJsonException){
             loginResult.setValue(new RemoteLoaderResult(R.string.invalid_json_response));

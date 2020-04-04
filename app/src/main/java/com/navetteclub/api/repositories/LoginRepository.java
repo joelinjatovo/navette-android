@@ -1,15 +1,11 @@
 package com.navetteclub.api.repositories;
 
 import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.datasource.LoginDataSourceBase;
-import com.navetteclub.database.entity.UserWithRoles;
 
 import retrofit2.Callback;
 
-/**
- * Class that requests authentication and user information from the remote data source and
- * maintains an in-memory cache of login status and user credentials information.
- */
 public class LoginRepository {
 
     private static volatile LoginRepository instance;
@@ -28,7 +24,7 @@ public class LoginRepository {
         return instance;
     }
 
-    public void login(String phone, String password, Callback<RetrofitResponse<UserWithRoles>> callback) {
+    public void login(String phone, String password, Callback<RetrofitResponse<User>> callback) {
         dataSource.login(phone, password, callback);
     }
 

@@ -29,7 +29,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserWithRoles;
 import com.navetteclub.databinding.FragmentLoginBinding;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.LoginViewModel;
@@ -129,7 +128,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
                     if (loginResult.getSuccess() != null) {
                         Log.d(TAG, "'loginResult.getSuccess()'");
-                        userViewModel.insertUserWithRoles(upsertCallback, loginResult.getSuccess());
+                        userViewModel.upsert(upsertCallback, loginResult.getSuccess());
                     }
 
                     // Reset remote result
@@ -227,21 +226,22 @@ public class LoginFragment extends Fragment implements TextWatcher {
             );
     }
 
-    private UpsertCallback<UserWithRoles> upsertCallback = new UpsertCallback<UserWithRoles>() {
+    private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
         @Override
         public void onUpsertError() {
             Toast.makeText(getContext(), getString(R.string.error_database), Toast.LENGTH_LONG).show();
         }
 
         @Override
-        public void onUpsertSuccess(List<UserWithRoles> users) {
-            Preferences.Auth.setCurrentUser(getContext(), users.get(0).getUser());
-            authViewModel.authenticate(users.get(0).getUser());
-            updateUiWithUser(users.get(0).getUser());
+        public void onUpsertSuccess(List<User> users) {
+            User user = users.get(0);
+            Preferences.Auth.setCurrentUser(getContext(), user);
+            authViewModel.authenticate(user);
+            updateUiWithUser(user);
         }
 
-        private void updateUiWithUser(User model) {
-            String welcome = getString(R.string.welcome) + model.getName();
+        private void updateUiWithUser(User user) {
+            String welcome = getString(R.string.welcome) + user.getName();
             Toast.makeText(getContext(), welcome, Toast.LENGTH_LONG).show();
         }
     };

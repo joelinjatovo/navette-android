@@ -2,7 +2,7 @@ package com.navetteclub.api.services;
 
 import com.navetteclub.api.models.Login;
 import com.navetteclub.api.responses.RetrofitResponse;
-import com.navetteclub.database.entity.UserWithRoles;
+import com.navetteclub.database.entity.User;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,7 +15,7 @@ public interface TokenApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/token")
-    Call<RetrofitResponse<UserWithRoles>> getToken(@Body Login login);
+    Call<RetrofitResponse<User>> getToken(@Body Login login);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/token/refresh")

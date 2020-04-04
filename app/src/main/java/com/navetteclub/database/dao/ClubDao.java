@@ -10,9 +10,6 @@ import androidx.room.Transaction;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Point;
-import com.navetteclub.database.entity.Role;
-import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -32,7 +32,7 @@ import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.UserApiService;
-import com.navetteclub.database.entity.UserWithRoles;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.ui.MainActivity;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
@@ -327,12 +327,13 @@ public class LocationUpdatesService extends Service {
     private void sendLocationToServer(Location location) {
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
         String token = "Bearer 3b53622ae7dcb2c22d887bbdbfad489bIeNgYuLokXrwtPuDzaxU5KeNuFjxCXxM262JHVJJ76ln3A0RfnSNBrBFZ7KntJipm2N6qhmEL3g2Q7pK8AneDUiLkYosAfH37ZMYeldCFIrgRLiy5mkbQENZj2pZpQkUhOPLl7dT0nRTBtuBPTxcsSVzBgN5jtkoBujvCMGzXFoYdSEbviksJIZ2FG1vOq343Gf2HepN134X45Bjhe9QliVjdXdQ9IyjuiNMKyRAwVBTxTzkWzzjBf8xo2zMNvYBEavdjO5L2Qj6HFPYDlSNar8ik5s06utafX8FeKTgLq7MAiuSNoG6jt75HgbtFwEEQMmpwTkMyfYAAbNvR0TlQFtgVcFB6s211zaUqbBVBaOyqMCX34OuD5H3dIpbakK3pZT0DMY6i64wEi10nYbM4LlaHo1pmwzPXD1WRNBU0frGjm54IAgPdH6t3lww9TwCZgzpAYD2HdcceFZuaVnFI8WOn4GhY3j7ZITYFa4kGwM2mjqpHguf6090d3487e46b4904d940e22e9988881";
-        Call<RetrofitResponse<UserWithRoles>> call = service.addPosition(token, new com.navetteclub.api.models.Location(location));
-        call.enqueue(new Callback<RetrofitResponse<UserWithRoles>>() {
+        Call<RetrofitResponse<User>> call = service.addPosition(token, new com.navetteclub.api.models.Location(location));
+        call.enqueue(new Callback<RetrofitResponse<User>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<UserWithRoles>> call, @NonNull Response<RetrofitResponse<UserWithRoles>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<User>> call,
+                                   @NonNull Response<RetrofitResponse<User>> response) {
                 Log.d(TAG, response.toString());
-                RetrofitResponse<UserWithRoles> data = response.body();
+                RetrofitResponse<User> data = response.body();
                 Log.d(TAG, response.code() + "  " + response.message());
                 if(null != data){
                     Log.d(TAG, data.toString());
@@ -340,7 +341,8 @@ public class LocationUpdatesService extends Service {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<UserWithRoles>> call, @NonNull Throwable throwable) {
+            public void onFailure(@NonNull Call<RetrofitResponse<User>> call,
+                                  @NonNull Throwable throwable) {
                 Log.w(TAG, throwable);
             }
         });

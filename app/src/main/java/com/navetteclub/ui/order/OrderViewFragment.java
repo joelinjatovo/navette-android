@@ -17,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.databinding.FragmentOrderViewBinding;
 import com.navetteclub.utils.Log;
@@ -39,6 +40,7 @@ public class OrderViewFragment extends Fragment {
 
     private ProgressDialog progressDialog;
 
+    private Order order;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -82,15 +84,6 @@ public class OrderViewFragment extends Fragment {
     private void setupAuthViewModel() {
         authViewModel = new ViewModelProvider(this,
                 new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
-
-        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
-                authenticationState -> {
-                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        mBinding.setIsUnauthenticated(false);
-                    }else{
-                        mBinding.setIsUnauthenticated(true);
-                    }
-                });
     }
 
     private void setupOrderViewModel() {
@@ -102,35 +95,66 @@ public class OrderViewFragment extends Fragment {
                         return;
                     }
 
-                    if(orderWithDatas.getOrder()!=null){
+                    order = orderWithDatas.getOrder();
+                    if(order!=null){
+                        mBinding.setAmount(order.getAmountStr());
 
-                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
+                        if(order.getPaymentType()!=null){
+                            switch (order.getPaymentType()){
+                                case Order.PAYMENT_TYPE_CASH:
+                                    mBinding.espece.setChecked(true);
+                                    break;
+                                case Order.PAYMENT_TYPE_STRIPE:
+                                    mBinding.card.setChecked(true);
+                                    break;
+                                case Order.PAYMENT_TYPE_PAYPAL:
+                                    mBinding.paypal.setChecked(true);
+                                    break;
+                            }
+                        }
 
-                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
-
-                        Double amount = orderWithDatas.getOrder().getAmount();
-                        if( amount != null && amount > 0 ){
-                            String currency = orderWithDatas.getOrder().getCurrency();
-                            NumberFormat format = NumberFormat.getCurrencyInstance();
-                            //format.setMaximumFractionDigits(2);
-                            //format.setMinimumFractionDigits(2);
-                            format.setCurrency(Currency.getInstance(currency));
-                            mBinding.setAmount(format.format(amount));
-
-                            switch (orderWithDatas.getOrder().getStatus()){
+                        if(order.getStatus()!=null){
+                            switch (order.getStatus()){
                                 case Order.STATUS_PING:
                                     mBinding.bookNowButton.setText(R.string.pay_now);
-                                break;
+                                    break;
                                 case Order.STATUS_OK:
                                     mBinding.bookNowButton.setText(R.string.view);
-                                break;
+                                    break;
                                 default:
                                     mBinding.bookNowButton.setText(R.string.book_now);
-                                break;
+                                    break;
                             }
                         }
                     }
 
+
+                    // Points
+                    if(orderWithDatas.getPoints()!=null){
+                        // Origin
+                        if(orderWithDatas.getPoints().size()>0){
+                            Point point = orderWithDatas.getPoints().get(0);
+                            if(point!=null){
+                                mBinding.setOrigin(point);
+                            }
+                        }
+
+                        // Destination
+                        if(orderWithDatas.getPoints().size()>1) {
+                            Point point = orderWithDatas.getPoints().get(1);
+                            if(point!=null) {
+                                mBinding.setDestination(point);
+                            }
+                        }
+
+                        // Retours
+                        if(orderWithDatas.getPoints().size()>2) {
+                            Point point = orderWithDatas.getPoints().get(2);
+                            if(point!=null) {
+                                mBinding.setRetours(point);
+                            }
+                        }
+                    }
                 });
 
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
@@ -154,15 +178,10 @@ public class OrderViewFragment extends Fragment {
 
     }
 
-
     private void setupUi() {
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    if(authViewModel.getUser()!=null
-                            && orderViewModel.getOrderWithDatas() != null
-                            && orderViewModel.getOrderWithDatas().getOrder() != null
-                            && orderViewModel.getOrderWithDatas().getOrder().getRid() != null){
-                        Order order = orderViewModel.getOrderWithDatas().getOrder();
+                    if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
                         switch (order.getStatus()){
                             case Order.STATUS_OK:
                             case Order.STATUS_PROCESSING:

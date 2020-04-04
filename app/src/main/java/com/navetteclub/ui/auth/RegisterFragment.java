@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserWithRoles;
 import com.navetteclub.databinding.FragmentRegisterBinding;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.RegisterViewModel;
@@ -60,7 +59,7 @@ public class RegisterFragment  extends Fragment {
 
                     if (registerResult.getSuccess() != null) {
                         setRegisteredInUser(registerResult.getSuccess());
-                        updateUiWithUser(registerResult.getSuccess().getUser());
+                        updateUiWithUser(registerResult.getSuccess());
                     }
                 });
 
@@ -80,13 +79,13 @@ public class RegisterFragment  extends Fragment {
             });
     }
 
-    private void setRegisteredInUser(UserWithRoles user) {
+    private void setRegisteredInUser(User user) {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    private void updateUiWithUser(User model) {
-        String welcome = getString(R.string.welcome) + model.getName();
+    private void updateUiWithUser(User user) {
+        String welcome = getString(R.string.welcome) + user.getName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getContext(), welcome, Toast.LENGTH_LONG).show();
     }

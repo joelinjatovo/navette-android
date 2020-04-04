@@ -2,36 +2,16 @@ package com.navetteclub.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.navetteclub.database.entity.Role;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Dao
 public abstract class UserDao extends BaseDao<User> {
-
-    @Transaction
-    @Insert
-    public void insertUserWithRoles(User user, List<Role> roles){
-        upsert(user);
-        for(Role role: roles){
-            _insertRole(role);
-            _insertUserRole(new UserRole(user,role));
-        }
-    }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract void _insertRole(Role role);
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract void _insertUserRole(UserRole userRole);
 
     @Query("SELECT * FROM users")
     public abstract List<User> find();

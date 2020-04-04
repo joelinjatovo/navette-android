@@ -151,5 +151,6 @@
     <string name="loading_orders">Chargement des commandes</string>
     <string name="notification_new_order">Nouvelle commande</string>
     <string name="notification_new_order_desc">Votre commande a été bien activé.</string>
+    <string name="title_order_view">Détail d\'une commande</string>
 
 </resources>

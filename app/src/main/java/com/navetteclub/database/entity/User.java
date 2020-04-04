@@ -8,6 +8,9 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(
     tableName = "users",
     indices = {
@@ -19,6 +22,9 @@ import com.google.gson.annotations.SerializedName;
     }
 )
 public class User {
+    private static final String ROLE_ADMIN = "admin";
+    private static final String ROLE_DRIVER = "driver";
+    private static final String ROLE_CUSTOMER = "customer";
     @PrimaryKey
     @SerializedName("id")
     private Long id;
@@ -38,6 +44,10 @@ public class User {
     @SerializedName("phone")
     @ColumnInfo(name = "phone")
     private String phone;
+
+    @SerializedName("roles")
+    @ColumnInfo(name = "roles")
+    private ArrayList<String> roles;
 
     @SerializedName("locale")
     @ColumnInfo(name = "locale")
@@ -171,5 +181,25 @@ public class User {
     @NonNull
     public String toString(){
         return "User[id=" + id + "; phone=" + phone + "; name=" + name + "; locale=" + locale + "; token=" + token  + "; tokenExpires=" + tokenExpires + "]";
+    }
+
+    public ArrayList<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<String> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isAdmin(){
+        return roles!=null && roles.contains(ROLE_ADMIN);
+    }
+
+    public boolean isDriver(){
+        return roles!=null && roles.contains(ROLE_DRIVER);
+    }
+
+    public boolean isCustomer(){
+        return roles!=null && roles.contains(ROLE_CUSTOMER);
     }
 }

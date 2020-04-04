@@ -9,7 +9,6 @@ import com.navetteclub.database.callback.FindCallback;
 import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.dao.UserDao;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserWithRoles;
 import com.navetteclub.database.task.UpsertAsyncTask;
 import com.navetteclub.database.task.UpsertUserWithRolesAsyncTask;
 import com.navetteclub.database.task.UserFindAsyncTask;
@@ -45,7 +44,7 @@ public class UserRepository {
         (new UpsertAsyncTask<User>(userDao, callback)).execute(users);
     }
 
-    public void insertUserWithRoles(UpsertCallback<UserWithRoles> callback, UserWithRoles... users){
+    public void upsert(UpsertCallback<User> callback, User... users){
         (new UpsertUserWithRolesAsyncTask(userDao, callback)).execute(users);
     }
 

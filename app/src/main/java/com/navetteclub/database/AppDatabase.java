@@ -27,10 +27,8 @@ import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderPoint;
 import com.navetteclub.database.entity.Point;
-import com.navetteclub.database.entity.Role;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.database.entity.UserPoint;
-import com.navetteclub.database.entity.UserRole;
 
 @Database(entities = {
         Car.class,
@@ -40,10 +38,8 @@ import com.navetteclub.database.entity.UserRole;
         Order.class,
         OrderPoint.class,
         Point.class,
-        Role.class,
         User.class,
         UserPoint.class,
-        UserRole.class
 },version = 1, exportSchema = false)
 @TypeConverters({DateConverter.class, ArrayConverter.class, ObjectConverter.class})
 public abstract class AppDatabase extends RoomDatabase {

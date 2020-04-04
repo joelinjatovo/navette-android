@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserWithRoles;
 import com.navetteclub.database.repositories.UserRepository;
 
 import java.util.List;
@@ -43,8 +42,8 @@ public class UserViewModel  extends ViewModel {
         repository.insert(callback, users);
     }
 
-    public void insertUserWithRoles(UpsertCallback<UserWithRoles> callback, UserWithRoles... users){
-        repository.insertUserWithRoles(callback, users);
+    public void upsert(UpsertCallback<User> callback, User... users){
+        repository.upsert(callback, users);
     }
 
 }

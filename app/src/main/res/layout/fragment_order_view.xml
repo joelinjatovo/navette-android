@@ -6,383 +6,369 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="isLoading" type="boolean" />
-        <variable name="isUnauthenticated" type="boolean" />
-        <variable name="showMoreButton" type="boolean" />
         <variable name="origin" type="com.navetteclub.database.entity.Point" />
         <variable name="destination" type="com.navetteclub.database.entity.Point" />
         <variable name="retours" type="com.navetteclub.database.entity.Point" />
-
-        <variable name="isLoadingDirection" type="boolean" />
-        <variable name="distance" type="String" />
-        <variable name="delay" type="String" />
         <variable name="amount" type="String" />
+        <variable name="status" type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
+        tools:context="com.navetteclub.ui.MainActivity">
 
-        <com.navetteclub.views.AuthErrorView
-            android:id="@+id/authErrorView"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:title="@string/title_order_view"
+                app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
+            android:layout_marginTop="?attr/actionBarSize">
 
-        <LinearLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/bookNowButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0"
-            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
-
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/bookNowButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0">
 
-                <androidx.cardview.widget.CardView
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="5dp"
-                    android:padding="10dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardBackgroundColor="@color/colorBackground">
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp">
 
-                    <LinearLayout
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp">
-
-                            <ImageView
-                                android:id="@+id/originLocationIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentStart="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorIcon"
-                                android:src="@drawable/outline_trip_origin_black_18"
-                                android:layout_centerVertical="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/originLinearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@+id/originLocationIcon"
-                                android:layout_alignParentEnd="true"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/originLabelText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/origin"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"/>
-
-                                <TextView
-                                    android:id="@+id/originText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@{origin==null?@string/search:origin.name}"
-                                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingBottom="5dp"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/colorAccent"
-                            android:layout_marginLeft="28dp"
-                            android:layout_marginStart="28dp" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp">
-
-                            <ImageView
-                                android:id="@+id/destinationLocationIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentStart="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAccent"
-                                android:src="@drawable/outline_place_black_24"
-                                android:layout_centerVertical="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/destinationLinearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@+id/destinationLocationIcon"
-                                android:layout_alignParentEnd="true"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/destinationLabelText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/destination"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"/>
-
-                                <TextView
-                                    android:id="@+id/destinationText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@{destination==null?@string/search:destination.name}"
-                                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingBottom="5dp"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/colorAccent"
-                            android:layout_marginLeft="28dp"
-                            android:layout_marginStart="28dp"
-                            android:visibility="@{retours==null?View.GONE:View.VISIBLE}" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:visibility="@{retours==null?View.GONE:View.VISIBLE}">
-
-                            <ImageView
-                                android:id="@+id/retoursLocationIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentStart="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAccent"
-                                android:src="@drawable/outline_trip_origin_black_18"
-                                android:layout_centerVertical="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/retoursLinearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@+id/retoursLocationIcon"
-                                android:layout_alignParentEnd="true"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/retoursLabelText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/retours"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"/>
-
-                                <TextView
-                                    android:id="@+id/retoursText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@{retours==null?@string/search:retours.name}"
-                                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingBottom="5dp"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/orderInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorAccent"
-                    android:padding="10dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp">
+                        android:layout_marginTop="1dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginBottom="5dp"
+                        android:padding="10dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardBackgroundColor="@color/colorBackground">
 
                         <LinearLayout
-                            android:id="@+id/distanceLayout"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginEnd="10dp">
-
-                            <TextView
-                                android:id="@+id/distanceLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/distance"/>
-
-                            <TextView
-                                android:id="@+id/distanceValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{distance}"
-                                android:textAppearance="?attr/textAppearanceHeadline5"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/delayLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginLeft="10dp"
                             android:layout_marginStart="10dp"
-                            android:layout_toEndOf="@+id/distanceLayout"
-                            android:layout_toRightOf="@+id/distanceLayout">
-
-                            <TextView
-                                android:id="@+id/delayLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/delay"/>
-
-                            <TextView
-                                android:id="@+id/delayValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{delay}"
-                                android:textAppearance="?attr/textAppearanceHeadline6"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/orderPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorAccent"
-                    android:padding="10dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp">
-
-                        <LinearLayout
-                            android:id="@+id/amountLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
                             android:layout_marginEnd="10dp">
 
-                            <TextView
-                                android:id="@+id/amountLabel"
-                                android:layout_width="wrap_content"
+                            <RelativeLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/amount"/>
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp">
 
-                            <TextView
-                                android:id="@+id/amountValue"
-                                android:layout_width="wrap_content"
+                                <ImageView
+                                    android:id="@+id/originLocationIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:contentDescription="@string/image"
+                                    android:tint="@color/colorIcon"
+                                    android:src="@drawable/outline_trip_origin_black_18"
+                                    android:layout_centerVertical="true"/>
+
+                                <LinearLayout
+                                    android:id="@+id/originLinearLayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toEndOf="@+id/originLocationIcon"
+                                    android:layout_alignParentEnd="true"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/originLabelText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/origin"
+                                        android:textAppearance="?attr/textAppearanceCaption"
+                                        android:textColor="@color/colorText"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"/>
+
+                                    <TextView
+                                        android:id="@+id/originText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@{origin==null?@string/search:origin.name}"
+                                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                                        android:textColor="@color/colorText"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="5dp"
+                                        android:paddingBottom="5dp"/>
+
+                                </LinearLayout>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorIcon"
+                                android:layout_marginStart="28dp" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{amount}"
-                                android:textAppearance="?attr/textAppearanceHeadline5"/>
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp">
+
+                                <ImageView
+                                    android:id="@+id/destinationLocationIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:contentDescription="@string/image"
+                                    android:tint="@color/colorAccent"
+                                    android:src="@drawable/outline_place_black_24"
+                                    android:layout_centerVertical="true"/>
+
+                                <LinearLayout
+                                    android:id="@+id/destinationLinearLayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toEndOf="@+id/destinationLocationIcon"
+                                    android:layout_alignParentEnd="true"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/destinationLabelText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/destination"
+                                        android:textAppearance="?attr/textAppearanceCaption"
+                                        android:textColor="@color/colorText"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"/>
+
+                                    <TextView
+                                        android:id="@+id/destinationText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@{destination==null?@string/search:destination.name}"
+                                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                                        android:textColor="@color/colorText"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="5dp"
+                                        android:paddingBottom="5dp"/>
+
+                                </LinearLayout>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorAccent"
+                                android:layout_marginLeft="28dp"
+                                android:layout_marginStart="28dp"
+                                android:visibility="@{retours==null?View.GONE:View.VISIBLE}" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:visibility="@{retours==null?View.GONE:View.VISIBLE}">
+
+                                <ImageView
+                                    android:id="@+id/retoursLocationIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentStart="true"
+                                    android:contentDescription="@string/image"
+                                    android:tint="@color/colorAccent"
+                                    android:src="@drawable/outline_trip_origin_black_18"
+                                    android:layout_centerVertical="true"/>
+
+                                <LinearLayout
+                                    android:id="@+id/retoursLinearLayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toEndOf="@+id/retoursLocationIcon"
+                                    android:layout_alignParentEnd="true"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/retoursLabelText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/retours"
+                                        android:textAppearance="?attr/textAppearanceCaption"
+                                        android:textColor="@color/colorText"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"/>
+
+                                    <TextView
+                                        android:id="@+id/retoursText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@{retours==null?@string/search:retours.name}"
+                                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                                        android:textColor="@color/colorText"
+                                        android:paddingLeft="12dp"
+                                        android:paddingRight="12dp"
+                                        android:paddingTop="5dp"
+                                        android:paddingBottom="5dp"/>
+
+                                </LinearLayout>
+
+                            </RelativeLayout>
 
                         </LinearLayout>
 
-                    </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
 
-                </androidx.cardview.widget.CardView>
+                </RelativeLayout>
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/orderPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp">
 
-        </LinearLayout>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorAccent"
+                        android:padding="10dp">
 
-        <Button
-            android:id="@+id/bookNowButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:text="@string/book_now"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                            <LinearLayout
+                                android:id="@+id/amountLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginEnd="10dp">
+
+                                <TextView
+                                    android:id="@+id/amountLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:text="@string/amount"/>
+
+                                <TextView
+                                    android:id="@+id/amountValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/white"
+                                    android:text="@{amount}"
+                                    android:textAppearance="?attr/textAppearanceHeadline5"/>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/paymentMethods"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_methods"/>
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/espece"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            app:checkedIcon="@drawable/outline_add_24"
+                            app:checkedIconEnabled="true"
+                            android:text="@string/espece"/>
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/card"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            app:checkedIcon="@drawable/outline_add_24"
+                            app:checkedIconEnabled="true"
+                            android:text="@string/card"/>
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/paypal"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            app:checkedIcon="@drawable/outline_add_24"
+                            app:checkedIconEnabled="true"
+                            android:text="@string/paypal"/>
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bookNowButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:text="@string/book_now"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
