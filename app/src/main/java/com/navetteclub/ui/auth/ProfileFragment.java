@@ -76,9 +76,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.edit_button:
             case R.id.orders:
-            case R.id.settings:
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_orders);
                 break;
             case R.id.logout:
