@@ -43,17 +43,29 @@ public class OrdersViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         ordersLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        switch (response.body().getCode()){
-                            case 103:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_invalid_access_token));
+                        switch (response.body().getStatus()){
+                            case 400:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_400));
+                            break;
+                            case 401:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_401));
+                            break;
+                            case 402:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_402));
+                            break;
+                            case 403:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_403));
+                            break;
+                            case 404:
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_404));
                             break;
                             default:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
                             break;
                         }
                     }
                 }else{
-                    ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                    ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
                 }
             }
 

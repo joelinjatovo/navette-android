@@ -44,6 +44,8 @@ public class OrdersFragment extends Fragment {
 
     private OrderViewModel orderViewModel;
 
+    private AuthViewModel authViewModel;
+
     private SearchView searchView;
 
     @Override
@@ -66,6 +68,9 @@ public class OrdersFragment extends Fragment {
 
         setupToolbar();
 
+        authViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
         mViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
 
@@ -79,10 +84,15 @@ public class OrdersFragment extends Fragment {
                     }
 
                     if(result.getError()!=null){
-                        // Error loading
-                        mBinding.setIsLoading(false);
-                        mBinding.setShowError(true);
-                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }else{
+                            // Error loading
+                            mBinding.setIsLoading(false);
+                            mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+
+                        }
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -95,9 +105,6 @@ public class OrdersFragment extends Fragment {
                     // Reset remote result
                     mViewModel.setOrdersLiveData(null);
                 });
-
-        AuthViewModel authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
@@ -133,7 +140,7 @@ public class OrdersFragment extends Fragment {
 
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.login_fragment);
+                    Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
                 }
         );
     }

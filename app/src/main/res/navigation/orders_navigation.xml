@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_orders_fragment_to_order_view_fragment"
             app:destination="@id/order_view_fragment" />
+        <action
+            android:id="@+id/action_orders_fragment_to_navigation_auth"
+            app:destination="@id/navigation_auth" />
     </fragment>
 
     <fragment
@@ -24,6 +27,10 @@
             android:id="@+id/action_order_view_fragment_to_order_map_fragment"
             app:destination="@id/order_map_fragment" />
 
+        <action
+            android:id="@+id/action_order_fragment_to_navigation_checkout"
+            app:destination="@id/navigation_checkout" />
+
     </fragment>
 
     <fragment
@@ -32,5 +39,7 @@
         tools:layout="@layout/fragment_order_map"/>
 
     <include app:graph="@navigation/checkout_navigation" />
+
+    <include app:graph="@navigation/auth_navigation" />
 
 </navigation>

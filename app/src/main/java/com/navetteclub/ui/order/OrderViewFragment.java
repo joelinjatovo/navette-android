@@ -194,7 +194,7 @@ public class OrderViewFragment extends Fragment {
                                 break;
                             default:
                                 // Go to checkout
-                                Navigation.findNavController(v).navigate(R.id.navigation_checkout);
+                                Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_navigation_checkout);
                                 break;
                         }
                     }
