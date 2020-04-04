@@ -147,5 +147,6 @@
     <string name="menu_orders_desc">Voir la liste de vos commandes</string>
     <string name="menu_settings_desc">Gerer les preferences de l\'application</string>
     <string name="menu_histories_desc">Voir vos hostoriques de trajet</string>
+    <string name="title_orders">Commandes</string>
 
 </resources>

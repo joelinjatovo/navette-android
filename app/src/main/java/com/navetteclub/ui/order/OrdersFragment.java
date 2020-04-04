@@ -1,9 +1,15 @@
 package com.navetteclub.ui.order;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,26 +17,24 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
-import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentNotificationBinding;
 import com.navetteclub.databinding.FragmentOrdersBinding;
-import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
+import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.NotificationViewModel;
 import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.OrdersViewModel;
 
 public class OrdersFragment extends Fragment {
+
+    private static final String TAG = OrdersFragment.class.getSimpleName();
 
     private FragmentOrdersBinding mBinding;
 
@@ -39,6 +43,8 @@ public class OrdersFragment extends Fragment {
     private OrdersViewModel mViewModel;
 
     private OrderViewModel orderViewModel;
+
+    private SearchView searchView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,6 +62,9 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        setupToolbar();
 
         mViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
@@ -122,6 +131,40 @@ public class OrdersFragment extends Fragment {
                     Navigation.findNavController(v).navigate(R.id.login_fragment);
                 }
         );
+    }
+
+    private void setupToolbar() {
+        mBinding.toolbar.inflateMenu(R.menu.menu_search);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = mBinding.toolbar.getMenu().findItem(R.id.search);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+
+        if (searchView != null && searchManager != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
+
+            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    Log.i(TAG + "Search", newText);
+
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Log.i(TAG + "Search", query);
+
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
+
+        mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
