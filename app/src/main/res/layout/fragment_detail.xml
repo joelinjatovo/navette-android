@@ -7,6 +7,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
+        <variable name="isUnauthenticated" type="boolean" />
         <variable name="showMoreButton" type="boolean" />
         <variable name="origin" type="com.navetteclub.database.entity.Point" />
         <variable name="destination" type="com.navetteclub.database.entity.Point" />
@@ -22,6 +23,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.MainActivity">
+
+        <com.navetteclub.views.AuthErrorView
+            android:id="@+id/authErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
 
         <com.shuhart.stepview.StepView
             android:id="@+id/stepView"
@@ -48,7 +55,8 @@
             app:sv_typeface="@font/poppins"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}"/>
 
         <LinearLayout
             android:id="@+id/container"
@@ -59,7 +67,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/stepView"
-            app:layout_constraintVertical_bias="0">
+            app:layout_constraintVertical_bias="0"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -108,10 +118,8 @@
                                 android:id="@+id/originLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originSelectEndIcon"
-                                android:layout_toLeftOf="@+id/originSelectEndIcon"
                                 android:layout_toEndOf="@+id/originLocationIcon"
-                                android:layout_toRightOf="@+id/originLocationIcon"
+                                android:layout_alignParentEnd="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -137,34 +145,6 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:id="@+id/originSelectEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originEndIcon"
-                                android:layout_toLeftOf="@+id/originEndIcon"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginLeft="10dp"
-                                android:contentDescription="@string/image"
-                                android:src="@drawable/outline_near_me_black_24"
-                                android:tint="@color/colorText" />
-
-                            <ImageView
-                                android:id="@+id/originEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorText"
-                                android:src="@drawable/outline_my_location_black_24"
-                                android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
 
@@ -196,10 +176,8 @@
                                 android:id="@+id/destinationLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/destinationEndIcon"
-                                android:layout_toLeftOf="@+id/destinationEndIcon"
                                 android:layout_toEndOf="@+id/destinationLocationIcon"
-                                android:layout_toRightOf="@+id/destinationLocationIcon"
+                                android:layout_alignParentEnd="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -225,21 +203,6 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:id="@+id/destinationEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAlert"
-                                android:src="@drawable/baseline_list_black_24"
-                                android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
 
@@ -273,10 +236,8 @@
                                 android:id="@+id/retoursLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/retoursEndIcon"
-                                android:layout_toLeftOf="@+id/retoursEndIcon"
                                 android:layout_toEndOf="@+id/retoursLocationIcon"
-                                android:layout_toRightOf="@+id/retoursLocationIcon"
+                                android:layout_alignParentEnd="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -303,102 +264,9 @@
 
                             </LinearLayout>
 
-                            <ImageView
-                                android:id="@+id/retoursEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAlert"
-                                android:src="@drawable/baseline_list_black_24"
-                                android:layout_centerVertical="true"/>
-
                         </RelativeLayout>
 
                     </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/orderInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorAccent"
-                    android:padding="10dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp">
-
-                        <LinearLayout
-                            android:id="@+id/distanceLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginEnd="10dp">
-
-                            <TextView
-                                android:id="@+id/distanceLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/distance"/>
-
-                            <TextView
-                                android:id="@+id/distanceValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{distance}"
-                                android:textAppearance="?attr/textAppearanceHeadline5"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/delayLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_toEndOf="@+id/distanceLayout"
-                            android:layout_toRightOf="@+id/distanceLayout">
-
-                            <TextView
-                                android:id="@+id/delayLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/delay"/>
-
-                            <TextView
-                                android:id="@+id/delayValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{delay}"
-                                android:textAppearance="?attr/textAppearanceHeadline6"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -463,7 +331,8 @@
             android:text="@string/book_now"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

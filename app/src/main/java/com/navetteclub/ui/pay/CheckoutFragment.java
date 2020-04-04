@@ -22,6 +22,7 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentCheckoutBinding;
 import com.navetteclub.ui.order.DetailFragment;
 import com.navetteclub.utils.Log;
+import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
@@ -37,6 +38,8 @@ public class CheckoutFragment extends Fragment {
     private ProgressDialog progressDialog;
 
     private OrderViewModel orderViewModel;
+
+    private AuthViewModel authViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -67,13 +70,26 @@ public class CheckoutFragment extends Fragment {
 
         mBinding.confirmButton.setOnClickListener(
                 v -> {
-                    progressDialog.show();
-
-                    orderViewModel.pay(Order.PAYMENT_TYPE_CASH);
+                    if(authViewModel.getUser()!=null){
+                        progressDialog.show();
+                        orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
+                    }
                 });
     }
 
     private void setupViewModel() {
+        authViewModel = new ViewModelProvider(this,
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        mBinding.setIsUnauthenticated(false);
+                    }else{
+                        mBinding.setIsUnauthenticated(true);
+                    }
+                });
+
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
         orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),

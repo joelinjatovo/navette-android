@@ -14,6 +14,15 @@ public class OrderRequest {
     @SerializedName("privatized")
     public Boolean privatized;
 
+    @SerializedName("distance")
+    public String distance;
+
+    @SerializedName("delay")
+    public String delay;
+
+    @SerializedName("direction")
+    public String direction;
+
     @SerializedName("car")
     public Long car;
 
@@ -28,6 +37,9 @@ public class OrderRequest {
             place = orderWithDatas.getOrder().getPlace();
             preordered = orderWithDatas.getOrder().getPreordered();
             privatized = orderWithDatas.getOrder().getPrivatized();
+            distance = orderWithDatas.getOrder().getDistance();
+            delay = orderWithDatas.getOrder().getDelay();
+            direction = orderWithDatas.getOrder().getDirection();
         }
 
         if(orderWithDatas.getCar()!=null){

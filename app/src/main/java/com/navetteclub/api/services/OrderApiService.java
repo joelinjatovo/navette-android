@@ -20,11 +20,11 @@ public interface OrderApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/club/{club}/order")
-    Call<RetrofitResponse<OrderWithDatas>> createOrder(@Path("club") Long clubId, @Body OrderRequest orderRequest);
+    Call<RetrofitResponse<OrderWithDatas>> createOrder(@Header("Authorization") String token, @Path("club") Long clubId, @Body OrderRequest orderRequest);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/order/{order}/pay/{type}")
-    Call<RetrofitResponse<OrderWithDatas>> confirmPayment(@Path("order") String rid, @Path("type") String paymentType);
+    Call<RetrofitResponse<OrderWithDatas>> confirmPayment(@Header("Authorization") String token, @Path("order") String rid, @Path("type") String paymentType);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/orders")

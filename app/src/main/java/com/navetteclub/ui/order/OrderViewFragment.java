@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -19,6 +20,7 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.databinding.FragmentOrderViewBinding;
 import com.navetteclub.utils.Log;
+import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
@@ -32,6 +34,8 @@ public class OrderViewFragment extends Fragment {
     private FragmentOrderViewBinding mBinding;
 
     private OrderViewModel orderViewModel;
+
+    private AuthViewModel authViewModel;
 
     private ProgressDialog progressDialog;
 
@@ -64,6 +68,8 @@ public class OrderViewFragment extends Fragment {
         setupUi();
 
         setupOrderViewModel();
+
+        setupAuthViewModel();
     }
 
     @Override
@@ -71,6 +77,20 @@ public class OrderViewFragment extends Fragment {
         super.onDestroyView();
 
         Log.d(TAG + "Cycle", "onDestroyView");
+    }
+
+    private void setupAuthViewModel() {
+        authViewModel = new ViewModelProvider(this,
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        mBinding.setIsUnauthenticated(false);
+                    }else{
+                        mBinding.setIsUnauthenticated(true);
+                    }
+                });
     }
 
     private void setupOrderViewModel() {
@@ -136,13 +156,19 @@ public class OrderViewFragment extends Fragment {
 
 
     private void setupUi() {
-        mBinding.stepView.go(5, true);
-
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    if(mBinding.getAmount()==null){
-                        progressDialog.show();
-                        orderViewModel.placeOrder();
+                    if(authViewModel.getUser()!=null
+                            && orderViewModel.getOrderWithDatas() != null
+                            && orderViewModel.getOrderWithDatas().getOrder() != null
+                            && orderViewModel.getOrderWithDatas().getOrder().getRid() != null){
+                        Order order = orderViewModel.getOrderWithDatas().getOrder();
+                        switch (order.getStatus()){
+                            case Order.STATUS_OK:
+                            case Order.STATUS_PROCESSING:
+                                Navigation.findNavController(v).navigate(R.id.action_order_view_fragment_to_order_map_fragment);
+                                break;
+                        }
                     }
                 });
     }

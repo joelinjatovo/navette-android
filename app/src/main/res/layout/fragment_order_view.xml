@@ -7,6 +7,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
+        <variable name="isUnauthenticated" type="boolean" />
         <variable name="showMoreButton" type="boolean" />
         <variable name="origin" type="com.navetteclub.database.entity.Point" />
         <variable name="destination" type="com.navetteclub.database.entity.Point" />
@@ -23,32 +24,11 @@
         android:layout_height="match_parent"
         tools:context=".ui.MainActivity">
 
-        <com.shuhart.stepview.StepView
-            android:id="@+id/stepView"
+        <com.navetteclub.views.AuthErrorView
+            android:id="@+id/authErrorView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            app:sv_stepsNumber="7"
-            app:sv_selectedCircleColor="@color/colorAccent"
-            app:sv_selectedTextColor="@color/white"
-            app:sv_stepLineWidth="1dp"
-            app:sv_stepPadding="4dp"
-            app:sv_nextTextColor="@color/colorText"
-            app:sv_nextStepLineColor="@color/colorText"
-            app:sv_doneTextColor="@color/colorAccent"
-            app:sv_doneCircleColor="@color/white"
-            app:sv_doneStepLineColor="@color/colorAccent"
-            app:sv_doneStepMarkColor="@color/colorAccent"
-            app:sv_doneCircleRadius="12dp"
-            app:sv_selectedCircleRadius="12dp"
-            app:sv_selectedStepNumberColor="@color/white"
-            app:sv_stepViewStyle="@style/StepView"
-            app:sv_stepNumberTextSize="12sp"
-            app:sv_animationType="Line"
-            app:sv_typeface="@font/poppins"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="match_parent"
+            android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
 
         <LinearLayout
             android:id="@+id/container"
@@ -58,8 +38,9 @@
             app:layout_constraintBottom_toTopOf="@id/bookNowButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/stepView"
-            app:layout_constraintVertical_bias="0">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -108,10 +89,8 @@
                                 android:id="@+id/originLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originSelectEndIcon"
-                                android:layout_toLeftOf="@+id/originSelectEndIcon"
                                 android:layout_toEndOf="@+id/originLocationIcon"
-                                android:layout_toRightOf="@+id/originLocationIcon"
+                                android:layout_alignParentEnd="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -137,34 +116,6 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:id="@+id/originSelectEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originEndIcon"
-                                android:layout_toLeftOf="@+id/originEndIcon"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginLeft="10dp"
-                                android:contentDescription="@string/image"
-                                android:src="@drawable/outline_near_me_black_24"
-                                android:tint="@color/colorText" />
-
-                            <ImageView
-                                android:id="@+id/originEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorText"
-                                android:src="@drawable/outline_my_location_black_24"
-                                android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
 
@@ -196,10 +147,8 @@
                                 android:id="@+id/destinationLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/destinationEndIcon"
-                                android:layout_toLeftOf="@+id/destinationEndIcon"
                                 android:layout_toEndOf="@+id/destinationLocationIcon"
-                                android:layout_toRightOf="@+id/destinationLocationIcon"
+                                android:layout_alignParentEnd="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -225,21 +174,6 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:id="@+id/destinationEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAlert"
-                                android:src="@drawable/baseline_list_black_24"
-                                android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
 
@@ -273,10 +207,8 @@
                                 android:id="@+id/retoursLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/retoursEndIcon"
-                                android:layout_toLeftOf="@+id/retoursEndIcon"
                                 android:layout_toEndOf="@+id/retoursLocationIcon"
-                                android:layout_toRightOf="@+id/retoursLocationIcon"
+                                android:layout_alignParentEnd="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -302,21 +234,6 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:id="@+id/retoursEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginStart="5dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAlert"
-                                android:src="@drawable/baseline_list_black_24"
-                                android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
 
@@ -463,7 +380,8 @@
             android:text="@string/book_now"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

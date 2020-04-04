@@ -18,6 +18,17 @@
     <fragment
         android:id="@+id/order_view_fragment"
         android:name="com.navetteclub.ui.order.OrderViewFragment"
-        tools:layout="@layout/fragment_order_view"/>
+        tools:layout="@layout/fragment_order_view">
+
+        <action
+            android:id="@+id/action_order_view_fragment_to_order_map_fragment"
+            app:destination="@id/order_map_fragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/order_map_fragment"
+        android:name="com.navetteclub.ui.order.OrderMapFragment"
+        tools:layout="@layout/fragment_order_map"/>
 
 </navigation>

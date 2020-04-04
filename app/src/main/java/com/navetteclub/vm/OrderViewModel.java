@@ -22,6 +22,7 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.OrderWithPoints;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.database.repositories.CarRepository;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.utils.Log;
@@ -261,12 +262,12 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         });
     }
 
-    public void placeOrder() {
+    public void placeOrder(User user) {
         Club club = orderWithDatas.getClub();
 
         Log.d(TAG, "OrderApiService.placeOrder()");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(club.getId(), new OrderRequest(orderWithDatas));
+        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(user.getAuthorizationToken(), club.getId(), new OrderRequest(orderWithDatas));
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
@@ -293,12 +294,12 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         });
     }
 
-    public void pay(String paymentType) {
+    public void pay(User user, String paymentType) {
         Order order = orderWithDatas.getOrder();
 
         Log.d(TAG, "service.pay(" + paymentType + ")");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.confirmPayment(order.getRid(), paymentType);
+        Call<RetrofitResponse<OrderWithDatas>> call = service.confirmPayment(user.getAuthorizationToken(), order.getRid(), paymentType);
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,

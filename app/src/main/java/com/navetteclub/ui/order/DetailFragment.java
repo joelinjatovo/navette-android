@@ -48,12 +48,14 @@ import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.databinding.FragmentOrderBinding;
 import com.navetteclub.databinding.FragmentTravelBinding;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.stripe.android.Stripe;
@@ -79,8 +81,9 @@ public class DetailFragment extends Fragment {
 
     private OrderViewModel orderViewModel;
 
-    private ProgressDialog progressDialog;
+    private AuthViewModel authViewModel;
 
+    private ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -110,6 +113,8 @@ public class DetailFragment extends Fragment {
         setupUi();
 
         setupOrderViewModel();
+
+        setupAuthViewModel();
     }
 
     @Override
@@ -119,8 +124,23 @@ public class DetailFragment extends Fragment {
         Log.d(TAG + "Cycle", "onDestroyView");
     }
 
+    private void setupAuthViewModel() {
+        authViewModel = new ViewModelProvider(this,
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        mBinding.setIsUnauthenticated(false);
+                    }else{
+                        mBinding.setIsUnauthenticated(true);
+                    }
+                });
+    }
+
     private void setupOrderViewModel() {
-        orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        orderViewModel = new ViewModelProvider(this,
+                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
         orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
@@ -187,9 +207,13 @@ public class DetailFragment extends Fragment {
 
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    if(mBinding.getAmount()==null){
+                    if(authViewModel.getUser()!=null
+                            && orderViewModel.getOrderWithDatas() != null
+                            && orderViewModel.getOrderWithDatas().getOrder() != null
+                            && orderViewModel.getOrderWithDatas().getOrder().getRid() == null){
                         progressDialog.show();
-                        orderViewModel.placeOrder();
+
+                        orderViewModel.placeOrder(authViewModel.getUser());
                     }
                 });
     }

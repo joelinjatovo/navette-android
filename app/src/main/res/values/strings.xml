@@ -135,5 +135,8 @@
     <string name="thanks">Thanks</string>
     <string name="title_checkout">Checkout</string>
     <string name="error_invalid_access_token">Invalid Access Token</string>
+    <string name="loading_clubs">Chargement des clubs</string>
+    <string name="live">Live</string>
+    <string name="live_order">Live Order</string>
 
 </resources>

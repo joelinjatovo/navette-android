@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:name="com.navetteclub.ui.main.order.ClubsFragment"
+        android:name="com.navetteclub.ui.notification.NotificationFragment"
         tools:context="com.navetteclub.ui.MainActivity">
 
         <LinearLayout
