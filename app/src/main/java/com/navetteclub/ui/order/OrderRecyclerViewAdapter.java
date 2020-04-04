@@ -10,11 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.Point;
+import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.ui.notification.NotificationFragment;
+import com.navetteclub.utils.Log;
 
 import java.util.List;
 
@@ -31,16 +36,15 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_order, parent, false);
-        return new ViewHolder(view);
+        ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate( LayoutInflater.from(parent.getContext()), parent, false);
+
+        return new ViewHolder(itemBinding);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mItems.get(position);
-        holder.mTitleTextView.setText(mItems.get(position).toString());
-
-        holder.mView.setOnClickListener(v -> {
+        holder.setItem(mItems.get(position));
+        holder.mBinding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
@@ -92,22 +96,53 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final View mView;
-        final ImageView mImageView;
-        final TextView mTitleTextView;
+        final ViewholderOrderBinding mBinding;
         OrderWithDatas mItem;
 
-        ViewHolder(View view) {
-            super(view);
-            mView = view;
-            mImageView = view.findViewById(R.id.notificationImageView);
-            mTitleTextView = view.findViewById(R.id.notificationTitleTextView);
+        ViewHolder(ViewholderOrderBinding binding) {
+            super(binding.getRoot());
+            mBinding = binding;
+        }
+
+        void setItem(OrderWithDatas item){
+            mItem = item;
+            if(mItem!=null && mItem.getOrder()!=null){
+                Order order = mItem.getOrder();
+                mBinding.setAmount(order.getAmountStr());
+
+                // Points
+                if(mItem.getPoints()!=null){
+                    // Origin
+                    if(mItem.getPoints().size()>0){
+                        Point point = mItem.getPoints().get(0);
+                        if(point!=null){
+                            mBinding.setOrigin(point);
+                        }
+                    }
+
+                    // Destination
+                    if(mItem.getPoints().size()>1) {
+                        Point point = mItem.getPoints().get(1);
+                        if(point!=null) {
+                            mBinding.setDestination(point);
+                        }
+                    }
+
+                    // Retours
+                    if(mItem.getPoints().size()>2) {
+                        Point point = mItem.getPoints().get(2);
+                        if(point!=null) {
+                            mBinding.setRetours(point);
+                        }
+                    }
+                }
+            }
         }
 
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mTitleTextView.getText() + "'";
+            return super.toString() + " '" + mBinding.amountLabel.getText() + "'";
         }
     }
 }

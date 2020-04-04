@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Date;
 
 @Entity(
@@ -130,6 +132,20 @@ public class Order {
 
     public Double getAmount() {
         return amount;
+    }
+
+    public String getAmountStr() {
+        Double amount = getAmount();
+        if(amount==null){
+            amount = 0.00;
+        }
+
+        String currency = getCurrency();
+        NumberFormat format = NumberFormat.getCurrencyInstance();
+        //format.setMaximumFractionDigits(2);
+        //format.setMinimumFractionDigits(2);
+        format.setCurrency(Currency.getInstance(currency));
+        return format.format(amount);
     }
 
     public void setAmount(Double amount) {

@@ -155,12 +155,7 @@ public class DetailFragment extends Fragment {
 
                         Double amount = orderWithDatas.getOrder().getAmount();
                         if( amount != null && amount > 0 ){
-                            String currency = orderWithDatas.getOrder().getCurrency();
-                            NumberFormat format = NumberFormat.getCurrencyInstance();
-                            //format.setMaximumFractionDigits(2);
-                            //format.setMinimumFractionDigits(2);
-                            format.setCurrency(Currency.getInstance(currency));
-                            mBinding.setAmount(format.format(amount));
+                            mBinding.setAmount(orderWithDatas.getOrder().getAmountStr());
 
                             switch (orderWithDatas.getOrder().getStatus()){
                                 case Order.STATUS_PING:

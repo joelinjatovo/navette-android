@@ -39,9 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
-            android:background="@color/white"
             app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/viewholder_notification"
+            tools:listitem="@layout/viewholder_order"
             android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}"/>
 
         <LinearLayout
