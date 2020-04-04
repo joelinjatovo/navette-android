@@ -47,6 +47,8 @@ public class NotificationFragment extends Fragment {
 
     private NotificationViewModel mViewModel;
 
+    private AuthViewModel authViewModel;
+
     private FragmentNotificationBinding mBinding;
 
     private NotificationRecyclerViewAdapter mAdapter;
@@ -76,6 +78,10 @@ public class NotificationFragment extends Fragment {
         mViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(NotificationViewModel.class);
 
+
+        authViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
         mViewModel.getNotificationsLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
@@ -83,10 +89,15 @@ public class NotificationFragment extends Fragment {
                     }
 
                     if(result.getError()!=null){
-                        // Error loading
-                        mBinding.setIsLoading(false);
-                        mBinding.setShowError(true);
-                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }else{
+                            // Error loading
+                            mBinding.setIsLoading(false);
+                            mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+
+                        }
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -99,9 +110,6 @@ public class NotificationFragment extends Fragment {
                     // Reset remote result
                     mViewModel.setNotificationsLiveData(null);
                 });
-
-        AuthViewModel authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
@@ -179,6 +187,7 @@ public class NotificationFragment extends Fragment {
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
         public void onListFragmentInteraction(View v, Notification item) {
+            //
         }
     };
 

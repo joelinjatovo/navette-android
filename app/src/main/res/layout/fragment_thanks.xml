@@ -57,7 +57,7 @@
             android:id="@+id/bottomView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/bg_rounded_top"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent">
 
