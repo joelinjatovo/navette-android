@@ -1,6 +1,8 @@
 package com.navetteclub.ui.club;
 
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +31,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.databinding.FragmentClubsBinding;
+import com.navetteclub.ui.order.OrdersFragment;
+import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
@@ -38,11 +43,15 @@ import java.util.List;
 
 public class ClubsFragment extends BottomSheetDialogFragment {
 
+    private static final String TAG = OrdersFragment.class.getSimpleName();
+
     private ClubViewModel clubViewModel;
 
     private FragmentClubsBinding mBinding;
 
     private ClubRecyclerViewAdapter mAdapter;
+
+    private android.widget.SearchView searchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +92,7 @@ public class ClubsFragment extends BottomSheetDialogFragment {
         recyclerView.setAdapter(mAdapter);
 
         // Layout height
-        mBinding.linearLayout.setMinimumHeight(UiUtils.getScreenHeight());
+        mBinding.getRoot().setMinimumHeight(UiUtils.getScreenHeight());
 
         return mBinding.getRoot();
     }
@@ -91,37 +100,16 @@ public class ClubsFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setupToolbar();
+        setupViewModel();
+        setupUi();
+    }
 
-        clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
-
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(),
-                clubAndPointList -> {
-                    if (clubAndPointList == null) {
-                        return;
-                    }
-
-                    mAdapter.setItems(clubAndPointList);
-
-                    mBinding.setShowError(clubAndPointList.isEmpty());
+    private void setupUi() {
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
                 });
-
-        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(), new Observer<RemoteLoaderResult<List<ClubAndPoint>>>() {
-            @Override
-            public void onChanged(RemoteLoaderResult<List<ClubAndPoint>> result) {
-                if (result == null) {
-                    return;
-                }
-
-                mBinding.setIsLoading(false);
-
-                if (result.getError() != null) {
-                    mBinding.setShowError(true);
-                    mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
-                }else{
-                    mBinding.setShowError(false);
-                }
-            }
-        });
 
         mBinding.loaderErrorView.getButton().setOnClickListener(
                 v -> {
@@ -129,27 +117,67 @@ public class ClubsFragment extends BottomSheetDialogFragment {
                     mBinding.setIsLoading(true);
                     clubViewModel.load();
                 });
+    }
 
-        mBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //mAdapter.filter(query); // <-- use adapter comparator
-                search(query);  // <-- use room dao
-                return true;
-            }
+    private void setupViewModel() {
+        clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
 
-            @Override
-            public boolean onQueryTextChange(String query) {
-                //mAdapter.filter(query); // <-- use adapter comparator
-                search(query);  // <-- use room dao
-                return true;
-            }
-        });
-
-        mBinding.backButton.setOnClickListener(
-                v -> {
-                    NavHostFragment.findNavController(this).popBackStack();
+        clubViewModel.getClubs().observe(getViewLifecycleOwner(),
+                clubAndPointList -> {
+                    if (clubAndPointList == null) {
+                        return;
+                    }
+                    mAdapter.setItems(clubAndPointList);
+                    mBinding.setShowError(clubAndPointList.isEmpty());
                 });
+
+        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result == null) {
+                        return;
+                    }
+                    mBinding.setIsLoading(false);
+                    if (result.getError() != null) {
+                        mBinding.setShowError(true);
+                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                    }else{
+                        mBinding.setShowError(false);
+                    }
+                });
+    }
+
+    private void setupToolbar() {
+        mBinding.toolbar.inflateMenu(R.menu.menu_search);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = mBinding.toolbar.getMenu().findItem(R.id.search);
+        if (searchItem != null) {
+            searchView = (android.widget.SearchView) searchItem.getActionView();
+        }
+
+        if (searchView != null && searchManager != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
+
+            android.widget.SearchView.OnQueryTextListener queryTextListener = new android.widget.SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String query) {
+                    Log.i(TAG + "Search", query);
+                    search(query);  // <-- use room dao
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Log.i(TAG + "Search", query);
+                    search(query);  // <-- use room dao
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
+
+        mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
 
     private void search(String search){

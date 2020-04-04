@@ -110,7 +110,7 @@
     <string name="loading_notification">Chargement des notifications</string>
     <string name="loading_direction">Calcul de la distance et durée du trajet</string>
     <string name="visit_club">Allez à ce club</string>
-    <string name="choose_lub">Choisir club</string>
+    <string name="choose_club">Choisir club</string>
     <string name="next">Suivant</string>
     <string name="ok_and_next">Ok et suivant</string>
     <string name="question_privatize_car">Voulez-vous privatiser la voiture?</string>
@@ -152,5 +152,6 @@
     <string name="notification_new_order">Nouvelle commande</string>
     <string name="notification_new_order_desc">Votre commande a été bien activé.</string>
     <string name="title_order_view">Détail d\'une commande</string>
+    <string name="title_choose_club">Choisir club de destionation</string>
 
 </resources>

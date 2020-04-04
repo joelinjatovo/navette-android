@@ -16,33 +16,28 @@
         android:name="ui.club.ClubFragment"
         tools:context="ui.MainActivity">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:title="@string/choose_club"
+                app:navigationIcon="@drawable/outline_clear_black_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/clearButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/outline_clear_black_24"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/clearButton"
-                    android:layout_toRightOf="@id/clearButton"
-                    android:text="@string/choose_lub"
-                    android:layout_centerVertical="true"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"/>
-
-            </RelativeLayout>
+            android:orientation="vertical"
+            android:layout_marginTop="?attr/actionBarSize">
 
             <ImageView
                 android:id="@+id/imageView"

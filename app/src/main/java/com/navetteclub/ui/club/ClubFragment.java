@@ -108,7 +108,7 @@ public class ClubFragment extends BottomSheetDialogFragment {
                     }
                 });
 
-        mBinding.clearButton.setOnClickListener(
+        mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
                 });

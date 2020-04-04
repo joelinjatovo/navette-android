@@ -179,6 +179,11 @@ public class OrderViewFragment extends Fragment {
     }
 
     private void setupUi() {
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
+                });
+
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
@@ -186,6 +191,10 @@ public class OrderViewFragment extends Fragment {
                             case Order.STATUS_OK:
                             case Order.STATUS_PROCESSING:
                                 Navigation.findNavController(v).navigate(R.id.action_order_view_fragment_to_order_map_fragment);
+                                break;
+                            default:
+                                // Go to checkout
+                                Navigation.findNavController(v).navigate(R.id.navigation_checkout);
                                 break;
                         }
                     }

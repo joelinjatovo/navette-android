@@ -114,6 +114,11 @@ public class OrdersFragment extends Fragment {
                     }
                 });
 
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
+                });
+
         mBinding.loaderErrorView.getButton().setOnClickListener(
                 v -> {
                     User user = authViewModel.getUser();

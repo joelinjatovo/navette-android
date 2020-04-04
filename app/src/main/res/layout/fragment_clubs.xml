@@ -17,9 +17,37 @@
         android:name="ui.club.ClubsFragment"
         tools:context="ui.MainActivity">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:title="@string/title_choose_club"
+                app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:visibility="@{showError||isLoading?View.GONE:View.VISIBLE}"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/viewholder_club" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:layout_gravity="center"
@@ -44,56 +72,10 @@
             android:id="@+id/loaderErrorView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:visibility="@{showError?View.VISIBLE:View.GONE}"
             app:mTitle="@string/loader_error_title"
             app:mSubtitle="@string/loader_error_subtitle"/>
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="@{showError||isLoading?View.GONE:View.VISIBLE}">
-
-            <RelativeLayout
-                android:id="@+id/relativeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingEnd="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingStart="10dp"
-                    android:paddingLeft="10dp"
-                    android:src="@drawable/outline_arrow_back_ios_black_24"
-                    android:layout_centerVertical="true"/>
-
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_toEndOf="@id/backButton"
-                    android:layout_toRightOf="@id/backButton"
-                    app:iconifiedByDefault="false" />
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/viewholder_club" />
-
-        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

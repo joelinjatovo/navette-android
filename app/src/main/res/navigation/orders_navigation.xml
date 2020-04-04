@@ -31,4 +31,6 @@
         android:name="com.navetteclub.ui.order.OrderMapFragment"
         tools:layout="@layout/fragment_order_map"/>
 
+    <include app:graph="@navigation/checkout_navigation" />
+
 </navigation>
