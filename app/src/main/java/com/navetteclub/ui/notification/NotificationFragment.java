@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Notification;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentNotificationBinding;
 import com.navetteclub.models.RemoteLoaderResult;
@@ -39,6 +40,7 @@ import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.NotificationViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationFragment extends Fragment {
@@ -95,6 +97,7 @@ public class NotificationFragment extends Fragment {
                             // Error loading
                             mBinding.setIsLoading(false);
                             mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getTitleView().setText(R.string.loader_error_title);
                             mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
 
                         }
@@ -103,8 +106,15 @@ public class NotificationFragment extends Fragment {
 
                     if(result.getSuccess()!=null){
                         mBinding.setIsLoading(false);
-                        mBinding.setShowError(false);
-                        mAdapter.setItems(result.getSuccess());
+                        ArrayList<Notification> items = (ArrayList<Notification>) result.getSuccess();
+                        if(items.isEmpty()){
+                            mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
+                            mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_notifications);
+                        }else{
+                            mBinding.setShowError(false);
+                            mAdapter.setItems(items);
+                        }
                     }
 
                     // Reset remote result

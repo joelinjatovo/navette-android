@@ -32,6 +32,8 @@ import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.OrdersViewModel;
 
+import java.util.ArrayList;
+
 public class OrdersFragment extends Fragment {
 
     private static final String TAG = OrdersFragment.class.getSimpleName();
@@ -90,16 +92,23 @@ public class OrdersFragment extends Fragment {
                             // Error loading
                             mBinding.setIsLoading(false);
                             mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getTitleView().setText(R.string.loader_error_title);
                             mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
-
                         }
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
 
                     if(result.getSuccess()!=null){
                         mBinding.setIsLoading(false);
-                        mBinding.setShowError(false);
-                        mAdapter.setItems(result.getSuccess());
+                        ArrayList<OrderWithDatas> items = (ArrayList<OrderWithDatas>) result.getSuccess();
+                        if(items.isEmpty()){
+                            mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
+                            mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_orders);
+                        }else{
+                            mBinding.setShowError(false);
+                            mAdapter.setItems(items);
+                        }
                     }
 
                     // Reset remote result

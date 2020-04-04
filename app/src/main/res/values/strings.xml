@@ -160,5 +160,8 @@
     <string name="notification_new_order_desc">Votre commande a été bien activé.</string>
     <string name="title_order_view">Détail d\'une commande</string>
     <string name="title_choose_club">Choisir club de destionation</string>
+    <string name="title_empty">Aucun élément trouvé</string>
+    <string name="empty_orders">Vous n\'avez pas encore des commandes effectuées.</string>
+    <string name="empty_notifications">Vous n\'avez pas encore de notification.</string>
 
 </resources>
