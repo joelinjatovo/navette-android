@@ -7,4 +7,15 @@
         <attr name="mShowButton" format="boolean" />
         <attr name="mButtonLabel" format="string" />
     </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="strokeColor" format="color"/>
+        <attr name="strokeWidth" format="dimension"/>
+        <attr name="highlightEnable" format="boolean"/>
+        <attr name="highlightColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="MenuItemView">
+        <attr name="titleText" format="string" />
+        <attr name="subtitleText" format="string" />
+        <attr name="iconImage" format="color|reference" />
+    </declare-styleable>
 </resources>

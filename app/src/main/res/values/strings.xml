@@ -138,5 +138,14 @@
     <string name="loading_clubs">Chargement des clubs</string>
     <string name="live">Live</string>
     <string name="live_order">Live Order</string>
+    <string name="driver">Driver</string>
+    <string name="description_activity">75% de ces commandes sont terminés.</string>
+    <string name="edit">Edit</string>
+    <string name="name">Nom</string>
+    <string name="verified">verified</string>
+    <string name="orders">Mes commandes</string>
+    <string name="menu_orders_desc">Voir la liste de vos commandes</string>
+    <string name="menu_settings_desc">Gerer les preferences de l\'application</string>
+    <string name="menu_histories_desc">Voir vos hostoriques de trajet</string>
 
 </resources>

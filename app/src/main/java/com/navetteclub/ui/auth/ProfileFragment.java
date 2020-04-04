@@ -24,7 +24,7 @@ import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.LoginViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 
-public class ProfileFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = ProfileFragment.class.getSimpleName();
 
@@ -67,21 +67,25 @@ public class ProfileFragment extends Fragment implements NavigationView.OnNaviga
                     }
                 });
 
-        mBinding.navigationView.setNavigationItemSelectedListener(this);
+        mBinding.editButton.setOnClickListener(this);
+        mBinding.orders.setOnClickListener(this);
+        mBinding.settings.setOnClickListener(this);
+        mBinding.logout.setOnClickListener(this);
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.sync:
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.edit_button:
+            case R.id.orders:
+            case R.id.settings:
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_orders);
-            break;
+                break;
             case R.id.logout:
                 loginViewModel.setLoginResult(null);
                 authViewModel.logout(requireContext());
-            break;
+                break;
         }
-        return false;
     }
 
     private void showWelcomeMessage() {
