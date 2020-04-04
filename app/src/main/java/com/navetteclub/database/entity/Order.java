@@ -58,6 +58,18 @@ public class Order {
     @ColumnInfo(name = "payment_type")
     private String paymentType;
 
+    @SerializedName("distance")
+    @ColumnInfo(name = "distance")
+    private String distance;
+
+    @SerializedName("delay")
+    @ColumnInfo(name = "delay")
+    private String delay;
+
+    @SerializedName("direction")
+    @ColumnInfo(name = "direction")
+    private String direction;
+
     @SerializedName("subtotal")
     @ColumnInfo(name = "subtotal")
     private Double subtotal;
@@ -210,5 +222,29 @@ public class Order {
 
     public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getDelay() {
+        return delay;
+    }
+
+    public void setDelay(String delay) {
+        this.delay = delay;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 }

@@ -83,6 +83,11 @@ public class OrderViewFragment extends Fragment {
                     }
 
                     if(orderWithDatas.getOrder()!=null){
+
+                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
+
+                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
+
                         Double amount = orderWithDatas.getOrder().getAmount();
                         if( amount != null && amount > 0 ){
                             String currency = orderWithDatas.getOrder().getCurrency();
@@ -106,25 +111,6 @@ public class OrderViewFragment extends Fragment {
                         }
                     }
 
-                });
-
-
-        orderViewModel.getDistance().observe(getViewLifecycleOwner(),
-                distance -> {
-                    if(distance == null){
-                        return;
-                    }
-
-                    mBinding.setDistance(distance);
-                });
-
-        orderViewModel.getDelay().observe(getViewLifecycleOwner(),
-                delay -> {
-                    if(delay == null){
-                        return;
-                    }
-
-                    mBinding.setDelay(delay);
                 });
 
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),

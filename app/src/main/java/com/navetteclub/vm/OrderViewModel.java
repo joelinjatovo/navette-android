@@ -44,30 +44,18 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
 
     private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> retrofitResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> carsResult = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
     private CarRepository carRepository;
-
-    private MutableLiveData<String> distanceLiveData = new MutableLiveData<>();
-
-    private MutableLiveData<String> delayLiveData = new MutableLiveData<>();
 
     public OrderViewModel(CarRepository carRepository) {
         this.carRepository = carRepository;
         this.setPlace(1);
     }
 
-    public MutableLiveData<List<CarAndModel>> getCars() {
-        return cars;
-    }
-
-    public MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> getRetrofitResult() {
-        return retrofitResult;
-    }
-
-    public void setOrigin(String name, LatLng latLng) {
+    private void _init(){
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
 
@@ -78,7 +66,26 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
             points.add(null);
             points.add(null);
         }
+        orderWithDatas.setPoints(points);
 
+        Order order = orderWithDatas.getOrder();
+        if(order==null){
+            order = new Order();
+        }
+        orderWithDatas.setOrder(order);
+    }
+
+    public MutableLiveData<List<CarAndModel>> getCars() {
+        return cars;
+    }
+
+    public MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> getCarsResult() {
+        return carsResult;
+    }
+
+    public void setOrigin(String name, LatLng latLng) {
+        _init();
+        List<Point> points = orderWithDatas.getPoints();
         Point point = points.get(0);
         if(point==null){
             point = new Point();
@@ -103,17 +110,8 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     }
 
     private void setDestination(String name, LatLng latLng) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-
+        _init();
         List<Point> points = orderWithDatas.getPoints();
-        if(points==null){
-            points = new ArrayList<>(3);
-            points.add(null);
-            points.add(null);
-            points.add(null);
-        }
-
         Point point = points.get(1);
         if(point==null){
             point = new Point();
@@ -133,17 +131,8 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     }
 
     public void setReturn(String name, LatLng latLng) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-
+        _init();
         List<Point> points = orderWithDatas.getPoints();
-        if(points==null){
-            points = new ArrayList<>(3);
-            points.add(null);
-            points.add(null);
-            points.add(null);
-        }
-
         Point point = points.get(2);
         if(point==null){
             point = new Point();
@@ -165,21 +154,10 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
 
     public void setReturn(Place place) {
         if(place==null){
-            if(orderWithDatas==null)
-                orderWithDatas = new OrderWithDatas();
-
+            _init();
             List<Point> points = orderWithDatas.getPoints();
-            if(points==null){
-                points = new ArrayList<>(3);
-                points.add(null);
-                points.add(null);
-                points.add(null);
-            }
-
             points.set(2, null);
-
             orderWithDatas.setPoints(points);
-
             orderWithDatasLiveData.setValue(orderWithDatas);
         }else {
             setReturn(place.getName(), place.getLatLng());
@@ -187,67 +165,71 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     }
 
     public void setPlace(int place) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-
+        _init();
         Order order = orderWithDatas.getOrder();
-        if(order==null){
-            order = new Order();
-        }
-
         order.setPlace(place);
-
         orderWithDatas.setOrder(order);
-
         orderWithDatasLiveData.setValue(orderWithDatas);
-
     }
 
     public void setPrivatized(boolean privatized) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-
+        _init();
         Order order = orderWithDatas.getOrder();
-        if(order==null){
-            order = new Order();
-        }
-
         order.setPrivatized(privatized);
-
         orderWithDatas.setOrder(order);
-
         orderWithDatasLiveData.setValue(orderWithDatas);
-
     }
 
     public void setCar(Car car) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-
+        _init();
         orderWithDatas.setCar(car);
-
         orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public void setClub(Club club, Point point) {
-        if(orderWithDatas==null)
-            orderWithDatas = new OrderWithDatas();
-
+        _init();
         orderWithDatas.setClub(club);
-
         LatLng latLng = new LatLng(
             point.getLat(),
             point.getLng()
         );
         setDestination(club.getName(), latLng);
+        orderWithDatasLiveData.setValue(orderWithDatas);
 
         loadCars(club);
+    }
 
+    public void setDistance(String distance) {
+        _init();
+        Order order = orderWithDatas.getOrder();
+        order.setDistance(distance);
+        orderWithDatas.setOrder(order);
+        orderWithDatasLiveData.setValue(orderWithDatas);
+    }
+
+    public void setDelay(String delay) {
+        _init();
+        Order order = orderWithDatas.getOrder();
+        order.setDelay(delay);
+        orderWithDatas.setOrder(order);
+        orderWithDatasLiveData.setValue(orderWithDatas);
+    }
+
+    public void setDirection(String direction) {
+        _init();
+        Order order = orderWithDatas.getOrder();
+        order.setDirection(direction);
+        orderWithDatas.setOrder(order);
+        orderWithDatasLiveData.setValue(orderWithDatas);
+    }
+
+    public void setOrder(OrderWithDatas order) {
+        orderWithDatas = order;
         orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public void loadCars(Club club){
-        Log.d(TAG, "service.getCars()");
+        Log.d(TAG, "ClubApiService.getCars(" + club.getId() +")");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
         Call<RetrofitResponse<List<CarAndModel>>> call = service.getCars(club.getId());
         call.enqueue(new Callback<RetrofitResponse<List<CarAndModel>>>() {
@@ -264,9 +246,9 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
 
                     carRepository.upsert(orderWithDatas.getClub(), OrderViewModel.this, items);
 
-                    retrofitResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    carsResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                 }else{
-                    retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                    carsResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
                 }
             }
 
@@ -274,7 +256,7 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
             public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.getMessage(), throwable);
-                retrofitResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                carsResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
     }
@@ -282,7 +264,7 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     public void placeOrder() {
         Club club = orderWithDatas.getClub();
 
-        Log.d(TAG, "service.placeOrder()");
+        Log.d(TAG, "OrderApiService.placeOrder()");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
         Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(club.getId(), new OrderRequest(orderWithDatas));
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
@@ -372,26 +354,5 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     @Override
     public void onUpsertSuccess(List<CarAndModel> items) {
         cars.setValue(items);
-    }
-
-    public MutableLiveData<String> getDistance() {
-        return distanceLiveData;
-    }
-
-    public void setDistance(String distance) {
-        distanceLiveData.setValue(distance);
-    }
-
-    public void setDelay(String delay) {
-        delayLiveData.setValue(delay);
-    }
-
-    public MutableLiveData<String> getDelay() {
-        return delayLiveData;
-    }
-
-    public void setOrder(OrderWithDatas order) {
-        orderWithDatas = order;
-        orderWithDatasLiveData.setValue(orderWithDatas);
     }
 }

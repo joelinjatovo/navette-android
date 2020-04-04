@@ -195,28 +195,32 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        orderViewModel.getDistance().observe(getViewLifecycleOwner(),
-                distance -> {
-                    if(distance == null){
-                        return;
-                    }
-
-                    mBinding.setDistance(distance);
-                });
-
-        orderViewModel.getDelay().observe(getViewLifecycleOwner(),
-                delay -> {
-                    if(delay == null){
-                        return;
-                    }
-
-                    mBinding.setDelay(delay);
-                });
-
         orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
                         return;
+                    }
+
+                    // Order
+                    if(orderWithDatas.getOrder() != null){
+                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
+                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
+
+                        String encodedString = orderWithDatas.getOrder().getDirection();
+                        if(encodedString!=null && mMap!=null){
+                            //Remove previous line from map
+                            if (line != null) {
+                                line.remove();
+                            }
+
+                            List<LatLng> list = Utils.decodePoly(encodedString);
+                            line = mMap.addPolyline(new PolylineOptions()
+                                    .addAll(list)
+                                    .width(5)
+                                    .color(R.color.colorAccent)
+                                    .geodesic(true)
+                            );
+                        }
                     }
 
                     // Points
@@ -508,10 +512,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 mBinding.setIsLoadingDirection(false);
 
                 try {
-                    //Remove previous line from map
-                    if (line != null) {
-                        line.remove();
-                    }
                     // This loop will go through all the results and add marker on each location.
                     GoogleDirectionResponse googleDirectionResponse = response.body();
 
@@ -520,23 +520,16 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         Route route = googleDirectionResponse.getRoutes().get(i);
                         for(Leg leg: route.getLegs()){
                             String distance = leg.getDistance().getText();
-                            String time = leg.getDuration().getText();
-
                             orderViewModel.setDistance(distance);
+
+                            String time = leg.getDuration().getText();
                             orderViewModel.setDelay(time);
 
                             Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
-
                         }
 
                         String encodedString = route.getOverviewPolyline().getPoints();
-                        List<LatLng> list = Utils.decodePoly(encodedString);
-                        line = mMap.addPolyline(new PolylineOptions()
-                                .addAll(list)
-                                .width(5)
-                                .color(R.color.colorAccent)
-                                .geodesic(true)
-                        );
+                        orderViewModel.setDirection(encodedString);
                     }
 
                     mBinding.setShowErrorLoader(false);
