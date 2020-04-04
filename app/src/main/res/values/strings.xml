@@ -148,5 +148,8 @@
     <string name="menu_settings_desc">Gerer les preferences de l\'application</string>
     <string name="menu_histories_desc">Voir vos hostoriques de trajet</string>
     <string name="title_orders">Commandes</string>
+    <string name="loading_orders">Chargement des commandes</string>
+    <string name="notification_new_order">Nouvelle commande</string>
+    <string name="notification_new_order_desc">Votre commande a été bien activé.</string>
 
 </resources>

@@ -4,6 +4,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.navetteclub.R;
@@ -28,6 +32,7 @@ import com.navetteclub.databinding.FragmentNotificationBinding;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.ui.club.ClubRecyclerViewAdapter;
 import com.navetteclub.ui.club.ClubsFragment;
+import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.ClubViewModel;
@@ -38,11 +43,15 @@ import java.util.List;
 
 public class NotificationFragment extends Fragment {
 
+    private static final String TAG = NotificationFragment.class.getSimpleName();
+
     private NotificationViewModel mViewModel;
 
     private FragmentNotificationBinding mBinding;
 
     private NotificationRecyclerViewAdapter mAdapter;
+
+    private SearchView searchView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -61,6 +70,8 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        setupToolbar();
 
         mViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(NotificationViewModel.class);
@@ -124,6 +135,40 @@ public class NotificationFragment extends Fragment {
                     Navigation.findNavController(v).navigate(R.id.action_global_navigation_auth);
                 }
         );
+    }
+
+    private void setupToolbar() {
+        mBinding.toolbar.inflateMenu(R.menu.menu_search);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = mBinding.toolbar.getMenu().findItem(R.id.search);
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+
+        if (searchView != null && searchManager != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
+
+            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    Log.i(TAG + "Search", newText);
+
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Log.i(TAG + "Search", query);
+
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
+        }
+
+        mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {

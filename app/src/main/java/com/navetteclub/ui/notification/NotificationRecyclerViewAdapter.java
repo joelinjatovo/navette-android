@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Notification;
+import com.navetteclub.databinding.ViewholderNotificationBinding;
+import com.navetteclub.databinding.ViewholderOrderBinding;
+import com.navetteclub.ui.order.OrderRecyclerViewAdapter;
 
 import java.util.List;
 
@@ -29,16 +32,15 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_notification, parent, false);
-        return new ViewHolder(view);
+        ViewholderNotificationBinding itemBinding = ViewholderNotificationBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+
+        return new ViewHolder(itemBinding);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mItems.get(position);
-        holder.mTitleTextView.setText(mItems.get(position).getData().toString());
-
-        holder.mView.setOnClickListener(v -> {
+        holder.setItem(mItems.get(position));
+        holder.mBinding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
@@ -90,22 +92,31 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final View mView;
-        final ImageView mImageView;
-        final TextView mTitleTextView;
-        Notification mItem;
+        final ViewholderNotificationBinding mBinding;
+        private Notification mItem;
 
-        ViewHolder(View view) {
-            super(view);
-            mView = view;
-            mImageView = view.findViewById(R.id.notificationImageView);
-            mTitleTextView = view.findViewById(R.id.notificationTitleTextView);
+        ViewHolder(ViewholderNotificationBinding binding) {
+            super(binding.getRoot());
+            mBinding = binding;
+        }
+
+        public void setItem(Notification item) {
+            this.mItem = item;
+            switch (mItem.getType()){
+                case "App\\Notifications\\OrderStatus":
+                    mBinding.icon.setImageResource(R.drawable.outline_remove_shopping_cart_24);
+                    mBinding.title.setText(R.string.notification_new_order);
+                    mBinding.subtitle.setText(R.string.notification_new_order_desc);
+                    break;
+                case "AB":
+                    break;
+            }
         }
 
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mTitleTextView.getText() + "'";
+            return super.toString() + " '" + mBinding.title.getText() + "'";
         }
     }
 }

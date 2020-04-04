@@ -36,7 +36,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate( LayoutInflater.from(parent.getContext()), parent, false);
+        ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
         return new ViewHolder(itemBinding);
     }

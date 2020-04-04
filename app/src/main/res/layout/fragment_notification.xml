@@ -14,13 +14,39 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:name="com.navetteclub.ui.notification.NotificationFragment"
+        android:name="com.navetteclub.ui.main.notification.NotificationFragment"
         tools:context="com.navetteclub.ui.MainActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:title="@string/title_notifications"
+                app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/viewholder_notification"
+            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical"
@@ -29,7 +55,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/loading_notification"
+                android:text="@string/loading_orders"
                 android:gravity="center_horizontal" />
 
             <ProgressBar
@@ -43,6 +69,7 @@
             android:id="@+id/loaderErrorView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:visibility="@{showError?View.VISIBLE:View.GONE}"
             app:mTitle="@string/loader_error_title"
             app:mSubtitle="@string/loader_error_subtitle"/>
@@ -51,31 +78,8 @@
             android:id="@+id/authErrorView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}">
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                app:iconifiedByDefault="false" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/viewholder_notification" />
-
-        </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

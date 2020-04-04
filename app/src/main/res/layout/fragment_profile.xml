@@ -16,33 +16,11 @@
         android:orientation="vertical"
         tools:context="com.navetteclub.ui.MainActivity">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/clearButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:layout_margin="10dp"
-                android:src="@drawable/outline_arrow_back_ios_black_24"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/clearButton"
-                android:text="@string/title_profile"
-                android:layout_centerVertical="true"
-                android:textAppearance="?attr/textAppearanceSubtitle1"/>
-
-        </RelativeLayout>
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            app:cardElevation="5dp"
+            app:cardElevation="10dp"
             app:cardCornerRadius="0dp">
 
             <RelativeLayout
