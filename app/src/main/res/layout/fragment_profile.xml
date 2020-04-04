@@ -196,6 +196,11 @@
                 app:titleText="@string/logout"
                 app:iconImage="@drawable/outline_power_settings_new_24"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
+
         </LinearLayout>
 
     </LinearLayout>
