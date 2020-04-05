@@ -102,7 +102,11 @@
     <fragment
         android:id="@+id/detail_fragment"
         android:name="com.navetteclub.ui.order.DetailFragment"
-        tools:layout="@layout/fragment_detail"/>
+        tools:layout="@layout/fragment_detail">
+        <action
+            android:id="@+id/action_detail_fragment_to_navigation_checkout"
+            app:destination="@id/navigation_checkout" />
+    </fragment>
 
     <include app:graph="@navigation/checkout_navigation" />
 

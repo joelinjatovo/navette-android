@@ -70,7 +70,9 @@
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 app:mTitle="@string/thanks_you_for_purchasing"
-                app:mSubtitle="@string/image"/>
+                app:mSubtitle="@string/image"
+                app:mButtonLabel="@string/close" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -73,6 +73,11 @@ public class LoaderErrorView extends LinearLayout {
             subtitleView.setText(mSubtitle);
         }
 
+        String mButtonLabel = a.getString(R.styleable.CustomView_mButtonLabel);
+        if (mButtonLabel != null) {
+            button.setText(mButtonLabel);
+        }
+
         a.recycle();
     }
 
