@@ -1,7 +1,10 @@
 package com.navetteclub.api.models.google;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Route {
@@ -48,5 +51,11 @@ public class Route {
 
     public void setOverviewPolyline(OverviewPolyline overviewPolyline) {
         this.overviewPolyline = overviewPolyline;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Route[bounds=" + getBounds() + ", copyrights=" + copyrights + ", legs=" + getLegs() + ", overviewPolyline=" + getOverviewPolyline()  + "]";
     }
 }

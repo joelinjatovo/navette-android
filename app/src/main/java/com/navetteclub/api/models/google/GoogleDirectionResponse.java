@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GoogleDirectionResponse {
@@ -16,6 +17,9 @@ public class GoogleDirectionResponse {
 
     @SerializedName("routes")
     private List<Route> routes;
+
+    @SerializedName("waypoint_order")
+    private Integer[] waypointOrder;
 
     public GeocodedWaypoints[] getGeocodedWaypoints() {
         return geocodedWaypoints;
@@ -44,6 +48,14 @@ public class GoogleDirectionResponse {
     @NonNull
     @Override
     public String toString() {
-        return "Direction[status=" + status + ", routes=" + routes.toString() + "]";
+        return "Direction[status=" + status + ", routes=" + getRoutes().toString() + ", geocoded_waypoints=" + Arrays.toString(getGeocodedWaypoints()) + ", waypointOrder=" + Arrays.toString(getWaypointOrder()) + "]";
+    }
+
+    public Integer[] getWaypointOrder() {
+        return waypointOrder;
+    }
+
+    public void setWaypointOrder(Integer[] waypointOrder) {
+        this.waypointOrder = waypointOrder;
     }
 }

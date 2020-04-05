@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/image"
+        android:tint="@color/colorAccent"
+        android:src="@drawable/outline_person_outline_black_24"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/icon"
+        android:layout_toStartOf="@id/endIcon"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_toEndOf="@+id/icon"
+        android:layout_toStartOf="@id/endIcon"
+        android:textSize="12sp"
+        android:textColor="@color/gray"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"/>
+
+    <ImageView
+        android:id="@+id/endIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/image"
+        android:tint="@color/colorIcon"
+        android:src="@drawable/outline_arrow_forward_ios_black_24"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:padding="5dp"/>
+
+</RelativeLayout>

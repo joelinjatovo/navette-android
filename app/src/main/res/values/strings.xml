@@ -169,5 +169,7 @@
     <string name="empty_cars">Aucune voiture trouvée</string>
     <string name="title_choose_car">Selectionnez la voiture</string>
     <string name="select">Selectionner</string>
+    <string name="trajet">Trajet</string>
+    <string name="menu_trajet_desc">Voir le timeline de vos trajets</string>
 
 </resources>

@@ -190,7 +190,8 @@ public class OrderViewFragment extends Fragment {
                         switch (order.getStatus()){
                             case Order.STATUS_OK:
                             case Order.STATUS_PROCESSING:
-                                Navigation.findNavController(v).navigate(R.id.action_order_view_fragment_to_order_map_fragment);
+                                //Navigation.findNavController(v).navigate(R.id.action_order_view_fragment_to_order_map_fragment);
+                                Navigation.findNavController(v).navigate(R.id.action_order_view_fragment_to_live_fragment);
                                 break;
                             default:
                                 // Go to checkout

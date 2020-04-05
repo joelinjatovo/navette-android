@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_order_fragment_to_navigation_checkout"
             app:destination="@id/navigation_checkout" />
+        <action
+            android:id="@+id/action_order_view_fragment_to_live_fragment"
+            app:destination="@id/live_fragment" />
 
     </fragment>
 
@@ -37,6 +40,11 @@
         android:id="@+id/order_map_fragment"
         android:name="com.navetteclub.ui.order.OrderMapFragment"
         tools:layout="@layout/fragment_order_map"/>
+
+    <fragment
+        android:id="@+id/live_fragment"
+        android:name="com.navetteclub.ui.order.LiveFragment"
+        tools:layout="@layout/fragment_live"/>
 
     <include app:graph="@navigation/checkout_navigation" />
 

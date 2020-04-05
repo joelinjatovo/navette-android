@@ -1,5 +1,7 @@
 package com.navetteclub.api.models.google;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Location {
@@ -24,5 +26,11 @@ public class Location {
 
     public void setLng(Double lng) {
         this.lng = lng;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "[" + getLat()  + "," + getLng() + "]";
     }
 }

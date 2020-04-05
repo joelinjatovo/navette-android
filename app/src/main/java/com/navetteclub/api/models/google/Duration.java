@@ -1,5 +1,7 @@
 package com.navetteclub.api.models.google;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Duration {
@@ -24,5 +26,11 @@ public class Duration {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Duration[value=" + getValue() + ", text=" + getText()  + "]";
     }
 }

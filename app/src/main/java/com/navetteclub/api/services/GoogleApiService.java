@@ -13,4 +13,7 @@ public interface GoogleApiService {
      */
     @GET("api/directions/json")
     Call<GoogleDirectionResponse> getDirection(@Query("key") String key, @Query("units") String units, @Query("origin") String origin, @Query("destination") String destination, @Query("mode") String mode);
+
+    @GET("api/directions/json")
+    Call<GoogleDirectionResponse> getDirection(@Query("key") String key, @Query("units") String units, @Query("origin") String origin, @Query("destination") String destination, @Query("mode") String mode,  @Query("waipoints") String waipoints);
 }

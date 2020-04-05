@@ -1,5 +1,7 @@
 package com.navetteclub.api.models.google;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Distance {
@@ -24,5 +26,11 @@ public class Distance {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Distance[value=" + getValue() + ", text=" + getText()  + "]";
     }
 }
