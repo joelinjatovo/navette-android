@@ -16,6 +16,23 @@
         android:name="com.navetteclub.ui.car.CarsFragment"
         tools:context="com.navetteclub.ui.MainActivity">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:title="@string/title_choose_car"
+                app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
         <com.shuhart.stepview.StepView
             android:id="@+id/stepView"
             android:layout_width="match_parent"
@@ -39,7 +56,7 @@
             app:sv_stepNumberTextSize="12sp"
             app:sv_animationType="Line"
             app:sv_typeface="@font/poppins"
-            android:layout_alignParentTop="true"/>
+            android:layout_below="@id/app_bar_layout"/>
 
         <com.navetteclub.views.LoadingView
             android:layout_width="match_parent"
