@@ -165,5 +165,7 @@
     <string name="empty_orders">Vous n\'avez pas encore des commandes effectuées.</string>
     <string name="empty_notifications">Vous n\'avez pas encore de notification.</string>
     <string name="details">Détails</string>
+    <string name="error">Erreur</string>
+    <string name="empty_cars">Aucune voiture trouvée</string>
 
 </resources>

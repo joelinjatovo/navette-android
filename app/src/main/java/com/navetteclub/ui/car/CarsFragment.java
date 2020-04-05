@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -21,12 +22,15 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Notification;
 import com.navetteclub.databinding.FragmentCarsBinding;
 import com.navetteclub.ui.order.OrderFragment;
 import com.navetteclub.ui.order.ProcessFragment;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+
+import java.util.ArrayList;
 
 public class CarsFragment extends Fragment implements OrderFragment.OnListFragmentInteractionListener {
 
@@ -69,15 +73,71 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
 
         mBinding.stepView.go(0, true);
 
-        orderViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        orderViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
+        /*
         orderViewModel.getCars().observe(getViewLifecycleOwner(),
-                carAndModels -> {
-                    if(carAndModels == null || mAdapter == null){
+                items -> {
+                    if(items == null){
                         return;
                     }
 
-                    mAdapter.setItems(carAndModels);
+                    mBinding.setIsLoading(false);
+
+                    if(items.isEmpty()){
+                        mBinding.setShowError(true);
+                        mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
+                        mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_cars);
+                    }else{
+                        mBinding.setShowError(false);
+                        if(mAdapter != null){
+                            mAdapter.setItems(items);
+                        }
+                    }
+                });
+         */
+
+        orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result == null){
+                        return;
+                    }
+
+                    if(result.getError()!=null){
+                        // Error loading
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(true);
+                        mBinding.loaderErrorView.getTitleView().setText(R.string.loader_error_title);
+                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(result.getSuccess()!=null){
+                        mBinding.setIsLoading(false);
+                        ArrayList<CarAndModel> items = (ArrayList<CarAndModel>) result.getSuccess();
+                        if(items.isEmpty()){
+                            mBinding.setShowError(true);
+                            mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
+                            mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_cars);
+                        }else{
+                            mBinding.setShowError(false);
+                            mAdapter.setItems(items);
+                        }
+                    }
+
+                });
+
+        mBinding.loaderErrorView.getButton().setOnClickListener(
+                v -> {
+                    try{
+                        mBinding.setIsLoading(true);
+                        mBinding.setShowError(false);
+                        orderViewModel.loadCars(orderViewModel.getOrderWithDatas().getClub());
+                    }catch (NullPointerException ignored){
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(true);
+                    }
                 });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),

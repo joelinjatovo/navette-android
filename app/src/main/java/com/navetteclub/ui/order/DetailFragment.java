@@ -211,6 +211,11 @@ public class DetailFragment extends Fragment {
                         orderViewModel.placeOrder(authViewModel.getUser());
                     }
                 });
+
+        mBinding.authErrorView.getButton().setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.navigation_auth);
+                });
     }
 
 }

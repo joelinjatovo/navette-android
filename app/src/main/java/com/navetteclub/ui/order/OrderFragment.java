@@ -394,7 +394,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
-
                             if (mLastKnownLocation != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
@@ -404,12 +403,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 orderViewModel.setOrigin(getString(R.string.my_location), latLng);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
-                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 });

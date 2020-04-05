@@ -156,8 +156,7 @@ public class NotificationFragment extends Fragment {
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_global_navigation_auth);
-                }
-        );
+                });
     }
 
     private void setupToolbar() {
