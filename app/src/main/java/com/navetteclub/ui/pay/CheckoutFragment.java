@@ -63,17 +63,17 @@ public class CheckoutFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
-        mBinding.backButton.setOnClickListener(
-                v -> {
-                    NavHostFragment.findNavController(this).popBackStack();
-                });
-
         mBinding.confirmButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null){
                         progressDialog.show();
                         orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
                     }
+                });
+
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
                 });
     }
 

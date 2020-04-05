@@ -115,6 +115,11 @@ public class TravelFragment extends Fragment {
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_travel_fragment_to_detail_fragment);
                 });
+
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
+                });
     }
 
 }

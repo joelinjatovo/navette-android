@@ -76,28 +76,6 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
         orderViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        /*
-        orderViewModel.getCars().observe(getViewLifecycleOwner(),
-                items -> {
-                    if(items == null){
-                        return;
-                    }
-
-                    mBinding.setIsLoading(false);
-
-                    if(items.isEmpty()){
-                        mBinding.setShowError(true);
-                        mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
-                        mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_cars);
-                    }else{
-                        mBinding.setShowError(false);
-                        if(mAdapter != null){
-                            mAdapter.setItems(items);
-                        }
-                    }
-                });
-         */
-
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result == null){
@@ -153,6 +131,11 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
                             mBinding.viewPager2.setCurrentItem(mBinding.viewPager2.getCurrentItem() - 1);
                         }
                     }
+                });
+
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
                 });
     }
 

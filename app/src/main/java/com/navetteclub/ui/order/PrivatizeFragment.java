@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,11 @@ public class PrivatizeFragment extends Fragment {
                 v -> {
                     orderViewModel.setPrivatized(false);
                     Navigation.findNavController(v).navigate(R.id.action_privatize_fragment_to_place_fragment);
+                });
+
+        mBinding.toolbar.setNavigationOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
                 });
     }
 }
