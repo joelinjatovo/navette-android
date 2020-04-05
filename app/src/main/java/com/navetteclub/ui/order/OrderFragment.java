@@ -7,15 +7,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,9 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,7 +33,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -49,10 +41,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
-import com.navetteclub.api.models.google.GoogleDirectionResponse;
 import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
-import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Point;
@@ -61,7 +51,6 @@ import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
-import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
@@ -71,11 +60,6 @@ import com.squareup.picasso.Target;
 import java.util.Arrays;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
@@ -245,6 +229,41 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
+        orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
+                originPoint -> {
+                    mBinding.setOrigin(originPoint);
+                    mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
+                    drawMarker(originPoint, 0, orderViewModel.getOrder().getClub());
+                    if(mMap!=null){
+                        // Zoom map
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOrigin, MAP_ZOOM));
+                    }
+                    loadDirection();
+                });
+
+        orderViewModel.getDestination().observe(getViewLifecycleOwner(),
+                destinationPoint -> {
+                    mBinding.setDestination(destinationPoint);
+                    mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
+                    drawMarker(destinationPoint, 1, orderViewModel.getOrder().getClub());
+                    if(mMap!=null){
+                        // Zoom map
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDestination, MAP_ZOOM));
+                    }
+                    loadDirection();
+                });
+
+        orderViewModel.getRetours().observe(getViewLifecycleOwner(),
+                retoursPoint -> {
+                    mBinding.setRetours(retoursPoint);
+                    mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
+                    drawMarker(retoursPoint, 2, orderViewModel.getOrder().getClub());
+                    if(mMap!=null){
+                        // Zoom map
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mRetours, MAP_ZOOM));
+                    }
+                });
+
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
@@ -271,81 +290,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                     .geodesic(true)
                             );
                         }
-                    }
-
-                    // Points
-                    if(orderWithDatas.getPoints()!=null){
-                        Log.d(TAG, "Size=" + orderWithDatas.getPoints().size());
-                        // Origin
-                        if(orderWithDatas.getPoints().size()>0){
-                            Point point = orderWithDatas.getPoints().get(0);
-                            if(point!=null){
-                                mBinding.setOrigin(point);
-
-                                LatLng origin = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mOrigin = origin;
-
-                                drawMarker(point, 0, orderWithDatas.getClub());
-
-                                // Zoom map
-                                if(mMap!=null){
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, MAP_ZOOM));
-                                }
-                            }
-                        }
-
-                        // Destination
-                        if(orderWithDatas.getPoints().size()>1) {
-                            Point point = orderWithDatas.getPoints().get(1);
-                            if(point!=null) {
-
-                                mBinding.setDestination(point);
-
-                                LatLng destination = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mDestination = destination;
-
-                                drawMarker(point, 1, orderWithDatas.getClub());
-
-                                // Zoom map
-                                if(mMap!=null){
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, MAP_ZOOM));
-                                }
-                            }
-                        }
-
-                        // Retours
-                        if(orderWithDatas.getPoints().size()>2) {
-                            Point point = orderWithDatas.getPoints().get(2);
-                            if(point!=null) {
-
-                                mBinding.setRetours(point);
-
-                                LatLng retours = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mRetours = retours;
-
-                                drawMarker(point, 2, orderWithDatas.getClub());
-
-                                // Zoom map
-                                if(mMap!=null){
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(retours, MAP_ZOOM));
-                                }
-                            }
-                        }
-
-                        // Distance & Delay
-                        loadDirection();
                     }
                 });
 
@@ -472,43 +416,30 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (checkPermissions()) {
                 Task locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(requireActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        Log.d(TAG, "locationResult.addOnCompleteListener");
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = (Location) task.getResult();
-                            if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), 10));
-
-                                LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                locationResult.addOnCompleteListener(requireActivity(),
+                        task -> {
+                            Log.d(TAG, "locationResult.addOnCompleteListener");
+                            if (task.isSuccessful()) {
+                                mLastKnownLocation = (Location) task.getResult();
+                                if (mLastKnownLocation != null) {
+                                    LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                                    orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                                }
+                            } else {
+                                Log.e(TAG, "Exception: %s", task.getException());
                             }
-                        } else {
-                            Log.e(TAG, "Exception: %s", task.getException());
-                        }
-                    }
-                });
+                        });
             }
         } catch(SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
-    /**
-     * Returns the current state of the permissions needed.
-     */
     private boolean checkPermissions() {
         return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -519,8 +450,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION);
 
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
             Snackbar.make(
@@ -530,7 +459,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     .setAction(R.string.ok, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // Request permission
                             ActivityCompat.requestPermissions(requireActivity(),
                                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                     REQUEST_PERMISSIONS_REQUEST_CODE);
@@ -539,21 +467,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     .show();
         } else {
             Log.i(TAG, "Requesting permission");
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-
-    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
-        @Override
-        public void onListFragmentInteraction(View v, int position, CarAndModel item) {
-            Navigation.findNavController(v).navigate(R.id.cars_fragment);
-        }
-    };
 
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(View view, int position, CarAndModel item);
