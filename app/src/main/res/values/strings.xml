@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Navette</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -81,7 +81,7 @@
     <string name="logout">Logout</string>
     <string name="histories">Histories</string>
     <string name="image">Image</string>
-    <string name="close">Close</string>
+    <string name="close" tools:override="true">Close</string>
     <string name="destination">Destination</string>
     <string name="error_inserting_clubs">Error Inserting Clubs</string>
 
