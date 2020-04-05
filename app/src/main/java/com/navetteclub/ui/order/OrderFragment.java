@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
@@ -52,12 +54,17 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentOrderBinding;
+import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,6 +83,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+
+    private static final float MAP_ZOOM = 20;
 
     private GoogleMap mMap;
 
@@ -239,11 +248,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                                 mOrigin = origin;
 
-                                drawMarker(origin, 0);
+                                drawMarker(point, 0, orderWithDatas.getClub());
 
                                 // Zoom map
                                 if(mMap!=null){
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 10));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, MAP_ZOOM));
                                 }
                             }
                         }
@@ -262,7 +271,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                                 mDestination = destination;
 
-                                drawMarker(destination, 1);
+                                drawMarker(point, 1, orderWithDatas.getClub());
+
+                                // Zoom map
+                                if(mMap!=null){
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, MAP_ZOOM));
+                                }
                             }
                         }
 
@@ -280,7 +294,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                                 mRetours = retours;
 
-                                drawMarker(retours, 2);
+                                drawMarker(point, 2, orderWithDatas.getClub());
+
+                                // Zoom map
+                                if(mMap!=null){
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(retours, MAP_ZOOM));
+                                }
                             }
                         }
 
@@ -291,52 +310,75 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private void drawMarker(LatLng point, int index) {
+    private void drawMarker(Point point, int index, Club club) {
         if(mMap==null){
             return;
         }
+
+        LatLng latLng = new LatLng(
+                point.getLat(),
+                point.getLng()
+        );
 
         // Creating MarkerOptions
         MarkerOptions options = new MarkerOptions();
 
         // Setting the position of the marker
-        options.position(point);
+        options.position(latLng);
 
-        Marker marker = null;
         switch (index){
             case 0: // Origin
-                marker = mOriginMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                if(mOriginMarker!=null){
+                    mOriginMarker.remove();
+                }
+
+                options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
+                //options.anchor(1, 0.5f);
+                mOriginMarker = mMap.addMarker(options);
             break;
             case 1: // Destination
-                marker = mDestinationMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                if(mDestinationMarker!=null){
+                    mDestinationMarker.remove();
+                }
+
+                if(club!=null){
+                    new Picasso.Builder(requireContext())
+                            .build()
+                            .load(Constants.getBaseUrl() + club.getImageUrl())
+                            .resize(64,64)
+                            .into(new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    // loaded bitmap is here (bitmap)
+                                    options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), club.getName(), bitmap)));
+                                    //options.anchor(0.5f, 1);
+                                    mDestinationMarker = mMap.addMarker(options);
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                    mDestinationMarker = mMap.addMarker(options);
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                }
+                            });
+                }else{
+                    options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
+                    mDestinationMarker = mMap.addMarker(options);
+                }
             break;
             case 2: // Retours
-                marker = mRetoursMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                if(mRetoursMarker!=null){
+                    mRetoursMarker.remove();
+                }
+                options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
+                //options.anchor(0.5f, 0.5f);
+
+                mRetoursMarker = mMap.addMarker(options);
             break;
-        }
-
-        if(marker!=null){
-            // remove old marker
-            marker.remove();
-        }
-
-        // Add new marker to the Google Map Android API V2
-        marker = mMap.addMarker(options);
-
-        // Set marker
-        switch (index){
-            case 0: // Origin
-                mOriginMarker = marker;
-                break;
-            case 1: // Destination
-                mDestinationMarker = marker;
-                break;
-            case 2: // Retours
-                mRetoursMarker = marker;
-                break;
         }
     }
 
