@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_order_view_fragment_to_live_fragment"
             app:destination="@id/live_fragment" />
+        <action
+            android:id="@+id/action_order_view_fragment_to_steps_fragment"
+            app:destination="@id/steps_fragment" />
 
     </fragment>
 
@@ -45,6 +48,11 @@
         android:id="@+id/live_fragment"
         android:name="com.navetteclub.ui.order.LiveFragment"
         tools:layout="@layout/fragment_live"/>
+
+    <fragment
+        android:id="@+id/steps_fragment"
+        android:name="com.navetteclub.ui.order.StepsFragment"
+        tools:layout="@layout/fragment_steps"/>
 
     <include app:graph="@navigation/checkout_navigation" />
 

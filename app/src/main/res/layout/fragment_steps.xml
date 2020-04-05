@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable name="isLoading" type="boolean" />
+        <variable name="isUnauthenticated" type="boolean" />
+        <variable name="showError" type="boolean" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.navetteclub.ui.MainActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                app:title="@string/title_steps"
+                app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/viewholder_step"
+            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}"/>
+
+        <com.navetteclub.views.LoadingView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}"/>
+
+        <com.navetteclub.views.LoaderErrorView
+            android:id="@+id/loaderErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:visibility="@{showError?View.VISIBLE:View.GONE}"
+            app:mTitle="@string/loader_error_title"
+            app:mSubtitle="@string/loader_error_subtitle"/>
+
+        <com.navetteclub.views.AuthErrorView
+            android:id="@+id/authErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

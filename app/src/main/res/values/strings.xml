@@ -171,5 +171,7 @@
     <string name="select">Selectionner</string>
     <string name="trajet">Trajet</string>
     <string name="menu_trajet_desc">Voir le timeline de vos trajets</string>
+    <string name="title_steps">Steps</string>
+    <string name="empty_steps">Aucune étape trouvée</string>
 
 </resources>

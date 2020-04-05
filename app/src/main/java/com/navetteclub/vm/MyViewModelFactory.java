@@ -40,7 +40,9 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(UserViewModel.class)) {
+        if (modelClass.isAssignableFrom(GoogleViewModel.class)) {
+            return (T) new GoogleViewModel();
+        } else if (modelClass.isAssignableFrom(UserViewModel.class)) {
             return (T) new UserViewModel(application);
         } else if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
             return (T) new RegisterViewModel(RegisterRepository.getInstance(new RegisterDataSource()));

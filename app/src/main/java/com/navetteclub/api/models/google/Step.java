@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
-class Step {
+public class Step {
     @SerializedName("travel_mode")
     private String travelMode;
 
