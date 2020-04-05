@@ -81,6 +81,7 @@
     <string name="logout">Logout</string>
     <string name="histories">Histories</string>
     <string name="image">Image</string>
+    <string name="close">Close</string>
     <string name="destination">Destination</string>
     <string name="error_inserting_clubs">Error Inserting Clubs</string>
 
