@@ -1,6 +1,7 @@
 package com.navetteclub.vm;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,7 +10,6 @@ import com.google.android.libraries.places.api.model.Place;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.OrderRequest;
-import com.navetteclub.api.models.google.Distance;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.api.services.OrderApiService;
@@ -17,17 +17,14 @@ import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.OrderWithPoints;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.database.repositories.CarRepository;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.utils.Log;
 
-import java.io.CharArrayReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,24 +32,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndModel> {
+public class OrderViewModel extends ViewModel {
 
     private static final String TAG = OrderViewModel.class.getSimpleName();
 
     private OrderWithDatas orderWithDatas;
 
-    private MutableLiveData<OrderWithDatas> orderWithDatasLiveData = new MutableLiveData<>();
+    private MutableLiveData<Point> origin = new MutableLiveData<>();
 
-    private MutableLiveData<List<CarAndModel>> cars = new MutableLiveData<>();
+    private MutableLiveData<Point> destination = new MutableLiveData<>();
+
+    private MutableLiveData<Point> retours = new MutableLiveData<>();
+
+    private MutableLiveData<OrderWithDatas> orderWithDatasLiveData = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> carsResult = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
-    private CarRepository carRepository;
-
     public OrderViewModel(CarRepository carRepository) {
-        this.carRepository = carRepository;
         this.setPlace(1);
     }
 
@@ -76,93 +74,74 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
         orderWithDatas.setOrder(order);
     }
 
-    public MutableLiveData<List<CarAndModel>> getCars() {
-        return cars;
-    }
 
-    public MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> getCarsResult() {
-        return carsResult;
-    }
+    public void setOrigin(Point point, boolean notify) {
+        origin.setValue(point);
 
-    public void setOrigin(String name, LatLng latLng) {
-        _init();
-        List<Point> points = orderWithDatas.getPoints();
-        Point point = points.get(0);
-        if(point==null){
-            point = new Point();
-        }
-
-        point.setName(name);
-
-        if(latLng!=null){
-            point.setLat(latLng.latitude);
-            point.setLng(latLng.longitude);
-        }
-
-        points.set(0, point);
-
-        orderWithDatas.setPoints(points);
-
-        orderWithDatasLiveData.setValue(orderWithDatas);
-    }
-
-    public void setOrigin(Place place) {
-        setOrigin(place.getName(), place.getLatLng());
-    }
-
-    private void setDestination(String name, LatLng latLng) {
-        _init();
-        List<Point> points = orderWithDatas.getPoints();
-        Point point = points.get(1);
-        if(point==null){
-            point = new Point();
-        }
-
-        point.setName(name);
-
-        if(latLng!=null){
-            point.setLat(latLng.latitude);
-            point.setLng(latLng.longitude);
-        }
-
-        points.set(1, point);
-
-        orderWithDatas.setPoints(points);
-
-    }
-
-    public void setReturn(String name, LatLng latLng) {
-        _init();
-        List<Point> points = orderWithDatas.getPoints();
-        Point point = points.get(2);
-        if(point==null){
-            point = new Point();
-        }
-
-        point.setName(name);
-
-        if(latLng!=null){
-            point.setLat(latLng.latitude);
-            point.setLng(latLng.longitude);
-        }
-
-        points.set(2, point);
-
-        orderWithDatas.setPoints(points);
-
-        orderWithDatasLiveData.setValue(orderWithDatas);
-    }
-
-    public void setReturn(Place place) {
-        if(place==null){
+        if(notify){
             _init();
             List<Point> points = orderWithDatas.getPoints();
-            points.set(2, null);
+            points.set(0, point);
             orderWithDatas.setPoints(points);
             orderWithDatasLiveData.setValue(orderWithDatas);
-        }else {
-            setReturn(place.getName(), place.getLatLng());
         }
+    }
+
+    public void setOrigin(String name, LatLng latLng, boolean notify) {
+        Point point = new Point(name, latLng);
+        setOrigin(point, notify);
+    }
+
+    public void setOrigin(@NonNull Place place, boolean notify) {
+        setOrigin(place.getName(), place.getLatLng(), notify);
+    }
+
+    public MutableLiveData<Point> getOrigin() {
+        return origin;
+    }
+
+    public void setDestination(Point point, boolean notify) {
+        destination.setValue(point);
+        if(notify) {
+            _init();
+            List<Point> points = orderWithDatas.getPoints();
+            points.set(1, point);
+            orderWithDatas.setPoints(points);
+            orderWithDatasLiveData.setValue(orderWithDatas);
+        }
+    }
+
+    private void setDestination(String name, LatLng latLng, boolean notify) {
+        Point point = new Point(name, latLng);
+        setDestination(point, notify);
+    }
+
+    public MutableLiveData<Point> getDestination() {
+        return destination;
+    }
+
+    public void setReturn(@Nullable Point point, boolean notify) {
+        retours.setValue(point);
+        if(notify) {
+            _init();
+            List<Point> points = orderWithDatas.getPoints();
+            points.set(2, point);
+            orderWithDatas.setPoints(points);
+            orderWithDatasLiveData.setValue(orderWithDatas);
+        }
+    }
+
+    public void setReturn(String name, LatLng latLng, boolean notify) {
+        Point point = new Point(name, latLng);
+        setReturn(point, notify);
+    }
+
+    public void setReturn(@NonNull Place place, boolean notify) {
+        setReturn(place.getName(), place.getLatLng(), notify);
+    }
+
+    public MutableLiveData<Point> getRetours() {
+        return retours;
     }
 
     public void setPlace(int place) {
@@ -188,14 +167,10 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     }
 
     public void setClub(Club club, Point point) {
-        _init();
         orderWithDatas.setClub(club);
-        LatLng latLng = new LatLng(
-            point.getLat(),
-            point.getLng()
-        );
-        setDestination(club.getName(), latLng);
-        orderWithDatasLiveData.setValue(orderWithDatas);
+
+        point.setName(club.getName());
+        setDestination(point, true);
 
         loadCars(club);
     }
@@ -225,8 +200,46 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
     }
 
     public void setOrder(OrderWithDatas order) {
+        if(order.getPoints()!=null){
+            for(int i = 0; i < order.getPoints().size(); i++){
+                Point point = order.getPoints().get(i);
+                switch(i){
+                    case 0: setOrigin(point, false); break;
+                    case 1: setDestination(point, false); break;
+                    case 2: setReturn(point, false); break;
+                }
+            }
+        }
         orderWithDatas = order;
         orderWithDatasLiveData.setValue(orderWithDatas);
+    }
+
+    public OrderWithDatas getOrder() {
+        return orderWithDatas;
+    }
+
+    public MutableLiveData<OrderWithDatas> getOrderLiveData() {
+        return orderWithDatasLiveData;
+    }
+
+    public void setOrderResult(RemoteLoaderResult<OrderWithDatas> data) {
+        orderResult.setValue(data);
+    }
+
+    public MutableLiveData<RemoteLoaderResult<OrderWithDatas>> getOrderResult() {
+        return orderResult;
+    }
+
+    public MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> getCarsResult(){
+        return carsResult;
+    }
+
+    public boolean loadCars(){
+        if(orderWithDatas!=null){
+            loadCars(orderWithDatas.getClub());
+            return true;
+        }
+        return false;
     }
 
     public void loadCars(Club club){
@@ -240,13 +253,6 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
                 Log.e(TAG, response.toString());
                 if (response.body() != null) {
                     Log.e(TAG, response.body().toString());
-                    CarAndModel[] items = new CarAndModel[response.body().getData().size()];
-                    for(int i = 0 ; i < response.body().getData().size(); i++){
-                        items[i] = response.body().getData().get(i);
-                    }
-
-                    carRepository.upsert(orderWithDatas.getClub(), OrderViewModel.this, items);
-
                     carsResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                 }else{
                     carsResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -324,36 +330,5 @@ public class OrderViewModel extends ViewModel implements UpsertCallback<CarAndMo
                 orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
-    }
-
-    public OrderWithDatas getOrderWithDatas() {
-        return orderWithDatas;
-    }
-
-    public void setOrderWithDatasLiveData(OrderWithDatas orderWithDatas) {
-        this.orderWithDatas = orderWithDatas;
-        orderWithDatasLiveData.setValue(orderWithDatas);
-    }
-
-    public MutableLiveData<OrderWithDatas> getOrderWithDatasLiveData() {
-        return orderWithDatasLiveData;
-    }
-
-    public MutableLiveData<RemoteLoaderResult<OrderWithDatas>> getOrderResult() {
-        return orderResult;
-    }
-
-    public void setOrderResult(RemoteLoaderResult<OrderWithDatas> data) {
-        orderResult.setValue(data);
-    }
-
-    @Override
-    public void onUpsertError() {
-
-    }
-
-    @Override
-    public void onUpsertSuccess(List<CarAndModel> items) {
-        cars.setValue(items);
     }
 }

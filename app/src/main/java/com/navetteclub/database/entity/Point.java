@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -42,6 +43,18 @@ public class Point {
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
+
+    public Point(){
+
+    }
+
+    public Point(String name, LatLng latLng){
+        setName(name);
+        if(latLng!=null){
+            setLat(latLng.latitude);
+            setLng(latLng.longitude);
+        }
+    }
 
     public String getId() {
         return id;

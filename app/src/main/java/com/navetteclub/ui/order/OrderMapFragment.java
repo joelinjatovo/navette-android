@@ -296,7 +296,7 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
     private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
                         return;
@@ -489,7 +489,7 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
                                                 mLastKnownLocation.getLongitude()), 10));
 
                                 LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                orderViewModel.setOrigin(getString(R.string.my_location), latLng);
+                                orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
                         }

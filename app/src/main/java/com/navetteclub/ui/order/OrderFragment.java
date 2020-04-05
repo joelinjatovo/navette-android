@@ -61,6 +61,8 @@ import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.AuthViewModel;
+import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.squareup.picasso.Picasso;
@@ -96,13 +98,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private OrderViewModel orderViewModel;
 
+    private GoogleViewModel googleViewModel;
+
     private Polyline line;
 
-    private LatLng mOldOrigin;
-
     private LatLng mOrigin;
-
-    private LatLng mOldDestination;
 
     private LatLng mDestination;
 
@@ -138,20 +138,17 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         Log.d(TAG + "Cycle", "onViewCreated");
-
+        super.onViewCreated(view, savedInstanceState);
         setupBottomSheet();
-
         setupUi();
-
         setupOrderViewModel();
+        setupGoogleViewModel();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         Log.d(TAG + "Cycle", "onDestroyView");
     }
 
@@ -160,9 +157,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
+                orderViewModel.setOrigin(place, true);
                 Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
-
-                orderViewModel.setOrigin(place);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i(TAG, status.getStatusMessage());
@@ -201,10 +197,55 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
+    private void setupGoogleViewModel() {
+        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+
+        googleViewModel = new ViewModelProvider(requireActivity(),
+                factory).get(GoogleViewModel.class);
+
+        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+
+                    mBinding.setIsLoadingDirection(false);
+                    mBinding.setShowErrorLoader(false);
+
+                    if(result.body()!=null){
+                        for (int i = 0; i < result.body().getRoutes().size(); i++) {
+                            Route route = result.body().getRoutes().get(i);
+                            for(Leg leg: route.getLegs()){
+                                orderViewModel.setDistance(leg.getDistance().getText());
+                                orderViewModel.setDelay(leg.getDuration().getText());
+                            }
+                            orderViewModel.setDirection(route.getOverviewPolyline().getPoints());
+                        }
+                    }
+                });
+
+        googleViewModel.getErrorResult().observe(getViewLifecycleOwner(),
+                error -> {
+                    if(error==null){
+                        return;
+                    }
+
+                    mBinding.setIsLoadingDirection(false);
+
+                    showDirectionError(error);
+
+                });
+
+    }
+
+    private void showDirectionError(String error) {
+        mBinding.setShowErrorLoader(false);
+    }
+
     private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
                         return;
@@ -304,10 +345,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         }
 
                         // Distance & Delay
-                        getDirectionAndDistance("driving");
+                        loadDirection();
                     }
                 });
 
+    }
+
+    private void loadDirection() {
+        if(mOrigin!=null && mDestination!=null){
+            mBinding.setIsLoading(true);
+            mBinding.setShowErrorLoader(false);
+            expandOrderDetails();
+            googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination);
+        }
     }
 
     private void drawMarker(Point point, int index, Club club) {
@@ -442,7 +492,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                                 mLastKnownLocation.getLongitude()), 10));
 
                                 LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                orderViewModel.setOrigin(getString(R.string.my_location), latLng);
+                                orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
                         } else {
@@ -496,95 +546,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
-    }
-
-    private void getDirectionAndDistance(String type) {
-        if(mOrigin == null ){
-            return;
-        }
-
-        if(mDestination == null ){
-            return;
-        }
-
-        if(mOldOrigin != null
-                && mOrigin.latitude == mOldOrigin.latitude
-                && mOrigin.longitude == mOldOrigin.longitude
-                && mOldDestination != null
-                && mDestination.latitude == mOldDestination.latitude
-                && mDestination.longitude == mOldDestination.longitude){
-            return;
-        }
-
-        mOldOrigin = mOrigin;
-
-        mOldDestination = mDestination;
-
-        String url = "https://maps.googleapis.com/maps/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        String key = getString(R.string.google_maps_key);
-
-        GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<GoogleDirectionResponse> call = service.getDirection(
-                key,
-                "metric",
-                mOrigin.latitude + "," + mOrigin.longitude,
-                mDestination.latitude + "," + mDestination.longitude,
-                type
-        );
-
-        // Show loader
-        expandOrderDetails();
-        mBinding.setIsLoadingDirection(true);
-        mBinding.setShowErrorLoader(false);
-
-        call.enqueue(new Callback<GoogleDirectionResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
-                // Hide loader
-                mBinding.setIsLoadingDirection(false);
-
-                try {
-                    // This loop will go through all the results and add marker on each location.
-                    GoogleDirectionResponse googleDirectionResponse = response.body();
-
-                    Log.e(TAG, "googleDirectionResponse = " + googleDirectionResponse);
-                    for (int i = 0; i < googleDirectionResponse.getRoutes().size(); i++) {
-                        Route route = googleDirectionResponse.getRoutes().get(i);
-                        for(Leg leg: route.getLegs()){
-                            String distance = leg.getDistance().getText();
-                            orderViewModel.setDistance(distance);
-
-                            String time = leg.getDuration().getText();
-                            orderViewModel.setDelay(time);
-
-                            Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
-                        }
-
-                        String encodedString = route.getOverviewPolyline().getPoints();
-                        orderViewModel.setDirection(encodedString);
-                    }
-
-                    mBinding.setShowErrorLoader(false);
-                } catch (Exception e) {
-                    Log.e(TAG, "There is an error", e);
-                    mBinding.setShowErrorLoader(true);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
-                Log.e(TAG, t.toString(), t);
-
-                mBinding.setIsLoadingDirection(false);
-                mBinding.setShowErrorLoader(true);
-            }
-        });
-
     }
 
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {

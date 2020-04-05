@@ -111,7 +111,7 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
                     try{
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
-                        orderViewModel.loadCars(orderViewModel.getOrderWithDatas().getClub());
+                        orderViewModel.loadCars();
                     }catch (NullPointerException ignored){
                         mBinding.setIsLoading(false);
                         mBinding.setShowError(true);

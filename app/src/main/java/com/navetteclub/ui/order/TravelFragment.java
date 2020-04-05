@@ -63,7 +63,7 @@ public class TravelFragment extends Fragment {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
 
-                orderViewModel.setReturn(place);
+                orderViewModel.setReturn(place, true);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i(TAG, status.getStatusMessage());
@@ -78,7 +78,7 @@ public class TravelFragment extends Fragment {
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
 
-        orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
                         return;
@@ -105,7 +105,7 @@ public class TravelFragment extends Fragment {
         mBinding.yesButton.setOnClickListener(
                 v -> {
                     // reset return point
-                    orderViewModel.setReturn(null);
+                    orderViewModel.setReturn((Point) null, true);
 
                     // go to search point
                     Navigation.findNavController(v).navigate(R.id.action_travel_fragment_to_search_fragment);

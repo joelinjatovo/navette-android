@@ -142,7 +142,7 @@ public class DetailFragment extends Fragment {
         orderViewModel = new ViewModelProvider(this,
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-        orderViewModel.getOrderWithDatasLiveData().observe(getViewLifecycleOwner(),
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
                         return;
@@ -203,9 +203,9 @@ public class DetailFragment extends Fragment {
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null
-                            && orderViewModel.getOrderWithDatas() != null
-                            && orderViewModel.getOrderWithDatas().getOrder() != null
-                            && orderViewModel.getOrderWithDatas().getOrder().getRid() == null){
+                            && orderViewModel.getOrder() != null
+                            && orderViewModel.getOrder().getOrder() != null
+                            && orderViewModel.getOrder().getOrder().getRid() == null){
                         progressDialog.show();
 
                         orderViewModel.placeOrder(authViewModel.getUser());
