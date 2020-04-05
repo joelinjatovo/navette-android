@@ -52,6 +52,10 @@
             android:id="@+id/action_global_navigation_auth"
             app:destination="@id/navigation_auth" />
 
+        <action
+            android:id="@+id/action_global_navigation_orders"
+            app:destination="@id/navigation_orders" />
+
     </navigation>
 
     <include app:graph="@navigation/auth_navigation" />

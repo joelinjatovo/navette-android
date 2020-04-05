@@ -22,12 +22,6 @@
     <fragment
         android:id="@+id/thanks_fragment"
         android:name="com.navetteclub.ui.pay.ThanksFragment"
-        tools:layout="@layout/fragment_thanks">
-        <action
-            android:id="@+id/action_thanks_fragment_to_navigation_orders"
-            app:destination="@id/navigation_orders" />
-    </fragment>
-
-    <include app:graph="@navigation/orders_navigation" />
+        tools:layout="@layout/fragment_thanks"/>
 
 </navigation>
