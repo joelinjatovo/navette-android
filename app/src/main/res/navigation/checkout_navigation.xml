@@ -5,10 +5,6 @@
     android:id="@+id/navigation_checkout"
     app:startDestination="@id/checkout_fragment">
 
-    <action
-        android:id="@+id/global_to_thanks_fragment"
-        app:destination="@id/thanks_fragment" />
-
     <fragment
         android:id="@+id/checkout_fragment"
         android:name="com.navetteclub.ui.pay.CheckoutFragment"

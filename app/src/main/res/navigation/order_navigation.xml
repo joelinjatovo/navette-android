@@ -106,7 +106,15 @@
         <action
             android:id="@+id/action_detail_fragment_to_navigation_checkout"
             app:destination="@id/navigation_checkout" />
+        <action
+            android:id="@+id/action_detail_fragment_to_thanks_fragment"
+            app:destination="@id/thanks_fragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/thanks_fragment"
+        android:name="com.navetteclub.ui.pay.ThanksFragment"
+        tools:layout="@layout/fragment_thanks"/>
 
     <include app:graph="@navigation/checkout_navigation" />
 

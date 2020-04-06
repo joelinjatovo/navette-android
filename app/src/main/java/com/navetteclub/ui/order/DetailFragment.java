@@ -150,13 +150,10 @@ public class DetailFragment extends Fragment {
 
                     if(orderWithDatas.getOrder()!=null){
                         mBinding.setDistance(orderWithDatas.getOrder().getDistance());
-
                         mBinding.setDelay(orderWithDatas.getOrder().getDelay());
-
                         Double amount = orderWithDatas.getOrder().getAmount();
                         if( amount != null && amount > 0 ){
                             mBinding.setAmount(orderWithDatas.getOrder().getAmountStr());
-
                             switch (orderWithDatas.getOrder().getStatus()){
                                 case Order.STATUS_PING:
                                     mBinding.bookNowButton.setText(R.string.pay_now);
@@ -164,7 +161,7 @@ public class DetailFragment extends Fragment {
                                 break;
                                 case Order.STATUS_OK:
                                     mBinding.bookNowButton.setText(R.string.view);
-                                    NavHostFragment.findNavController(this).navigate(R.id.global_to_thanks_fragment);
+                                    NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_thanks_fragment);
                                 break;
                                 default:
                                     mBinding.bookNowButton.setText(R.string.book_now);
@@ -172,7 +169,6 @@ public class DetailFragment extends Fragment {
                             }
                         }
                     }
-
                 });
 
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),

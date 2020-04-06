@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,14 +51,20 @@ import com.navetteclub.api.models.google.GoogleDirectionResponse;
 import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.services.GoogleApiService;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentLiveBinding;
 import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
+import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -74,6 +82,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final float MAP_ZOOM = 25;
 
 
     // The BroadcastReceiver used to listen from broadcasts from the service.
@@ -111,6 +120,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private FragmentLiveBinding mBinding;
 
     private OrderViewModel orderViewModel;
+
+    private GoogleViewModel googleViewModel;
 
     private Polyline line;
 
@@ -173,6 +184,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         setupUi();
 
         setupOrderViewModel();
+
+        setupGoogleViewModel();
     }
 
     @Override
@@ -280,8 +293,88 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
     }
 
+    private void setupGoogleViewModel() {
+        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+
+        googleViewModel = new ViewModelProvider(requireActivity(),
+                factory).get(GoogleViewModel.class);
+
+        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+
+                    mBinding.setIsLoadingDirection(false);
+                    mBinding.setShowErrorLoader(false);
+
+                    if(result.body()!=null){
+                        for (int i = 0; i < result.body().getRoutes().size(); i++) {
+                            Route route = result.body().getRoutes().get(i);
+                            for(Leg leg: route.getLegs()){
+                                orderViewModel.setDistance(leg.getDistance().getText());
+                                orderViewModel.setDelay(leg.getDuration().getText());
+                            }
+                            orderViewModel.setDirection(route.getOverviewPolyline().getPoints());
+                        }
+                    }
+                });
+
+        googleViewModel.getErrorResult().observe(getViewLifecycleOwner(),
+                error -> {
+                    if(error==null){
+                        return;
+                    }
+
+                    mBinding.setIsLoadingDirection(false);
+
+                    showDirectionError(error);
+
+                });
+
+    }
+
+    private void showDirectionError(String error) {
+        mBinding.setShowErrorLoader(false);
+    }
+
     private void setupOrderViewModel() {
         orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+
+        orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
+                originPoint -> {
+                    mBinding.setOrigin(originPoint);
+                    mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
+                    drawMarker(originPoint, 0, orderViewModel.getOrder().getClub());
+                    if(mMap!=null){
+                        // Zoom map
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOrigin, MAP_ZOOM));
+                    }
+                    loadDirection();
+                });
+
+        orderViewModel.getDestination().observe(getViewLifecycleOwner(),
+                destinationPoint -> {
+                    mBinding.setDestination(destinationPoint);
+                    mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
+                    drawMarker(destinationPoint, 1, orderViewModel.getOrder().getClub());
+                    if(mMap!=null){
+                        // Zoom map
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDestination, MAP_ZOOM));
+                    }
+                    loadDirection();
+                });
+
+        orderViewModel.getRetours().observe(getViewLifecycleOwner(),
+                retoursPoint -> {
+                    mBinding.setRetours(retoursPoint);
+                    mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
+                    drawMarker(retoursPoint, 2, orderViewModel.getOrder().getClub());
+                    if(mMap!=null){
+                        // Zoom map
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mRetours, MAP_ZOOM));
+                    }
+                });
 
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
@@ -310,146 +403,111 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                             );
                         }
                     }
-
-                    // Points
-                    if(orderWithDatas.getPoints()!=null){
-                        Log.d(TAG, "Size=" + orderWithDatas.getPoints().size());
-                        // Origin
-                        if(orderWithDatas.getPoints().size()>0){
-                            Point point = orderWithDatas.getPoints().get(0);
-                            if(point!=null){
-                                mBinding.setOrigin(point);
-
-                                LatLng origin = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mOrigin = origin;
-
-                                drawMarker(origin, 0);
-
-                                // Zoom map
-                                if(mMap!=null){
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 10));
-                                }
-                            }
-                        }
-
-                        // Destination
-                        if(orderWithDatas.getPoints().size()>1) {
-                            Point point = orderWithDatas.getPoints().get(1);
-                            if(point!=null) {
-
-                                mBinding.setDestination(point);
-
-                                LatLng destination = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mDestination = destination;
-
-                                drawMarker(destination, 1);
-                            }
-                        }
-
-                        // Retours
-                        if(orderWithDatas.getPoints().size()>2) {
-                            Point point = orderWithDatas.getPoints().get(2);
-                            if(point!=null) {
-
-                                mBinding.setRetours(point);
-
-                                LatLng retours = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mRetours = retours;
-
-                                drawMarker(retours, 2);
-                            }
-                        }
-
-                        // Distance & Delay
-                        getDirectionAndDistance("driving");
-                    }
                 });
 
     }
 
-    private void drawMarker(LatLng point, int index) {
+    private void loadDirection() {
+        if(mOrigin!=null && mDestination!=null){
+            mBinding.setIsLoading(true);
+            mBinding.setShowErrorLoader(false);
+            expandOrderDetails();
+            googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination);
+        }
+    }
+
+    private void drawMarker(Point point, int index, Club club) {
         if(mMap==null){
             return;
         }
+
+        LatLng latLng = new LatLng(
+                point.getLat(),
+                point.getLng()
+        );
 
         // Creating MarkerOptions
         MarkerOptions options = new MarkerOptions();
 
         // Setting the position of the marker
-        options.position(point);
+        options.position(latLng);
 
-        Marker marker = null;
         switch (index){
             case 0: // Origin
-                marker = mOriginMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            break;
-            case 1: // Destination
-                marker = mDestinationMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            break;
-            case 2: // Retours
-                marker = mRetoursMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            break;
-        }
+                if(mOriginMarker!=null){
+                    mOriginMarker.remove();
+                }
 
-        if(marker!=null){
-            // remove old marker
-            marker.remove();
-        }
-
-        // Add new marker to the Google Map Android API V2
-        marker = mMap.addMarker(options);
-
-        // Set marker
-        switch (index){
-            case 0: // Origin
-                mOriginMarker = marker;
+                options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
+                //options.anchor(1, 0.5f);
+                mOriginMarker = mMap.addMarker(options);
                 break;
             case 1: // Destination
-                mDestinationMarker = marker;
+                if(mDestinationMarker!=null){
+                    mDestinationMarker.remove();
+                }
+
+                if(club!=null){
+                    new Picasso.Builder(requireContext())
+                            .build()
+                            .load(Constants.getBaseUrl() + club.getImageUrl())
+                            .resize(64,64)
+                            .into(new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    // loaded bitmap is here (bitmap)
+                                    options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), club.getName(), bitmap)));
+                                    //options.anchor(0.5f, 1);
+                                    mDestinationMarker = mMap.addMarker(options);
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                    mDestinationMarker = mMap.addMarker(options);
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                }
+                            });
+                }else{
+                    options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
+                    mDestinationMarker = mMap.addMarker(options);
+                }
                 break;
             case 2: // Retours
-                mRetoursMarker = marker;
+                if(mRetoursMarker!=null){
+                    mRetoursMarker.remove();
+                }
+                options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
+                //options.anchor(0.5f, 0.5f);
+
+                mRetoursMarker = mMap.addMarker(options);
                 break;
         }
     }
 
     private void setupUi() {
         // Nothing
-        mBinding.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    // Live update location
-                    Toast.makeText(requireContext(), "requestLocationUpdatesButton.click",
-                            Toast.LENGTH_SHORT).show();
-                    if (!checkPermissions()) {
-                        requestPermissions();
-                    } else {
-                        mService.requestLocationUpdates();
+        mBinding.switchView.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+                    if(isChecked){
+                        // Live update location
+                        Toast.makeText(requireContext(), "requestLocationUpdatesButton.click",
+                                Toast.LENGTH_SHORT).show();
+                        if (!checkPermissions()) {
+                            requestPermissions();
+                        } else {
+                            mService.requestLocationUpdates();
+                        }
+                    }else{
+                        // Remove live location update
+                        Toast.makeText(requireContext(), "removeLocationUpdatesButton.click",
+                                Toast.LENGTH_SHORT).show();
+                        mService.removeLocationUpdates();
                     }
-                }else{
-                    // Remove live location update
-                    Toast.makeText(requireContext(), "removeLocationUpdatesButton.click",
-                            Toast.LENGTH_SHORT).show();
-                    mService.removeLocationUpdates();
-                }
-            }
-        });
+                });
     }
 
     private void expandOrderDetails() {
@@ -462,26 +520,24 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         try {
             if (checkPermissions()) {
                 Task locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(requireActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        Log.d(TAG, "locationResult.addOnCompleteListener");
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = (Location) task.getResult();
+                locationResult.addOnCompleteListener(requireActivity(),
+                        task -> {
+                            Log.d(TAG, "locationResult.addOnCompleteListener");
+                            if (task.isSuccessful()) {
+                                // Set the map's camera position to the current location of the device.
+                                mLastKnownLocation = (Location) task.getResult();
 
-                            if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), 10));
+                                if (mLastKnownLocation != null) {
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                            new LatLng(mLastKnownLocation.getLatitude(),
+                                                    mLastKnownLocation.getLongitude()), 10));
 
-                                LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                                    LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                                    orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                                }
                             }
-                        }
-                    }
-                });
+                        });
             }
         } catch(SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
@@ -520,104 +576,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
-    }
-
-    private void getDirectionAndDistance(String type) {
-        if(mOrigin == null ){
-            return;
-        }
-
-        if(mDestination == null ){
-            return;
-        }
-
-        if(mOldOrigin != null
-                && mOrigin.latitude == mOldOrigin.latitude
-                && mOrigin.longitude == mOldOrigin.longitude
-                && mOldDestination != null
-                && mDestination.latitude == mOldDestination.latitude
-                && mDestination.longitude == mOldDestination.longitude){
-            return;
-        }
-
-        mOldOrigin = mOrigin;
-
-        mOldDestination = mDestination;
-
-        String url = "https://maps.googleapis.com/maps/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        String key = getString(R.string.google_maps_key);
-
-        String waypoints = "optimize:true|"
-                + mDestination.latitude + "," + mDestination.longitude  // Ravimpotsy
-                + "|" + mOrigin.latitude + "," + mOrigin.longitude
-                + "|" + "-18.9153215,47.5385984" // Shoprite
-                + "|" + "-18.9127615,47.5344172" // Jet club
-                + "|" + mDestination.latitude + "," + mDestination.longitude; // Ravimpotsy
-
-
-        GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<GoogleDirectionResponse> call = service.getDirection(
-                key,
-                "metric",
-                mOrigin.latitude + "," + mOrigin.longitude,
-                mDestination.latitude + "," + mDestination.longitude,
-                type,
-                waypoints
-        );
-
-        // Show loader
-        expandOrderDetails();
-        mBinding.setIsLoadingDirection(true);
-        mBinding.setShowErrorLoader(false);
-
-        call.enqueue(new Callback<GoogleDirectionResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
-                Log.d(TAG + "Map", response.toString());
-                // Hide loader
-                mBinding.setIsLoadingDirection(false);
-
-                try {
-                    // This loop will go through all the results and add marker on each location.
-                    GoogleDirectionResponse googleDirectionResponse = response.body();
-
-                    Log.e(TAG, "googleDirectionResponse = " + googleDirectionResponse);
-                    for (int i = 0; i < googleDirectionResponse.getRoutes().size(); i++) {
-                        Route route = googleDirectionResponse.getRoutes().get(i);
-                        for(Leg leg: route.getLegs()){
-                            String distance = leg.getDistance().getText();
-                            orderViewModel.setDistance(distance);
-
-                            String time = leg.getDuration().getText();
-                            orderViewModel.setDelay(time);
-
-                            Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
-                        }
-
-                        String encodedString = route.getOverviewPolyline().getPoints();
-                        orderViewModel.setDirection(encodedString);
-                    }
-
-                    mBinding.setShowErrorLoader(false);
-                } catch (Exception e) {
-                    Log.e(TAG, "There is an error", e);
-                    mBinding.setShowErrorLoader(true);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
-                Log.e(TAG, t.toString(), t);
-
-                mBinding.setIsLoadingDirection(false);
-                mBinding.setShowErrorLoader(true);
-            }
-        });
 
     }
 

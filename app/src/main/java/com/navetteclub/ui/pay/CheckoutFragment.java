@@ -115,7 +115,7 @@ public class CheckoutFragment extends Fragment {
                                 case Order.PAYMENT_TYPE_APPLE_PAY:
                                 case Order.PAYMENT_TYPE_STRIPE:
                                 case Order.PAYMENT_TYPE_PAYPAL:
-                                    NavHostFragment.findNavController(this).navigate(R.id.global_to_thanks_fragment);
+                                    NavHostFragment.findNavController(this).navigate(R.id.action_checkout_fragment_to_thanks_fragment);
                                     break;
                             }
                         }

@@ -127,22 +127,6 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
 
     private Polyline line;
 
-    private LatLng mOldOrigin;
-
-    private LatLng mOrigin;
-
-    private LatLng mOldDestination;
-
-    private LatLng mDestination;
-
-    private LatLng mRetours;
-
-    private Marker mOriginMarker;
-
-    private Marker mDestinationMarker;
-
-    private Marker mRetoursMarker;
-
     private Marker myPositionMarker;
 
     private BottomSheetBehavior sheetBehavior;
@@ -323,122 +307,8 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
                             );
                         }
                     }
-
-                    // Points
-                    if(orderWithDatas.getPoints()!=null){
-                        Log.d(TAG, "Size=" + orderWithDatas.getPoints().size());
-                        // Origin
-                        if(orderWithDatas.getPoints().size()>0){
-                            Point point = orderWithDatas.getPoints().get(0);
-                            if(point!=null){
-                                mBinding.setOrigin(point);
-
-                                LatLng origin = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mOrigin = origin;
-
-                                drawMarker(origin, 0);
-
-                                // Zoom map
-                                if(mMap!=null){
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 10));
-                                }
-                            }
-                        }
-
-                        // Destination
-                        if(orderWithDatas.getPoints().size()>1) {
-                            Point point = orderWithDatas.getPoints().get(1);
-                            if(point!=null) {
-
-                                mBinding.setDestination(point);
-
-                                LatLng destination = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mDestination = destination;
-
-                                drawMarker(destination, 1);
-                            }
-                        }
-
-                        // Retours
-                        if(orderWithDatas.getPoints().size()>2) {
-                            Point point = orderWithDatas.getPoints().get(2);
-                            if(point!=null) {
-
-                                mBinding.setRetours(point);
-
-                                LatLng retours = new LatLng(
-                                        point.getLat(),
-                                        point.getLng()
-                                );
-
-                                mRetours = retours;
-
-                                drawMarker(retours, 2);
-                            }
-                        }
-
-                        // Distance & Delay
-                        getDirectionAndDistance("driving");
-                    }
                 });
 
-    }
-
-    private void drawMarker(LatLng point, int index) {
-        if(mMap==null){
-            return;
-        }
-
-        // Creating MarkerOptions
-        MarkerOptions options = new MarkerOptions();
-
-        // Setting the position of the marker
-        options.position(point);
-
-        Marker marker = null;
-        switch (index){
-            case 0: // Origin
-                marker = mOriginMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            break;
-            case 1: // Destination
-                marker = mDestinationMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            break;
-            case 2: // Retours
-                marker = mRetoursMarker;
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            break;
-        }
-
-        if(marker!=null){
-            // remove old marker
-            marker.remove();
-        }
-
-        // Add new marker to the Google Map Android API V2
-        marker = mMap.addMarker(options);
-
-        // Set marker
-        switch (index){
-            case 0: // Origin
-                mOriginMarker = marker;
-                break;
-            case 1: // Destination
-                mDestinationMarker = marker;
-                break;
-            case 2: // Retours
-                mRetoursMarker = marker;
-                break;
-        }
     }
 
     private void setupUi() {
@@ -463,12 +333,6 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
-    }
-
-    private void expandOrderDetails() {
-        if(sheetBehavior != null && mOrigin != null && mDestination != null){
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
     }
 
     private void getDeviceLocation() {
@@ -533,95 +397,6 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
-    }
-
-    private void getDirectionAndDistance(String type) {
-        if(mOrigin == null ){
-            return;
-        }
-
-        if(mDestination == null ){
-            return;
-        }
-
-        if(mOldOrigin != null
-                && mOrigin.latitude == mOldOrigin.latitude
-                && mOrigin.longitude == mOldOrigin.longitude
-                && mOldDestination != null
-                && mDestination.latitude == mOldDestination.latitude
-                && mDestination.longitude == mOldDestination.longitude){
-            return;
-        }
-
-        mOldOrigin = mOrigin;
-
-        mOldDestination = mDestination;
-
-        String url = "https://maps.googleapis.com/maps/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        String key = getString(R.string.google_maps_key);
-
-        GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<GoogleDirectionResponse> call = service.getDirection(
-                key,
-                "metric",
-                mOrigin.latitude + "," + mOrigin.longitude,
-                mDestination.latitude + "," + mDestination.longitude,
-                type
-        );
-
-        // Show loader
-        expandOrderDetails();
-        mBinding.setIsLoadingDirection(true);
-        mBinding.setShowErrorLoader(false);
-
-        call.enqueue(new Callback<GoogleDirectionResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<GoogleDirectionResponse> call, @NonNull Response<GoogleDirectionResponse> response) {
-                // Hide loader
-                mBinding.setIsLoadingDirection(false);
-
-                try {
-                    // This loop will go through all the results and add marker on each location.
-                    GoogleDirectionResponse googleDirectionResponse = response.body();
-
-                    Log.e(TAG, "googleDirectionResponse = " + googleDirectionResponse);
-                    for (int i = 0; i < googleDirectionResponse.getRoutes().size(); i++) {
-                        Route route = googleDirectionResponse.getRoutes().get(i);
-                        for(Leg leg: route.getLegs()){
-                            String distance = leg.getDistance().getText();
-                            orderViewModel.setDistance(distance);
-
-                            String time = leg.getDuration().getText();
-                            orderViewModel.setDelay(time);
-
-                            Log.d(TAG, String.format("Distance:%s, Duration:%s", distance, time));
-                        }
-
-                        String encodedString = route.getOverviewPolyline().getPoints();
-                        orderViewModel.setDirection(encodedString);
-                    }
-
-                    mBinding.setShowErrorLoader(false);
-                } catch (Exception e) {
-                    Log.e(TAG, "There is an error", e);
-                    mBinding.setShowErrorLoader(true);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GoogleDirectionResponse> call, @NonNull Throwable t) {
-                Log.e(TAG, t.toString(), t);
-
-                mBinding.setIsLoadingDirection(false);
-                mBinding.setShowErrorLoader(true);
-            }
-        });
-
     }
 
     /**

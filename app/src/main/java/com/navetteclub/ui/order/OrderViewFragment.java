@@ -87,7 +87,12 @@ public class OrderViewFragment extends Fragment {
     }
 
     private void setupOrderViewModel() {
-        orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        orderViewModel = new ViewModelProvider(this,
+                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+
+        orderViewModel.getOrigin().observe(getViewLifecycleOwner(), origin -> mBinding.setOrigin(origin));
+        orderViewModel.getDestination().observe(getViewLifecycleOwner(), destination -> mBinding.setDestination(destination));
+        orderViewModel.getRetours().observe(getViewLifecycleOwner(), retours -> mBinding.setRetours(retours));
 
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
@@ -98,81 +103,23 @@ public class OrderViewFragment extends Fragment {
                     order = orderWithDatas.getOrder();
                     if(order!=null){
                         mBinding.setAmount(order.getAmountStr());
-
-                        if(order.getPaymentType()!=null){
-                            switch (order.getPaymentType()){
-                                case Order.PAYMENT_TYPE_CASH:
-                                    mBinding.espece.setChecked(true);
-                                    break;
-                                case Order.PAYMENT_TYPE_STRIPE:
-                                    mBinding.card.setChecked(true);
-                                    break;
-                                case Order.PAYMENT_TYPE_PAYPAL:
-                                    mBinding.paypal.setChecked(true);
-                                    break;
-                            }
-                        }
+                        mBinding.espece.setChecked(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType()));
+                        mBinding.card.setChecked(Order.PAYMENT_TYPE_STRIPE.equals(order.getPaymentType()));
+                        mBinding.paypal.setChecked(Order.PAYMENT_TYPE_PAYPAL.equals(order.getPaymentType()));
 
                         if(order.getStatus()!=null){
                             switch (order.getStatus()){
                                 case Order.STATUS_PING:
                                     mBinding.bookNowButton.setText(R.string.pay_now);
-                                    break;
+                                break;
                                 case Order.STATUS_OK:
                                     mBinding.bookNowButton.setText(R.string.view);
-                                    break;
+                                break;
                                 default:
                                     mBinding.bookNowButton.setText(R.string.book_now);
-                                    break;
+                                break;
                             }
                         }
-                    }
-
-
-                    // Points
-                    if(orderWithDatas.getPoints()!=null){
-                        // Origin
-                        if(orderWithDatas.getPoints().size()>0){
-                            Point point = orderWithDatas.getPoints().get(0);
-                            if(point!=null){
-                                mBinding.setOrigin(point);
-                            }
-                        }
-
-                        // Destination
-                        if(orderWithDatas.getPoints().size()>1) {
-                            Point point = orderWithDatas.getPoints().get(1);
-                            if(point!=null) {
-                                mBinding.setDestination(point);
-                            }
-                        }
-
-                        // Retours
-                        if(orderWithDatas.getPoints().size()>2) {
-                            Point point = orderWithDatas.getPoints().get(2);
-                            if(point!=null) {
-                                mBinding.setRetours(point);
-                            }
-                        }
-                    }
-                });
-
-        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
-                orderResult -> {
-                    if(orderResult == null){
-                        return;
-                    }
-
-                    progressDialog.hide();
-
-                    if (orderResult.getError() != null) {
-                        Log.d(TAG, "'orderResult.getError()'");
-                        Snackbar.make(mBinding.getRoot(), orderResult.getError(), Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    if (orderResult.getSuccess() != null) {
-                        Log.d(TAG, "'orderResult.getSuccess()'");
-                        orderViewModel.setOrder(orderResult.getSuccess());
                     }
                 });
 
