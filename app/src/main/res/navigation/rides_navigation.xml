@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_rides"
+    app:startDestination="@id/rides_fragment">
+
+    <fragment
+        android:id="@+id/rides_fragment"
+        android:name="com.navetteclub.ui.driver.RidesFragment"
+        android:label="@string/title_rides"
+        tools:layout="@layout/fragment_rides" />
+
+    <fragment
+        android:id="@+id/ride_fragment"
+        android:name="com.navetteclub.ui.driver.RideFragment"
+        android:label="@string/title_ride"
+        tools:layout="@layout/fragment_ride" />
+
+</navigation>

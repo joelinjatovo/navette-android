@@ -174,5 +174,6 @@
     <string name="title_steps">Steps</string>
     <string name="empty_steps">Aucune étape trouvée</string>
     <string name="loading_rides">Chargement des rides</string>
+    <string name="title_rides">Rides</string>
 
 </resources>
