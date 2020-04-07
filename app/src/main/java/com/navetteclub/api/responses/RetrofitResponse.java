@@ -1,7 +1,11 @@
 package com.navetteclub.api.responses;
 
+import androidx.annotation.StringRes;
+
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.R;
 import com.navetteclub.api.models.Pagination;
+import com.navetteclub.models.RemoteLoaderResult;
 
 import java.util.Arrays;
 
@@ -90,5 +94,17 @@ public class RetrofitResponse<T> {
                 + "; data=" + getData()
                 + "; validation=" + getValidation()
             + "]";
+    }
+
+    @StringRes
+    public Integer getStatusResString() {
+        switch (getStatus()){
+            case 400: return R.string.error_400;
+            case 401: return R.string.error_401;
+            case 402: return R.string.error_402;
+            case 403: return R.string.error_403;
+            case 404: return R.string.error_404;
+            default: return R.string.error_unkown;
+        }
     }
 }

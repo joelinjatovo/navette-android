@@ -76,6 +76,15 @@ public class RideFragment extends Fragment {
         ridesViewModel = new ViewModelProvider(requireActivity(),
                 new MyViewModelFactory(requireActivity().getApplication())).get(RidesViewModel.class);
 
+        ridesViewModel.getRideLiveData().observe(getViewLifecycleOwner(),
+                ride -> {
+                    if(ride==null){
+                        return;
+                    }
+
+                    NavHostFragment.findNavController(this).navigate(R.id.action_ride_fragment_to_ride_map_fragment);
+                });
+
         ridesViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
@@ -121,7 +130,8 @@ public class RideFragment extends Fragment {
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         User user = authViewModel.getUser();
-                        ridesViewModel.loadOrders(user);
+                        Ride ride = ridesViewModel.getRideWithDatas().getRide();
+                        ridesViewModel.loadOrders(user, ride);
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                         mBinding.setIsUnauthenticated(false);
@@ -139,11 +149,20 @@ public class RideFragment extends Fragment {
                     NavHostFragment.findNavController(this).popBackStack();
                 });
 
+        mBinding.startRideButton.setOnClickListener(v->{
+            User user = authViewModel.getUser();
+            Ride ride = ridesViewModel.getRideWithDatas().getRide();
+            if(user!=null && ride!=null){
+                ridesViewModel.start(user, ride);
+            }
+        });
+
         mBinding.loaderErrorView.getButton().setOnClickListener(
                 v -> {
                     User user = authViewModel.getUser();
                     if(user!=null){
-                        ridesViewModel.loadOrders(user);
+                        Ride ride = ridesViewModel.getRideWithDatas().getRide();
+                        ridesViewModel.loadOrders(user, ride);
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                     }else{
@@ -153,12 +172,12 @@ public class RideFragment extends Fragment {
 
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
+                    //Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
                 });
     }
 
     private OnClickItemListener<OrderWithDatas> mListener = (v, pos, item) -> {
-        NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
+        //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
     };
 
 }

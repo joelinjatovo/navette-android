@@ -28,42 +28,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
-                app:title="@string/title_orders"
+                app:title="@string/title_ride"
                 app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/viewholder_order"
-            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}"/>
+            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}">
 
-        <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/viewholder_order"
+                android:layout_above="@id/buttons"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true">
+
+                <Button
+                    android:id="@+id/start_ride_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text="@string/start_ride"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+        <com.navetteclub.views.LoadingView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{isLoading?View.VISIBLE:View.GONE}">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/loading_orders"
-                android:gravity="center_horizontal" />
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-
-        </LinearLayout>
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}"/>
 
         <com.navetteclub.views.LoaderErrorView
             android:id="@+id/loaderErrorView"

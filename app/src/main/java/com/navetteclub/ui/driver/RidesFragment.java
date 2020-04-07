@@ -25,6 +25,7 @@ import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
+import com.navetteclub.databinding.FragmentRidesBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Log;
@@ -40,7 +41,7 @@ public class RidesFragment extends Fragment {
 
     private static final String TAG = RidesFragment.class.getSimpleName();
 
-    private FragmentOrdersBinding mBinding;
+    private FragmentRidesBinding mBinding;
 
     private RideRecyclerViewAdapter mAdapter;
 
@@ -51,14 +52,14 @@ public class RidesFragment extends Fragment {
     private SearchView searchView;;
 
     private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
-        //ridesViewModel.setRideWithDatas(item);
+        ridesViewModel.setRideWithDatas(item);
         NavHostFragment.findNavController(RidesFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
     };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_orders, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_rides, container, false);
 
         mAdapter = new RideRecyclerViewAdapter(mListener);
         RecyclerView recyclerView = mBinding.recyclerView;

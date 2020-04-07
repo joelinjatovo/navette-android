@@ -179,5 +179,6 @@
     <string name="empty_rides">Aucun trajet trouvé</string>
     <string name="rides">Rides</string>
     <string name="menu_rides_desc">View all you rides</string>
+    <string name="start_ride">Start ride</string>
 
 </resources>

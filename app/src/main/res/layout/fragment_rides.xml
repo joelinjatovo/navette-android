@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
-                app:title="@string/title_orders"
+                app:title="@string/title_rides"
                 app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
 

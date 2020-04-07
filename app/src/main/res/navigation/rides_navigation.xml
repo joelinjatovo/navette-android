@@ -19,6 +19,16 @@
         android:id="@+id/ride_fragment"
         android:name="com.navetteclub.ui.driver.RideFragment"
         android:label="@string/title_ride"
-        tools:layout="@layout/fragment_ride" />
+        tools:layout="@layout/fragment_ride" >
+        <action
+            android:id="@+id/action_ride_fragment_to_ride_map_fragment"
+            app:destination="@id/ride_map_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ride_map_fragment"
+        android:name="com.navetteclub.ui.driver.RideMapFragment"
+        android:label="@string/title_maps"
+        tools:layout="@layout/fragment_ride_map" />
 
 </navigation>

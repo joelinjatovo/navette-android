@@ -69,6 +69,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         mBinding.editButton.setOnClickListener(this);
         mBinding.orders.setOnClickListener(this);
+        mBinding.rides.setOnClickListener(this);
         mBinding.settings.setOnClickListener(this);
         mBinding.logout.setOnClickListener(this);
     }
@@ -77,10 +78,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.orders:
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_orders);
+                NavHostFragment.findNavController(this).navigate(R.id.action_global_navigation_orders);
                 break;
             case R.id.rides:
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_rides);
+                NavHostFragment.findNavController(this).navigate(R.id.action_global_navigation_rides);
                 break;
             case R.id.logout:
                 loginViewModel.setLoginResult(null);
