@@ -103,6 +103,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
             mItem = item;
             if(mItem!=null && mItem.getRide()!=null){
                 // Nothing
+                mBinding.title.setText(mItem.getDriver().getName());
             }
         }
     }

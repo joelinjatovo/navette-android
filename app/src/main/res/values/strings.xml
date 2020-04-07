@@ -176,5 +176,8 @@
     <string name="loading_rides">Chargement des rides</string>
     <string name="title_rides">Rides</string>
     <string name="title_ride">Ride</string>
+    <string name="empty_rides">Aucun trajet trouvé</string>
+    <string name="rides">Rides</string>
+    <string name="menu_rides_desc">View all you rides</string>
 
 </resources>

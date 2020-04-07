@@ -79,6 +79,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.orders:
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_orders);
                 break;
+            case R.id.rides:
+                NavHostFragment.findNavController(this).navigate(R.id.navigation_rides);
+                break;
             case R.id.logout:
                 loginViewModel.setLoginResult(null);
                 authViewModel.logout(requireContext());

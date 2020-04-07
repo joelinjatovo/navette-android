@@ -9,7 +9,11 @@
         android:id="@+id/rides_fragment"
         android:name="com.navetteclub.ui.driver.RidesFragment"
         android:label="@string/title_rides"
-        tools:layout="@layout/fragment_rides" />
+        tools:layout="@layout/fragment_rides" >
+        <action
+            android:id="@+id/action_rides_fragment_to_ride_fragment"
+            app:destination="@id/ride_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/ride_fragment"

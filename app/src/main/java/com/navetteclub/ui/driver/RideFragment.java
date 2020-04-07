@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Ride;
+import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentRideBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -31,6 +32,7 @@ import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.OrdersViewModel;
+import com.navetteclub.vm.RidesViewModel;
 
 import java.util.ArrayList;
 
@@ -42,11 +44,9 @@ public class RideFragment extends Fragment {
 
     private OrderRecyclerViewAdapter mAdapter;
 
-    private OrdersViewModel mViewModel;
-
-    private OrderViewModel orderViewModel;
-
     private AuthViewModel authViewModel;
+
+    private RidesViewModel ridesViewModel;
 
     private SearchView searchView;
 
@@ -66,20 +66,17 @@ public class RideFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setupUI();
+        setupAuthViewModel();
+        setupRidesViewModel();
+    }
 
+    private void setupRidesViewModel() {
 
-        setupToolbar();
+        ridesViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(RidesViewModel.class);
 
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
-
-        mViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
-
-        orderViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
-
-        mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
+        ridesViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -112,14 +109,19 @@ public class RideFragment extends Fragment {
                     }
 
                     // Reset remote result
-                    mViewModel.setOrdersLiveData(null);
+                    ridesViewModel.setOrdersLiveData(null);
                 });
+    }
+
+    private void setupAuthViewModel() {
+        authViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         User user = authViewModel.getUser();
-                        mViewModel.load(user);
+                        ridesViewModel.loadOrders(user);
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                         mBinding.setIsUnauthenticated(false);
@@ -129,7 +131,9 @@ public class RideFragment extends Fragment {
                         mBinding.setIsUnauthenticated(true);
                     }
                 });
+    }
 
+    private void setupUI() {
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
@@ -139,9 +143,9 @@ public class RideFragment extends Fragment {
                 v -> {
                     User user = authViewModel.getUser();
                     if(user!=null){
+                        ridesViewModel.loadOrders(user);
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
-                        mViewModel.load(user);
                     }else{
                         mBinding.setIsLoading(false);
                     }
@@ -150,42 +154,7 @@ public class RideFragment extends Fragment {
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
-                }
-        );
-    }
-
-    private void setupToolbar() {
-        mBinding.toolbar.inflateMenu(R.menu.menu_search);
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchItem = mBinding.toolbar.getMenu().findItem(R.id.search);
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-
-        if (searchView != null && searchManager != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
-
-            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    Log.i(TAG + "Search", newText);
-
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    Log.i(TAG + "Search", query);
-
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);
-        }
-
-        mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
+                });
     }
 
     private OnClickItemListener<OrderWithDatas> mListener = (v, pos, item) -> {

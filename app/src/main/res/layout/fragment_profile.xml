@@ -136,6 +136,21 @@
                 android:background="@color/colorIcon"/>
 
             <com.navetteclub.views.MenuItemView
+                android:id="@+id/rides"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:titleText="@string/rides"
+                app:subtitleText="@string/menu_rides_desc"
+                app:iconImage="@drawable/outline_directions_car_black_24"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
+
+            <com.navetteclub.views.MenuItemView
                 android:id="@+id/orders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
