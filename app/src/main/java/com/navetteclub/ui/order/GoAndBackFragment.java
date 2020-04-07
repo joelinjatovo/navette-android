@@ -16,33 +16,30 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Point;
-import com.navetteclub.databinding.FragmentPrivatizeBinding;
-import com.navetteclub.databinding.FragmentTravelBinding;
+import com.navetteclub.databinding.FragmentGoAndBackBinding;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
-public class TravelFragment extends Fragment {
+public class GoAndBackFragment extends Fragment {
 
-    private static final String TAG = TravelFragment.class.getSimpleName();
+    private static final String TAG = GoAndBackFragment.class.getSimpleName();
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    private FragmentTravelBinding mBinding;
+    private FragmentGoAndBackBinding mBinding;
 
     private OrderViewModel orderViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_travel, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_go_and_back, container, false);
 
         return mBinding.getRoot();
     }

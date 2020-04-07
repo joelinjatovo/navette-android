@@ -80,14 +80,14 @@
         android:name="com.navetteclub.ui.order.PlaceFragment"
         tools:layout="@layout/fragment_place" >
         <action
-            android:id="@+id/action_place_fragment_to_travel_fragment"
-            app:destination="@id/travel_fragment" />
+            android:id="@+id/action_place_fragment_to_go_and_back_fragment"
+            app:destination="@id/go_and_back_fragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/travel_fragment"
-        android:name="com.navetteclub.ui.order.TravelFragment"
-        tools:layout="@layout/fragment_travel">
+        android:id="@+id/go_and_back_fragment"
+        android:name="com.navetteclub.ui.order.GoAndBackFragment"
+        tools:layout="@layout/fragment_go_and_back">
 
         <action
             android:id="@+id/action_travel_fragment_to_search_fragment"

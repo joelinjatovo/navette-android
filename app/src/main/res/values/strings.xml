@@ -173,5 +173,6 @@
     <string name="menu_trajet_desc">Voir le timeline de vos trajets</string>
     <string name="title_steps">Steps</string>
     <string name="empty_steps">Aucune étape trouvée</string>
+    <string name="loading_rides">Chargement des rides</string>
 
 </resources>
