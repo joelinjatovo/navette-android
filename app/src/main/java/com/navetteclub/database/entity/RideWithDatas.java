@@ -10,6 +10,10 @@ import java.util.List;
 
 public class RideWithDatas {
 
+    @SerializedName("ride")
+    @Embedded
+    private Ride ride;
+
     @SerializedName("driver")
     @Embedded
     private User driver;
@@ -55,5 +59,13 @@ public class RideWithDatas {
 
     public void setDriver(User driver) {
         this.driver = driver;
+    }
+
+    public Ride getRide() {
+        return ride;
+    }
+
+    public void setRide(Ride ride) {
+        this.ride = ride;
     }
 }

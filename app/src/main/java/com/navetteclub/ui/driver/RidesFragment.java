@@ -40,10 +40,6 @@ public class RidesFragment extends Fragment {
 
     private RideRecyclerViewAdapter mAdapter;
 
-    private OrdersViewModel mViewModel;
-
-    private OrderViewModel orderViewModel;
-
     private AuthViewModel authViewModel;
 
     private SearchView searchView;
@@ -53,7 +49,7 @@ public class RidesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_orders, container, false);
 
-        mAdapter = new RideRecyclerViewAdapter(mListener);
+        mAdapter = new RideRecyclerViewAdapter(null);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -64,70 +60,12 @@ public class RidesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         setupToolbar();
+        setupUI();
+        setupAuthViewModel();
+    }
 
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
-
-        mViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
-
-        orderViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
-
-        mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
-                result -> {
-                    if(result==null){
-                        return;
-                    }
-
-                    if(result.getError()!=null){
-                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
-                            authViewModel.logout(requireContext());
-                        }else{
-                            // Error loading
-                            mBinding.setIsLoading(false);
-                            mBinding.setShowError(true);
-                            mBinding.loaderErrorView.getTitleView().setText(R.string.loader_error_title);
-                            mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
-                        }
-                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    if(result.getSuccess()!=null){
-                        mBinding.setIsLoading(false);
-                        ArrayList<OrderWithDatas> items = (ArrayList<OrderWithDatas>) result.getSuccess();
-                        if(items.isEmpty()){
-                            mBinding.setShowError(true);
-                            mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
-                            mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_orders);
-                        }else{
-                            mBinding.setShowError(false);
-                            mAdapter.setItems(items);
-                        }
-                    }
-
-                    // Reset remote result
-                    mViewModel.setOrdersLiveData(null);
-                });
-
-        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
-                authenticationState -> {
-                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        User user = authViewModel.getUser();
-                        mViewModel.load(user);
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
-                        mBinding.setIsUnauthenticated(false);
-                    }else{
-                        mBinding.setIsLoading(false);
-                        mBinding.setShowError(false);
-                        mBinding.setIsUnauthenticated(true);
-                    }
-                });
-
+    private void setupUI() {
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
@@ -137,9 +75,8 @@ public class RidesFragment extends Fragment {
                 v -> {
                     User user = authViewModel.getUser();
                     if(user!=null){
-                        mBinding.setIsLoading(true);
+                        mBinding.setIsLoading(false);
                         mBinding.setShowError(false);
-                        mViewModel.load(user);
                     }else{
                         mBinding.setIsLoading(false);
                     }
@@ -150,6 +87,24 @@ public class RidesFragment extends Fragment {
                     Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
                 }
         );
+    }
+
+    private void setupAuthViewModel() {
+        authViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(false);
+                        mBinding.setIsUnauthenticated(false);
+                    }else{
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(false);
+                        mBinding.setIsUnauthenticated(true);
+                    }
+                });
     }
 
     private void setupToolbar() {
@@ -184,17 +139,6 @@ public class RidesFragment extends Fragment {
         }
 
         mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
-    }
-
-    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
-        @Override
-        public void onListFragmentInteraction(View v, OrderWithDatas item) {
-            //
-        }
-    };
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, OrderWithDatas item);
     }
 
 }

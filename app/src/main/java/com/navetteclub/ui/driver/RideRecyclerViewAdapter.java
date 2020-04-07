@@ -10,25 +10,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.databinding.ViewholderOrderBinding;
+import com.navetteclub.databinding.ViewholderRideBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrdersFragment;
 
 import java.util.List;
 
 public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerViewAdapter.ViewHolder>{
 
-    private List<OrderWithDatas> mItems;
+    private List<RideWithDatas> mItems;
 
-    private final RidesFragment.OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<RideWithDatas> mListener;
 
-    public RideRecyclerViewAdapter(RidesFragment.OnListFragmentInteractionListener listener) {
+    public RideRecyclerViewAdapter(OnClickItemListener<RideWithDatas> listener) {
         mListener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        ViewholderRideBinding itemBinding = ViewholderRideBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
         return new ViewHolder(itemBinding);
     }
@@ -40,7 +43,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }
@@ -51,7 +54,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<OrderWithDatas> items){
+    public void setItems(List<RideWithDatas> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -69,16 +72,16 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    OrderWithDatas oldItem = mItems.get(oldItemPosition);
-                    OrderWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getOrder().getId() == newItem.getOrder().getId();
+                    RideWithDatas oldItem = mItems.get(oldItemPosition);
+                    RideWithDatas newItem = items.get(newItemPosition);
+                    return oldItem.getRide().getId() == newItem.getRide().getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    OrderWithDatas oldItem = mItems.get(oldItemPosition);
-                    OrderWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getOrder()!=null && oldItem.getOrder().equals(newItem.getOrder());
+                    RideWithDatas oldItem = mItems.get(oldItemPosition);
+                    RideWithDatas newItem = items.get(newItemPosition);
+                    return oldItem.getRide()!=null && oldItem.getRide().equals(newItem.getRide());
                 }
             });
 
@@ -87,54 +90,20 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final ViewholderOrderBinding mBinding;
-        OrderWithDatas mItem;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        final ViewholderRideBinding mBinding;
+        RideWithDatas mItem;
 
-        ViewHolder(ViewholderOrderBinding binding) {
+        ViewHolder(ViewholderRideBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
         }
 
-        void setItem(OrderWithDatas item){
+        void setItem(RideWithDatas item){
             mItem = item;
-            if(mItem!=null && mItem.getOrder()!=null){
-                Order order = mItem.getOrder();
-                mBinding.setAmount(order.getAmountStr());
-
-                // Points
-                if(mItem.getPoints()!=null){
-                    // Origin
-                    if(mItem.getPoints().size()>0){
-                        Point point = mItem.getPoints().get(0);
-                        if(point!=null){
-                            mBinding.setOrigin(point);
-                        }
-                    }
-
-                    // Destination
-                    if(mItem.getPoints().size()>1) {
-                        Point point = mItem.getPoints().get(1);
-                        if(point!=null) {
-                            mBinding.setDestination(point);
-                        }
-                    }
-
-                    // Retours
-                    if(mItem.getPoints().size()>2) {
-                        Point point = mItem.getPoints().get(2);
-                        if(point!=null) {
-                            mBinding.setRetours(point);
-                        }
-                    }
-                }
+            if(mItem!=null && mItem.getRide()!=null){
+                // Nothing
             }
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mBinding.amountLabel.getText() + "'";
         }
     }
 }
