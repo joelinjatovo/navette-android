@@ -382,6 +382,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     getDeviceLocation();
                 });
 
+        mBinding.originSelectEndIcon.setOnClickListener(
+                v -> {
+                    Navigation.findNavController(v).navigate(R.id.action_order_to_search);
+                });
+
         mBinding.originText.setOnClickListener(
                 v -> {
                     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);

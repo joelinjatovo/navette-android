@@ -16,6 +16,8 @@
     <declare-styleable name="MenuItemView">
         <attr name="titleText" format="string" />
         <attr name="subtitleText" format="string" />
+        <attr name="subtitleEnable" format="boolean"/>
         <attr name="iconImage" format="color|reference" />
+        <attr name="endIconEnable" format="boolean"/>
     </declare-styleable>
 </resources>

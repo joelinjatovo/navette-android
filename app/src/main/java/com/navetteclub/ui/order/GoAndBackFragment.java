@@ -74,7 +74,6 @@ public class GoAndBackFragment extends Fragment {
         orderViewModel = new ViewModelProvider(this,
                 new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
 
-
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
@@ -82,16 +81,8 @@ public class GoAndBackFragment extends Fragment {
                     }
 
                     // Points
-                    if(orderWithDatas.getPoints()!=null){
-                        Log.d(TAG, "Size=" + orderWithDatas.getPoints().size());
-
-                        // Retours
-                        if(orderWithDatas.getPoints().size()>2) {
-                            Point point = orderWithDatas.getPoints().get(2);
-                            if(point!=null) {
-                                NavHostFragment.findNavController(this).navigate(R.id.action_travel_fragment_to_detail_fragment);
-                            }
-                        }
+                    if(orderWithDatas.getRetours()!=null) {
+                        NavHostFragment.findNavController(this).navigate(R.id.action_travel_fragment_to_detail_fragment);
                     }
                 });
     }

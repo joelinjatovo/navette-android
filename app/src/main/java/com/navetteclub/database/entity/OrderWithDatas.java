@@ -14,6 +14,10 @@ public class OrderWithDatas {
     @Embedded
     private Order order;
 
+    @SerializedName("user")
+    @Embedded
+    private User user;
+
     @SerializedName("club")
     @Embedded
     private Club club;
@@ -22,13 +26,17 @@ public class OrderWithDatas {
     @Embedded
     private Car car;
 
-    @SerializedName("points")
-    @Relation(
-            parentColumn = "id",
-            entityColumn = "point_id",
-            associateBy = @Junction(OrderPoint.class)
-    )
-    private List<Point> points;
+    @SerializedName("origin")
+    @Embedded
+    private Point origin;
+
+    @SerializedName("destination")
+    @Embedded
+    private Point destination;
+
+    @SerializedName("retours")
+    @Embedded
+    private Point retours;
 
     public Order getOrder() {
         return order;
@@ -54,11 +62,35 @@ public class OrderWithDatas {
         this.car = car;
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public User getUser() {
+        return user;
     }
 
-    public void setPoints(List<Point> points) {
-        this.points = points;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Point getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Point origin) {
+        this.origin = origin;
+    }
+
+    public Point getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Point destination) {
+        this.destination = destination;
+    }
+
+    public Point getRetours() {
+        return retours;
+    }
+
+    public void setRetours(Point retours) {
+        this.retours = retours;
     }
 }

@@ -46,13 +46,7 @@ public class OrderRequest {
             car = orderWithDatas.getCar().getId();
         }
 
-        if(orderWithDatas.getPoints()!=null){
-            if(orderWithDatas.getPoints().size()>0){
-                origin = orderWithDatas.getPoints().get(0);
-            }
-            if(orderWithDatas.getPoints().size()>2){
-                retours = orderWithDatas.getPoints().get(2);
-            }
-        }
+        origin = orderWithDatas.getOrigin();
+        retours = orderWithDatas.getRetours();
     }
 }

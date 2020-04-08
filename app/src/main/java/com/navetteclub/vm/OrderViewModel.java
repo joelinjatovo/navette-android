@@ -58,15 +58,6 @@ public class OrderViewModel extends ViewModel {
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
 
-        List<Point> points = orderWithDatas.getPoints();
-        if(points==null){
-            points = new ArrayList<>(3);
-            points.add(null);
-            points.add(null);
-            points.add(null);
-        }
-        orderWithDatas.setPoints(points);
-
         Order order = orderWithDatas.getOrder();
         if(order==null){
             order = new Order();
@@ -80,9 +71,7 @@ public class OrderViewModel extends ViewModel {
 
         if(notify){
             _init();
-            List<Point> points = orderWithDatas.getPoints();
-            points.set(0, point);
-            orderWithDatas.setPoints(points);
+            orderWithDatas.setOrigin(point);
             orderWithDatasLiveData.setValue(orderWithDatas);
         }
     }
@@ -104,9 +93,7 @@ public class OrderViewModel extends ViewModel {
         destination.setValue(point);
         if(notify) {
             _init();
-            List<Point> points = orderWithDatas.getPoints();
-            points.set(1, point);
-            orderWithDatas.setPoints(points);
+            orderWithDatas.setDestination(point);
             orderWithDatasLiveData.setValue(orderWithDatas);
         }
     }
@@ -124,9 +111,7 @@ public class OrderViewModel extends ViewModel {
         retours.setValue(point);
         if(notify) {
             _init();
-            List<Point> points = orderWithDatas.getPoints();
-            points.set(2, point);
-            orderWithDatas.setPoints(points);
+            orderWithDatas.setRetours(point);
             orderWithDatasLiveData.setValue(orderWithDatas);
         }
     }
@@ -200,16 +185,9 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setOrder(OrderWithDatas order) {
-        if(order.getPoints()!=null){
-            for(int i = 0; i < order.getPoints().size(); i++){
-                Point point = order.getPoints().get(i);
-                switch(i){
-                    case 0: setOrigin(point, false); break;
-                    case 1: setDestination(point, false); break;
-                    case 2: setReturn(point, false); break;
-                }
-            }
-        }
+        setOrigin(order.getOrigin(), false);
+        setDestination(order.getDestination(), false);
+        setReturn(order.getRetours(), false);
         orderWithDatas = order;
         orderWithDatasLiveData.setValue(orderWithDatas);
     }

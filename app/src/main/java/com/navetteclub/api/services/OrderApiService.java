@@ -2,9 +2,7 @@ package com.navetteclub.api.services;
 
 import com.navetteclub.api.models.OrderRequest;
 import com.navetteclub.api.responses.RetrofitResponse;
-import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.OrderWithPoints;
 
 import java.util.List;
 

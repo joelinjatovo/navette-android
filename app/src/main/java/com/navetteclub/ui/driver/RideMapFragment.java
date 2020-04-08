@@ -193,18 +193,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                             ArrayList<Point> points = new ArrayList<>();
                             Point point = null;
                             for(OrderWithDatas order: items){
-                                if(order.getPoints()!=null && order.getPoints().size()>0){
-                                    Point p = order.getPoints().get(0);
-                                    if(p!=null){
-                                        points.add(p);
-                                    }
+                                if(order.getOrigin()!=null){
+                                    points.add(order.getOrigin());
                                 }
 
-                                if(point==null  && order.getPoints()!=null && order.getPoints().size()>1){
-                                    Point p = order.getPoints().get(1);
-                                    if(p!=null){
-                                        point = p;
-                                    }
+                                if(point==null  && order.getDestination()!=null){
+                                    point = order.getDestination();
                                 }
                             }
 
