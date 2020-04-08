@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.login.LoginManager;
 import com.navetteclub.database.callback.FindCallback;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.database.repositories.UserRepository;
@@ -62,6 +63,7 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
     }
 
     public void logout(Context context) {
+        LoginManager.getInstance().logOut();
         Preferences.Auth.setCurrentUser(context, 0L);
         authenticate(null);
     }

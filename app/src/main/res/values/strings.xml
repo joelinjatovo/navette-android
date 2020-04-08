@@ -1,4 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="facebook_app_id">1112757989078660</string>
+    <string name="fb_login_protocol_scheme">fb1112757989078660</string>
+
     <string name="app_name">Navette</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -110,8 +113,6 @@
     <string name="internet_error_subtitle">Connectez-vous à l\'internet et reessayez!</string>
     <string name="actualize">Actualiser</string>
 
-    <string name="facebook_app_id">app_id</string>
-    <string name="fb_login_protocol_scheme">fb_app_id</string>
     <string name="retours">Retours</string>
     <string name="loader_error_title">Erreur de chargement</string>
     <string name="loader_error_subtitle">Une erreur s\'est produite.</string>

@@ -20,9 +20,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +40,9 @@ import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.UserViewModel;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Preferences;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -54,6 +61,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
     private ProgressDialog progressDialog;
 
     private CallbackManager callbackManager;
+
+    private AccessTokenTracker accessTokenTracker;
 
     @Nullable
     @Override
@@ -182,10 +191,30 @@ public class LoginFragment extends Fragment implements TextWatcher {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //This starts the access token tracking
+        accessTokenTracker.startTracking();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null) {
+            useLoginInformation(accessToken);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // We stop the tracking before destroying the activity
+        accessTokenTracker.stopTracking();
+    }
+
     private void setupFacebookConnect() {
         callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = mBinding.facebookConnect;
-        loginButton.setPermissions("email");
+        loginButton.setPermissions("email", "public_profile");
         // If using in a fragment
         loginButton.setFragment(this);
 
@@ -194,6 +223,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
+                AccessToken accessToken = loginResult.getAccessToken();
+                useLoginInformation(accessToken);
             }
 
             @Override
@@ -204,8 +235,46 @@ public class LoginFragment extends Fragment implements TextWatcher {
             @Override
             public void onError(FacebookException exception) {
                 // App code
+                Log.e(TAG, exception.getMessage(), exception);
             }
         });
+
+        // Defining the AccessTokenTracker
+        accessTokenTracker = new AccessTokenTracker() {
+            // This method is invoked everytime access token changes
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                useLoginInformation(currentAccessToken);
+            }
+        };
+    }
+
+    private void useLoginInformation(AccessToken accessToken) {
+        /**
+         Creating the GraphRequest to fetch user details
+         1st Param - AccessToken
+         2nd Param - Callback (which will be invoked once the request is successful)
+         **/
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            //OnCompleted is invoked once the GraphRequest is successful
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    String name = object.getString("name");
+                    String email = object.getString("email");
+                    String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                    Log.d(TAG + "Facebook", name + " " + email + " " + image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        // We set parameters to the GraphRequest using a Bundle.
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,picture.width(200)");
+        request.setParameters(parameters);
+        // Initiate the GraphRequest
+        request.executeAsync();
     }
 
     @Override
