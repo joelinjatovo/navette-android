@@ -11,6 +11,8 @@ import com.navetteclub.R;
 public class SplashActivity extends AppCompatActivity {
     private static boolean loaded = false;
 
+    private static Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,7 +20,8 @@ public class SplashActivity extends AppCompatActivity {
         if (!loaded) {
             setContentView(R.layout.activity_splash);
             int secondsDelayed = 10;
-            new Handler().postDelayed(new Runnable() {
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
                 public void run() {
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
@@ -31,6 +34,14 @@ public class SplashActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             finish();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(handler!=null) {
+            handler.removeCallbacksAndMessages(null);
         }
     }
 }

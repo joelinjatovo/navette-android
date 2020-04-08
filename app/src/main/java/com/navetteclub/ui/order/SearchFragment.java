@@ -1,6 +1,7 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,6 +15,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,6 +39,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.databinding.FragmentSearchBinding;
+import com.navetteclub.ui.MainActivity;
+import com.navetteclub.ui.SplashActivity;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
@@ -65,6 +70,8 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
     private FragmentSearchBinding mBinding;
 
     private Geocoder geocoder;
+
+    private static Handler handler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,21 +127,6 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDragStart(Marker marker) {
-            }
-
-            @Override
-            public void onMarkerDrag(Marker marker) {
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-                //getGeocode(marker.getPosition());
-            }
-        });
-
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
@@ -181,13 +173,28 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
 
     private void moveCamera(LatLng latLng) {
         if(mMap!=null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAP_ZOOM));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM));
         }
     }
 
     private void setLocation(LatLng latLng) {
         mLocation = latLng;
-        getGeocode(latLng);
+
+        if(handler!=null){
+            Log.e(TAG, "removeCallbacksAndMessages" );
+            handler.removeCallbacksAndMessages(null);
+        }else{
+            handler = new Handler();
+        }
+
+        int secondsDelayed = 3;
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Log.e(TAG, "postDelayed" );
+                getGeocode(latLng);
+            }
+        }, secondsDelayed * 1000);
     }
 
     private void getGeocode(LatLng latLng) {
