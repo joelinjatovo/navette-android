@@ -129,6 +129,7 @@
                         android:padding="5dp"/>
 
                 </RelativeLayout>
+
             </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
@@ -138,6 +139,17 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:visibility="@{isLoading?View.VISIBLE:View.GONE}"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/outline_not_listed_location_black_24"
+            android:visibility="@{isLoading?View.GONE:View.VISIBLE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,6 +2,8 @@ package com.navetteclub.ui.order;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -38,6 +40,7 @@ import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,7 +64,7 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
 
     private FragmentSearchBinding mBinding;
 
-    private Marker mMarker;
+    private Geocoder geocoder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
 
@@ -96,7 +99,7 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getLatLng());
-                    setLocation(place.getLatLng());
+                    moveCamera(place.getLatLng());
                 }
 
                 @Override
@@ -116,22 +119,40 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-
             }
 
             @Override
             public void onMarkerDrag(Marker marker) {
-
             }
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-
+                //getGeocode(marker.getPosition());
             }
         });
+
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                LatLng latLng = mMap.getCameraPosition().target;
+                Log.i(TAG, "OnCameraIdleListener: " + latLng);
+                setLocation(latLng);
+            }
+        });
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                moveCamera(latLng);
+            }
+        });
+
+        geocoder = new Geocoder(requireContext());
+
         getDeviceLocation();
     }
 
@@ -158,21 +179,35 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 
-    private void setLocation(LatLng latLng) {
-        mLocation = latLng;
+    private void moveCamera(LatLng latLng) {
         if(mMap!=null){
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MAP_ZOOM));
         }
+    }
 
-        if(mMarker!=null){
-            mMarker.remove();
+    private void setLocation(LatLng latLng) {
+        mLocation = latLng;
+        getGeocode(latLng);
+    }
+
+    private void getGeocode(LatLng latLng) {
+        try {
+            List<Address> addressList= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+            if (addressList != null && addressList.size() > 0) {
+                String locality = addressList.get(0).getAddressLine(0);
+                String country = addressList.get(0).getCountryName();
+                Log.e(TAG, "locality = " + locality);
+                Log.e(TAG, "country = " + country);
+                if (!locality.isEmpty() && !country.isEmpty()){
+                    mBinding.locationTitle.setText(locality);
+                    mBinding.locationSubtitle.setText(country);
+                }
+            }
+
+        } catch (IOException ex) {
+            Log.e(TAG, "Exception: %s", ex);
         }
 
-        // Creating MarkerOptions
-        MarkerOptions options = new MarkerOptions();
-        options.position(latLng).draggable(true);
-        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        mMarker = mMap.addMarker(options);
     }
 
     private void getDeviceLocation() {
@@ -188,7 +223,7 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
                                 mLastKnownLocation = (Location) task.getResult();
                                 if (mLastKnownLocation != null) {
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                    setLocation(latLng);
+                                    moveCamera(latLng);
                                 }
                             } else {
                                 Log.e(TAG, "Exception: %s", task.getException());
