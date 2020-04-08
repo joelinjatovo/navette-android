@@ -14,6 +14,12 @@
         android:layout_height="match_parent"
         tools:context="com.navetteclub.ui.MainActivity">
 
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
@@ -43,11 +49,30 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/my_favorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:srcCompat="@drawable/outline_star_outline_black_24"
+            app:layout_constraintBottom_toTopOf="@id/my_location"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/my_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:srcCompat="@drawable/outline_my_location_24"
+            app:layout_constraintBottom_toTopOf="@id/details"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <RelativeLayout
+            android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment"
+            android:layout_margin="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent">
 
@@ -62,45 +87,57 @@
                 app:cardCornerRadius="10dp"
                 app:cardBackgroundColor="@color/colorBackground">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp">
+                    android:padding="10dp">
 
-                    <com.navetteclub.views.MenuItemView
-                        android:id="@+id/my_location"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:titleText="@string/my_location"
-                        app:iconImage="@drawable/outline_near_me_black_24"
-                        app:endIconEnable="false"
-                        app:subtitleEnable="false"/>
+                        android:layout_marginEnd="20dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@id/ok_button"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:layout_centerVertical="true">
 
-                    <com.navetteclub.views.MenuItemView
-                        android:id="@+id/my_favorites"
-                        android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/locationTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/locationSubtitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:textColor="@color/gray"/>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/ok_button"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:iconImage="@drawable/outline_star_outline_black_24"
-                        app:titleText="@string/favorites"
-                        app:endIconEnable="false"
-                        app:subtitleEnable="false"/>
+                        android:contentDescription="@string/image"
+                        android:src="@drawable/outline_check_black_24"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:padding="5dp"/>
 
-                    <com.navetteclub.views.MenuItemView
-                        android:id="@+id/select_location"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:iconImage="@drawable/outline_map_black_24"
-                        app:titleText="@string/select_location"
-                        app:endIconEnable="false"
-                        app:subtitleEnable="false"/>
-
-                </LinearLayout>
-
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
+
+        <com.navetteclub.views.LoadingView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
