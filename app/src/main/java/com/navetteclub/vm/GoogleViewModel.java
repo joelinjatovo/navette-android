@@ -69,6 +69,44 @@ public class GoogleViewModel extends ViewModel {
         });
     }
 
+    public void loadDirection(String apiKey, LatLng origin, LatLng destination, String waypoints) {
+        String url = "https://maps.googleapis.com/maps/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GoogleApiService service = retrofit.create(GoogleApiService.class);
+        Call<GoogleDirectionResponse> call = service.getDirection(
+                apiKey,
+                "metric",
+                origin.latitude + "," + origin.longitude,
+                destination.latitude + "," + destination.longitude,
+                "driving",
+                waypoints
+        );
+
+        call.enqueue(new Callback<GoogleDirectionResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<GoogleDirectionResponse> call,
+                                   @NonNull Response<GoogleDirectionResponse> response) {
+                if(response.isSuccessful()){
+                    directionResult.setValue(response);
+                }else{
+                    directionResult.setValue(null);
+                    errorResult.setValue(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GoogleDirectionResponse> call,
+                                  @NonNull Throwable t) {
+                Log.e(TAG, t.toString(), t);
+                directionResult.setValue(null);
+                errorResult.setValue(t.getMessage());
+            }
+        });
+    }
+
     public MutableLiveData<Response<GoogleDirectionResponse>> getDirectionResult() {
         return directionResult;
     }

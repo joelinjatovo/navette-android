@@ -21,6 +21,9 @@ public class Route {
     @SerializedName("overview_polyline")
     private OverviewPolyline overviewPolyline;
 
+    @SerializedName("waypoint_order")
+    private Integer[] waypointOrder;
+
     public String getCopyrights() {
         return copyrights;
     }
@@ -53,9 +56,17 @@ public class Route {
         this.overviewPolyline = overviewPolyline;
     }
 
+    public Integer[] getWaypointOrder() {
+        return waypointOrder;
+    }
+
+    public void setWaypointOrder(Integer[] waypointOrder) {
+        this.waypointOrder = waypointOrder;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return "Route[bounds=" + getBounds() + ", copyrights=" + copyrights + ", legs=" + getLegs() + ", overviewPolyline=" + getOverviewPolyline()  + "]";
+        return "Route[bounds=" + getBounds() + ", waypointOrder=" + Arrays.toString(getWaypointOrder()) + ", copyrights=" + copyrights + ", legs=" + getLegs() + ", overviewPolyline=" + getOverviewPolyline()  + "]";
     }
 }

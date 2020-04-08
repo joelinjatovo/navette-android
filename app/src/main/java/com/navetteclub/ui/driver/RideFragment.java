@@ -118,7 +118,7 @@ public class RideFragment extends Fragment {
                     }
 
                     // Reset remote result
-                    ridesViewModel.setOrdersLiveData(null);
+                    //ridesViewModel.setOrdersLiveData(null);
                 });
     }
 

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -44,15 +45,34 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
+import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.google.Leg;
+import com.navetteclub.api.models.google.Route;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.api.services.UserApiService;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.databinding.FragmentRideMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.AuthViewModel;
+import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.navetteclub.vm.RidesViewModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -100,13 +120,27 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private Marker myPositionMarker;
 
+    private MyLocationReceiver myLocationReceiver;
+
+    private AuthViewModel authViewModel;
+
+    private GoogleViewModel googleViewModel;
+
+    private RidesViewModel ridesViewModel;
+
+    List<LatLng> list;
+
+    Polyline line1;
+
+    Polyline line2;;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         Log.d(TAG + "Cycle", "onCreateView");
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_map, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_map, container, false);
 
         return mBinding.getRoot();
     }
@@ -119,6 +153,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         setupMap();
 
         myReceiver = new MyReceiver();
+        myLocationReceiver = new MyLocationReceiver();
 
         // Check that the user hasn't revoked permissions by going to Settings.
         if (Utils.requestingLocationUpdates(requireContext())) {
@@ -135,6 +170,57 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         setupUi();
     }
 
+    private void setupRidesViewModel() {
+        ridesViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(RidesViewModel.class);
+
+        ridesViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result.getError()!=null){
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }else{
+                            // Error loading
+                            mBinding.setIsLoading(false);
+                        }
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(result.getSuccess()!=null){
+                        mBinding.setIsLoading(false);
+                        ArrayList<OrderWithDatas> items = (ArrayList<OrderWithDatas>) result.getSuccess();
+                        if(!items.isEmpty()){
+                            ArrayList<Point> points = new ArrayList<>();
+                            Point point = null;
+                            for(OrderWithDatas order: items){
+                                if(order.getPoints()!=null && order.getPoints().size()>0){
+                                    Point p = order.getPoints().get(0);
+                                    if(p!=null){
+                                        points.add(p);
+                                    }
+                                }
+
+                                if(point==null  && order.getPoints()!=null && order.getPoints().size()>1){
+                                    Point p = order.getPoints().get(1);
+                                    if(p!=null){
+                                        point = p;
+                                    }
+                                }
+                            }
+
+                            if(point!=null && points.size()>0){
+                                loadDirection(point, points);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void setupAuthViewModel() {
+        authViewModel = new ViewModelProvider(requireActivity(),
+                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -147,12 +233,14 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(myReceiver, new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(myReceiver, new IntentFilter(LocationUpdatesService.ACTION_BROADCAST_PUSHER));
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(myLocationReceiver, new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
     }
 
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(myReceiver);
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(myLocationReceiver);
         super.onPause();
     }
 
@@ -178,6 +266,10 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        setupAuthViewModel();
+        setupGoogleViewModel();
+        setupRidesViewModel();
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
@@ -216,6 +308,98 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         })
                         .show();
+            }
+        }
+    }
+
+
+    private void setupGoogleViewModel() {
+        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+
+        googleViewModel = new ViewModelProvider(requireActivity(),
+                factory).get(GoogleViewModel.class);
+
+        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result == null) {
+                        return;
+                    }
+
+                    if(result.body()!=null){
+                        for (int i = 0; i < result.body().getRoutes().size(); i++) {
+                            Route route = result.body().getRoutes().get(i);
+                            String encodedString = route.getOverviewPolyline().getPoints();
+                            if(encodedString!=null){
+                                drawLine(encodedString);
+                            }
+
+                            Log.d(TAG, "getWaypointOrder " + Arrays.toString(route.getWaypointOrder()));
+                        }
+
+                    }
+
+                });
+
+    }
+
+    private void drawLine(LatLng latLng) {
+        if (mMap == null) {
+            return;
+        }
+        if(list==null){
+            list = new ArrayList<>();
+        }
+        list.add(latLng);
+
+        //Remove previous line from map
+        if (line2 != null) {
+            line2.remove();
+        }
+
+        line2 = mMap.addPolyline(new PolylineOptions()
+                .addAll(list)
+                .width(10)
+                .color(R.color.black)
+                .geodesic(true)
+        );
+    }
+
+    private void drawLine(String encodedString) {
+        if(mMap==null){
+            return;
+        }
+
+        //Remove previous line from map
+        if (line1 != null) {
+            line1.remove();
+        }
+
+        List<LatLng> list = Utils.decodePoly(encodedString);
+        line1 = mMap.addPolyline(new PolylineOptions()
+                .addAll(list)
+                .width(5)
+                .color(R.color.colorAlert)
+                .geodesic(true)
+        );
+    }
+
+    private void loadDirection(Point clubPoint, List<Point> points) {
+
+        LatLng origin = new LatLng(clubPoint.getLat(), clubPoint.getLng());
+        LatLng destination = new LatLng(clubPoint.getLat(), clubPoint.getLng());
+        String waypoints = "optimize:true";
+        for(Point userPoint: points){
+            waypoints += "|" + userPoint.getLat() + "," + userPoint.getLng();
+        }
+        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, waypoints);
+
+
+        if(mMap!=null) {
+            LatLng latLng = new LatLng(clubPoint.getLat(), clubPoint.getLng());
+            mMap.addMarker(new MarkerOptions().position(latLng).title(clubPoint.getName()));
+            for(Point userPoint: points){
+                latLng = new LatLng(userPoint.getLat(), userPoint.getLng());
+                mMap.addMarker(new MarkerOptions().position(latLng).title(userPoint.getName()));
             }
         }
     }
@@ -323,30 +507,70 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private void sendLocationToServer(User user , Location location) {
+        UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
+        Call<RetrofitResponse<User>> call = service.addPosition(user.getAuthorizationToken(),
+                new com.navetteclub.api.models.Location(location));
+        call.enqueue(new Callback<RetrofitResponse<User>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<User>> call,
+                                   @NonNull Response<RetrofitResponse<User>> response) {
+                Log.d(TAG, response.toString());
+                RetrofitResponse<User> data = response.body();
+                Log.d(TAG, response.code() + "  " + response.message());
+                if(null != data){
+                    Log.d(TAG, data.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<User>> call,
+                                  @NonNull Throwable throwable) {
+                Log.w(TAG, throwable);
+            }
+        });
+    }
+
     /**
      * Receiver for broadcasts sent by {@link LocationUpdatesService}.
      */
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
-            if (location != null) {
-                Toast.makeText(requireContext(), Utils.getLocationText(location),
+            LatLng latLng = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
+            if (latLng != null) {
+                Toast.makeText(requireContext(), latLng.toString(),
                         Toast.LENGTH_SHORT).show();
+
+                // Draw car line
+                drawLine(latLng);
 
                 if(myPositionMarker!=null){
                     myPositionMarker.remove();
                 }
 
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in my location"));
 
                 // Set the map's camera position to the current location of the device.
-                if(mLastKnownLocation == null) {
-                    mLastKnownLocation = location;
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(mLastKnownLocation.getLatitude(),
-                                    mLastKnownLocation.getLongitude()), 10));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+            }
+        }
+    }
+
+    /**
+     * Receiver for broadcasts sent by {@link LocationUpdatesService}.
+     */
+    private class MyLocationReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
+            if (location != null) {
+                Toast.makeText(requireContext(), "Ito zao: " + Utils.getLocationText(location),
+                        Toast.LENGTH_SHORT).show();
+
+                User user = authViewModel.getUser();
+                if(user!=null){
+                    sendLocationToServer(user, location);
                 }
             }
         }

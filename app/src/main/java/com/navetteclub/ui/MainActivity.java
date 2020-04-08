@@ -7,16 +7,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.services.LocationUpdatesService;
@@ -43,6 +47,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -50,6 +55,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.navetteclub.services.LocationUpdatesService.ACTION_BROADCAST;
+import static com.navetteclub.services.LocationUpdatesService.ACTION_BROADCAST_PUSHER;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -227,14 +235,26 @@ public class MainActivity extends AppCompatActivity {
         channel.bind("my-event", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
-                Log.d(TAG, "my-event " + event.getData());
+                Log.d(TAG + "Pusher", "my-event " + event.getData());
                 showNotification();
             }
         });
+
         channel.bind("user.point.created", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
-                Log.d(TAG, "user.point.created " + event.getData());
+                Log.d(TAG + "Pusher", "user.point.created " + event.getData());
+
+                JsonObject convertedObject = new Gson().fromJson(event.getData(), JsonObject.class);
+                JsonObject point = convertedObject.get("point").getAsJsonObject();
+                double lat = point.get("lat").getAsDouble();
+                double lng = point.get("lng").getAsDouble();
+                LatLng location = new LatLng(lat,lng);
+
+                // Notify anyone listening for broadcasts about the new location.
+                Intent intent = new Intent(LocationUpdatesService.ACTION_BROADCAST_PUSHER);
+                intent.putExtra(LocationUpdatesService.EXTRA_LOCATION, location);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
         });
     }
