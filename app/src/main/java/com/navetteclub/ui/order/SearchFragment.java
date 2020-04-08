@@ -116,6 +116,22 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+
+            }
+        });
         getDeviceLocation();
     }
 
@@ -154,7 +170,7 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
 
         // Creating MarkerOptions
         MarkerOptions options = new MarkerOptions();
-        options.position(latLng);
+        options.position(latLng).draggable(true);
         options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         mMarker = mMap.addMarker(options);
     }
