@@ -380,7 +380,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private void setupUi() {
         mBinding.originEndIcon.setOnClickListener(
                 v -> {
-                    getDeviceLocation();
+                    getDeviceLocation(SearchType.ORIGIN);
                 });
 
         mBinding.originText.setOnClickListener(
@@ -395,6 +395,17 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields) .build(requireContext());
                     startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
                     */
+                });
+
+        mBinding.retoursText.setOnClickListener(
+                v -> {
+                    OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
+                    action.setSearchType(SearchType.RETOURS);
+                    Navigation.findNavController(v).navigate(action);
+                });
+        mBinding.retoursEndIcon.setOnClickListener(
+                v -> {
+                    getDeviceLocation(SearchType.RETOURS);
                 });
 
         mBinding.destinationText.setOnClickListener(
@@ -419,7 +430,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void getDeviceLocation() {
+    private void getDeviceLocation(SearchType searchType) {
         try {
             if (checkPermissions()) {
                 Task locationResult = fusedLocationProviderClient.getLastLocation();
@@ -430,9 +441,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 mLastKnownLocation = (Location) task.getResult();
                                 if (mLastKnownLocation != null) {
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                    orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
+
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                                    if(searchType == SearchType.ORIGIN){
+                                        orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
+                                    }else{
+                                        orderViewModel.setReturn(getString(R.string.my_location), latLng, true);
+                                    }
                                 }
                             } else {
                                 Log.e(TAG, "Exception: %s", task.getException());

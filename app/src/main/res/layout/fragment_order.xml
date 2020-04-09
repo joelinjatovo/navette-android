@@ -140,7 +140,6 @@
                                 android:id="@+id/destinationLocationIcon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
                                 android:layout_alignParentStart="true"
                                 android:contentDescription="@string/image"
                                 android:tint="@color/colorAccent"
@@ -152,9 +151,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_toStartOf="@+id/destinationEndIcon"
-                                android:layout_toLeftOf="@+id/destinationEndIcon"
                                 android:layout_toEndOf="@+id/destinationLocationIcon"
-                                android:layout_toRightOf="@+id/destinationLocationIcon"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -190,7 +187,6 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginStart="5dp"
                                 android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
                                 android:contentDescription="@string/image"
                                 android:tint="@color/colorAlert"
                                 android:src="@drawable/baseline_list_black_24"
@@ -202,7 +198,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="@color/colorAccent"
-                            android:layout_marginLeft="28dp"
                             android:layout_marginStart="28dp"
                             android:visibility="@{retours==null?View.GONE:View.VISIBLE}" />
 
@@ -219,8 +214,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:contentDescription="@string/image"
-                                android:tint="@color/colorAccent"
-                                android:src="@drawable/outline_place_black_24"
+                                android:tint="@color/colorIcon"
+                                android:src="@drawable/outline_trip_origin_black_18"
                                 android:layout_centerVertical="true"/>
 
                             <LinearLayout
@@ -264,10 +259,9 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginStart="5dp"
                                 android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
                                 android:contentDescription="@string/image"
-                                android:tint="@color/colorAlert"
-                                android:src="@drawable/baseline_list_black_24"
+                                android:tint="@color/black"
+                                android:src="@drawable/outline_trip_origin_black_24"
                                 android:layout_centerVertical="true"/>
 
                         </RelativeLayout>
