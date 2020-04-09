@@ -22,9 +22,9 @@ public class RegisterDataSource implements RegisterDataSourceBase {
         call.enqueue(callback);
     }
 
-    public void register(Register registrationData, Callback<RetrofitResponse<User>> callback) {
+    public void registerViaFacebook(Register registrationData, Callback<RetrofitResponse<User>> callback) {
         UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
-        Call<RetrofitResponse<User>> call = service.register(registrationData);
+        Call<RetrofitResponse<User>> call = service.registerViaFacebook(registrationData);
         call.enqueue(callback);
     }
 }

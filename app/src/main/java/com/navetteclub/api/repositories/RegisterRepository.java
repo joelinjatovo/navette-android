@@ -30,8 +30,8 @@ public class RegisterRepository {
         dataSource.register(name, phone, password, callback);
     }
 
-    public void register(Register register, Callback<RetrofitResponse<User>> callback) {
+    public void registerViaFacebook(Register register, Callback<RetrofitResponse<User>> callback) {
         // handle register
-        dataSource.register(register, callback);
+        dataSource.registerViaFacebook(register, callback);
     }
 }

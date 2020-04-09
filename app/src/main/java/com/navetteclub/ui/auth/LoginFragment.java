@@ -284,11 +284,13 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     Log.d(TAG, "JSONObject="  + object);
                     if(object!=null) {
                         Register registrationData = new Register();
+                        registrationData.facebookId = object.getString("id");
                         registrationData.name = object.getString("name");
                         registrationData.email = object.getString("email");
                         registrationData.pictureUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
 
-                        registerViewModel.register(registrationData);
+                        Log.d(TAG, "registrationData="  + registrationData);
+                        registerViewModel.registerViaFacebook(registrationData);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

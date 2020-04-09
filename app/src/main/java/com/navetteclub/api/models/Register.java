@@ -2,6 +2,8 @@ package com.navetteclub.api.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 public class Register {
     @SerializedName("facebook_id")
     public String facebookId;
@@ -29,12 +31,15 @@ public class Register {
         this.phone = phone;
         this.password = password;
     }
-
-    public Register(String name, String phone, String password, String email, String pictureUrl){
-        this.name = name;
-        this.phone = phone;
-        this.password = password;
-        this.email = email;
-        this.pictureUrl = pictureUrl;
+    @Override
+    public String toString() {
+        return "RetrofitResponse["
+                + "; facebookId=" + facebookId
+                + "; name=" + name
+                + "; email=" + email
+                + "; phone=" + phone
+                + "; pictureUrl=" + pictureUrl
+                + "; password=" + password
+                + "]";
     }
 }

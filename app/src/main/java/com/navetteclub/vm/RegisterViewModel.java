@@ -41,8 +41,8 @@ public class RegisterViewModel extends ViewModel implements Callback<RetrofitRes
         registerRepository.register(name, phone, password, this);
     }
 
-    public void register(Register register) {
-        registerRepository.register(register, this);
+    public void registerViaFacebook(Register register) {
+        registerRepository.registerViaFacebook(register, this);
     }
 
     @Override

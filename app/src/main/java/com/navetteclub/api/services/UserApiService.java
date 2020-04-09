@@ -19,6 +19,10 @@ public interface UserApiService {
     Call<RetrofitResponse<User>> register(@Body Register register);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/facebook/connect")
+    Call<RetrofitResponse<User>> registerViaFacebook(@Body Register register);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/user/position")
     Call<RetrofitResponse<User>> addPosition(@Header("Authorization") String token, @Body Location location);
 
