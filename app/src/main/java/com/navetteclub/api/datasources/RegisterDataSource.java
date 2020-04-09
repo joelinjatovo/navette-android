@@ -21,4 +21,10 @@ public class RegisterDataSource implements RegisterDataSourceBase {
         Call<RetrofitResponse<User>> call = service.register(registrationData);
         call.enqueue(callback);
     }
+
+    public void register(Register registrationData, Callback<RetrofitResponse<User>> callback) {
+        UserApiService service = RetrofitClient.getInstance().create(UserApiService.class);
+        Call<RetrofitResponse<User>> call = service.register(registrationData);
+        call.enqueue(callback);
+    }
 }

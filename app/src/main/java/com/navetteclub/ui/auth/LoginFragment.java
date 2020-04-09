@@ -31,12 +31,14 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
+import com.navetteclub.api.models.Register;
 import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentLoginBinding;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.LoginViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
+import com.navetteclub.vm.RegisterViewModel;
 import com.navetteclub.vm.UserViewModel;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Preferences;
@@ -64,6 +66,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
     private AccessTokenTracker accessTokenTracker;
 
+    private RegisterViewModel registerViewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,6 +90,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
         userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
 
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+
+        registerViewModel = new ViewModelProvider(requireActivity(), factory).get(RegisterViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
@@ -142,6 +148,26 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
                     // Reset remote result
                     loginViewModel.setLoginResult(null);
+                });
+
+        registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(),
+                registerResult -> {
+                    if (registerResult == null) {
+                        return;
+                    }
+
+                    if (registerResult.getError() != null) {
+                        Log.d(TAG, "'registerResult.getError()'");
+                        Snackbar.make(mBinding.getRoot(), registerResult.getError(), Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    if (registerResult.getSuccess() != null) {
+                        Log.d(TAG, "'registerResult.getSuccess()'");
+                        userViewModel.upsert(upsertCallback, registerResult.getSuccess());
+                    }
+
+                    // Reset remote result
+                    registerViewModel.setRegisterResult(null);
                 });
 
         mBinding.phoneEditText.addTextChangedListener(this);
@@ -250,20 +276,20 @@ public class LoginFragment extends Fragment implements TextWatcher {
     }
 
     private void useLoginInformation(AccessToken accessToken) {
-        /**
-         Creating the GraphRequest to fetch user details
-         1st Param - AccessToken
-         2nd Param - Callback (which will be invoked once the request is successful)
-         **/
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             //OnCompleted is invoked once the GraphRequest is successful
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 try {
-                    String name = object.getString("name");
-                    String email = object.getString("email");
-                    String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
-                    Log.d(TAG + "Facebook", name + " " + email + " " + image);
+                    Log.d(TAG, "JSONObject="  + object);
+                    if(object!=null) {
+                        Register registrationData = new Register();
+                        registrationData.name = object.getString("name");
+                        registrationData.email = object.getString("email");
+                        registrationData.pictureUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
+
+                        registerViewModel.register(registrationData);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

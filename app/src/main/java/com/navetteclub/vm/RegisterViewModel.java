@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.navetteclub.R;
+import com.navetteclub.api.models.Register;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.repositories.RegisterRepository;
 import com.navetteclub.database.entity.User;
@@ -32,28 +33,37 @@ public class RegisterViewModel extends ViewModel implements Callback<RetrofitRes
         return registerResult;
     }
 
+    public void setRegisterResult(RemoteLoaderResult<User> registerResult) {
+        this.registerResult.setValue(registerResult);
+    }
+
     public void register(String name, String phone, String password) {
         registerRepository.register(name, phone, password, this);
+    }
+
+    public void register(Register register) {
+        registerRepository.register(register, this);
     }
 
     @Override
     public void onResponse(@NonNull Call<RetrofitResponse<User>> call, @NonNull Response<RetrofitResponse<User>> response) {
         Log.d(TAG, response.toString());
         if(response.body()!=null){
-            if( null != response.body().getData()){
+            Log.d(TAG, "response " + response.body().getData());
+            if(response.body().isSuccess()){
                 Log.d(TAG, response.body().getData().toString());
-                registerResult.setValue(new RemoteLoaderResult(response.body().getData()));
+                registerResult.setValue(new RemoteLoaderResult<User>(response.body().getData()));
             }else{
-                registerResult.setValue(new RemoteLoaderResult(R.string.login_failed));
+                registerResult.setValue(new RemoteLoaderResult<User>(response.body().getStatusResString()));
             }
         }else{
-            registerResult.setValue(new RemoteLoaderResult(R.string.login_failed));
+            registerResult.setValue(new RemoteLoaderResult<User>(R.string.register_failed));
         }
     }
 
     @Override
     public void onFailure(@NonNull Call<RetrofitResponse<User>> call, @NonNull Throwable t) {
         Log.e(TAG, t.getMessage());
-        registerResult.setValue(new RemoteLoaderResult(R.string.register_failed));
+        registerResult.setValue(new RemoteLoaderResult<User>(R.string.register_failed));
     }
 }
