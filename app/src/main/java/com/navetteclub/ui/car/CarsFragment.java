@@ -73,8 +73,9 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
 
         mBinding.stepView.go(0, true);
 
-        orderViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
 
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {

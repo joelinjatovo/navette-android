@@ -52,6 +52,12 @@
         android:name="com.navetteclub.ui.order.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" >
+
+        <argument
+            android:name="searchType"
+            app:argType="com.navetteclub.ui.order.SearchType"
+            android:defaultValue="ORIGIN"/>
+
         <action
             android:id="@+id/action_search_fragment_to_order_fragment"
             app:destination="@id/order_fragment" />
@@ -90,11 +96,11 @@
         tools:layout="@layout/fragment_go_and_back">
 
         <action
-            android:id="@+id/action_travel_fragment_to_search_fragment"
+            android:id="@+id/action_go_and_back_fragment_to_search_fragment"
             app:destination="@id/search_fragment" />
 
         <action
-            android:id="@+id/action_travel_fragment_to_detail_fragment"
+            android:id="@+id/action_go_and_back_fragment_to_detail_fragment"
             app:destination="@id/detail_fragment" />
 
     </fragment>

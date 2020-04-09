@@ -77,12 +77,11 @@ public class NotificationFragment extends Fragment {
 
         setupToolbar();
 
-        mViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(NotificationViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
+        mViewModel = new ViewModelProvider(requireActivity(), factory).get(NotificationViewModel.class);
 
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
 
         mViewModel.getNotificationsLiveData().observe(getViewLifecycleOwner(),
                 result -> {

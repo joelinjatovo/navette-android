@@ -82,13 +82,14 @@ public class OrderViewFragment extends Fragment {
     }
 
     private void setupAuthViewModel() {
-        authViewModel = new ViewModelProvider(this,
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
     }
 
     private void setupOrderViewModel() {
-        orderViewModel = new ViewModelProvider(this,
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
 
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(), origin -> mBinding.setOrigin(origin));
         orderViewModel.getDestination().observe(getViewLifecycleOwner(), destination -> mBinding.setDestination(destination));

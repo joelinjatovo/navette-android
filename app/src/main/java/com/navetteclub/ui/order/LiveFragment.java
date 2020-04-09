@@ -294,7 +294,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupGoogleViewModel() {
-        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
         googleViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(GoogleViewModel.class);
@@ -339,7 +339,9 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupOrderViewModel() {
-        orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
 
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
                 originPoint -> {

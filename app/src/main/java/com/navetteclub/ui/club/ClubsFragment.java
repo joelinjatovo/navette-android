@@ -120,7 +120,9 @@ public class ClubsFragment extends BottomSheetDialogFragment {
     }
 
     private void setupViewModel() {
-        clubViewModel = new ViewModelProvider(requireActivity(), new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        clubViewModel = new ViewModelProvider(requireActivity(), factory).get(ClubViewModel.class);
 
         clubViewModel.getClubs().observe(getViewLifecycleOwner(),
                 clubAndPointList -> {

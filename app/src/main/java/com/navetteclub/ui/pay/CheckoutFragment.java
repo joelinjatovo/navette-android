@@ -78,8 +78,9 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void setupViewModel() {
-        authViewModel = new ViewModelProvider(this,
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
@@ -90,7 +91,7 @@ public class CheckoutFragment extends Fragment {
                     }
                 });
 
-        orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
 
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {

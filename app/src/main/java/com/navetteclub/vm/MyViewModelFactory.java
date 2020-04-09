@@ -14,12 +14,15 @@ import com.navetteclub.database.repositories.CarRepository;
 import com.navetteclub.database.repositories.ClubRepository;
 import com.navetteclub.database.repositories.NotificationRepository;
 import com.navetteclub.database.repositories.UserRepository;
+import com.navetteclub.utils.Log;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
  * Required given LoginViewModel has a non-empty constructor
  */
 public class MyViewModelFactory implements ViewModelProvider.Factory {
+
+    private static MyViewModelFactory instance;
 
     private Application application;
 
@@ -35,7 +38,16 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private static RidesViewModel ridesViewModel;
 
-    public MyViewModelFactory(Application application){
+    public static MyViewModelFactory getInstance(Application application){
+        Log.d("MyViewModelFactory", "MyViewModelFactory getInstance -");
+        if(instance==null){
+            Log.d("MyViewModelFactory", "MyViewModelFactory getInstance NEW");
+            instance = new MyViewModelFactory(application);
+        }
+        return instance;
+    }
+
+    private MyViewModelFactory(Application application){
         this.application = application;
     }
 
@@ -62,6 +74,7 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
             return (T) clubViewModel;
         } else if (modelClass.isAssignableFrom(OrderViewModel.class)) {
             if(orderViewModel == null){
+                Log.d("MyViewModelFactory", "new OrderViewModel(CarRepository.getInstance(application));");
                 orderViewModel = new OrderViewModel(CarRepository.getInstance(application));
             }
             return (T) orderViewModel;

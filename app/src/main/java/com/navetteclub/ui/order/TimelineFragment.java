@@ -63,8 +63,9 @@ public class TimelineFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {

@@ -51,6 +51,7 @@ public class OrderViewModel extends ViewModel {
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
     public OrderViewModel(CarRepository carRepository) {
+        Log.d(TAG, "new  OrderViewModel() +");
         this.setPlace(1);
     }
 
@@ -67,6 +68,8 @@ public class OrderViewModel extends ViewModel {
 
 
     public void setOrigin(Point point, boolean notify) {
+        Log.d(TAG, "OrderViewModel");
+
         origin.setValue(point);
 
         if(notify){

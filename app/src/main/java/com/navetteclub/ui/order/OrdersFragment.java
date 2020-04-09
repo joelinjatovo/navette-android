@@ -70,14 +70,13 @@ public class OrdersFragment extends Fragment {
 
         setupToolbar();
 
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
-        mViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrdersViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
 
-        orderViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity(), factory).get(OrdersViewModel.class);
+
+        orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
 
         mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {

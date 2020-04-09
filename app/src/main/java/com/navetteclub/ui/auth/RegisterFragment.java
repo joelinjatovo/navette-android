@@ -43,7 +43,9 @@ public class RegisterFragment  extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
-        registerViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(RegisterViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        registerViewModel = new ViewModelProvider(this, factory).get(RegisterViewModel.class);
 
         registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(),
                 registerResult -> {

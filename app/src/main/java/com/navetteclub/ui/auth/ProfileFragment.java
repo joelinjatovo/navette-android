@@ -44,11 +44,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
-        loginViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(LoginViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+
+        loginViewModel = new ViewModelProvider(requireActivity(), factory).get(LoginViewModel.class);
 
         final NavController navController = Navigation.findNavController(view);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),

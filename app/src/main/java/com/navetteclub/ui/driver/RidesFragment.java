@@ -104,8 +104,9 @@ public class RidesFragment extends Fragment {
     }
 
     private void setupAuthViewModel() {
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
@@ -125,8 +126,9 @@ public class RidesFragment extends Fragment {
     }
 
     private void setupRidesViewModel() {
-        ridesViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(RidesViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
 
         ridesViewModel.getRidesLiveData().observe(getViewLifecycleOwner(),
                 result -> {

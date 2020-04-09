@@ -184,5 +184,7 @@
     <string name="select_location">Select Location</string>
     <string name="favorites">Favoris</string>
     <string name="select_origin">Origin</string>
+    <string name="title_origin">Origin</string>
+    <string name="title_retours">Retours</string>
 
 </resources>

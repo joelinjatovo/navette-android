@@ -157,7 +157,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+        //getDeviceLocation();
     }
 
     private void setupMap() {
@@ -182,10 +182,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupGoogleViewModel() {
-        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
-        googleViewModel = new ViewModelProvider(requireActivity(),
-                factory).get(GoogleViewModel.class);
+        googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
 
         googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
                 result -> {
@@ -227,7 +226,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupOrderViewModel() {
-        orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
 
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
                 originPoint -> {
@@ -382,20 +383,18 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     getDeviceLocation();
                 });
 
-        mBinding.originSelectEndIcon.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_to_search);
-                });
-
         mBinding.originText.setOnClickListener(
                 v -> {
+                    // Open search fragment
+                    OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
+                    action.setSearchType(SearchType.ORIGIN);
+                    Navigation.findNavController(v).navigate(action);
+                    /*
+                    // Open search activity
                     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-
-                    // Start the autocomplete intent.
-                    Intent intent = new Autocomplete.IntentBuilder(
-                            AutocompleteActivityMode.OVERLAY, fields)
-                            .build(requireContext());
+                    Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields) .build(requireContext());
                     startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                    */
                 });
 
         mBinding.destinationText.setOnClickListener(

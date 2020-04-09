@@ -71,8 +71,9 @@ public class GoAndBackFragment extends Fragment {
     }
 
     private void setupViewModel() {
-        orderViewModel = new ViewModelProvider(this,
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
 
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
@@ -82,7 +83,7 @@ public class GoAndBackFragment extends Fragment {
 
                     // Points
                     if(orderWithDatas.getRetours()!=null) {
-                        NavHostFragment.findNavController(this).navigate(R.id.action_travel_fragment_to_detail_fragment);
+                        NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
                     }
                 });
     }
@@ -96,12 +97,14 @@ public class GoAndBackFragment extends Fragment {
                     orderViewModel.setReturn((Point) null, true);
 
                     // go to search point
-                    Navigation.findNavController(v).navigate(R.id.action_travel_fragment_to_search_fragment);
+                    GoAndBackFragmentDirections.ActionGoAndBackFragmentToSearchFragment action = GoAndBackFragmentDirections.actionGoAndBackFragmentToSearchFragment();
+                    action.setSearchType(SearchType.RETOURS);
+                    Navigation.findNavController(v).navigate(action);
                 });
 
         mBinding.noButton.setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_travel_fragment_to_detail_fragment);
+                    Navigation.findNavController(v).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
                 });
 
         mBinding.toolbar.setNavigationOnClickListener(

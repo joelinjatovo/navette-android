@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
-        MyViewModelFactory factory = new MyViewModelFactory(getApplication());
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(getApplication());
 
         clubViewModel = new ViewModelProvider(this, factory).get(ClubViewModel.class);
 
@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             switch (destination.getId()){
+                case R.id.search_fragment:
                 case R.id.order_fragment:
                     navView.setVisibility(View.GONE);
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);

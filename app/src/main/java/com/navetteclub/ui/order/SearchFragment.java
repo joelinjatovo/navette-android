@@ -1,6 +1,8 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -14,11 +16,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,6 +41,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.databinding.FragmentSearchBinding;
@@ -44,20 +52,25 @@ import com.navetteclub.ui.SplashActivity;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.MyViewModelFactory;
+import com.navetteclub.vm.OrderViewModel;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-public class SearchFragment extends Fragment  implements OnMapReadyCallback {
-    private static final String TAG = SearchFragment.class.getSimpleName();
+public class SearchFragment extends Fragment implements OnMapReadyCallback {
+    private static final String TAG = SearchFragment.class.getSimpleName();;
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    private static final float MAP_ZOOM = 20;
+    private static final float MAP_ZOOM = 15;
+
+    private SearchType searchType;
 
     private GoogleMap mMap;
 
@@ -73,9 +86,15 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
 
     private static Handler handler;
 
+    private OrderViewModel orderViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            // The getSearchType() method will be created automatically.
+            searchType = SearchFragmentArgs.fromBundle(getArguments()).getSearchType();
+        }
     }
 
     @Override
@@ -92,12 +111,16 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
 
         setupUi();
 
+        setupViewModel();
+
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return.
         if (autocompleteFragment != null) {
+            Objects.requireNonNull(autocompleteFragment.getView()).setBackgroundColor(getResources().getColor(R.color.white));
+
             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
             autocompleteFragment.setPlaceFields(fields);
 
@@ -148,10 +171,39 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
         getDeviceLocation();
     }
 
+    private void setupViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+    }
+
     private void setupUi() {
+        if(searchType == SearchType.ORIGIN){
+            mBinding.title.setText(R.string.title_origin);
+            mBinding.toolbar.setTitle(R.string.title_origin);
+        }
+
+        if(searchType == SearchType.RETOURS){
+            mBinding.title.setText(R.string.title_retours);
+            mBinding.toolbar.setTitle(R.string.title_retours);
+        }
+
         mBinding.myLocation.setOnClickListener(
                 v->{
                     getDeviceLocation();
+                });
+
+        mBinding.okButton.setOnClickListener(
+                v -> {
+                    if(searchType == SearchType.ORIGIN){
+                        Log.d(TAG, "ORIGIN");
+                        orderViewModel.setOrigin(mBinding.locationTitle.getText().toString(), mLocation, true);
+                    }
+                    if(searchType == SearchType.RETOURS){
+                        Log.d(TAG, "RETOURS");
+                        orderViewModel.setReturn(mBinding.locationTitle.getText().toString(), mLocation, true);
+                    }
+                    Navigation.findNavController(v).popBackStack();
                 });
     }
 
@@ -179,6 +231,7 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
     }
 
     private void setLocation(LatLng latLng) {
+        mBinding.setIsLoading(true);
         mLocation = latLng;
 
         if(handler!=null){
@@ -208,9 +261,9 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
                 if (!locality.isEmpty() && !country.isEmpty()){
                     mBinding.locationTitle.setText(locality);
                     mBinding.locationSubtitle.setText(country);
+                    mBinding.setIsLoading(false);
                 }
             }
-
         } catch (IOException ex) {
             Log.e(TAG, "Exception: %s", ex);
         }
@@ -225,7 +278,6 @@ public class SearchFragment extends Fragment  implements OnMapReadyCallback {
                 locationResult.addOnCompleteListener(requireActivity(),
                         task -> {
                             Log.d(TAG, "locationResult.addOnCompleteListener");
-                            mBinding.setIsLoading(false);
                             if (task.isSuccessful()) {
                                 mLastKnownLocation = (Location) task.getResult();
                                 if (mLastKnownLocation != null) {

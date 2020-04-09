@@ -78,7 +78,9 @@ public class PlaceFragment extends Fragment {
     }
 
     private void setupViewModel() {
-        orderViewModel = new ViewModelProvider(this, new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
 
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {

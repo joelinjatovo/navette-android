@@ -70,7 +70,6 @@
                                 android:id="@+id/originLocationIcon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
                                 android:layout_alignParentStart="true"
                                 android:contentDescription="@string/image"
                                 android:tint="@color/colorIcon"
@@ -81,10 +80,8 @@
                                 android:id="@+id/originLinearLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originSelectEndIcon"
-                                android:layout_toLeftOf="@+id/originSelectEndIcon"
-                                android:layout_toEndOf="@+id/originLocationIcon"
-                                android:layout_toRightOf="@+id/originLocationIcon"
+                                android:layout_toStartOf="@id/originEndIcon"
+                                android:layout_toEndOf="@id/originLocationIcon"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -110,19 +107,6 @@
                                     android:paddingBottom="5dp"/>
 
                             </LinearLayout>
-
-                            <ImageView
-                                android:id="@+id/originSelectEndIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toStartOf="@+id/originEndIcon"
-                                android:layout_toLeftOf="@+id/originEndIcon"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginLeft="10dp"
-                                android:contentDescription="@string/image"
-                                android:src="@drawable/outline_near_me_black_24"
-                                android:tint="@color/colorText" />
 
                             <ImageView
                                 android:id="@+id/originEndIcon"

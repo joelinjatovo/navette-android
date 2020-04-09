@@ -171,8 +171,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupRidesViewModel() {
-        ridesViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(RidesViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
 
         ridesViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {
@@ -211,8 +212,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupAuthViewModel() {
-        authViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(AuthViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
     }
 
     @Override
@@ -308,7 +310,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void setupGoogleViewModel() {
-        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
         googleViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(GoogleViewModel.class);

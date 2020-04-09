@@ -96,7 +96,7 @@ public class StepsFragment extends BottomSheetDialogFragment {
     }
 
     private void setupViewModel() {
-        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
         authViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(AuthViewModel.class);

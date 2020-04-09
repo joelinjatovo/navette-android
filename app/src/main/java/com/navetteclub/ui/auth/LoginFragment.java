@@ -83,7 +83,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
-        MyViewModelFactory factory = new MyViewModelFactory(requireActivity().getApplication());
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
         loginViewModel = new ViewModelProvider(requireActivity(), factory).get(LoginViewModel.class);
 

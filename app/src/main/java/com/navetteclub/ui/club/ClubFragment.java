@@ -85,11 +85,11 @@ public class ClubFragment extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        orderViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(OrderViewModel.class);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
 
-        clubViewModel = new ViewModelProvider(requireActivity(),
-                new MyViewModelFactory(requireActivity().getApplication())).get(ClubViewModel.class);
+        orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
+
+        clubViewModel = new ViewModelProvider(requireActivity(), factory).get(ClubViewModel.class);
 
         clubViewModel.getClub().observe(getViewLifecycleOwner(),
                 clubAndPoint -> {
