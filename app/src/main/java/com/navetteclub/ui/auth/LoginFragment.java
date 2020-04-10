@@ -96,9 +96,23 @@ public class LoginFragment extends Fragment implements TextWatcher {
         final NavController navController = Navigation.findNavController(view);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
-                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        Log.d(TAG, "'AUTHENTICATED'");
-                        navController.popBackStack();
+                    switch (authenticationState){
+                        case AUTHENTICATED:
+                            Log.d(TAG, "'AUTHENTICATED'");
+                            User user = authViewModel.getUser();
+                            if(user!=null){
+                                if(user.getPhone()==null){
+                                    navController.navigate(R.id.action_login_fragment_to_phone_fragment);
+                                }else if(!user.getVerified()){
+                                    navController.navigate(R.id.action_login_fragment_to_verify_phone_fragment);
+                                }else{
+                                    navController.popBackStack();
+                                }
+                            }
+                            break;
+                        default:
+                            // Nothing
+                            break;
                     }
                 });
 
@@ -107,7 +121,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     @Override
                     public void handleOnBackPressed() {
                         //authViewModel.logout(requireContext());
-                        navController.popBackStack();
+                        navController.navigate(R.id.action_login_to_home);
                     }
                 });
 
@@ -133,8 +147,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     if (loginResult == null) {
                         return;
                     }
-
-                    progressDialog.hide();
 
                     if (loginResult.getError() != null) {
                         Log.d(TAG, "'loginResult.getError()'");
@@ -199,7 +211,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
         mBinding.registerButton.setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.navigation_register);
+                    Navigation.findNavController(v).navigate(R.id.action_login_fragment_to_register_fragment);
                 });
 
         mBinding.forgotButton.setOnClickListener(
@@ -276,6 +288,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
     }
 
     private void useLoginInformation(AccessToken accessToken) {
+        progressDialog.show();
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             //OnCompleted is invoked once the GraphRequest is successful
             @Override
@@ -326,6 +339,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
     private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
         @Override
         public void onUpsertError() {
+            progressDialog.hide();
             Toast.makeText(getContext(), getString(R.string.error_database), Toast.LENGTH_LONG).show();
         }
 
@@ -335,6 +349,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
             Preferences.Auth.setCurrentUser(getContext(), user);
             authViewModel.authenticate(user);
             updateUiWithUser(user);
+            progressDialog.hide();
         }
 
         private void updateUiWithUser(User user) {

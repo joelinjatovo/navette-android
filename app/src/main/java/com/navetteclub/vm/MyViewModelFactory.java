@@ -36,6 +36,8 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private static AuthViewModel authViewModel;
 
+    private static PhoneViewModel phoneViewModel;
+
     private static RidesViewModel ridesViewModel;
 
     public static MyViewModelFactory getInstance(Application application){
@@ -72,6 +74,11 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
                 clubViewModel = new ClubViewModel(ClubRepository.getInstance(application));
             }
             return (T) clubViewModel;
+        }  else if (modelClass.isAssignableFrom(PhoneViewModel.class)) {
+            if(phoneViewModel == null){
+                phoneViewModel = new PhoneViewModel();
+            }
+            return (T) phoneViewModel;
         } else if (modelClass.isAssignableFrom(OrderViewModel.class)) {
             if(orderViewModel == null){
                 Log.d("MyViewModelFactory", "new OrderViewModel(CarRepository.getInstance(application));");

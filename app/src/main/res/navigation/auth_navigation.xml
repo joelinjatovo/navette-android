@@ -12,38 +12,58 @@
         tools:layout="@layout/fragment_login">
 
         <action
-            android:id="@+id/action_login_to_register"
-            app:destination="@id/navigation_register" />
-
-        <action
             android:id="@+id/action_login_to_home"
             app:popUpTo="@id/navigation_home"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="false"/>
+
+        <action
+            android:id="@+id/action_login_fragment_to_verify_phone_fragment"
+            app:destination="@id/verify_phone_fragment" />
+
+        <action
+            android:id="@+id/action_login_fragment_to_register_fragment"
+            app:destination="@id/register_fragment" />
+        <action
+            android:id="@+id/action_login_fragment_to_forgot_fragment"
+            app:destination="@id/forgot_fragment" />
+        <action
+            android:id="@+id/action_login_fragment_to_phone_fragment"
+            app:destination="@id/phone_fragment" />
 
     </fragment>
 
-    <navigation
-        android:id="@+id/navigation_register"
-        app:startDestination="@id/register_fragment">
+    <fragment
+        android:id="@+id/register_fragment"
+        android:name="com.navetteclub.ui.auth.RegisterFragment"
+        android:label="@string/title_register"
+        tools:layout="@layout/fragment_register">
 
-        <fragment
-            android:id="@+id/register_fragment"
-            android:name="com.navetteclub.ui.auth.RegisterFragment"
-            android:label="@string/title_register"
-            tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_register_to_verify_phone"
+            app:destination="@id/verify_phone_fragment" />
 
-            <action
-                android:id="@+id/action_register_to_verify_phone"
-                app:destination="@id/verify_phone_fragment" />
+    </fragment>
 
-        </fragment>
+    <fragment
+        android:id="@+id/phone_fragment"
+        android:name="com.navetteclub.ui.auth.PhoneFragment"
+        android:label="Phone Checker"
+        tools:layout="@layout/fragment_phone" >
+        <action
+            android:id="@+id/action_phone_fragment_to_verify_phone_fragment"
+            app:destination="@id/verify_phone_fragment" />
+    </fragment>
 
-        <fragment
-            android:id="@+id/verify_phone_fragment"
-            android:name="com.navetteclub.ui.auth.VerifyPhoneFragment"
-            android:label="Choose User + Password"
-            tools:layout="@layout/fragment_verify_phone" />
+    <fragment
+        android:id="@+id/verify_phone_fragment"
+        android:name="com.navetteclub.ui.auth.VerifyPhoneFragment"
+        android:label="Choose User + Password"
+        tools:layout="@layout/fragment_verify_phone" />
 
-    </navigation>
+    <fragment
+        android:id="@+id/forgot_fragment"
+        android:name="com.navetteclub.ui.auth.ForgotFragment"
+        android:label="Forgot Password"
+        tools:layout="@layout/fragment_forgot" />
 
 </navigation>

@@ -2,10 +2,15 @@ package com.navetteclub.vm;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.facebook.login.LoginManager;
+import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.Register;
+import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.api.services.UserApiService;
 import com.navetteclub.database.callback.FindCallback;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.database.repositories.UserRepository;
@@ -13,6 +18,10 @@ import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Preferences;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AuthViewModel extends ViewModel implements FindCallback<User> {
 

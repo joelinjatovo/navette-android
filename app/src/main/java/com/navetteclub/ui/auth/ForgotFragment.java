@@ -15,6 +15,8 @@ import com.navetteclub.databinding.FragmentForgotBinding;
 
 public class ForgotFragment extends BottomSheetDialogFragment {
 
+    private static final String TAG = ForgotFragment.class.getSimpleName();
+
     private FragmentForgotBinding mBinding;
 
     @Nullable

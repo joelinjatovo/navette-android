@@ -14,22 +14,17 @@
         android:layout_height="match_parent"
         tools:context="com.navetteclub.ui.forgot.ForgotFragment">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_left"
+            app:srcCompat="@drawable/outline_arrow_back_ios_black_24"
             android:tint="@color/colorAccent"
-            app:elevation="0dp"
-            android:backgroundTint="@android:color/transparent"
-            app:fabCustomSize="50dp"
-            tools:ignore="RelativeOverlap"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="20dp" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textView"
@@ -121,7 +116,7 @@
                 android:layout_marginBottom="0dp">
 
                 <Button
-                    android:id="@+id/loginButton"
+                    android:id="@+id/new_password_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn_rounded"

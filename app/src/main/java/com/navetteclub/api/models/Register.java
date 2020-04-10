@@ -1,6 +1,9 @@
 package com.navetteclub.api.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.database.entity.User;
 
 import java.util.Arrays;
 
@@ -31,6 +34,14 @@ public class Register {
         this.phone = phone;
         this.password = password;
     }
+
+    public Register(User user) {
+        this.name = user.getName();
+        this.phone = user.getPhone();
+        this.email = user.getEmail();
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "RetrofitResponse["
