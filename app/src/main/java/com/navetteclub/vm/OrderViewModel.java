@@ -51,7 +51,7 @@ public class OrderViewModel extends ViewModel {
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
     public OrderViewModel(CarRepository carRepository) {
-        Log.d(TAG, "new  OrderViewModel() +");
+        Log.d(TAG, "new  OrderViewModel() + constructor");
         this.setPlace(1);
     }
 

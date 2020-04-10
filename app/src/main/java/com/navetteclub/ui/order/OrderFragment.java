@@ -70,7 +70,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    private static final float MAP_ZOOM = 20;
+    private static final float MAP_ZOOM = 15;
 
     private GoogleMap mMap;
 
@@ -232,6 +232,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
                 originPoint -> {
+                    if(originPoint==null){
+                        getDeviceLocation(SearchType.ORIGIN);
+                        return;
+                    }
                     mBinding.setOrigin(originPoint);
                     mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
                     drawMarker(originPoint, 0, orderViewModel.getOrder().getClub());
@@ -244,6 +248,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getDestination().observe(getViewLifecycleOwner(),
                 destinationPoint -> {
+                    if(destinationPoint==null){
+                        return;
+                    }
                     mBinding.setDestination(destinationPoint);
                     mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
                     drawMarker(destinationPoint, 1, orderViewModel.getOrder().getClub());
@@ -256,6 +263,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getRetours().observe(getViewLifecycleOwner(),
                 retoursPoint -> {
+                    if(retoursPoint==null){
+                        getDeviceLocation(SearchType.RETOURS);
+                        return;
+                    }
                     mBinding.setRetours(retoursPoint);
                     mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
                     drawMarker(retoursPoint, 2, orderViewModel.getOrder().getClub());
