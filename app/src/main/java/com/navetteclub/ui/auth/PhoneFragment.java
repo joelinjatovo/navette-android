@@ -102,10 +102,10 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
                     if (result == null) {
                         return;
                     }
+                    progressDialog.hide();
 
                     if (result.getError() != null) {
                         Log.d(TAG, "'result.getError()'");
-                        progressDialog.hide();
                         Snackbar.make(mBinding.getRoot(), result.getError(), Snackbar.LENGTH_SHORT).show();
                     }
 
@@ -167,7 +167,6 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
     private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
         @Override
         public void onUpsertError() {
-            progressDialog.hide();
             Toast.makeText(getContext(), getString(R.string.error_database), Toast.LENGTH_LONG).show();
         }
 
@@ -177,7 +176,6 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
             Preferences.Auth.setCurrentUser(getContext(), user);
             authViewModel.authenticate(user);
             updateUiWithUser(user);
-            progressDialog.hide();
         }
 
         private void updateUiWithUser(User user) {
