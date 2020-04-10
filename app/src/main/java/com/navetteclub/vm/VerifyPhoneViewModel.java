@@ -54,7 +54,7 @@ public class VerifyPhoneViewModel extends ViewModel {
                 if(response.body()!=null){
                     Log.d(TAG, "response " + response.body());
                     if(response.body().isSuccess()){
-                        Log.d(TAG, response.body().getData().toString());
+                        Log.d(TAG, "Data " +response.body().getData());
                         verifyPhoneResult.setValue(new RemoteLoaderResult<User>(response.body().getData()));
                     }else{
                         verifyPhoneResult.setValue(new RemoteLoaderResult<User>(response.body().getStatusResString()));

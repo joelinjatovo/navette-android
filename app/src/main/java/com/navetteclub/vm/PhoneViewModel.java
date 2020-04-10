@@ -62,9 +62,9 @@ public class PhoneViewModel extends ViewModel {
                                    @NonNull Response<RetrofitResponse<User>> response) {
                 Log.d(TAG, response.toString());
                 if(response.body()!=null){
-                    Log.d(TAG, "response " + response.body().getData());
+                    Log.d(TAG, "response " + response.body());
                     if(response.body().isSuccess()){
-                        Log.d(TAG, response.body().getData().toString());
+                        Log.d(TAG, "Data " + response.body().getData());
                         phoneResult.setValue(new RemoteLoaderResult<User>(response.body().getData()));
                     }else{
                         phoneResult.setValue(new RemoteLoaderResult<User>(response.body().getStatusResString()));

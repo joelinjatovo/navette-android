@@ -104,6 +104,7 @@ public class RetrofitResponse<T> {
             case 402: return R.string.error_402;
             case 403: return R.string.error_403;
             case 404: return R.string.error_404;
+            case 422: return R.string.error_422;
             default: return R.string.error_unkown;
         }
     }

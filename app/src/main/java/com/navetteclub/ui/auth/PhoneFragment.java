@@ -80,7 +80,10 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
                             Log.d(TAG, "'AUTHENTICATED'");
                             User user = authViewModel.getUser();
                             if(user!=null){
-                                if(!user.getVerified()){
+                                Log.d(TAG, "'user '" + user);
+                                if(user.getPhone()==null){
+                                    // Do nothing
+                                }else if(!user.getVerified()){
                                     navController.navigate(R.id.action_phone_fragment_to_verify_phone_fragment);
                                 }else{
                                     navController.popBackStack();
