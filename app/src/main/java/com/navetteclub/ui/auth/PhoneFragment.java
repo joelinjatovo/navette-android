@@ -102,6 +102,7 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
 
                     if (result.getError() != null) {
                         Log.d(TAG, "'result.getError()'");
+                        progressDialog.hide();
                         Snackbar.make(mBinding.getRoot(), result.getError(), Snackbar.LENGTH_SHORT).show();
                     }
 
@@ -109,6 +110,7 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
                         Log.d(TAG, "'result.getSuccess()'");
                         User user = authViewModel.getUser();
                         user.setPhone(result.getSuccess().getPhone());
+                        user.setVerified(result.getSuccess().getVerified());
                         userViewModel.upsert(upsertCallback, result.getSuccess());
                     }
 

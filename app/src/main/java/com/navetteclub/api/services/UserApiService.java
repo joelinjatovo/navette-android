@@ -2,6 +2,7 @@ package com.navetteclub.api.services;
 
 import com.navetteclub.api.models.Location;
 import com.navetteclub.api.models.Register;
+import com.navetteclub.api.models.VerifyCode;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.database.entity.User;
 
@@ -22,6 +23,14 @@ public interface UserApiService {
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @PUT("api/v1/user")
     Call<RetrofitResponse<User>> updateUser(@Header("Authorization") String token, @Body Register register);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/verify")
+    Call<RetrofitResponse<User>> verify(@Header("Authorization") String token, @Body VerifyCode code);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @GET("api/v1/resend")
+    Call<RetrofitResponse<Object>> resend(@Header("Authorization") String token);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/facebook/connect")
