@@ -148,6 +148,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
                         return;
                     }
 
+                    progressDialog.hide();
+
                     if (loginResult.getError() != null) {
                         Log.d(TAG, "'loginResult.getError()'");
                         Snackbar.make(mBinding.getRoot(), loginResult.getError(), Snackbar.LENGTH_SHORT).show();
@@ -167,6 +169,8 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     if (registerResult == null) {
                         return;
                     }
+
+                    progressDialog.hide();
 
                     if (registerResult.getError() != null) {
                         Log.d(TAG, "'registerResult.getError()'");
@@ -339,17 +343,15 @@ public class LoginFragment extends Fragment implements TextWatcher {
     private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {
         @Override
         public void onUpsertError() {
-            progressDialog.hide();
             Toast.makeText(getContext(), getString(R.string.error_database), Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onUpsertSuccess(List<User> users) {
             User user = users.get(0);
-            Preferences.Auth.setCurrentUser(getContext(), user);
+            Preferences.Auth.setCurrentUser(requireContext(), user);
             authViewModel.authenticate(user);
             updateUiWithUser(user);
-            progressDialog.hide();
         }
 
         private void updateUiWithUser(User user) {

@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentProfileBinding;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
@@ -72,6 +73,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBinding.rides.setOnClickListener(this);
         mBinding.settings.setOnClickListener(this);
         mBinding.logout.setOnClickListener(this);
+        mBinding.verifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(ProfileFragment.this).navigate(R.id.action_global_navigation_auth);
+            }
+        });
     }
 
     @Override
@@ -91,7 +98,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showWelcomeMessage() {
-        Log.d(TAG, "showWelcomeMessage()");
-        mBinding.setUser(authViewModel.getUser());
+        User user = authViewModel.getUser();
+        Log.d(TAG, "showWelcomeMessage()" + user);
+        mBinding.setUser(user);
+        if(user.getRoles()!=null && !user.getRoles().isEmpty()){
+            if(user.getRoles().contains("admin")){
+                mBinding.setRole(getString(R.string.admin));
+            }else if(user.getRoles().contains("driver")){
+                mBinding.setRole(getString(R.string.driver));
+            }else if(user.getRoles().contains("customer")){
+                mBinding.setRole(getString(R.string.customer));
+            }else{
+                mBinding.setRole(getString(R.string.unknown_role));
+            }
+        }
     }
 }

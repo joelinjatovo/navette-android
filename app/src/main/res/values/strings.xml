@@ -153,6 +153,7 @@
     <string name="edit">Edit</string>
     <string name="name">Nom</string>
     <string name="verified">verified</string>
+    <string name="not_verified">Not Verified</string>
     <string name="orders">Mes commandes</string>
     <string name="menu_orders_desc">Voir la liste de vos commandes</string>
     <string name="menu_settings_desc">Gerer les preferences de l\'application</string>
@@ -192,5 +193,8 @@
     <string name="verification_code">Code de verification</string>
     <string name="resend">REsend Verification Code</string>
     <string name="code_sent">Code envoyé</string>
+    <string name="admin">Administrator</string>
+    <string name="unknown_role">Role inconnu</string>
+    <string name="customer">Client</string>
 
 </resources>
