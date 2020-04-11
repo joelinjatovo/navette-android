@@ -192,6 +192,7 @@ public class VerifyPhoneFragment extends Fragment implements TextWatcher {
 
         @Override
         public void onUpsertSuccess(List<User> users) {
+            Log.d(TAG, "UpsertCallback.onUpsertSuccess(users)");
             User user = users.get(0);
             Preferences.Auth.setCurrentUser(getContext(), user);
             authViewModel.authenticate(user);

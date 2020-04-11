@@ -236,12 +236,14 @@ public class LoginFragment extends Fragment implements TextWatcher {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart()");
 
         //This starts the access token tracking
         accessTokenTracker.startTracking();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
-            useLoginInformation(accessToken);
+            Log.d(TAG, "accessToken != null");
+            //useLoginInformation(accessToken);
         }
     }
 
@@ -264,6 +266,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "FacebookCallback.onSuccess(loginResult)");
                 // App code
                 AccessToken accessToken = loginResult.getAccessToken();
                 useLoginInformation(accessToken);
@@ -272,11 +275,13 @@ public class LoginFragment extends Fragment implements TextWatcher {
             @Override
             public void onCancel() {
                 // App code
+                Log.d(TAG, "FacebookCallback.onCancel()");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 // App code
+                Log.d(TAG, "FacebookCallback.onError(exception)");
                 Log.e(TAG, exception.getMessage(), exception);
             }
         });
@@ -286,12 +291,14 @@ public class LoginFragment extends Fragment implements TextWatcher {
             // This method is invoked everytime access token changes
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                useLoginInformation(currentAccessToken);
+                Log.d(TAG, "accessTokenTracker.onCurrentAccessTokenChanged(oldAccessToken,currentAccessToken)");
+                //useLoginInformation(currentAccessToken);
             }
         };
     }
 
     private void useLoginInformation(AccessToken accessToken) {
+        Log.d(TAG, "useLoginInformation(accessToken)");
         progressDialog.show();
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             //OnCompleted is invoked once the GraphRequest is successful
@@ -348,6 +355,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
         @Override
         public void onUpsertSuccess(List<User> users) {
+            Log.d(TAG, "UpsertCallback.onUpsertSuccess(users)");
             User user = users.get(0);
             Preferences.Auth.setCurrentUser(requireContext(), user);
             authViewModel.authenticate(user);

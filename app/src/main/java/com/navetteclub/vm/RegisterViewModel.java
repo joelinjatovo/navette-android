@@ -34,6 +34,7 @@ public class RegisterViewModel extends ViewModel implements Callback<RetrofitRes
     }
 
     public void setRegisterResult(RemoteLoaderResult<User> registerResult) {
+        Log.d(TAG, "'setRegisterResult(registerResult)'");
         this.registerResult.setValue(registerResult);
     }
 
