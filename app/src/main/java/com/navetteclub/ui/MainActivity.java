@@ -62,9 +62,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.navetteclub.services.LocationUpdatesService.ACTION_BROADCAST;
-import static com.navetteclub.services.LocationUpdatesService.ACTION_BROADCAST_PUSHER;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -207,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.order_fragment:
                     navView.setVisibility(View.GONE);
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        //getWindow().setNavigationBarColor(getResources().getColor(R.color.white));
+                    }
                     //requestWindowFeature( Window.FEATURE_NO_TITLE );
                     break;
                 default:
