@@ -243,7 +243,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:contentDescription="@string/image"
-                    android:src="@drawable/facebook_24px"/>
+                    android:src="@drawable/facebook_32px" />
 
                 <ImageView
                     android:id="@+id/google_login"
@@ -251,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:contentDescription="@string/image"
-                    android:src="@drawable/google_plus_24px"
+                    android:src="@drawable/google_plus_32px"
                     android:visibility="gone"/>
 
             </LinearLayout>
