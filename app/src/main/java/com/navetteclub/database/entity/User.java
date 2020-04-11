@@ -22,9 +22,9 @@ import java.util.List;
     }
 )
 public class User {
-    private static final String ROLE_ADMIN = "admin";
-    private static final String ROLE_DRIVER = "driver";
-    private static final String ROLE_CUSTOMER = "customer";
+    public static final String ROLE_ADMIN = "admin";
+    public static final String ROLE_DRIVER = "driver";
+    public static final String ROLE_CUSTOMER = "customer";
     @PrimaryKey
     @SerializedName("id")
     private Long id;

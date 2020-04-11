@@ -102,11 +102,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "showWelcomeMessage()" + user);
         mBinding.setUser(user);
         if(user.getRoles()!=null && !user.getRoles().isEmpty()){
-            if(user.getRoles().contains("admin")){
+            if(user.getRoles().contains(User.ROLE_ADMIN)){
                 mBinding.setRole(getString(R.string.admin));
-            }else if(user.getRoles().contains("driver")){
+            }else if(user.getRoles().contains(User.ROLE_DRIVER)){
                 mBinding.setRole(getString(R.string.driver));
-            }else if(user.getRoles().contains("customer")){
+            }else if(user.getRoles().contains(User.ROLE_CUSTOMER)){
                 mBinding.setRole(getString(R.string.customer));
             }else{
                 mBinding.setRole(getString(R.string.unknown_role));
