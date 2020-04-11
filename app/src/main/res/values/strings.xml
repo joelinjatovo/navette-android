@@ -67,11 +67,11 @@
     <string name="error_unkown">Une erreur s\'est produite. Veuillez réessayer svp!</string>
     <string name="title_maps">Maps</string>
     <string name="invalid_credentials">Invalid Credentials</string>
-    <string name="title_login">Login</string>
+    <string name="title_login">Content de vous revoir!</string>
+    <string name="title_register">Merci de nous rejoindre!</string>
     <string name="title_account">Account</string>
     <string name="title_notification">Notification</string>
     <string name="invalid_json_response">Invalid JSon Response</string>
-    <string name="title_register">Register</string>
     <string name="permission_denied_explanation">Permission necessaire</string>
     <string name="settings">Settings</string>
     <string name="permission_rationale">Permission Rationale</string>
@@ -196,5 +196,11 @@
     <string name="admin">Administrator</string>
     <string name="unknown_role">Role inconnu</string>
     <string name="customer">Client</string>
+    <string name="facebook">Facebook</string>
+    <string name="button_forgot_password">Forgot Password?</string>
+    <string name="button_register">Pas de compte?</string>
+    <string name="continue_with">or continue with</string>
+    <string name="button_login">Ayant déjà un compte?</string>
+    <string name="or_use_personal_info">Ou utilisez vos infos</string>
 
 </resources>

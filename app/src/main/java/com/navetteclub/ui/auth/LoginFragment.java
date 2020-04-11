@@ -64,8 +64,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
 
     private CallbackManager callbackManager;
 
-    private AccessTokenTracker accessTokenTracker;
-
     private RegisterViewModel registerViewModel;
 
     @Nullable
@@ -224,6 +222,11 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     fragment.show(getParentFragmentManager(), fragment.getTag());
                 });
 
+        mBinding.facebookLogin.setOnClickListener(
+                v -> {
+                    mBinding.facebookConnect.performClick();
+                });
+
         setupFacebookConnect();
     }
 
@@ -231,28 +234,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart()");
-
-        //This starts the access token tracking
-        accessTokenTracker.startTracking();
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null) {
-            Log.d(TAG, "accessToken != null");
-            //useLoginInformation(accessToken);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        // We stop the tracking before destroying the activity
-        accessTokenTracker.stopTracking();
     }
 
     private void setupFacebookConnect() {
@@ -285,16 +266,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
                 Log.e(TAG, exception.getMessage(), exception);
             }
         });
-
-        // Defining the AccessTokenTracker
-        accessTokenTracker = new AccessTokenTracker() {
-            // This method is invoked everytime access token changes
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                Log.d(TAG, "accessTokenTracker.onCurrentAccessTokenChanged(oldAccessToken,currentAccessToken)");
-                //useLoginInformation(currentAccessToken);
-            }
-        };
     }
 
     private void useLoginInformation(AccessToken accessToken) {

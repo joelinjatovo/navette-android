@@ -37,9 +37,11 @@
         android:name="com.navetteclub.ui.auth.RegisterFragment"
         android:label="@string/title_register"
         tools:layout="@layout/fragment_register">
-
         <action
-            android:id="@+id/action_register_to_verify_phone"
+            android:id="@+id/action_register_fragment_to_phone_fragment"
+            app:destination="@id/phone_fragment" />
+        <action
+            android:id="@+id/action_register_fragment_to_verify_phone_fragment"
             app:destination="@id/verify_phone_fragment" />
 
     </fragment>
