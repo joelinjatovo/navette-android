@@ -198,6 +198,11 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             switch (destination.getId()){
+                case R.id.login_fragment:
+                case R.id.register_fragment:
+                case R.id.forgot_fragment:
+                case R.id.phone_fragment:
+                case R.id.verify_phone_fragment:
                 case R.id.search_fragment:
                 case R.id.order_fragment:
                     navView.setVisibility(View.GONE);

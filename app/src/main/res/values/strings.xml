@@ -195,7 +195,7 @@
     <string name="hint_verification_code">Code de verification</string>
     <string name="resend">Resend</string>
     <string name="button_resend">Resend Verification Code</string>
-    <string name="button_resend_verification_code">Renvoyez le code de verification</string>
+    <string name="button_resend_verification_code">Renvoyez le code de verification!</string>
     <string name="code_sent">Code envoyé</string>
     <string name="admin">Administrator</string>
     <string name="unknown_role">Role inconnu</string>
