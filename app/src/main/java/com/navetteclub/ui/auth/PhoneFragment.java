@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -59,44 +60,50 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final NavController navController = Navigation.findNavController(view);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        setupAuthViewModel(factory, navController);
+        setupUserViewModel(factory);
+        setupPhoneViewModel(factory);
+        setupUi();
+        setupBackAction(navController);
+    }
 
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        phoneViewModel.phoneDataChanged(
+                mBinding.phoneCountryCodeSpinner.getSelectedItem().toString(),
+                mBinding.phoneEditText.getText().toString()
+        );
+    }
+
+    private void setupUi() {
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
-
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
-        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
-
-        phoneViewModel = new ViewModelProvider(requireActivity(), factory).get(PhoneViewModel.class);
-
-        final NavController navController = Navigation.findNavController(view);
-        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
-                authenticationState -> {
-                    switch (authenticationState){
-                        case AUTHENTICATED:
-                            Log.d(TAG, "'AUTHENTICATED'");
-                            User user = authViewModel.getUser();
-                            if(user!=null){
-                                Log.d(TAG, "'user '" + user);
-                                if(user.getPhone()==null){
-                                    // Do nothing
-                                }else if(!user.getVerified()){
-                                    navController.navigate(R.id.action_phone_fragment_to_verify_phone_fragment);
-                                }else{
-                                    navController.popBackStack();
-                                }
-                            }
-                            break;
-                        default:
-                            // Nothing
-                            Log.d(TAG, "'UNKNOWN'");
-                            break;
-                    }
+        mBinding.phoneEditText.addTextChangedListener(this);
+        mBinding.newPasswordButton.setOnClickListener(
+                v -> {
+                    progressDialog.show();
+                    String phone = mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString();
+                    User user = authViewModel.getUser();
+                    user.setPhone(phone);
+                    phoneViewModel.update(user);
                 });
+    }
 
+    private void setupPhoneViewModel(MyViewModelFactory factory) {
+        phoneViewModel = new ViewModelProvider(requireActivity(), factory).get(PhoneViewModel.class);
         phoneViewModel.getPhoneResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result == null) {
@@ -133,35 +140,49 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
                         mBinding.phoneEditText.setError(getString(formState.getPhoneError()));
                     }
                 });
+    }
 
-        mBinding.phoneEditText.addTextChangedListener(this);
-
-        mBinding.newPasswordButton.setOnClickListener(
-                v -> {
-                    progressDialog.show();
-                    String phone = mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString();
-                    User user = authViewModel.getUser();
-                    user.setPhone(phone);
-                    phoneViewModel.update(user);
+    private void setupAuthViewModel(MyViewModelFactory factory, NavController navController) {
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    switch (authenticationState){
+                        case AUTHENTICATED:
+                            Log.d(TAG, "'AUTHENTICATED'");
+                            User user = authViewModel.getUser();
+                            if(user!=null){
+                                Log.d(TAG, "'user '" + user);
+                                if(user.getPhone()==null){
+                                    // Do nothing
+                                }else if(!user.getVerified()){
+                                    navController.navigate(R.id.action_phone_fragment_to_verify_phone_fragment);
+                                }else{
+                                    navController.popBackStack();
+                                }
+                            }
+                            break;
+                        default:
+                            // Nothing
+                            Log.d(TAG, "'UNKNOWN'");
+                            break;
+                    }
                 });
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+    private void setupUserViewModel(MyViewModelFactory factory) {
+        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
     }
 
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-        phoneViewModel.phoneDataChanged(
-                mBinding.phoneCountryCodeSpinner.getSelectedItem().toString(),
-                mBinding.phoneEditText.getText().toString()
-        );
+    private void setupBackAction(NavController navController) {
+        mBinding.backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.navigation_home, false));
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        //authViewModel.logout(requireContext());
+                        navController.popBackStack(R.id.navigation_home, false);
+                    }
+                });
     }
 
     private UpsertCallback<User> upsertCallback = new UpsertCallback<User>() {

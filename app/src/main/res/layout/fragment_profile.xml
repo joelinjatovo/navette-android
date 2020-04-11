@@ -46,7 +46,6 @@
                         android:textAppearance="?attr/textAppearanceHeadline6"/>
 
                     <TextView
-                        android:id="@+id/role"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
@@ -69,6 +68,7 @@
                             android:id="@+id/verifiedIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/image"
                             android:tint="@color/colorAccent"
                             android:src="@drawable/outline_verified_user_black_18"/>
 
@@ -104,6 +104,7 @@
                     android:layout_alignParentEnd="true">
 
                     <com.navetteclub.views.CircleImageView
+                        android:id="@+id/avatarImageView"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"

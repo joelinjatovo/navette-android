@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -61,36 +62,17 @@ public class VerifyPhoneFragment extends Fragment implements TextWatcher {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        progressDialog = new ProgressDialog(requireContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.signing));
-
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
-        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
-
-        verifyPhoneViewModel = new ViewModelProvider(requireActivity(), factory).get(VerifyPhoneViewModel.class);
-
         final NavController navController = Navigation.findNavController(view);
-        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
-                authenticationState -> {
-                    switch (authenticationState){
-                        case AUTHENTICATED:
-                            Log.d(TAG, "'AUTHENTICATED'");
-                            User user = authViewModel.getUser();
-                            if(user!=null && user.getVerified()){
-                                navController.popBackStack();
-                            }
-                            break;
-                        default:
-                            // Nothing
-                            break;
-                    }
-                });
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        setupAuthViewModel(factory, navController);
+        setupUserViewModel(factory);
+        setupVerifyPhoneViewModel(factory);
+        setupUi();
+        setupBackAction(navController);
+    }
 
+    private void setupVerifyPhoneViewModel(MyViewModelFactory factory) {
+        verifyPhoneViewModel = new ViewModelProvider(requireActivity(), factory).get(VerifyPhoneViewModel.class);
         verifyPhoneViewModel.getVerifyPhoneResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result == null) {
@@ -149,21 +131,59 @@ public class VerifyPhoneFragment extends Fragment implements TextWatcher {
                         mBinding.verifyCodeEditText.setError(getString(formState.getVerifyCodeError()));
                     }
                 });
+    }
 
+    private void setupUserViewModel(MyViewModelFactory factory) {
+        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
+    }
+
+    private void setupAuthViewModel(MyViewModelFactory factory, NavController navController) {
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    switch (authenticationState){
+                        case AUTHENTICATED:
+                            Log.d(TAG, "'AUTHENTICATED'");
+                            User user = authViewModel.getUser();
+                            if(user!=null && user.getVerified()){
+                                navController.popBackStack();
+                            }
+                            break;
+                        default:
+                            // Nothing
+                            break;
+                    }
+                });
+    }
+
+    private void setupUi() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
         mBinding.verifyCodeEditText.addTextChangedListener(this);
-
         mBinding.verifyButton.setOnClickListener(
                 v -> {
                     progressDialog.show();
                     User user = authViewModel.getUser();
                     verifyPhoneViewModel.verify(user, mBinding.verifyCodeEditText.getText().toString());
                 });
-
         mBinding.resendButton.setOnClickListener(
                 v -> {
                     progressDialog.show();
                     User user = authViewModel.getUser();
                     verifyPhoneViewModel.resend(user);
+                });
+    }
+
+    private void setupBackAction(NavController navController) {
+        mBinding.backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.navigation_home, false));
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        //authViewModel.logout(requireContext());
+                        navController.popBackStack(R.id.navigation_home, false);
+                    }
                 });
     }
 

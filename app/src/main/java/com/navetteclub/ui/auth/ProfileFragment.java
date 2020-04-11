@@ -20,10 +20,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentProfileBinding;
+import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.LoginViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -73,12 +75,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBinding.rides.setOnClickListener(this);
         mBinding.settings.setOnClickListener(this);
         mBinding.logout.setOnClickListener(this);
-        mBinding.verifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavHostFragment.findNavController(ProfileFragment.this).navigate(R.id.action_global_navigation_auth);
-            }
-        });
+        mBinding.verifyButton.setOnClickListener(v -> NavHostFragment.findNavController(ProfileFragment.this).navigate(R.id.action_global_navigation_auth));
     }
 
     @Override
@@ -100,7 +97,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void showWelcomeMessage() {
         User user = authViewModel.getUser();
         Log.d(TAG, "showWelcomeMessage()" + user);
+        if(user==null){
+            return;
+        }
+
         mBinding.setUser(user);
+        Picasso.get()
+                .load(Constants.getBaseUrl() + user.getImageUrl())
+                .into(mBinding.avatarImageView);
         if(user.getRoles()!=null && !user.getRoles().isEmpty()){
             if(user.getRoles().contains(User.ROLE_ADMIN)){
                 mBinding.setRole(getString(R.string.admin));

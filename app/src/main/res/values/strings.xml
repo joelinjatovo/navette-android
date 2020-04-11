@@ -139,6 +139,7 @@
     <string name="card">Carte bancaire</string>
     <string name="paypal">PayPal</string>
     <string name="confirm">Confirmer</string>
+    <string name="button_confirm">Confirmer</string>
     <string name="card_number">Card number</string>
     <string name="save_card_number_for_future_payment">Sauvegarder la carte pour un paiement futur</string>
     <string name="thanks_you_for_purchasing">Thank you for purchasing</string>
@@ -190,8 +191,11 @@
     <string name="title_retours">Retours</string>
     <string name="update_failed">Modification echouee</string>
     <string name="verify">Verifier</string>
-    <string name="verification_code">Code de verification</string>
-    <string name="resend">REsend Verification Code</string>
+    <string name="button_verify">Verifier</string>
+    <string name="hint_verification_code">Code de verification</string>
+    <string name="resend">Resend</string>
+    <string name="button_resend">Resend Verification Code</string>
+    <string name="button_resend_verification_code">Renvoyez le code de verification</string>
     <string name="code_sent">Code envoyé</string>
     <string name="admin">Administrator</string>
     <string name="unknown_role">Role inconnu</string>
@@ -202,5 +206,9 @@
     <string name="continue_with">or continue with</string>
     <string name="button_login">Ayant déjà un compte?</string>
     <string name="or_use_personal_info">Ou utilisez vos infos</string>
+    <string name="title_phone_number">Contactez moi\nau numero suivant</string>
+    <string name="hint_phone">Téléphone</string>
+    <string name="title_verify_phone_number">Verifier\nmon téléphone</string>
+    <string name="title_forgot">Envoyez moi\nmon nouveau mot de passe</string>
 
 </resources>

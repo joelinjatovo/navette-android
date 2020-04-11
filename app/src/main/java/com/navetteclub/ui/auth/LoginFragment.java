@@ -76,22 +76,44 @@ public class LoginFragment extends Fragment implements TextWatcher {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        progressDialog = new ProgressDialog(requireContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.signing));
-
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
-        loginViewModel = new ViewModelProvider(requireActivity(), factory).get(LoginViewModel.class);
-
-        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
-
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
-        registerViewModel = new ViewModelProvider(requireActivity(), factory).get(RegisterViewModel.class);
-
         final NavController navController = Navigation.findNavController(view);
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        setupLoginViewModel(factory);
+        setupUserViewModel(factory);
+        setupAuthViewModel(factory, navController);
+        setupRegisterViewModel(factory);
+        setupBackAction(navController);
+        setupUi();
+        setupFacebookConnect();
+    }
+
+    private void setupRegisterViewModel(MyViewModelFactory factory) {
+        registerViewModel = new ViewModelProvider(requireActivity(), factory).get(RegisterViewModel.class);
+        registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(),
+                registerResult -> {
+                    if (registerResult == null) {
+                        return;
+                    }
+
+                    progressDialog.hide();
+
+                    if (registerResult.getError() != null) {
+                        Log.d(TAG, "'registerResult.getError()'");
+                        Snackbar.make(mBinding.getRoot(), registerResult.getError(), Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    if (registerResult.getSuccess() != null) {
+                        Log.d(TAG, "'registerResult.getSuccess()'");
+                        userViewModel.upsert(upsertCallback, registerResult.getSuccess());
+                    }
+
+                    // Reset remote result
+                    registerViewModel.setRegisterResult(null);
+                });
+    }
+
+    private void setupAuthViewModel(MyViewModelFactory factory, NavController navController) {
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     switch (authenticationState){
@@ -113,15 +135,14 @@ public class LoginFragment extends Fragment implements TextWatcher {
                             break;
                     }
                 });
+    }
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
-                new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        //authViewModel.logout(requireContext());
-                        navController.navigate(R.id.action_login_to_home);
-                    }
-                });
+    private void setupUserViewModel(MyViewModelFactory factory) {
+        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
+    }
+
+    private void setupLoginViewModel(MyViewModelFactory factory) {
+        loginViewModel = new ViewModelProvider(requireActivity(), factory).get(LoginViewModel.class);
 
         loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(),
                 loginFormState -> {
@@ -161,73 +182,58 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     // Reset remote result
                     loginViewModel.setLoginResult(null);
                 });
+    }
 
-        registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(),
-                registerResult -> {
-                    if (registerResult == null) {
-                        return;
-                    }
-
-                    progressDialog.hide();
-
-                    if (registerResult.getError() != null) {
-                        Log.d(TAG, "'registerResult.getError()'");
-                        Snackbar.make(mBinding.getRoot(), registerResult.getError(), Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    if (registerResult.getSuccess() != null) {
-                        Log.d(TAG, "'registerResult.getSuccess()'");
-                        userViewModel.upsert(upsertCallback, registerResult.getSuccess());
-                    }
-
-                    // Reset remote result
-                    registerViewModel.setRegisterResult(null);
-                });
-
+    private void setupUi() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
         mBinding.phoneEditText.addTextChangedListener(this);
-
         mBinding.passwordEditText.addTextChangedListener(this);
-
         mBinding.passwordEditText.setOnEditorActionListener(
                 (v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         if(mBinding.loginButton.isEnabled()) {
                             progressDialog.show();
-                            loginViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                            loginViewModel.login(
+                                    mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(),
+                                    mBinding.passwordEditText.getText().toString());
                         }
                     }
                     return false;
                 });
-
-        mBinding.backButton.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_login_to_home);
-                });
-
         mBinding.loginButton.setOnClickListener(
                 v -> {
-                    //loadingProgressBar.setVisibility(View.VISIBLE);
                     progressDialog.show();
-                    loginViewModel.login(mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(), mBinding.passwordEditText.getText().toString());
+                    loginViewModel.login(
+                            mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(),
+                            mBinding.passwordEditText.getText().toString());
                 });
-
         mBinding.registerButton.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_login_fragment_to_register_fragment);
                 });
-
         mBinding.forgotButton.setOnClickListener(
                 v -> {
-                    ForgotFragment fragment = new ForgotFragment();
-                    fragment.show(getParentFragmentManager(), fragment.getTag());
+                    Navigation.findNavController(v).navigate(R.id.action_login_fragment_to_forgot_fragment);
                 });
-
         mBinding.facebookLogin.setOnClickListener(
                 v -> {
                     mBinding.facebookConnect.performClick();
                 });
+    }
 
-        setupFacebookConnect();
+    private void setupBackAction(NavController navController) {
+        mBinding.backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.navigation_home, false));
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        //authViewModel.logout(requireContext());
+                        navController.popBackStack(R.id.navigation_home, false);
+                    }
+                });
     }
 
     @Override

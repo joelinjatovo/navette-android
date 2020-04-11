@@ -15,32 +15,31 @@
         tools:context="com.navetteclub.ui.forgot.ForgotFragment">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/outline_arrow_back_ios_black_24"
+            android:contentDescription="@string/image"
+            android:src="@drawable/outline_clear_black_36"
             android:tint="@color/colorAccent"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_margin="20dp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="80dp"
-            android:text="Verifier\nnumero telephone"
+            android:layout_margin="20dp"
+            android:text="@string/title_verify_phone_number"
             android:textColor="@color/colorAccent"
-            android:textSize="30sp"
-            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/backButton" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,7 +73,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_toEndOf="@+id/phoneCountryCodeSpinner"
                         android:backgroundTint="@android:color/transparent"
-                        android:hint="@string/verification_code"
+                        android:hint="@string/hint_verification_code"
                         android:inputType="phone"
                         android:padding="15dp"
                         android:paddingLeft="5dp"
@@ -99,7 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn_rounded"
-                    android:text="@string/verify"
+                    android:text="@string/button_verify"
                     android:textColor="@color/white" />
 
             </RelativeLayout>
@@ -108,7 +107,7 @@
                 android:id="@+id/resendButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/resend"
+                android:text="@string/button_resend_verification_code"
                 android:textColor="@color/white"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="0dp"
