@@ -7,6 +7,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="isLoading" type="boolean" />
+        <variable name="isErrorLoading" type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +24,37 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createOrderButton"
+            app:layout_constraintVertical_bias="1.0">
+
+            <com.navetteclub.views.LoadingView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{isLoading?View.VISIBLE:View.GONE}" />
+
+            <com.navetteclub.views.LoaderErrorView
+                android:id="@+id/error_loader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{isErrorLoading?View.VISIBLE:View.GONE}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{isLoading|isErrorLoading?View.GONE:View.VISIBLE}"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/viewholder_club_home" />
+        </RelativeLayout>
+
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/createOrderButton"

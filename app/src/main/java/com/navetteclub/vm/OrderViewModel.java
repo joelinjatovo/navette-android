@@ -155,11 +155,10 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setClub(Club club, Point point) {
+        _init();
         orderWithDatas.setClub(club);
-
         point.setName(club.getName());
         setDestination(point, true);
-
         loadCars(club);
     }
 
@@ -188,9 +187,11 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setOrder(OrderWithDatas order) {
-        setOrigin(order.getOrigin(), false);
-        setDestination(order.getDestination(), false);
-        setReturn(order.getRetours(), false);
+        if(order!=null){
+            setOrigin(order.getOrigin(), false);
+            setDestination(order.getDestination(), false);
+            setReturn(order.getRetours(), false);
+        }
         orderWithDatas = order;
         orderWithDatasLiveData.setValue(orderWithDatas);
     }

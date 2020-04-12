@@ -25,23 +25,15 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.navetteclub.R;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Notification;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentNotificationBinding;
-import com.navetteclub.models.RemoteLoaderResult;
-import com.navetteclub.ui.club.ClubRecyclerViewAdapter;
-import com.navetteclub.ui.club.ClubsFragment;
-import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
-import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.NotificationViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NotificationFragment extends Fragment {
 

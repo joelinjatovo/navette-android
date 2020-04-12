@@ -174,9 +174,6 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 });
-
-        // load clubs
-        clubViewModel.load();
     }
 
     private void setupUi(){

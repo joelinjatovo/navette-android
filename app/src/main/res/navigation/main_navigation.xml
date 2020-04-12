@@ -13,7 +13,7 @@
         tools:layout="@layout/fragment_home" >
 
         <action
-            android:id="@+id/action_home_to_order"
+            android:id="@+id/action_navigation_home_to_navigation_order"
             app:destination="@id/navigation_order" />
 
     </fragment>

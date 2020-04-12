@@ -9,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -31,18 +35,21 @@ import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.databinding.FragmentHomeBinding;
+import com.navetteclub.ui.OnClickItemListener;
+import com.navetteclub.ui.order.OrderFragmentDirections;
+import com.navetteclub.ui.order.SearchType;
 import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.MyViewModelFactory;
+import com.navetteclub.vm.OrderViewModel;
 
 import java.util.List;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClickItemListener<ClubAndPoint> {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
-    // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private GoogleMap mMap;
@@ -53,7 +60,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
+    private ClubRecyclerViewAdapter mAdapter;
+
     private List<ClubAndPoint> mClubs;
+
+    private ClubViewModel clubViewModel;
+
+    private OrderViewModel orderViewModel;
 
     @Nullable
     @Override
@@ -61,79 +74,108 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+
+        mAdapter = new ClubRecyclerViewAdapter(this);
+        RecyclerView recyclerView = mBinding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(mAdapter);
+
         return mBinding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-
-        // Check that the user hasn't revoked permissions by going to Settings.
-        if (Utils.requestingLocationUpdates(requireContext())) {
-            if (!checkPermissions()) {
-                requestPermissions();
-            }
-        }
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        setupMap();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
-        ClubViewModel clubViewModel = new ViewModelProvider(requireActivity(), factory).get(ClubViewModel.class);
-
-        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(),
-                result -> {
-                    if (result == null) {
-                        return;
-                    }
-
-                    if (result.getError() != null) {
-                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(), clubAndPoints -> {
-            if (clubAndPoints == null) {
-                return;
-            }
-
-            mClubs = clubAndPoints;
-
-            updateClubUI();
-        });
-
-        mBinding.createOrderButton.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.navigation_order);
-                });
+        setupClubViewModel(factory);
+        setupOrderViewModel(factory);
+        setupUi();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
-
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-
         // Show club in map
-        updateClubUI();
+        updateClubUI(mClubs);
     }
 
-    private void updateClubUI() {
-        if(mMap!=null && mClubs!=null) {
-            for(ClubAndPoint item: mClubs){
+    private void setupMap() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+        if (Utils.requestingLocationUpdates(requireContext())) {
+            if (!checkPermissions()) {
+                requestPermissions();
+            }
+        }
+    }
+
+    private void setupUi() {
+        mBinding.createOrderButton.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order));
+        mBinding.errorLoader.getButton().setOnClickListener(v -> loadClubs());
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        loadClubs();
+                    }
+                });
+    }
+
+    private void setupOrderViewModel(MyViewModelFactory factory) {
+        orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
+    }
+
+    private void setupClubViewModel(MyViewModelFactory factory) {
+        clubViewModel = new ViewModelProvider(requireActivity(), factory).get(ClubViewModel.class);
+        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result == null) {
+                        return;
+                    }
+                    mBinding.setIsLoading(false);
+                    if (result.getError() != null) {
+                        mBinding.setIsErrorLoading(true);
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }else{
+                        mBinding.setIsErrorLoading(false);
+                    }
+                });
+        clubViewModel.getClubs().observe(getViewLifecycleOwner(),
+                clubAndPoints -> {
+                    if (clubAndPoints == null) {
+                        return;
+                    }
+                    mClubs = clubAndPoints;
+                    updateClubUI(clubAndPoints);
+                });
+        loadClubs();
+    }
+
+    private void loadClubs() {
+        mBinding.setIsLoading(true);
+        mBinding.setIsErrorLoading(false);
+        clubViewModel.load();
+    }
+
+    private void updateClubUI(List<ClubAndPoint> clubs) {
+        if(clubs!=null){
+            mAdapter.setItems(clubs);
+        }
+        if(mMap!=null && clubs !=null) {
+            for(ClubAndPoint item: clubs){
                 if(item.getClub()!=null && item.getPoint()!=null){
                     LatLng latLng = new LatLng(item.getPoint().getLat(), item.getPoint().getLng());
                     mMap.addMarker(new MarkerOptions().position(latLng).title(item.getClub().getName()));
@@ -143,10 +185,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (checkPermissions()) {
                 Task locationResult = fusedLocationProviderClient.getLastLocation();
@@ -155,7 +193,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     public void onComplete(@NonNull Task task) {
                         Log.d(TAG, "locationResult.addOnCompleteListener");
                         if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
                             if (mLastKnownLocation != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -163,9 +200,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                                 mLastKnownLocation.getLongitude()), 15));
                             }
                         } else {
-                            //Log.d(TAG, "Current location is null. Using defaults.");
-                            //Log.e(TAG, "Exception: %s", task.getException());
-                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
@@ -236,4 +270,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    @Override
+    public void onClick(View v, int position, ClubAndPoint item) {
+        orderViewModel.setOrder(null);
+        orderViewModel.setClub(item.getClub(), item.getPoint());
+        Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
+    }
 }
