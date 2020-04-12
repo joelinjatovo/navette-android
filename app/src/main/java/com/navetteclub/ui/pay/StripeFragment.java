@@ -127,7 +127,6 @@ public class StripeFragment extends Fragment {
                 v -> {
                     NavHostFragment.findNavController(this).navigate(R.id.navigation_auth);
                 });
-
     }
 
     private void setupAuthViewModel(MyViewModelFactory factory) {
@@ -212,14 +211,9 @@ public class StripeFragment extends Fragment {
     private void payViaStripe() {
         progressDialog.show();
         PaymentMethodCreateParams params = mBinding.stripeCardWidget.getPaymentMethodCreateParams();
-        if (params != null) {
+        if (params != null && stripe!=null) {
             ConfirmPaymentIntentParams confirmParams = ConfirmPaymentIntentParams
                     .createWithPaymentMethodCreateParams(params, paymentIntentClientSecret);
-            final Context context = requireContext();
-            stripe = new Stripe(
-                    context,
-                    PaymentConfiguration.getInstance(context).getPublishableKey()
-            );
             stripe.confirmPayment(this, confirmParams);
         }
     }
@@ -259,19 +253,13 @@ public class StripeFragment extends Fragment {
                     .setTitleText("Oops...")
                     .setContentText(e.getMessage())
                     .setConfirmText("Yes, retry!")
-                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sDialog) {
-                            sDialog.dismissWithAnimation();
-                            payViaStripe();
-                        }
+                    .setConfirmClickListener(sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        payViaStripe();
                     })
-                    .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sDialog) {
-                            sDialog.dismissWithAnimation();
-                            NavHostFragment.findNavController(StripeFragment.this).popBackStack();
-                        }
+                    .setCancelButton("Cancel", sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        NavHostFragment.findNavController(StripeFragment.this).popBackStack();
                     })
                     .show();
 

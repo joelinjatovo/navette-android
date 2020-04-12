@@ -75,24 +75,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         setupUi();
-
         setupNotification();
-
         setupViewModel();
-
         initMapSdk();
-
         connectPush();
-
         registerNetworkBroadcastReceiver();
-
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.navetteclub.dev",                  //Insert your own package name.
+                    "com.navetteclub.dev", //Insert your own package name.
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
