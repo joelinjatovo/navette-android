@@ -1,5 +1,6 @@
 package com.navetteclub.ui.pay;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,7 @@ import com.stripe.android.model.PaymentMethodCreateParams;
 
 import java.util.Objects;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -45,6 +48,8 @@ public class StripeFragment extends Fragment {
     private static final String TAG = StripeFragment.class.getSimpleName();
 
     private FragmentStripeBinding mBinding;
+
+    private ProgressDialog progressDialog;
 
     private String paymentIntentClientSecret;
 
@@ -86,6 +91,7 @@ public class StripeFragment extends Fragment {
         setupUi();
         if(token!=null && orderRid!=null) {
             mBinding.setIsLoading(true);
+            mBinding.setIsError(false);
             createPaymentIntent(token, orderRid);
         };
     }
@@ -99,10 +105,29 @@ public class StripeFragment extends Fragment {
     }
 
     private void setupUi() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
+
         mBinding.payButton.setOnClickListener(
                 v -> {
                     payViaStripe();
                 });
+
+        mBinding.loaderErrorView.getButton().setOnClickListener(
+                v -> {
+                    if(token!=null && orderRid!=null) {
+                        mBinding.setIsLoading(true);
+                        mBinding.setIsError(false);
+                        createPaymentIntent(token, orderRid);
+                    };
+                });
+
+        mBinding.authErrorView.getButton().setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).navigate(R.id.navigation_auth);
+                });
+
     }
 
     private void setupAuthViewModel(MyViewModelFactory factory) {
@@ -113,6 +138,8 @@ public class StripeFragment extends Fragment {
                         mBinding.setIsUnauthenticated(false);
                     }else{
                         mBinding.setIsUnauthenticated(true);
+                        mBinding.setIsError(false);
+                        mBinding.setIsLoading(false);
                     }
                 });
     }
@@ -133,6 +160,9 @@ public class StripeFragment extends Fragment {
                 mBinding.setIsLoading(false);
                 if (!response.isSuccessful()) {
                     Log.e(TAG, response.toString());
+                    mBinding.setIsError(true);
+                    mBinding.loaderErrorView.getTitleView().setText(getString(R.string.error));
+                    mBinding.loaderErrorView.getSubtitleView().setText(response.message());
                 } else {
                     // The response from the server includes the Stripe publishable key and
                     // PaymentIntent details.
@@ -141,6 +171,7 @@ public class StripeFragment extends Fragment {
                         Log.d(TAG, "response.body()= " + response.body());
                         if(response.body().isSuccess()){
                             if(response.body().getData()!=null){
+                                mBinding.setIsError(false);
                                 String stripePublishableKey = response.body().getData().publishableKey;
                                 paymentIntentClientSecret = response.body().getData().clientSecret;
 
@@ -151,7 +182,15 @@ public class StripeFragment extends Fragment {
                                             stripePublishableKey
                                     );
                                 }
+                            }else{
+                                mBinding.setIsError(true);
+                                mBinding.loaderErrorView.getTitleView().setText(getString(R.string.error));
+                                mBinding.loaderErrorView.getSubtitleView().setText(response.body().getMessage());
                             }
+                        }else{
+                            mBinding.setIsError(true);
+                            mBinding.loaderErrorView.getTitleView().setText(getString(R.string.error));
+                            mBinding.loaderErrorView.getSubtitleView().setText(response.body().getMessage());
                         }
                     }
                 }
@@ -160,14 +199,18 @@ public class StripeFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse<MyPaymentIntent>> call,
                                   @NonNull Throwable throwable) {
-                mBinding.setIsLoading(false);
                 Log.e(TAG, throwable.toString());
+                mBinding.setIsLoading(false);
+                mBinding.setIsError(true);
+                mBinding.loaderErrorView.getTitleView().setText(getString(R.string.error));
+                mBinding.loaderErrorView.getSubtitleView().setText(throwable.getMessage());
 
             }
         });
     }
 
     private void payViaStripe() {
+        progressDialog.show();
         PaymentMethodCreateParams params = mBinding.stripeCardWidget.getPaymentMethodCreateParams();
         if (params != null) {
             ConfirmPaymentIntentParams confirmParams = ConfirmPaymentIntentParams
@@ -185,22 +228,55 @@ public class StripeFragment extends Fragment {
 
         @Override
         public void onSuccess(@NonNull PaymentIntentResult result) {
+            progressDialog.hide();
+
             PaymentIntent paymentIntent = result.getIntent();
             PaymentIntent.Status status = paymentIntent.getStatus();
             if (status == PaymentIntent.Status.Succeeded) {
                 // Payment completed successfully
+                Log.d(TAG, "Payment completed successfully");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 Log.d(TAG, gson.toJson(paymentIntent));
             } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
                 // Payment failed
-                Log.e(TAG, Objects.requireNonNull(paymentIntent.getLastPaymentError()).getMessage());
+                Log.d(TAG, "Payment failed");
+
+                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Oops...")
+                        .setContentText("Payment failed")
+                        .show();
+
+                if(paymentIntent.getLastPaymentError()!=null) {
+                    Log.e(TAG, paymentIntent.getLastPaymentError().getMessage());
+                }
             }
         }
 
         @Override
         public void onError(@NonNull Exception e) {
+            progressDialog.hide();
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Oops...")
+                    .setContentText(e.getMessage())
+                    .setConfirmText("Yes, retry!")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            payViaStripe();
+                        }
+                    })
+                    .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            NavHostFragment.findNavController(StripeFragment.this).popBackStack();
+                        }
+                    })
+                    .show();
+
             // Payment request failed – allow retrying using the same payment method
-            Log.e(TAG,e.getMessage(), e);
+            Log.e(TAG, "Payment request failed – allow retrying using the same payment method", e);
         }
     };
 }
