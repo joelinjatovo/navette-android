@@ -51,6 +51,13 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 mListener.onListFragmentInteraction(v, holder.mItem);
             }
         });
+        holder.mBinding.moreButtom.setOnClickListener(v -> {
+            if (null != mListener) {
+                // Notify the active callbacks interface (the activity, if the
+                // fragment is attached to one) that an item has been selected.
+                mListener.onListFragmentInteraction(v, holder.mItem);
+            }
+        });
     }
 
 
@@ -109,6 +116,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             if(mItem!=null && mItem.getOrder()!=null){
                 Order order = mItem.getOrder();
                 mBinding.setAmount(order.getAmountStr());
+                mBinding.setStatus(order.getStatus());
 
                 // Points
                 mBinding.setOrigin(mItem.getOrigin());
@@ -120,7 +128,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mBinding.amountLabel.getText() + "'";
+            return super.toString() + " '" + mBinding.amountValue.getText() + "'";
         }
     }
 }

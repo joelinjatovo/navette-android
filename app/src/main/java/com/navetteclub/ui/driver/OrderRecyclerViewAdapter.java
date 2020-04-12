@@ -122,7 +122,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mBinding.amountLabel.getText() + "'";
+            return super.toString() + " '" + mBinding.amountValue.getText() + "'";
         }
     }
 }

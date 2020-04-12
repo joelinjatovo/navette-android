@@ -17,6 +17,7 @@
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
         <variable name="amount" type="String" />
+        <variable name="status" type="String" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -38,195 +39,178 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:id="@+id/originLocationIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
                     android:contentDescription="@string/image"
                     android:tint="@color/colorIcon"
                     android:src="@drawable/outline_trip_origin_black_18" />
 
-                <LinearLayout
-                    android:id="@+id/originLinearLayout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/originLabelText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/originLocationIcon"
+                    android:layout_centerVertical="true"
+                    android:text="@string/origin"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/gray"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <TextView
+                    android:id="@+id/originText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/originLabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/origin"
-                        android:textAppearance="?attr/textAppearanceCaption"
-                        android:textColor="@color/colorText"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"/>
-
-                    <TextView
-                        android:id="@+id/originText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{origin==null?@string/search:origin.name}"
-                        android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textColor="@color/colorText"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"/>
-
-                </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:textAlignment="textEnd"
+                    android:layout_toEndOf="@+id/originLabelText"
+                    android:text="@{origin.name}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/colorText"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"/>
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:id="@+id/destinationLocationIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
                     android:contentDescription="@string/image"
-                    android:src="@drawable/outline_place_black_24"
-                    android:tint="@color/colorAccent" />
+                    android:src="@drawable/outline_place_black_18"
+                    android:tint="@color/colorAccent"/>
 
-                <LinearLayout
-                    android:id="@+id/destinationLinearLayout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/destinationLabelText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/destinationLocationIcon"
+                    android:layout_centerVertical="true"
+                    android:text="@string/destination"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/gray"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <TextView
+                    android:id="@+id/destinationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/destinationLabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/destination"
-                        android:textAppearance="?attr/textAppearanceCaption"
-                        android:textColor="@color/colorText"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"/>
-
-                    <TextView
-                        android:id="@+id/destinationText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{destination==null?@string/search:destination.name}"
-                        android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textColor="@color/colorText"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"/>
-
-                </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:textAlignment="textEnd"
+                    android:layout_toEndOf="@+id/destinationLabelText"
+                    android:text="@{destination.name}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/colorText"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"/>
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:visibility="@{retours==null?View.GONE:View.VISIBLE}">
 
                 <ImageView
-                    android:id="@+id/retoursLocationIcon"
+                        android:id="@+id/retoursLocationIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@string/image"
+                        android:tint="@color/colorIcon"
+                        android:src="@drawable/outline_trip_origin_black_18" />
+
+                <TextView
+                    android:id="@+id/retoursLabelText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:contentDescription="@string/image"
-                    android:src="@drawable/outline_trip_origin_black_18"
-                    android:tint="@color/colorAccent" />
+                    android:layout_toEndOf="@+id/retoursLocationIcon"
+                    android:layout_centerVertical="true"
+                    android:text="@string/origin"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/gray"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
 
-                <LinearLayout
-                    android:id="@+id/retoursLinearLayout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/retoursText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/retoursLocationIcon"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/retoursLabelText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
-                        android:text="@string/retours"
-                        android:textAppearance="?attr/textAppearanceCaption"
-                        android:textColor="@color/colorText" />
-
-                    <TextView
-                        android:id="@+id/retoursText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="5dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="5dp"
-                        android:text="@{retours==null?@string/search:retours.name}"
-                        android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textColor="@color/colorText" />
-
-                </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:textAlignment="textEnd"
+                    android:layout_toEndOf="@+id/retoursLabelText"
+                    android:text="@{retours.name}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/colorText"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"/>
 
             </RelativeLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
+
             <RelativeLayout
-                android:id="@+id/orderPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
+                    android:id="@+id/amountLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorAccent"
-                    android:padding="10dp">
+                    android:layout_toStartOf="@id/more_buttom"
+                    android:orientation="vertical">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/amountValue"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="10dp">
+                        android:textColor="@color/colorAccent"
+                        android:text="@{amount}"
+                        android:textAppearance="?attr/textAppearanceHeadline5"/>
 
-                        <LinearLayout
-                            android:id="@+id/amountLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginEnd="10dp">
+                    <TextView
+                        android:id="@+id/statusLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{@string/order_status(status)}"/>
 
-                            <TextView
-                                android:id="@+id/amountLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/amount"/>
+                </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/amountValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{amount}"
-                                android:textAppearance="?attr/textAppearanceHeadline5"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
+                <Button
+                    android:id="@+id/more_buttom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rounded"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/button_more"
+                    android:layout_centerVertical="true"/>
 
             </RelativeLayout>
 

@@ -131,6 +131,7 @@
     <string name="book">Reservez</string>
     <string name="book_now">Reservez maintenant</string>
     <string name="amount">Montant</string>
+    <string name="order_status">Statut: %s</string>
     <string name="view">Voir</string>
     <string name="checkout">Checkout</string>
     <string name="total_price">Montant total</string>
@@ -221,5 +222,7 @@
     <string name="paypal_desc">Payer avec un compte PayPal</string>
     <string name="payment_success">Paiement effectué</string>
     <string name="button_close">Fermer</string>
+    <string name="button_more">Détails</string>
+    <string name="date">Date</string>
 
 </resources>

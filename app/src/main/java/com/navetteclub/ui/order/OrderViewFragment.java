@@ -104,11 +104,18 @@ public class OrderViewFragment extends Fragment {
                     order = orderWithDatas.getOrder();
                     if(order!=null){
                         mBinding.setAmount(order.getAmountStr());
-                        mBinding.espece.setChecked(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType()));
-                        mBinding.card.setChecked(Order.PAYMENT_TYPE_STRIPE.equals(order.getPaymentType()));
-                        mBinding.paypal.setChecked(Order.PAYMENT_TYPE_PAYPAL.equals(order.getPaymentType()));
+                        if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())){
+                            mBinding.setPaymentType(getString(R.string.cash));
+                        }
+                        if(Order.PAYMENT_TYPE_STRIPE.equals(order.getPaymentType())){
+                            mBinding.setPaymentType(getString(R.string.stripe));
+                        }
+                        if(Order.PAYMENT_TYPE_PAYPAL.equals(order.getPaymentType())){
+                            mBinding.setPaymentType(getString(R.string.paypal));
+                        }
 
                         if(order.getStatus()!=null){
+                            mBinding.setStatus(order.getStatus());
                             switch (order.getStatus()){
                                 case Order.STATUS_PING:
                                     mBinding.bookNowButton.setText(R.string.pay_now);
