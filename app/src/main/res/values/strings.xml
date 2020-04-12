@@ -135,8 +135,8 @@
     <string name="checkout">Checkout</string>
     <string name="total_price">Montant total</string>
     <string name="payment_methods">Moyens de paiement</string>
-    <string name="espece">Espece</string>
-    <string name="card">Carte bancaire</string>
+    <string name="cash">Espece</string>
+    <string name="stripe">Carte bancaire</string>
     <string name="paypal">PayPal</string>
     <string name="confirm">Confirmer</string>
     <string name="button_confirm">Confirmer</string>

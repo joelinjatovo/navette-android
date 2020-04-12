@@ -50,7 +50,7 @@ public class Order {
 
     @SerializedName("place")
     @ColumnInfo(name = "place")
-    private Integer place;
+    private int place;
 
     @SerializedName("amount")
     @ColumnInfo(name = "amount")
@@ -122,11 +122,11 @@ public class Order {
         this.rid = rid;
     }
 
-    public Integer getPlace() {
+    public int getPlace() {
         return place;
     }
 
-    public void setPlace(Integer place) {
+    public void setPlace(int place) {
         this.place = place;
     }
 

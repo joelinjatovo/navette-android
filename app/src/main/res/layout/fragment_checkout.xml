@@ -74,99 +74,28 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/payment_methods"/>
+                android:text="@string/payment_methods"
+                android:layout_marginBottom="10dp"/>
 
-            <com.google.android.material.chip.ChipGroup
+            <com.navetteclub.views.MenuItemView
+                android:id="@+id/pay_per_cash_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:titleText="@string/cash"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/espece"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:checkedIcon="@drawable/outline_add_24"
-                    android:text="@string/espece"/>
+            <com.navetteclub.views.MenuItemView
+                android:id="@+id/pay_per_stripe_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleText="@string/stripe"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/card"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:checkedIcon="@drawable/outline_add_24"
-                    android:text="@string/card"/>
-
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/paypal"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:checkedIcon="@drawable/outline_add_24"
-                    android:text="@string/paypal"/>
-
-            </com.google.android.material.chip.ChipGroup>
+            <com.navetteclub.views.MenuItemView
+                android:id="@+id/pay_per_paypal_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleText="@string/paypal"/>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/paymentMethods">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/card_number" />
-
-            <com.stripe.android.view.CardMultilineWidget
-                android:id="@+id/stripe_card_widget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardContainer">
-
-            <TextView
-                android:id="@+id/label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/switchView"
-                android:text="@string/save_card_number_for_future_payment" />
-
-            <Switch
-                android:id="@+id/switchView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"/>
-
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/confirmButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:text="@string/confirm"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

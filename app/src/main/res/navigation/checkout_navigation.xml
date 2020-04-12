@@ -10,9 +10,29 @@
         android:name="com.navetteclub.ui.pay.CheckoutFragment"
         android:label="@string/title_checkout"
         tools:layout="@layout/fragment_checkout">
+
+        <action
+            android:id="@+id/action_checkout_fragment_to_stripe_fragment"
+            app:destination="@id/stripe_fragment" />
+
         <action
             android:id="@+id/action_checkout_fragment_to_thanks_fragment"
             app:destination="@id/thanks_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/stripe_fragment"
+        android:name="com.navetteclub.ui.pay.StripeFragment"
+        tools:layout="@layout/fragment_stripe">
+
+        <argument
+            android:name="token"
+            app:argType="string" />
+
+        <argument
+            android:name="order"
+            app:argType="string" />
+
     </fragment>
 
     <fragment

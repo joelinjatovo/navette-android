@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavHostController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -24,8 +25,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentCheckoutBinding;
 import com.navetteclub.ui.order.DetailFragment;
+import com.navetteclub.ui.order.OrderFragmentDirections;
+import com.navetteclub.ui.order.SearchType;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
@@ -46,7 +51,7 @@ import java.util.Currency;
 import java.util.Map;
 import java.util.Objects;
 
-public class CheckoutFragment extends Fragment implements ApiResultCallback<PaymentIntentResult> {
+public class CheckoutFragment extends Fragment {
 
     private static final String TAG = CheckoutFragment.class.getSimpleName();
 
@@ -57,9 +62,6 @@ public class CheckoutFragment extends Fragment implements ApiResultCallback<Paym
     private OrderViewModel orderViewModel;
 
     private AuthViewModel authViewModel;
-
-    private String paymentIntentClientSecret;
-    private Stripe stripe;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -72,18 +74,10 @@ public class CheckoutFragment extends Fragment implements ApiResultCallback<Paym
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        setupAuthViewModel(factory);
+        setupOrderViewModel(factory);
         setupUi();
-
-        setupViewModel();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Handle the result of stripe.confirmPayment
-        stripe.onPaymentResult(requestCode, data, this);
     }
 
     private void setupUi() {
@@ -91,15 +85,28 @@ public class CheckoutFragment extends Fragment implements ApiResultCallback<Paym
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
-        mBinding.confirmButton.setOnClickListener(
+        mBinding.payPerStripeButton.setOnClickListener(
+                v -> {
+                    User user = authViewModel.getUser();
+                    OrderWithDatas orderWithDatas = orderViewModel.getOrder();
+                    Order order = null;
+                    if(orderWithDatas!=null){
+                        order = orderWithDatas.getOrder();
+                    }
+                    if(user!=null && order!=null){
+                        CheckoutFragmentDirections.ActionCheckoutFragmentToStripeFragment action =
+                                CheckoutFragmentDirections.actionCheckoutFragmentToStripeFragment(
+                                        user.getAuthorizationToken(),
+                                        order.getRid());
+                        Navigation.findNavController(v).navigate(action);
+                    }
+                });
+
+        mBinding.payPerCashButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null){
-                        if(mBinding.card.isChecked()){
-                            payViaStripe();
-                        }else{
-                            progressDialog.show();
-                            orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
-                        }
+                        progressDialog.show();
+                        orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
                     }
                 });
 
@@ -109,25 +116,8 @@ public class CheckoutFragment extends Fragment implements ApiResultCallback<Paym
                 });
     }
 
-    private void payViaStripe() {
-        PaymentMethodCreateParams params = mBinding.stripeCardWidget.getPaymentMethodCreateParams();
-        if (params != null) {
-            ConfirmPaymentIntentParams confirmParams = ConfirmPaymentIntentParams
-                    .createWithPaymentMethodCreateParams(params, paymentIntentClientSecret);
-            final Context context = requireContext();
-            stripe = new Stripe(
-                    context,
-                    PaymentConfiguration.getInstance(context).getPublishableKey()
-            );
-            stripe.confirmPayment(this, confirmParams);
-        }
-    }
-
-    private void setupViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
+    private void setupAuthViewModel(MyViewModelFactory factory) {
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
-
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
@@ -136,9 +126,10 @@ public class CheckoutFragment extends Fragment implements ApiResultCallback<Paym
                         mBinding.setIsUnauthenticated(true);
                     }
                 });
+    }
 
+    private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
@@ -188,24 +179,5 @@ public class CheckoutFragment extends Fragment implements ApiResultCallback<Paym
                         orderViewModel.setOrder(orderResult.getSuccess());
                     }
                 });
-    }
-
-    @Override
-    public void onError(@NotNull Exception e) {
-        Log.e(TAG, "Payment error", e);
-    }
-
-    @Override
-    public void onSuccess(PaymentIntentResult result) {
-        PaymentIntent paymentIntent = result.getIntent();
-        PaymentIntent.Status status = paymentIntent.getStatus();
-        if (status == PaymentIntent.Status.Succeeded) {
-            // Payment completed successfully
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Log.d(TAG, gson.toJson(paymentIntent));
-        } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
-            // Payment failed – allow retrying using a different payment method
-            Log.e(TAG, "Payment failed – allow retrying using a different payment method");
-        }
     }
 }

@@ -327,7 +327,7 @@
                             android:clickable="false"
                             app:checkedIcon="@drawable/outline_add_24"
                             app:checkedIconEnabled="true"
-                            android:text="@string/espece"/>
+                            android:text="@string/cash"/>
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/card"
@@ -337,7 +337,7 @@
                             android:clickable="false"
                             app:checkedIcon="@drawable/outline_add_24"
                             app:checkedIconEnabled="true"
-                            android:text="@string/card"/>
+                            android:text="@string/stripe"/>
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/paypal"
