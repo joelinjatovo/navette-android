@@ -293,11 +293,20 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         try {
             List<Address> addressList= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
             if (addressList != null && addressList.size() > 0) {
+                for(Address address: addressList){
+                    Log.e(TAG, "getAdminArea = " + address.getMaxAddressLineIndex());
+                    Log.e(TAG, "getAdminArea = " + address.getAdminArea());
+                    Log.e(TAG, "getLocality = " + address.getLocality());
+                    Log.e(TAG, "getCountryName = " + address.getCountryName());
+                    for(int i=0; i < address.getMaxAddressLineIndex(); i++){
+                        Log.e(TAG, "getAddressLine(" + i + ") = " + address.getAddressLine(i));
+                    }
+                }
                 String locality = addressList.get(0).getAddressLine(0);
                 String country = addressList.get(0).getCountryName();
                 Log.e(TAG, "locality = " + locality);
                 Log.e(TAG, "country = " + country);
-                if (!locality.isEmpty() && !country.isEmpty()){
+                if (locality!=null && !locality.isEmpty() && country!=null && !country.isEmpty()){
                     mBinding.locationTitle.setText(locality);
                     mBinding.locationSubtitle.setText(country);
                     mBinding.setIsLoading(false);

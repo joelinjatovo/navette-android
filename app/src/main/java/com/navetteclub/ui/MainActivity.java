@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.verify_phone_fragment:
                 case R.id.search_fragment:
                 case R.id.order_fragment:
+                case R.id.navigation_order:
                     navView.setVisibility(View.GONE);
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

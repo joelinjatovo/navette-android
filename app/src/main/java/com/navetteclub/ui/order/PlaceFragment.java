@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentPlaceBinding;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.utils.UiUtils;
@@ -47,7 +48,6 @@ public class PlaceFragment extends Fragment {
 
     private void setupUi() {
         mBinding.stepView.go(2, true);
-
         mBinding.plus.setOnClickListener(
                 v -> {
                     if( place < max ) {
@@ -79,17 +79,17 @@ public class PlaceFragment extends Fragment {
 
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
-                    if(orderWithDatas==null || orderWithDatas.getOrder()==null){
+                    if(orderWithDatas==null){
                         return;
                     }
-
-                    this.place = orderWithDatas.getOrder().getPlace();
-
+                    Order order = orderWithDatas.getOrder();
+                    if(order==null){
+                        return;
+                    }
+                    this.place = order.getPlace();
                     mBinding.setPlace(place);
                 });
     }
