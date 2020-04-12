@@ -1,6 +1,8 @@
 package com.navetteclub.ui.pay;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentCheckoutBinding;
@@ -25,11 +30,23 @@ import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.stripe.android.ApiResultCallback;
+import com.stripe.android.PaymentConfiguration;
+import com.stripe.android.PaymentIntentResult;
+import com.stripe.android.Stripe;
+import com.stripe.android.model.ConfirmPaymentIntentParams;
+import com.stripe.android.model.PaymentIntent;
+import com.stripe.android.model.PaymentMethodCreateParams;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Type;
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.Map;
+import java.util.Objects;
 
-public class CheckoutFragment extends Fragment {
+public class CheckoutFragment extends Fragment implements ApiResultCallback<PaymentIntentResult> {
 
     private static final String TAG = CheckoutFragment.class.getSimpleName();
 
@@ -40,6 +57,9 @@ public class CheckoutFragment extends Fragment {
     private OrderViewModel orderViewModel;
 
     private AuthViewModel authViewModel;
+
+    private String paymentIntentClientSecret;
+    private Stripe stripe;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -58,6 +78,14 @@ public class CheckoutFragment extends Fragment {
         setupViewModel();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Handle the result of stripe.confirmPayment
+        stripe.onPaymentResult(requestCode, data, this);
+    }
+
     private void setupUi() {
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
@@ -66,8 +94,12 @@ public class CheckoutFragment extends Fragment {
         mBinding.confirmButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null){
-                        progressDialog.show();
-                        orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
+                        if(mBinding.card.isChecked()){
+                            payViaStripe();
+                        }else{
+                            progressDialog.show();
+                            orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
+                        }
                     }
                 });
 
@@ -75,6 +107,20 @@ public class CheckoutFragment extends Fragment {
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
                 });
+    }
+
+    private void payViaStripe() {
+        PaymentMethodCreateParams params = mBinding.stripeCardWidget.getPaymentMethodCreateParams();
+        if (params != null) {
+            ConfirmPaymentIntentParams confirmParams = ConfirmPaymentIntentParams
+                    .createWithPaymentMethodCreateParams(params, paymentIntentClientSecret);
+            final Context context = requireContext();
+            stripe = new Stripe(
+                    context,
+                    PaymentConfiguration.getInstance(context).getPublishableKey()
+            );
+            stripe.confirmPayment(this, confirmParams);
+        }
     }
 
     private void setupViewModel() {
@@ -142,5 +188,24 @@ public class CheckoutFragment extends Fragment {
                         orderViewModel.setOrder(orderResult.getSuccess());
                     }
                 });
+    }
+
+    @Override
+    public void onError(@NotNull Exception e) {
+        Log.e(TAG, "Payment error", e);
+    }
+
+    @Override
+    public void onSuccess(PaymentIntentResult result) {
+        PaymentIntent paymentIntent = result.getIntent();
+        PaymentIntent.Status status = paymentIntent.getStatus();
+        if (status == PaymentIntent.Status.Succeeded) {
+            // Payment completed successfully
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Log.d(TAG, gson.toJson(paymentIntent));
+        } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
+            // Payment failed – allow retrying using a different payment method
+            Log.e(TAG, "Payment failed – allow retrying using a different payment method");
+        }
     }
 }

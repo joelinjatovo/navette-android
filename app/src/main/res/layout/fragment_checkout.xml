@@ -110,7 +110,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/cardWidget"
+            android:id="@+id/cardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -125,6 +125,7 @@
                 android:text="@string/card_number" />
 
             <com.stripe.android.view.CardMultilineWidget
+                android:id="@+id/stripe_card_widget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -136,7 +137,7 @@
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardWidget">
+            app:layout_constraintTop_toBottomOf="@id/cardContainer">
 
             <TextView
                 android:id="@+id/label"

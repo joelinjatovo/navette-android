@@ -72,44 +72,7 @@ public class StripeFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Handle the result of stripe.confirmPayment
-        stripe.onPaymentResult(requestCode, data, new PaymentResultCallback((MainActivity) requireActivity()));
+        stripe.onPaymentResult(requestCode, data, new StripePaymentResultCallback((MainActivity) requireActivity()));
     }
 
-    private static final class PaymentResultCallback implements ApiResultCallback<PaymentIntentResult> {
-        @NonNull private final WeakReference<MainActivity> activityRef;
-
-        PaymentResultCallback(@NonNull MainActivity activity) {
-            activityRef = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void onSuccess(@NonNull PaymentIntentResult result) {
-            final MainActivity activity = activityRef.get();
-            if (activity == null) {
-                return;
-            }
-
-            PaymentIntent paymentIntent = result.getIntent();
-            PaymentIntent.Status status = paymentIntent.getStatus();
-            if (status == PaymentIntent.Status.Succeeded) {
-                // Payment completed successfully
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Log.d(TAG, gson.toJson(paymentIntent));
-            } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
-                // Payment failed
-                Log.e(TAG, Objects.requireNonNull(paymentIntent.getLastPaymentError()).getMessage());
-            }
-        }
-
-        @Override
-        public void onError(@NonNull Exception e) {
-            final MainActivity activity = activityRef.get();
-            if (activity == null) {
-                return;
-            }
-
-            // Payment request failed – allow retrying using the same payment method
-            Log.e(TAG,e.getMessage(), e);
-        }
-    }
 }
