@@ -36,6 +36,13 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <com.navetteclub.views.AuthErrorView
+            android:id="@+id/authErrorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -44,7 +51,8 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
 
             <TextView
                 android:layout_width="match_parent"
@@ -69,31 +77,67 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout">
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/payment_methods"
+                android:text="@string/how_do_you_want_to_pay"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_your_prefered_payment_method"
                 android:layout_marginBottom="10dp"/>
 
             <com.navetteclub.views.MenuItemView
                 android:id="@+id/pay_per_cash_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleText="@string/cash"/>
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:titleText="@string/cash"
+                app:subtitleText="@string/cash_desc"
+                app:iconImage="@drawable/money_32px"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
 
             <com.navetteclub.views.MenuItemView
                 android:id="@+id/pay_per_stripe_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleText="@string/stripe"/>
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:titleText="@string/stripe"
+                app:subtitleText="@string/stripe_desc"
+                app:iconImage="@drawable/credit_card_32px"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
 
             <com.navetteclub.views.MenuItemView
                 android:id="@+id/pay_per_paypal_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleText="@string/paypal"/>
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:titleText="@string/paypal"
+                app:subtitleText="@string/paypal_desc"
+                app:iconImage="@drawable/paypal_32px"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
 
         </LinearLayout>
 

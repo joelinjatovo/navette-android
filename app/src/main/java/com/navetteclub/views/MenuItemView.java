@@ -1,7 +1,9 @@
 package com.navetteclub.views;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -52,6 +54,14 @@ public class MenuItemView extends RelativeLayout {
             if (mIcon != null) {
                 imageView.setImageDrawable(mIcon);
                 mIcon.setCallback(this);
+            }
+        }
+
+
+        if (a.hasValue(R.styleable.MenuItemView_iconTint)) {
+            ColorStateList tint = a.getColorStateList(R.styleable.MenuItemView_iconTint);
+            if (tint != null) {
+                imageView.setColorFilter(tint.getColorForState(getDrawableState(), 0));
             }
         }
 

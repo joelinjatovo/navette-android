@@ -71,23 +71,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 });
 
         mBinding.editButton.setOnClickListener(this);
-        mBinding.orders.setOnClickListener(this);
-        mBinding.rides.setOnClickListener(this);
-        mBinding.settings.setOnClickListener(this);
-        mBinding.logout.setOnClickListener(this);
+        mBinding.menuOrders.setOnClickListener(this);
+        mBinding.menuRides.setOnClickListener(this);
+        mBinding.menuSettings.setOnClickListener(this);
+        mBinding.menuLogout.setOnClickListener(this);
         mBinding.verifyButton.setOnClickListener(v -> NavHostFragment.findNavController(ProfileFragment.this).navigate(R.id.action_global_navigation_auth));
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.orders:
+            case R.id.menu_orders:
                 NavHostFragment.findNavController(this).navigate(R.id.action_global_navigation_orders);
                 break;
-            case R.id.rides:
+            case R.id.menu_rides:
                 NavHostFragment.findNavController(this).navigate(R.id.action_global_navigation_rides);
                 break;
-            case R.id.logout:
+            case R.id.menu_logout:
                 loginViewModel.setLoginResult(null);
                 authViewModel.logout(requireContext());
                 break;

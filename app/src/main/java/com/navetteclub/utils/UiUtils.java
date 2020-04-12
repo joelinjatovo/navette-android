@@ -14,8 +14,11 @@ import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.views.MarkerStepView;
 import com.navetteclub.views.MarkerView;
 import com.squareup.picasso.Picasso;
 
@@ -27,16 +30,19 @@ public class UiUtils {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
-    public static Bitmap getMarkerBitmapFromView(@NonNull Context context) {
-        return  getMarkerBitmapFromView(context, null, null);
-    }
-
-    public static Bitmap getMarkerBitmapFromView(@NonNull Context context, String label) {
-        return  getMarkerBitmapFromView(context, label, null);
-    }
-
-    public static Bitmap getMarkerBitmapFromView(@NonNull Context context, String label, Bitmap bitmap) {
+    public static BitmapDescriptor getBitmapFromMarkerView(@NonNull Context context, String label) {
         MarkerView customMarkerView = new MarkerView(context);
+
+        if(label!=null){
+            customMarkerView.getTitleView().setText(label);
+        }
+
+        return getBitmap(customMarkerView);
+    }
+
+    public static BitmapDescriptor getBitmapFromMarkerView(@NonNull Context context, String label, Bitmap bitmap) {
+        MarkerView customMarkerView = new MarkerView(context);
+
         if(label!=null){
             customMarkerView.getTitleView().setText(label);
         }
@@ -45,20 +51,38 @@ public class UiUtils {
             customMarkerView.getImageView().setImageBitmap(bitmap);
         }
 
-        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-        customMarkerView.buildDrawingCache();
+        return getBitmap(customMarkerView);
+    }
+
+    public static BitmapDescriptor getBitmapFromMarkerStepView(@NonNull Context context, String step, String title) {
+        MarkerStepView customMarkerView = new MarkerStepView(context);
+
+        if(step!=null){
+            customMarkerView.getStepTextView().setText(step);
+        }
+
+        if(title!=null){
+            customMarkerView.getTitleTextView().setText(title);
+        }
+
+        return getBitmap(customMarkerView);
+    }
+
+    private static BitmapDescriptor getBitmap(View view){
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.buildDrawingCache();
         Bitmap returnedBitmap = Bitmap.createBitmap(
-                customMarkerView.getMeasuredWidth(),
-                customMarkerView.getMeasuredHeight(),
+                view.getMeasuredWidth(),
+                view.getMeasuredHeight(),
                 Bitmap.Config.ARGB_8888
-            );
+        );
         Canvas canvas = new Canvas(returnedBitmap);
         canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        Drawable drawable = customMarkerView.getBackground();
+        Drawable drawable = view.getBackground();
         if (drawable != null)
             drawable.draw(canvas);
-        customMarkerView.draw(canvas);
-        return returnedBitmap;
+        view.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(returnedBitmap);
     }
 }

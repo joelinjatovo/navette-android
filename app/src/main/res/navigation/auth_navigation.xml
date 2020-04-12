@@ -5,6 +5,14 @@
     android:id="@+id/navigation_auth"
     app:startDestination="@id/login_fragment">
 
+    <action
+        android:id="@+id/action_global_phone_fragment"
+        app:destination="@id/phone_fragment" />
+
+    <action
+        android:id="@+id/action_global_verify_phone_fragment"
+        app:destination="@id/verify_phone_fragment" />
+
     <fragment
         android:id="@+id/login_fragment"
         android:name="com.navetteclub.ui.auth.LoginFragment"

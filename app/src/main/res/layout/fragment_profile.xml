@@ -134,41 +134,12 @@
             android:orientation="vertical">
 
             <com.navetteclub.views.MenuItemView
-                android:id="@+id/trajet"
+                android:id="@+id/menu_orders"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                app:titleText="@string/trajet"
-                app:subtitleText="@string/menu_trajet_desc"
-                app:iconImage="@drawable/outline_directions_car_black_24"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorIcon"/>
-
-            <com.navetteclub.views.MenuItemView
-                android:id="@+id/rides"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                app:titleText="@string/rides"
-                app:subtitleText="@string/menu_rides_desc"
-                app:iconImage="@drawable/outline_directions_car_black_24"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorIcon"/>
-
-            <com.navetteclub.views.MenuItemView
-                android:id="@+id/orders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                app:iconTint="@color/colorAccent"
                 app:titleText="@string/orders"
                 app:subtitleText="@string/menu_orders_desc"
                 app:iconImage="@drawable/outline_shopping_cart_black_24"/>
@@ -179,11 +150,28 @@
                 android:background="@color/colorIcon"/>
 
             <com.navetteclub.views.MenuItemView
-                android:id="@+id/histories"
+                android:id="@+id/menu_rides"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                app:iconTint="@color/colorAccent"
+                app:titleText="@string/rides"
+                app:subtitleText="@string/menu_rides_desc"
+                app:iconImage="@drawable/outline_directions_car_black_24"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorIcon"/>
+
+            <com.navetteclub.views.MenuItemView
+                android:id="@+id/menu_histories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:iconTint="@color/colorAccent"
                 app:titleText="@string/histories"
                 app:subtitleText="@string/menu_histories_desc"
                 app:iconImage="@drawable/outline_history_black_24"/>
@@ -194,11 +182,12 @@
                 android:background="@color/colorIcon"/>
 
             <com.navetteclub.views.MenuItemView
-                android:id="@+id/settings"
+                android:id="@+id/menu_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                app:iconTint="@color/colorAccent"
                 app:titleText="@string/settings"
                 app:subtitleText="@string/menu_settings_desc"
                 app:iconImage="@drawable/outline_settings_black_24"/>
@@ -209,7 +198,7 @@
                 android:background="@color/colorIcon"/>
 
             <com.navetteclub.views.MenuItemView
-                android:id="@+id/logout"
+                android:id="@+id/menu_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"

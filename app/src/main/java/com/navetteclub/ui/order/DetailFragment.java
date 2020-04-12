@@ -11,12 +11,14 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
@@ -55,46 +57,47 @@ public class DetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG + "Cycle", "onViewCreated");
-
-        progressDialog = new ProgressDialog(requireContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.signing));
-
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        setupOrderViewModel(factory);
+        setupAuthViewModel(factory);
         setupUi();
-
-        setupOrderViewModel();
-
-        setupAuthViewModel();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         Log.d(TAG + "Cycle", "onDestroyView");
     }
 
-    private void setupAuthViewModel() {
-
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
+    private void setupAuthViewModel(MyViewModelFactory factory) {
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
-
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        mBinding.setIsUnauthenticated(false);
+                        boolean unauthenticated = false;
+                        User user = authViewModel.getUser();
+                        if(user!=null){
+                            if(user.getPhone()==null){
+                                unauthenticated = true;
+                                mBinding.authErrorView.getTitleView().setText(R.string.error_phone);
+                                mBinding.authErrorView.getSubtitleView().setText(R.string.error_phone_desc);
+                            }else if(!user.getVerified()){
+                                unauthenticated = true;
+                                mBinding.authErrorView.getTitleView().setText(R.string.error_verify_phone);
+                                mBinding.authErrorView.getSubtitleView().setText(R.string.error_verify_phone_desc);
+                            }
+                        }
+                        mBinding.setIsUnauthenticated(unauthenticated);
                     }else{
                         mBinding.setIsUnauthenticated(true);
+                        mBinding.authErrorView.getTitleView().setText(R.string.error);
+                        mBinding.authErrorView.getSubtitleView().setText(R.string.error_401);
                     }
                 });
     }
 
-    private void setupOrderViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
+    private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 orderWithDatas -> {
                     if(orderWithDatas == null){
@@ -145,10 +148,11 @@ public class DetailFragment extends Fragment {
 
     }
 
-
     private void setupUi() {
         mBinding.stepView.go(5, true);
-
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null
@@ -163,7 +167,17 @@ public class DetailFragment extends Fragment {
 
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.navigation_auth);
+                    User user = authViewModel.getUser();
+                    NavController navController = Navigation.findNavController(v);
+                    if(user==null){
+                        navController.navigate(R.id.navigation_auth);
+                    }else{
+                        if(user.getPhone()==null){
+                            navController.navigate(R.id.action_global_phone_fragment);
+                        }else if(!user.getVerified()){
+                            navController.navigate(R.id.action_global_verify_phone_fragment);
+                        }
+                    }
                 });
     }
 

@@ -9,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/image"
-        android:tint="@color/colorAccent"
         android:src="@drawable/outline_person_outline_black_24"
         android:padding="10dp"/>
 

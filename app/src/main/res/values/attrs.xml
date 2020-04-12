@@ -18,6 +18,11 @@
         <attr name="subtitleText" format="string" />
         <attr name="subtitleEnable" format="boolean"/>
         <attr name="iconImage" format="color|reference" />
+        <attr name="iconTint" format="color" />
         <attr name="endIconEnable" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="MarkerStepView">
+        <attr name="marker_title" format="string" />
+        <attr name="marker_step" format="string" />
     </declare-styleable>
 </resources>

@@ -121,9 +121,24 @@ public class CheckoutFragment extends Fragment {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        mBinding.setIsUnauthenticated(false);
+                        boolean unauthenticated = false;
+                        User user = authViewModel.getUser();
+                        if(user!=null){
+                            if(user.getPhone()==null){
+                                unauthenticated = true;
+                                mBinding.authErrorView.getTitleView().setText(R.string.error_phone);
+                                mBinding.authErrorView.getSubtitleView().setText(R.string.error_phone_desc);
+                            }else if(!user.getVerified()){
+                                unauthenticated = true;
+                                mBinding.authErrorView.getTitleView().setText(R.string.error_verify_phone);
+                                mBinding.authErrorView.getSubtitleView().setText(R.string.error_verify_phone_desc);
+                            }
+                        }
+                        mBinding.setIsUnauthenticated(unauthenticated);
                     }else{
                         mBinding.setIsUnauthenticated(true);
+                        mBinding.authErrorView.getTitleView().setText(R.string.error);
+                        mBinding.authErrorView.getSubtitleView().setText(R.string.error_401);
                     }
                 });
     }

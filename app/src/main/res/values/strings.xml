@@ -142,7 +142,7 @@
     <string name="button_confirm">Confirmer</string>
     <string name="card_number">Card number</string>
     <string name="save_card_number_for_future_payment">Sauvegarder la carte pour un paiement futur</string>
-    <string name="thanks_you_for_purchasing">Thank you for purchasing</string>
+    <string name="thanks_you_for_purchasing">Votre paiement a été bien réussi.\nMerci d\'utiliser notre service.</string>
     <string name="thanks">Thanks</string>
     <string name="title_checkout">Checkout</string>
     <string name="error_invalid_access_token">Invalid Access Token</string>
@@ -210,5 +210,16 @@
     <string name="hint_phone">Téléphone</string>
     <string name="title_verify_phone_number">Verifier\nmon téléphone</string>
     <string name="title_forgot">Envoyez moi\nmon nouveau mot de passe</string>
+    <string name="error_phone">Téléphone non renseigné</string>
+    <string name="error_phone_desc">Vous devez renseigner votre numéro de téléphone pour que le chauffeur puisse vous contacter</string>
+    <string name="error_verify_phone">Numéro téléphone non vérifié</string>
+    <string name="error_verify_phone_desc">Votre numéro de téléphone n\'a pas été encore vérifié. Veuillez le faire maintenant!</string>
+    <string name="how_do_you_want_to_pay">Comment voulez vous payer?</string>
+    <string name="choose_your_prefered_payment_method">Choisissez le moyen de paiement qui vous convient</string>
+    <string name="cash_desc">Payer le chauffeur directement.</string>
+    <string name="stripe_desc">"Votre carte sera créditée automatiquement "</string>
+    <string name="paypal_desc">Payer avec un compte PayPal</string>
+    <string name="payment_success">Paiement effectué</string>
+    <string name="button_close">Fermer</string>
 
 </resources>

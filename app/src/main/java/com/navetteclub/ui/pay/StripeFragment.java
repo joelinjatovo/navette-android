@@ -127,6 +127,8 @@ public class StripeFragment extends Fragment {
                 v -> {
                     NavHostFragment.findNavController(this).navigate(R.id.navigation_auth);
                 });
+
+        mBinding.toolbar.setNavigationOnClickListener(v -> NavHostFragment.findNavController(StripeFragment.this).popBackStack());
     }
 
     private void setupAuthViewModel(MyViewModelFactory factory) {

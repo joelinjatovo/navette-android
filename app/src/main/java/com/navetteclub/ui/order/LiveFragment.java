@@ -347,7 +347,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 originPoint -> {
                     mBinding.setOrigin(originPoint);
                     mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
-                    drawMarker(originPoint, 0, orderViewModel.getOrder().getClub());
+                    drawOriginMarker(originPoint);
                     if(mMap!=null){
                         // Zoom map
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOrigin, MAP_ZOOM));
@@ -359,7 +359,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 destinationPoint -> {
                     mBinding.setDestination(destinationPoint);
                     mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
-                    drawMarker(destinationPoint, 1, orderViewModel.getOrder().getClub());
+                    drawDestinationMarker(destinationPoint, orderViewModel.getOrder().getClub());
                     if(mMap!=null){
                         // Zoom map
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDestination, MAP_ZOOM));
@@ -371,7 +371,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 retoursPoint -> {
                     mBinding.setRetours(retoursPoint);
                     mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
-                    drawMarker(retoursPoint, 2, orderViewModel.getOrder().getClub());
+                    drawRetoursMarker(retoursPoint);
                     if(mMap!=null){
                         // Zoom map
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mRetours, MAP_ZOOM));
@@ -418,75 +418,81 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void drawMarker(Point point, int index, Club club) {
+    private void drawOriginMarker(Point point) {
         if(mMap==null){
             return;
         }
 
-        LatLng latLng = new LatLng(
-                point.getLat(),
-                point.getLng()
-        );
+        if(mOriginMarker!=null){
+            mOriginMarker.remove();
+        }
 
-        // Creating MarkerOptions
-        MarkerOptions options = new MarkerOptions();
+        LatLng latLng = new LatLng(point.getLat(),point.getLng());
+        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+        options.position(latLng); // Setting the position of the marker
+        options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
+        //options.anchor(1, 0.5f);
 
-        // Setting the position of the marker
-        options.position(latLng);
+        mOriginMarker = mMap.addMarker(options);
+    }
 
-        switch (index){
-            case 0: // Origin
-                if(mOriginMarker!=null){
-                    mOriginMarker.remove();
-                }
+    private void drawRetoursMarker(Point point) {
+        if(mMap==null){
+            return;
+        }
 
-                options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
-                //options.anchor(1, 0.5f);
-                mOriginMarker = mMap.addMarker(options);
-                break;
-            case 1: // Destination
-                if(mDestinationMarker!=null){
-                    mDestinationMarker.remove();
-                }
+        if(mRetoursMarker!=null){
+            mRetoursMarker.remove();
+        }
 
-                if(club!=null){
-                    new Picasso.Builder(requireContext())
-                            .build()
-                            .load(Constants.getBaseUrl() + club.getImageUrl())
-                            .resize(64,64)
-                            .into(new Target() {
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    // loaded bitmap is here (bitmap)
-                                    options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), club.getName(), bitmap)));
-                                    //options.anchor(0.5f, 1);
-                                    mDestinationMarker = mMap.addMarker(options);
-                                }
+        LatLng latLng = new LatLng(point.getLat(),point.getLng());
+        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+        options.position(latLng); // Setting the position of the marker
+        options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
+        //options.anchor(1, 0.5f);
 
-                                @Override
-                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                                    mDestinationMarker = mMap.addMarker(options);
-                                }
+        mRetoursMarker = mMap.addMarker(options);
+    }
 
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                }
-                            });
-                }else{
-                    options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
-                    mDestinationMarker = mMap.addMarker(options);
-                }
-                break;
-            case 2: // Retours
-                if(mRetoursMarker!=null){
-                    mRetoursMarker.remove();
-                }
-                options.icon(BitmapDescriptorFactory.fromBitmap(UiUtils.getMarkerBitmapFromView(requireContext(), point.getName())));
-                //options.anchor(0.5f, 0.5f);
+    private void drawDestinationMarker(Point point, Club club) {
+        if(mMap==null){
+            return;
+        }
 
-                mRetoursMarker = mMap.addMarker(options);
-                break;
+        if(mDestinationMarker!=null){
+            mDestinationMarker.remove();
+        }
+
+        LatLng latLng = new LatLng(point.getLat(),point.getLng());
+        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+        options.position(latLng); // Setting the position of the marker
+        if(club!=null){
+            new Picasso.Builder(requireContext())
+                    .build()
+                    .load(Constants.getBaseUrl() + club.getImageUrl())
+                    .resize(64,64)
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            // loaded bitmap is here (bitmap)
+                            options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), club.getName(), bitmap));
+                            //options.anchor(0.5f, 1);
+                            mDestinationMarker = mMap.addMarker(options);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                            mDestinationMarker = mMap.addMarker(options);
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    });
+        }else{
+            options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
+            mDestinationMarker = mMap.addMarker(options);
         }
     }
 
