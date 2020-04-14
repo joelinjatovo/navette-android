@@ -111,13 +111,13 @@
                         </LinearLayout>
 
                         <Button
-                            android:id="@+id/more_buttom"
+                            android:id="@+id/call_buttom"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="0dp"
                             android:layout_margin="0dp"
                             android:layout_alignParentEnd="true"
-                            android:text="@string/button_more"
+                            android:text="@string/button_call"
                             android:layout_centerVertical="true"
                             style="?attr/materialButtonOutlinedStyle"
                             android:textColor="@color/colorAccent"

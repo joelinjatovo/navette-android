@@ -239,5 +239,6 @@
     <string name="button_pay">Payer</string>
     <string name="init_secured_payment">Initialisation du paiement sécurisé.</string>
     <string name="loading_ride_points">Chargements des points GPS</string>
+    <string name="button_call">Call</string>
 
 </resources>

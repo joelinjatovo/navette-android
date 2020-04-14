@@ -1,6 +1,11 @@
 package com.navetteclub.ui.driver;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -68,7 +74,7 @@ public class RidePointFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_point, container, false);
 
-        mAdapter = new RidePointRecyclerViewAdapter(mListener);
+        mAdapter = new RidePointRecyclerViewAdapter(mListener, mCallListener);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -190,8 +196,49 @@ public class RidePointFragment extends Fragment {
                 });
     }
 
+    private void onCallBtnClick(String phone){
+        if (Build.VERSION.SDK_INT < 23) {
+            phoneCall(phone);
+        }else {
+
+            if (ActivityCompat.checkSelfPermission(requireActivity(),
+                    Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+
+                phoneCall(phone);
+            }else {
+                final String[] PERMISSIONS_STORAGE = {Manifest.permission.CALL_PHONE};
+                //Asking request Permissions
+                ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS_STORAGE, 9);
+            }
+        }
+    }
+
+    private void phoneCall(String phone) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean permissionGranted = false;
+        switch(requestCode){
+            case 9:
+                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if(!permissionGranted){
+            Toast.makeText(requireActivity(), "You don't assign permission.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
         //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
+    };
+
+    private OnClickItemListener<RidePointWithDatas> mCallListener = (v, pos, item) -> {
+        if (item.getUser() != null && item.getUser().getPhone() != null) {
+            onCallBtnClick(item.getUser().getPhone());
+        }
     };
 
 }

@@ -1,5 +1,7 @@
 package com.navetteclub.ui.driver;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -24,9 +26,11 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
     private List<RidePointWithDatas> mItems;
 
     private final OnClickItemListener<RidePointWithDatas> mListener;
+    private final OnClickItemListener<RidePointWithDatas> mCallListener;
 
-    public RidePointRecyclerViewAdapter(OnClickItemListener<RidePointWithDatas> listener) {
+    public RidePointRecyclerViewAdapter(OnClickItemListener<RidePointWithDatas> listener, OnClickItemListener<RidePointWithDatas> callListener) {
         mListener = listener;
+        mCallListener = callListener;
     }
 
     @NonNull
@@ -45,6 +49,11 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
                 mListener.onClick(v, position, holder.mItem);
+            }
+        });
+        holder.mBinding.callButtom.setOnClickListener(v -> {
+            if (null != mCallListener) {
+                mCallListener.onClick(v, position, holder.mItem);
             }
         });
     }

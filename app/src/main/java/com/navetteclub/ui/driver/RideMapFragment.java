@@ -171,9 +171,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG + "Cycle", "onViewCreated");
         setupUi();
-        setupAuthViewModel();
-        setupGoogleViewModel();
-        setupRidesViewModel();
     }
 
     private void setupRidesViewModel() {
@@ -263,6 +260,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        setupAuthViewModel();
+        setupGoogleViewModel();
+        setupRidesViewModel();
         getDeviceLocation();
     }
 
