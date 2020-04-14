@@ -110,14 +110,15 @@ public class DetailFragment extends Fragment {
                         Double amount = orderWithDatas.getOrder().getAmount();
                         if( amount != null && amount > 0 ){
                             mBinding.setAmount(orderWithDatas.getOrder().getAmountStr());
+                            Log.d(TAG, "getStatus" + orderWithDatas.getOrder().getStatus());
                             switch (orderWithDatas.getOrder().getStatus()){
                                 case Order.STATUS_PING:
                                     mBinding.bookNowButton.setText(R.string.pay_now);
-                                    NavHostFragment.findNavController(this).navigate(R.id.navigation_checkout);
+                                    //NavHostFragment.findNavController(this).navigate(R.id.navigation_checkout);
                                 break;
                                 case Order.STATUS_OK:
                                     mBinding.bookNowButton.setText(R.string.view);
-                                    NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_thanks_fragment);
+                                    //NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_thanks_fragment);
                                 break;
                                 default:
                                     mBinding.bookNowButton.setText(R.string.book_now);

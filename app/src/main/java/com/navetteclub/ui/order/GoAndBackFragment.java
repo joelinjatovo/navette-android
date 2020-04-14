@@ -47,9 +47,7 @@ public class GoAndBackFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setupViewModel();
-
         setupUi();
     }
 
@@ -90,7 +88,6 @@ public class GoAndBackFragment extends Fragment {
 
     private void setupUi() {
         mBinding.stepView.go(3, true);
-
         mBinding.yesButton.setOnClickListener(
                 v -> {
                     // reset return point
