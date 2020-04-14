@@ -234,5 +234,7 @@
     <string name="title_cancel_order_desc">Une charge vous sera deduite\npour une commande annulée.</string>
     <string name="title_cancelation">Annulation</string>
     <string name="button_back">Retours</string>
+    <string name="button_pay">Payer</string>
+    <string name="init_secured_payment">Initialisation du paiement sécurisé.</string>
 
 </resources>

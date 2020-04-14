@@ -102,15 +102,8 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG + "Cycle", "onViewCreated");
-
-        progressDialog = new ProgressDialog(requireContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.signing));
-
         setupUi();
-
         setupOrderViewModel();
-
         setupAuthViewModel();
     }
 
@@ -145,31 +138,90 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(order!=null){
                         mBinding.setOrderId(order.getRid());
                         mBinding.setAmount(order.getAmountStr());
-                        if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())){
-                            mBinding.setPaymentType(getString(R.string.cash));
-                        }
-                        if(Order.PAYMENT_TYPE_STRIPE.equals(order.getPaymentType())){
-                            mBinding.setPaymentType(getString(R.string.stripe));
-                        }
-                        if(Order.PAYMENT_TYPE_PAYPAL.equals(order.getPaymentType())){
-                            mBinding.setPaymentType(getString(R.string.paypal));
+
+                        if(order.getPaymentType()!=null){
+                            switch (order.getPaymentType()){
+                                case Order.PAYMENT_TYPE_CASH:
+                                    mBinding.editChip.setVisibility(View.VISIBLE);
+                                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                                    mBinding.setPaymentType(getString(R.string.cash));
+                                break;
+                                case Order.PAYMENT_TYPE_STRIPE:
+                                    mBinding.editChip.setVisibility(View.GONE);
+                                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                                    mBinding.setPaymentType(getString(R.string.stripe));
+                                break;
+                                case Order.PAYMENT_TYPE_PAYPAL:
+                                    mBinding.editChip.setVisibility(View.GONE);
+                                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                                    mBinding.setPaymentType(getString(R.string.paypal));
+                                break;
+                                default:
+                                    mBinding.paymentMethods.setVisibility(View.GONE);
+                                break;
+                            }
+                        }else{
+                            mBinding.paymentMethods.setVisibility(View.GONE);
                         }
 
+                        mBinding.cancelButton.setVisibility(Order.STATUS_OK.equals(order.getStatus())?View.VISIBLE:View.GONE);
+                        mBinding.liveButton.setVisibility(Order.STATUS_ACTIVE.equals(order.getStatus())?View.VISIBLE:View.GONE);
                         if(order.getStatus()!=null){
                             mBinding.setStatus(order.getStatus());
+                            mBinding.actionButton.setVisibility(Order.STATUS_PING.equals(order.getStatus())||Order.STATUS_ON_HOLD.equals(order.getStatus())?View.VISIBLE:View.GONE);
+                            mBinding.actionButton.setText(R.string.button_pay);
+                        }else{
+                            mBinding.actionButton.setVisibility(View.VISIBLE);
+                            mBinding.actionButton.setText(R.string.button_confirm);
                         }
                     }
+                });
+
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
+                orderResult -> {
+                    if(orderResult == null){
+                        return;
+                    }
+
+                    progressDialog.hide();
+
+                    if (orderResult.getError() != null) {
+                        Log.d(TAG, "'orderResult.getError()'");
+                        Snackbar.make(mBinding.getRoot(), orderResult.getError(), Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    if (orderResult.getSuccess() != null) {
+                        Log.d(TAG, "'orderResult.getSuccess()'");
+                        NavHostFragment.findNavController(this).navigate(R.id.action_order_view_fragment_to_navigation_checkout);
+                    }
+
+                    orderViewModel.setOrderResult(null);
                 });
 
     }
 
     private void setupUi() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
+
         NavController navController = NavHostFragment.findNavController(this);
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
                     navController.popBackStack();
                 });
 
+        /*
+        * Close dialog
+         */
+        mBinding.closeButton.setOnClickListener(
+                v -> {
+                    navController.popBackStack();
+                });
+
+        /*
+        * Cancel order with status PING
+         */
         mBinding.cancelButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
@@ -182,6 +234,9 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     }
                 });
 
+        /*
+         * Live order with status ACTIVE
+         */
         mBinding.liveButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
@@ -194,13 +249,32 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     }
                 });
 
+        /*
+         * Go to checkout for PING or ON_HOLD status
+         * Place order if status is null
+         */
         mBinding.actionButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
-                        if (!Order.STATUS_OK.equals(order.getStatus())
-                                &&!Order.STATUS_PROCESSING.equals(order.getStatus())){
+                        if (Order.STATUS_PING.equals(order.getStatus())||Order.STATUS_ON_HOLD.equals(order.getStatus())){
                             // Go to checkout
-                            navController.navigate(R.id.action_order_fragment_to_navigation_checkout);
+                            navController.navigate(R.id.action_order_view_fragment_to_navigation_checkout);
+                        }else{
+                            // Place order
+                            orderViewModel.placeOrder(authViewModel.getUser());
+                        }
+                    }
+                });
+
+        /*
+         * Go to checkout for PAYMENT_TYPE_CASH
+         */
+        mBinding.editChip.setOnClickListener(
+                v -> {
+                    if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
+                        if (Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())){
+                            // Go to checkout
+                            navController.navigate(R.id.action_order_view_fragment_to_navigation_checkout);
                         }
                     }
                 });

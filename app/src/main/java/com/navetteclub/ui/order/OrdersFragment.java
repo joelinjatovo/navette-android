@@ -190,6 +190,7 @@ public class OrdersFragment extends Fragment {
     private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
         @Override
         public void onListFragmentInteraction(View v, OrderWithDatas item) {
+            orderViewModel.refresh();
             orderViewModel.setOrder(item);
             NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
         }

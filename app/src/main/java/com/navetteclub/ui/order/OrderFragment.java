@@ -155,9 +155,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Get the current location of the device and set the position of the map.
-        //getDeviceLocation();
     }
 
     private void setupMap() {
@@ -183,9 +180,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupGoogleViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
-
         googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
@@ -213,7 +208,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     mBinding.setIsLoadingDirection(false);
                     showDirectionError(error);
                 });
-
     }
 
     private void showDirectionError(String error) {
@@ -226,7 +220,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
                 originPoint -> {
                     mBinding.setOrigin(originPoint);
-
                     if(originPoint==null){
                         getDeviceLocation(SearchType.ORIGIN);
                         return;
@@ -243,7 +236,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getDestination().observe(getViewLifecycleOwner(),
                 destinationPoint -> {
                     mBinding.setDestination(destinationPoint);
-
                     if(destinationPoint==null){
                         return;
                     }
@@ -260,7 +252,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 retoursPoint -> {
                     mBinding.setRetours(retoursPoint);
                     if(retoursPoint==null){
-                        //getDeviceLocation(SearchType.RETOURS);
                         return;
                     }
                     mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
@@ -391,21 +382,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 v -> {
                     getDeviceLocation(SearchType.ORIGIN);
                 });
-
         mBinding.originText.setOnClickListener(
                 v -> {
-                    // Open search fragment
                     OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
                     action.setSearchType(SearchType.ORIGIN);
                     Navigation.findNavController(v).navigate(action);
-                    /*
-                    // Open search activity
-                    List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-                    Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields) .build(requireContext());
-                    startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-                    */
                 });
-
         mBinding.retoursText.setOnClickListener(
                 v -> {
                     OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
@@ -416,17 +398,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 v -> {
                     getDeviceLocation(SearchType.RETOURS);
                 });
-
         mBinding.destinationText.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
-
         mBinding.destinationEndIcon.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
-
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
@@ -450,9 +429,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 mLastKnownLocation = (Location) task.getResult();
                                 if (mLastKnownLocation != null) {
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-
                                     if(searchType == SearchType.ORIGIN){
                                         orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                     }else{

@@ -114,7 +114,7 @@ public class DetailFragment extends Fragment {
                             switch (orderWithDatas.getOrder().getStatus()){
                                 case Order.STATUS_PING:
                                     mBinding.bookNowButton.setText(R.string.pay_now);
-                                    //NavHostFragment.findNavController(this).navigate(R.id.navigation_checkout);
+                                    NavHostFragment.findNavController(this).navigate(R.id.navigation_checkout);
                                 break;
                                 case Order.STATUS_OK:
                                     mBinding.bookNowButton.setText(R.string.view);
@@ -145,6 +145,8 @@ public class DetailFragment extends Fragment {
                         Log.d(TAG, "'orderResult.getSuccess()'");
                         orderViewModel.setOrder(orderResult.getSuccess());
                     }
+
+                    orderViewModel.setOrderResult(null);
                 });
 
     }

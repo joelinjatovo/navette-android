@@ -303,13 +303,32 @@
                         android:layout_height="wrap_content"
                         android:text="@string/payment_methods"/>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip"
-                        style="@style/Widget.MaterialComponents.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{payment_type}"
-                        android:checked="true"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip"
+                            style="@style/Widget.MaterialComponents.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{payment_type}"
+                            android:checked="true"/>
+
+                        <ImageView
+                            android:id="@+id/editChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_toEndOf="@id/chip"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/colorAccent"
+                            android:src="@drawable/outline_edit_black_24"
+                            android:contentDescription="@string/image"/>
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -325,6 +344,21 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <Button
+                    android:id="@+id/closeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/button_back"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/cancelButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:textColor="@color/colorAccent"
+                    app:strokeColor="@color/colorAccent"  />
+
+                <Button
                     android:id="@+id/cancelButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -333,11 +367,8 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/actionButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:textColor="@color/colorAccent"
-                    app:strokeColor="@color/colorAccent" />
+                    app:layout_constraintStart_toEndOf="@id/closeButton"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <Button
                     android:id="@+id/actionButton"

@@ -5,7 +5,7 @@
     android:id="@+id/navigation_checkout"
     app:startDestination="@id/checkout_fragment">
 
-    <fragment
+    <dialog
         android:id="@+id/checkout_fragment"
         android:name="com.navetteclub.ui.pay.CheckoutFragment"
         android:label="@string/title_checkout"
@@ -18,9 +18,9 @@
         <action
             android:id="@+id/action_checkout_fragment_to_thanks_fragment"
             app:destination="@id/thanks_fragment" />
-    </fragment>
+    </dialog>
 
-    <fragment
+    <dialog
         android:id="@+id/stripe_fragment"
         android:name="com.navetteclub.ui.pay.StripeFragment"
         tools:layout="@layout/fragment_stripe">
@@ -33,9 +33,9 @@
             android:name="order"
             app:argType="string" />
 
-    </fragment>
+    </dialog>
 
-    <fragment
+    <dialog
         android:id="@+id/thanks_fragment"
         android:name="com.navetteclub.ui.pay.ThanksFragment"
         tools:layout="@layout/fragment_thanks"/>

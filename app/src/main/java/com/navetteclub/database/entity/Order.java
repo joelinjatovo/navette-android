@@ -17,6 +17,8 @@ public class Order {
 
     public static final String STATUS_PING = "ping";
 
+    public static final String STATUS_ON_HOLD = "on-hold";
+
     public static final String STATUS_PROCESSING = "processing";
 
     public static final String STATUS_OK = "ok";
@@ -25,9 +27,7 @@ public class Order {
 
     public static final String STATUS_CANCELED = "canceled";
 
-    public static final String STATUS_TERMINATED = "terminated";
-
-    public static final String STATUS_CLOSED = "closed";
+    public static final String STATUS_COMPLETED = "completed";
 
     public static final String PAYMENT_TYPE_CASH = "cash";
 

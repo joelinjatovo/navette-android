@@ -12,6 +12,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -41,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
-            android:visibility="@{isLoading?View.VISIBLE:View.GONE}"/>
+            android:visibility="@{isLoading?View.VISIBLE:View.GONE}"
+            app:mSubtitle="@string/init_secured_payment"/>
 
         <com.navetteclub.views.AuthErrorView
             android:id="@+id/authErrorView"

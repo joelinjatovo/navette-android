@@ -28,8 +28,9 @@
             app:destination="@id/order_map_fragment" />
 
         <action
-            android:id="@+id/action_order_fragment_to_navigation_checkout"
+            android:id="@+id/action_order_view_fragment_to_navigation_checkout"
             app:destination="@id/navigation_checkout" />
+
         <action
             android:id="@+id/action_order_view_fragment_to_live_fragment"
             app:destination="@id/live_fragment" />

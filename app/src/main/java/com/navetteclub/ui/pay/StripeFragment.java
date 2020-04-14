@@ -1,12 +1,15 @@
 package com.navetteclub.ui.pay;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,7 +18,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.navetteclub.R;
@@ -26,6 +33,7 @@ import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.StripeApiService;
 import com.navetteclub.databinding.FragmentStripeBinding;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
@@ -43,7 +51,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class StripeFragment extends Fragment {
+public class StripeFragment extends BottomSheetDialogFragment {
 
     private static final String TAG = StripeFragment.class.getSimpleName();
 
@@ -71,6 +79,37 @@ public class StripeFragment extends Fragment {
             token = StripeFragmentArgs.fromBundle(getArguments()).getToken();
             orderRid = StripeFragmentArgs.fromBundle(getArguments()).getOrder();
         }
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                ConstraintLayout constraintLayout = d.findViewById(R.id.constraintLayout);
+                FrameLayout.LayoutParams params = null;
+                if (constraintLayout != null) {
+                    params = (FrameLayout.LayoutParams) constraintLayout.getLayoutParams();
+                    params.height = UiUtils.getScreenHeight();
+                    constraintLayout.setLayoutParams(params);
+                }
+
+                FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+                    sheetBehavior.setSkipCollapsed(true);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    //sheetBehavior.setPeekHeight(UiUtils.getScreenHeight(), true);
+                }
+            }
+        });
+
+        return dialog;
     }
 
     @Override

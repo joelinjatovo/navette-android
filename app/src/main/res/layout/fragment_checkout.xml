@@ -12,9 +12,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.navetteclub.ui.pay.CheckoutFragment">
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.navetteclub.ui.pay.CheckoutFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
