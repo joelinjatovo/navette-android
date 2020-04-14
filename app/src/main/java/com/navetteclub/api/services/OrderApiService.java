@@ -30,6 +30,6 @@ public interface OrderApiService {
     Call<RetrofitResponse<List<OrderWithDatas>>> getAll(@Header("Authorization") String token);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("api/v1/order/{action}")
-    Call<RetrofitResponse<OrderWithDatas>> cancelOrder(@Header("Authorization") String token, @Body OrderParam orderParam, @Path("action") String action);
+    @POST("api/v1/order/cancel")
+    Call<RetrofitResponse<OrderWithDatas>> cancel(@Header("Authorization") String token, @Body OrderParam orderParam);
 }

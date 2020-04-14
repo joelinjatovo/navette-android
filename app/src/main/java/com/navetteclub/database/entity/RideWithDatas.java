@@ -23,12 +23,7 @@ public class RideWithDatas {
     private Car car;
 
     @SerializedName("points")
-    @Relation(
-            parentColumn = "id",
-            entityColumn = "point_id",
-            associateBy = @Junction(RidePoint.class)
-    )
-    private List<Point> points;
+    private List<RidePointWithDatas> points;
 
     @SerializedName("orders")
     @Relation(
@@ -45,11 +40,11 @@ public class RideWithDatas {
         this.car = car;
     }
 
-    public List<Point> getPoints() {
+    public List<RidePointWithDatas> getPoints() {
         return points;
     }
 
-    public void setPoints(List<Point> points) {
+    public void setPoints(List<RidePointWithDatas> points) {
         this.points = points;
     }
 
@@ -67,5 +62,13 @@ public class RideWithDatas {
 
     public void setRide(Ride ride) {
         this.ride = ride;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

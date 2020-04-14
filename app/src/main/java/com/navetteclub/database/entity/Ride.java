@@ -27,6 +27,18 @@ public class Ride {
     @ColumnInfo(name = "car_id")
     private Long carId;
 
+    @SerializedName("started_at")
+    @ColumnInfo(name = "started_at")
+    private Date startedAt;
+
+    @SerializedName("completed_at")
+    @ColumnInfo(name = "completed_at")
+    private Date completedAt;
+
+    @SerializedName("canceled_at")
+    @ColumnInfo(name = "canceled_at")
+    private Date canceledAt;
+
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
@@ -69,5 +81,29 @@ public class Ride {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Date startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Date getCanceledAt() {
+        return canceledAt;
+    }
+
+    public void setCanceledAt(Date canceledAt) {
+        this.canceledAt = canceledAt;
     }
 }

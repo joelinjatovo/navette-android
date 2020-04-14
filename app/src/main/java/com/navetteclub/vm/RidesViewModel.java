@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.RideParam;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.OrderApiService;
 import com.navetteclub.api.services.RideApiService;
@@ -60,7 +61,7 @@ public class RidesViewModel extends ViewModel {
 
     public void start(User user, Ride ride){
         RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
-        Call<RetrofitResponse<RideWithDatas>> call = service.start(user.getAuthorizationToken(), ride.getId());
+        Call<RetrofitResponse<RideWithDatas>> call = service.start(user.getAuthorizationToken(), new RideParam(ride.getId()));
         call.enqueue(new Callback<RetrofitResponse<RideWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<RideWithDatas>> call,

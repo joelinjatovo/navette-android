@@ -123,7 +123,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
     private void cancelOrder(String token, String orderRid) {
         Log.d(TAG, "OrderApiService.cancelOrder()");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.cancelOrder(token, new OrderParam(orderRid), "cancel");
+        Call<RetrofitResponse<OrderWithDatas>> call = service.cancel(token, new OrderParam(orderRid));
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
