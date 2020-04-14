@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentHomeBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrderFragmentDirections;
@@ -123,7 +124,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
     }
 
     private void setupUi() {
-        mBinding.createOrderButton.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order));
+        mBinding.createOrderButton.setOnClickListener(v -> {
+            orderViewModel.setOrder(null);
+            Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
+        });
         mBinding.errorLoader.getButton().setOnClickListener(v -> loadClubs());
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
@@ -274,6 +278,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
     public void onClick(View v, int position, ClubAndPoint item) {
         orderViewModel.setOrder(null);
         orderViewModel.setClub(item.getClub(), item.getPoint());
+        orderViewModel.setOrigin((Point) null, true);
+        orderViewModel.setReturn((Point) null, true);
         Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
     }
 }

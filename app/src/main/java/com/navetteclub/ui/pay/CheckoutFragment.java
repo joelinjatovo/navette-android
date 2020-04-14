@@ -106,7 +106,7 @@ public class CheckoutFragment extends Fragment {
                 v -> {
                     if(authViewModel.getUser()!=null){
                         progressDialog.show();
-                        orderViewModel.pay(authViewModel.getUser(), Order.PAYMENT_TYPE_CASH);
+                        orderViewModel.payPerCash(authViewModel.getUser());
                     }
                 });
 

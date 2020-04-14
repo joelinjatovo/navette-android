@@ -225,11 +225,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
                 originPoint -> {
+                    mBinding.setOrigin(originPoint);
+
                     if(originPoint==null){
                         getDeviceLocation(SearchType.ORIGIN);
                         return;
                     }
-                    mBinding.setOrigin(originPoint);
                     mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
                     drawOriginMarker(originPoint);
                     if(mMap!=null){
@@ -241,10 +242,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getDestination().observe(getViewLifecycleOwner(),
                 destinationPoint -> {
+                    mBinding.setDestination(destinationPoint);
+
                     if(destinationPoint==null){
                         return;
                     }
-                    mBinding.setDestination(destinationPoint);
                     mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
                     drawDestinationMarker(destinationPoint, orderViewModel.getOrder().getClub());
                     if(mMap!=null){
@@ -256,11 +258,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getRetours().observe(getViewLifecycleOwner(),
                 retoursPoint -> {
+                    mBinding.setRetours(retoursPoint);
                     if(retoursPoint==null){
-                        getDeviceLocation(SearchType.RETOURS);
+                        //getDeviceLocation(SearchType.RETOURS);
                         return;
                     }
-                    mBinding.setRetours(retoursPoint);
                     mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
                     drawRetoursMarker(retoursPoint);
                     if(mMap!=null){

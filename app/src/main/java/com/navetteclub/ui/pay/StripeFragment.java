@@ -152,7 +152,7 @@ public class StripeFragment extends Fragment {
     private void createPaymentIntent(String token, String orderId){
         Log.d(TAG, "service.createPaymentIntent(" + orderId + ")");
         StripeApiService service = RetrofitClient.getInstance().create(StripeApiService.class);
-        retrofit2.Call<RetrofitResponse<MyPaymentIntent>> call = service.createPaymentIntent(token, new OrderParam(orderId));
+        retrofit2.Call<RetrofitResponse<MyPaymentIntent>> call = service.pay(token, new OrderParam(orderId));
         call.enqueue(new retrofit2.Callback<RetrofitResponse<MyPaymentIntent>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<MyPaymentIntent>> call,

@@ -345,6 +345,9 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
                 originPoint -> {
+                    if(originPoint==null){
+                        return;
+                    }
                     mBinding.setOrigin(originPoint);
                     mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
                     drawOriginMarker(originPoint);
@@ -357,6 +360,9 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getDestination().observe(getViewLifecycleOwner(),
                 destinationPoint -> {
+                    if(destinationPoint==null){
+                        return;
+                    }
                     mBinding.setDestination(destinationPoint);
                     mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
                     drawDestinationMarker(destinationPoint, orderViewModel.getOrder().getClub());
@@ -369,6 +375,9 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
         orderViewModel.getRetours().observe(getViewLifecycleOwner(),
                 retoursPoint -> {
+                    if(retoursPoint==null){
+                        return;
+                    }
                     mBinding.setRetours(retoursPoint);
                     mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
                     drawRetoursMarker(retoursPoint);

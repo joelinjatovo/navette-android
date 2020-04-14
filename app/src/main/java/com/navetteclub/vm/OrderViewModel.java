@@ -9,10 +9,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.OrderParam;
 import com.navetteclub.api.models.OrderRequest;
+import com.navetteclub.api.models.stripe.MyPaymentIntent;
 import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.api.services.CashApiService;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.api.services.OrderApiService;
+import com.navetteclub.api.services.StripeApiService;
 import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.CarAndModel;
@@ -68,7 +72,7 @@ public class OrderViewModel extends ViewModel {
 
 
     public void setOrigin(Point point, boolean notify) {
-        Log.d(TAG, "OrderViewModel");
+        Log.d(TAG, "setOrigin(point, notify)");
 
         origin.setValue(point);
 
@@ -187,6 +191,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setOrder(OrderWithDatas order) {
+        Log.d(TAG, "setOrder(" + order + ")");
         if(order!=null){
             setOrigin(order.getOrigin(), false);
             setDestination(order.getDestination(), false);
@@ -286,12 +291,12 @@ public class OrderViewModel extends ViewModel {
         });
     }
 
-    public void pay(User user, String paymentType) {
+    public void payPerCash(User user) {
         Order order = orderWithDatas.getOrder();
 
-        Log.d(TAG, "service.pay(" + paymentType + ")");
-        OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.confirmPayment(user.getAuthorizationToken(), order.getRid(), paymentType);
+        Log.d(TAG, "service.payPerCash()");
+        CashApiService service = RetrofitClient.getInstance().create(CashApiService.class);
+        Call<RetrofitResponse<OrderWithDatas>> call = service.pay(user.getAuthorizationToken(), new OrderParam(order));
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,

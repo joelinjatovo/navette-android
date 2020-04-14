@@ -13,6 +13,9 @@ public class RidePoint {
     @PrimaryKey
     private Long id;
 
+    @ColumnInfo(name = "rid")
+    private String rid;
+
     @ColumnInfo(name = "status")
     private String status;
 
@@ -74,5 +77,13 @@ public class RidePoint {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getRid() {
+        return rid;
+    }
+
+    public void setRid(String rid) {
+        this.rid = rid;
     }
 }
