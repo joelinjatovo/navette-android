@@ -59,7 +59,17 @@ public class OrderViewModel extends ViewModel {
         this.setPlace(1);
     }
 
-    private void _init(){
+    public void refresh() {
+        orderWithDatas = null;
+        origin = new MutableLiveData<>();
+        destination = new MutableLiveData<>();
+        retours = new MutableLiveData<>();
+        orderWithDatasLiveData = new MutableLiveData<>();
+        carsResult = new MutableLiveData<>();
+        orderResult = new MutableLiveData<>();
+    }
+
+    private void mayBeInit(){
         if(orderWithDatas==null)
             orderWithDatas = new OrderWithDatas();
 
@@ -77,7 +87,7 @@ public class OrderViewModel extends ViewModel {
         origin.setValue(point);
 
         if(notify){
-            _init();
+            mayBeInit();
             orderWithDatas.setOrigin(point);
             orderWithDatasLiveData.setValue(orderWithDatas);
         }
@@ -99,7 +109,7 @@ public class OrderViewModel extends ViewModel {
     public void setDestination(Point point, boolean notify) {
         destination.setValue(point);
         if(notify) {
-            _init();
+            mayBeInit();
             orderWithDatas.setDestination(point);
             orderWithDatasLiveData.setValue(orderWithDatas);
         }
@@ -117,7 +127,7 @@ public class OrderViewModel extends ViewModel {
     public void setReturn(@Nullable Point point, boolean notify) {
         retours.setValue(point);
         if(notify) {
-            _init();
+            mayBeInit();
             orderWithDatas.setRetours(point);
             orderWithDatasLiveData.setValue(orderWithDatas);
         }
@@ -137,7 +147,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setPlace(int place) {
-        _init();
+        mayBeInit();
         Order order = orderWithDatas.getOrder();
         order.setPlace(place);
         orderWithDatas.setOrder(order);
@@ -145,7 +155,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setPrivatized(boolean privatized) {
-        _init();
+        mayBeInit();
         Order order = orderWithDatas.getOrder();
         order.setPrivatized(privatized);
         orderWithDatas.setOrder(order);
@@ -153,13 +163,13 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setCar(Car car) {
-        _init();
+        mayBeInit();
         orderWithDatas.setCar(car);
         orderWithDatasLiveData.setValue(orderWithDatas);
     }
 
     public void setClub(Club club, Point point) {
-        _init();
+        mayBeInit();
         orderWithDatas.setClub(club);
         point.setName(club.getName());
         setDestination(point, true);
@@ -167,7 +177,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setDistance(String distance) {
-        _init();
+        mayBeInit();
         Order order = orderWithDatas.getOrder();
         order.setDistance(distance);
         orderWithDatas.setOrder(order);
@@ -175,7 +185,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setDelay(String delay) {
-        _init();
+        mayBeInit();
         Order order = orderWithDatas.getOrder();
         order.setDelay(delay);
         orderWithDatas.setOrder(order);
@@ -183,7 +193,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setDirection(String direction) {
-        _init();
+        mayBeInit();
         Order order = orderWithDatas.getOrder();
         order.setDirection(direction);
         orderWithDatas.setOrder(order);

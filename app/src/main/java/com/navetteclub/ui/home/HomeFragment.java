@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
 
     private void setupUi() {
         mBinding.createOrderButton.setOnClickListener(v -> {
-            orderViewModel.setOrder(null);
+            orderViewModel.refresh();
             Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
         });
         mBinding.errorLoader.getButton().setOnClickListener(v -> loadClubs());
@@ -276,10 +276,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
 
     @Override
     public void onClick(View v, int position, ClubAndPoint item) {
-        orderViewModel.setOrder(null);
+        orderViewModel.refresh();
         orderViewModel.setClub(item.getClub(), item.getPoint());
-        orderViewModel.setOrigin((Point) null, true);
-        orderViewModel.setReturn((Point) null, true);
         Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
     }
 }

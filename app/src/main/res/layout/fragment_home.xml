@@ -38,13 +38,17 @@
             <com.navetteclub.views.LoadingView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="@{isLoading?View.VISIBLE:View.GONE}" />
+                android:background="@color/white"
+                android:visibility="@{isLoading?View.VISIBLE:View.GONE}"
+                app:mTitle="@string/loading_clubs"/>
 
             <com.navetteclub.views.LoaderErrorView
                 android:id="@+id/error_loader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="@{isErrorLoading?View.VISIBLE:View.GONE}" />
+                android:background="@color/white"
+                android:visibility="@{isErrorLoading?View.VISIBLE:View.GONE}"
+                app:mSubtitle="@string/error_loading_clubs" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -53,6 +57,7 @@
                 android:visibility="@{isLoading|isErrorLoading?View.GONE:View.VISIBLE}"
                 app:layoutManager="LinearLayoutManager"
                 tools:listitem="@layout/viewholder_club_home" />
+
         </RelativeLayout>
 
 
@@ -65,7 +70,7 @@
             android:background="@drawable/bg_button_primary"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/colorAccent"
-            app:icon="@drawable/outline_not_listed_location_black_18"
+            app:icon="@drawable/outline_not_listed_location_black_24"
             app:iconTint="@color/white"
             app:iconGravity="end"
             app:layout_constraintTop_toTopOf="parent"

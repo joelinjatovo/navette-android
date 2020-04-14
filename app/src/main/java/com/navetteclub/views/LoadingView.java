@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.navetteclub.R;
 
 public class LoadingView extends LinearLayout {
-    private String mTitle;
-
     private TextView titleView;
 
     public LoadingView(Context context) {
@@ -48,7 +46,7 @@ public class LoadingView extends LinearLayout {
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CustomView, defStyle, 0);
 
-        mTitle = a.getString(R.styleable.CustomView_mTitle);
+        String mTitle = a.getString(R.styleable.CustomView_mTitle);
         if (mTitle != null) {
             titleView.setText(mTitle);
         }

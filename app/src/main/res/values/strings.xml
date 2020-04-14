@@ -77,10 +77,10 @@
     <string name="permission_rationale">Permission Rationale</string>
     <string name="ok">OK</string>
     <string name="show_direction">Show Direction</string>
-    <string name="where_you_want_to_go">Ou allez vous?</string>
+    <string name="where_you_want_to_go">Où allez vous?</string>
     <string name="title_order">Create Order</string>
     <string name="title_profile">Profile</string>
-    <string name="error_loading_clubs">Error Loading Clubs</string>
+    <string name="error_loading_clubs">Erreur de chargement des clubs</string>
     <string name="my_location">My Current Location</string>
     <string name="logout">Logout</string>
     <string name="histories">Histories</string>
