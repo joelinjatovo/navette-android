@@ -28,7 +28,7 @@ public interface RideApiService {
     Call<RetrofitResponse<List<OrderWithDatas>>> getOrders(@Header("Authorization") String token, @Path("ride") Long rideId);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @GET("api/v1/ride/{ride}/orders")
+    @GET("api/v1/ride/{ride}/points")
     Call<RetrofitResponse<List<RidePointWithDatas>>> getPoints(@Header("Authorization") String token, @Path("ride") Long rideId);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
