@@ -12,6 +12,7 @@ import com.navetteclub.api.services.OrderApiService;
 import com.navetteclub.api.services.RideApiService;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Ride;
+import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.models.RemoteLoaderResult;
@@ -34,6 +35,8 @@ public class RidesViewModel extends ViewModel {
     private MutableLiveData<RemoteLoaderResult<List<RideWithDatas>>> ridesLiveData = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<List<OrderWithDatas>>> ordersLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<RemoteLoaderResult<List<RidePointWithDatas>>> pointsLiveData = new MutableLiveData<>();
 
     public RideWithDatas getRideWithDatas() {
         return rideWithDatas;
@@ -59,9 +62,17 @@ public class RidesViewModel extends ViewModel {
         this.ordersLiveData.setValue(ordersLiveData);
     }
 
-    public void start(User user, Ride ride){
+    public MutableLiveData<RemoteLoaderResult<List<RidePointWithDatas>>> getPointsLiveData() {
+        return pointsLiveData;
+    }
+
+    public void setPointsLiveData(RemoteLoaderResult<List<RidePointWithDatas>> pointsLiveData) {
+        this.pointsLiveData.setValue(pointsLiveData);
+    }
+
+    public void start(String token, Long rideId){
         RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
-        Call<RetrofitResponse<RideWithDatas>> call = service.start(user.getAuthorizationToken(), new RideParam(ride.getId()));
+        Call<RetrofitResponse<RideWithDatas>> call = service.start(token, new RideParam(rideId));
         call.enqueue(new Callback<RetrofitResponse<RideWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
@@ -101,26 +112,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         ridesLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        switch (response.body().getStatus()){
-                            case 400:
-                                ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_400));
-                                break;
-                            case 401:
-                                ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_401));
-                                break;
-                            case 402:
-                                ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_402));
-                                break;
-                            case 403:
-                                ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_403));
-                                break;
-                            case 404:
-                                ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_404));
-                                break;
-                            default:
-                                ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
-                                break;
-                        }
+                        ridesLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }
                 }else{
                     ridesLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -137,7 +129,7 @@ public class RidesViewModel extends ViewModel {
     }
 
     public void loadOrders(User user, Ride ride){
-        Log.d(TAG, "OrderApiService.getAll( " +  user.getAuthorizationToken() + ")");
+        Log.d(TAG, "OrderApiService.loadOrders( " +  user.getAuthorizationToken() + ")");
         RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
         Call<RetrofitResponse<List<OrderWithDatas>>> call = service.getOrders(user.getAuthorizationToken(), ride.getId());
         call.enqueue(new Callback<RetrofitResponse<List<OrderWithDatas>>>() {
@@ -150,26 +142,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         ordersLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        switch (response.body().getStatus()){
-                            case 400:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_400));
-                                break;
-                            case 401:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_401));
-                                break;
-                            case 402:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_402));
-                                break;
-                            case 403:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_403));
-                                break;
-                            case 404:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_404));
-                                break;
-                            default:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
-                                break;
-                        }
+                        ordersLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }
                 }else{
                     ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -185,11 +158,41 @@ public class RidesViewModel extends ViewModel {
         });
     }
 
+    public void loadPoints(String token, Long rideID){
+        Log.d(TAG, "OrderApiService.loadPoints( " +  rideID + ")");
+        RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
+        Call<RetrofitResponse<List<RidePointWithDatas>>> call = service.getPoints(token,rideID);
+        call.enqueue(new Callback<RetrofitResponse<List<RidePointWithDatas>>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<List<RidePointWithDatas>>> call,
+                                   @NonNull Response<RetrofitResponse<List<RidePointWithDatas>>> response) {
+                Log.d(TAG, response.toString());
+                if (response.body() != null) {
+                    Log.d(TAG, response.body().toString());
+                    if(response.body().isSuccess()) {
+                        pointsLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    }else{
+                        pointsLiveData.setValue(new RemoteLoaderResult<>(response.body().getStatusResString()));
+                    }
+                }else{
+                    pointsLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<List<RidePointWithDatas>>> call,
+                                  @NonNull Throwable throwable) {
+                Log.e(TAG, throwable.toString(), throwable);
+                pointsLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+            }
+        });
+    }
+
     public MutableLiveData<RemoteLoaderResult<RideWithDatas>> getRideLiveData() {
         return rideLiveData;
     }
 
-    public void setRideLiveData(MutableLiveData<RemoteLoaderResult<RideWithDatas>> rideLiveData) {
-        this.rideLiveData = rideLiveData;
+    public void setRideLiveData(RemoteLoaderResult<RideWithDatas> rideLiveData) {
+        this.rideLiveData.setValue(rideLiveData);
     }
 }

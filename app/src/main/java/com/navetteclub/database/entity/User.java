@@ -1,12 +1,14 @@
 package com.navetteclub.database.entity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,6 +191,15 @@ public class User {
 
     public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
+    }
+
+    @StringRes
+    public Integer getRole() {
+        if(isAdmin()) return R.string.admin;
+        if(isDriver()) return R.string.driver;
+        if(isCustomer()) return R.string.customer;
+        return R.string.unknown_role;
+
     }
 
     public boolean isAdmin(){

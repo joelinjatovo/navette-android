@@ -53,7 +53,13 @@ public class RidesFragment extends Fragment {
 
     private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
         ridesViewModel.setRideWithDatas(item);
-        NavHostFragment.findNavController(RidesFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
+        if(authViewModel.getUser()!=null && item!=null && item.getRide()!=null){
+            RidesFragmentDirections.ActionRidesFragmentToRidePointFragment action = RidesFragmentDirections
+                    .actionRidesFragmentToRidePointFragment(
+                            authViewModel.getUser().getAuthorizationToken(),
+                            item.getRide().getId());
+            NavHostFragment.findNavController(RidesFragment.this).navigate(action);
+        }
     };
 
     @Override

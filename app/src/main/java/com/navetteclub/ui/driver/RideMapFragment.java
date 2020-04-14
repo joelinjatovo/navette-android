@@ -54,6 +54,7 @@ import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.databinding.FragmentRideMapBinding;
@@ -132,7 +133,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     Polyline line1;
 
-    Polyline line2;;
+    Polyline line2;
+
+    private ArrayList<Point> mPoints;
 
     @Nullable
     @Override
@@ -168,43 +171,41 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG + "Cycle", "onViewCreated");
         setupUi();
+        setupAuthViewModel();
+        setupGoogleViewModel();
+        setupRidesViewModel();
     }
 
     private void setupRidesViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
-
-        ridesViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
-                result -> {
-                    if(result.getError()!=null){
-                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+        ridesViewModel.getPointsLiveData().observe(getViewLifecycleOwner(),
+                points -> {
+                    if(points==null){
+                        return;
+                    }
+                    if(points.getError()!=null){
+                        if(points.getError() == R.string.error_401) { // Error 401: Unauthorized
                             authViewModel.logout(requireContext());
                         }else{
                             // Error loading
                             mBinding.setIsLoading(false);
                         }
-                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
-
-                    if(result.getSuccess()!=null){
+                    if(points.getSuccess()!=null){
                         mBinding.setIsLoading(false);
-                        ArrayList<OrderWithDatas> items = (ArrayList<OrderWithDatas>) result.getSuccess();
+                        ArrayList<RidePointWithDatas> items = (ArrayList<RidePointWithDatas>) points.getSuccess();
                         if(!items.isEmpty()){
-                            ArrayList<Point> points = new ArrayList<>();
+                            mPoints = new ArrayList<>();
                             Point point = null;
-                            for(OrderWithDatas order: items){
-                                if(order.getOrigin()!=null){
-                                    points.add(order.getOrigin());
-                                }
-
-                                if(point==null  && order.getDestination()!=null){
-                                    point = order.getDestination();
+                            for(RidePointWithDatas item: items){
+                                if(item.getPoint()!=null) {
+                                    mPoints.add(item.getPoint());
                                 }
                             }
 
-                            if(point!=null && points.size()>0){
-                                loadDirection(point, points);
+                            if(mPoints.size()>0){
+                                loadDirection(mPoints.get(0), mPoints);
                             }
                         }
                     }
@@ -262,12 +263,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        setupAuthViewModel();
-        setupGoogleViewModel();
-        setupRidesViewModel();
-
-        // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
 
@@ -311,16 +306,13 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupGoogleViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         googleViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(GoogleViewModel.class);
-
         googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result == null) {
                         return;
                     }
-
                     if(result.body()!=null){
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
@@ -328,23 +320,27 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                             if(encodedString!=null){
                                 drawLine(encodedString);
                             }
-
                             Log.d(TAG, "getWaypointOrder " + Arrays.toString(route.getWaypointOrder()));
                         }
-
                     }
-
                 });
 
     }
 
+    /**
+     * *
+     * Draw line from location update
+     * @param latLng
+     */
     private void drawLine(LatLng latLng) {
         if (mMap == null) {
             return;
         }
+
         if(list==null){
             list = new ArrayList<>();
         }
+
         list.add(latLng);
 
         //Remove previous line from map
@@ -360,6 +356,11 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         );
     }
 
+    /**
+     * *
+     * Draw line from Google API
+     * @param encodedString
+     */
     private void drawLine(String encodedString) {
         if(mMap==null){
             return;
@@ -380,7 +381,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void loadDirection(Point clubPoint, List<Point> points) {
-
         LatLng origin = new LatLng(clubPoint.getLat(), clubPoint.getLng());
         LatLng destination = new LatLng(clubPoint.getLat(), clubPoint.getLng());
         String waypoints = "optimize:true";
@@ -388,7 +388,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             waypoints += "|" + userPoint.getLat() + "," + userPoint.getLng();
         }
         googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, waypoints);
-
 
         if(mMap!=null) {
             LatLng latLng = new LatLng(clubPoint.getLat(), clubPoint.getLng());

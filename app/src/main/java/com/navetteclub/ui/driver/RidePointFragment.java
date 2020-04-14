@@ -1,10 +1,8 @@
 package com.navetteclub.ui.driver;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -15,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,26 +20,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Ride;
-import com.navetteclub.database.entity.RideWithDatas;
+import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentRideBinding;
+import com.navetteclub.databinding.FragmentRidePointBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.utils.Log;
+import com.navetteclub.ui.order.SearchFragmentArgs;
+import com.navetteclub.ui.pay.StripeFragment;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.OrderViewModel;
-import com.navetteclub.vm.OrdersViewModel;
 import com.navetteclub.vm.RidesViewModel;
 
 import java.util.ArrayList;
 
-public class RideFragment extends Fragment {
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
-    private static final String TAG = RideFragment.class.getSimpleName();
+public class RidePointFragment extends Fragment {
 
-    private FragmentRideBinding mBinding;
+    private static final String TAG = RidePointFragment.class.getSimpleName();
 
-    private OrderRecyclerViewAdapter mAdapter;
+    private FragmentRidePointBinding mBinding;
+
+    private ProgressDialog progressDialog;
+
+    private RidePointRecyclerViewAdapter mAdapter;
 
     private AuthViewModel authViewModel;
 
@@ -50,12 +50,25 @@ public class RideFragment extends Fragment {
 
     private SearchView searchView;
 
+    private String token;
+
+    private Long rideId;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            token = RidePointFragmentArgs.fromBundle(getArguments()).getToken();
+            rideId = RidePointFragmentArgs.fromBundle(getArguments()).getRideId();
+        }
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_point, container, false);
 
-        mAdapter = new OrderRecyclerViewAdapter(mListener);
+        mAdapter = new RidePointRecyclerViewAdapter(mListener);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -72,68 +85,65 @@ public class RideFragment extends Fragment {
     }
 
     private void setupRidesViewModel() {
-
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
+        ridesViewModel.getPointsLiveData().observe(getViewLifecycleOwner(),
+                points -> {
+                    if(points==null){
+                        return;
+                    }
+                    mBinding.setIsLoading(false);
+                    if(points.getError()!=null){
+                        mBinding.setShowError(true);
+                        mBinding.loaderErrorView.getSubtitleView().setText(points.getError());
+                    }
+                    if(points.getSuccess()!=null){
+                        mBinding.setShowError(false);
+                        mAdapter.setItems(points.getSuccess());
+                    }
+
+                    //ridesViewModel.setPointsLiveData(null);
+
+                });
 
         ridesViewModel.getRideLiveData().observe(getViewLifecycleOwner(),
                 ride -> {
                     if(ride==null){
                         return;
                     }
+                    progressDialog.hide();
 
-                    NavHostFragment.findNavController(this).navigate(R.id.action_ride_fragment_to_ride_map_fragment);
-                });
-
-        ridesViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
-                result -> {
-                    if(result==null){
-                        return;
+                    if(ride.getError()!=null){
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Oops...")
+                                .setContentText(getString(ride.getError()))
+                                .show();
                     }
 
-                    if(result.getError()!=null){
-                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
-                            authViewModel.logout(requireContext());
-                        }else{
-                            // Error loading
-                            mBinding.setIsLoading(false);
-                            mBinding.setShowError(true);
-                            mBinding.loaderErrorView.getTitleView().setText(R.string.loader_error_title);
-                            mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
-                        }
-                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    if(ride.getSuccess()!=null){
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Success")
+                                .setContentText("Votre course a bien commencé!")
+                                .setConfirmText("Yes, go to live")
+                                .setConfirmClickListener(sDialog -> {
+                                    sDialog.dismissWithAnimation();
+                                    NavHostFragment.findNavController(RidePointFragment.this).navigate(R.id.action_ride_point_fragment_to_ride_map_fragment);
+                                })
+                                .setCancelButton("Ok", SweetAlertDialog::dismissWithAnimation)
+                                .show();
                     }
 
-                    if(result.getSuccess()!=null){
-                        mBinding.setIsLoading(false);
-                        ArrayList<OrderWithDatas> items = (ArrayList<OrderWithDatas>) result.getSuccess();
-                        if(items.isEmpty()){
-                            mBinding.setShowError(true);
-                            mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
-                            mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_orders);
-                        }else{
-                            mBinding.setShowError(false);
-                            mAdapter.setItems(items);
-                        }
-                    }
-
-                    // Reset remote result
-                    //ridesViewModel.setOrdersLiveData(null);
+                    ridesViewModel.setRideLiveData(null);
                 });
     }
 
     private void setupAuthViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        User user = authViewModel.getUser();
-                        Ride ride = ridesViewModel.getRideWithDatas().getRide();
-                        ridesViewModel.loadOrders(user, ride);
+                        ridesViewModel.loadPoints(token, rideId);
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                         mBinding.setIsUnauthenticated(false);
@@ -146,16 +156,19 @@ public class RideFragment extends Fragment {
     }
 
     private void setupUI() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
+
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
                 });
 
         mBinding.startRideButton.setOnClickListener(v->{
-            User user = authViewModel.getUser();
-            Ride ride = ridesViewModel.getRideWithDatas().getRide();
-            if(user!=null && ride!=null){
-                ridesViewModel.start(user, ride);
+            if(token!=null && rideId!=null){
+                progressDialog.show();
+                ridesViewModel.start(token, rideId);
             }
         });
 
@@ -163,8 +176,7 @@ public class RideFragment extends Fragment {
                 v -> {
                     User user = authViewModel.getUser();
                     if(user!=null){
-                        Ride ride = ridesViewModel.getRideWithDatas().getRide();
-                        ridesViewModel.loadOrders(user, ride);
+                        ridesViewModel.loadPoints(token, rideId);
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                     }else{
@@ -178,7 +190,7 @@ public class RideFragment extends Fragment {
                 });
     }
 
-    private OnClickItemListener<OrderWithDatas> mListener = (v, pos, item) -> {
+    private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
         //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
     };
 
