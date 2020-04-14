@@ -161,6 +161,7 @@
     <string name="menu_settings_desc">Gerer les preferences de l\'application</string>
     <string name="menu_histories_desc">Voir vos hostoriques de trajet</string>
     <string name="title_orders">Commandes</string>
+    <string name="title_view_order">Commande N#%s</string>
     <string name="loading_orders">Chargement des commandes</string>
     <string name="notification_new_order">Nouvelle commande</string>
     <string name="notification_new_order_desc">Votre commande a été bien activé.</string>
@@ -224,5 +225,14 @@
     <string name="button_close">Fermer</string>
     <string name="button_more">Détails</string>
     <string name="date">Date</string>
+    <string name="success">Success</string>
+    <string name="pay">Payer</string>
+    <string name="button_live">Live</string>
+    <string name="button_cancel">Annuler</string>
+    <string name="button_continue">Continuer</string>
+    <string name="title_cancel_order">Annulation d\'une commande</string>
+    <string name="title_cancel_order_desc">Une charge vous sera deduite\npour une commande annulée.</string>
+    <string name="title_cancelation">Annulation</string>
+    <string name="button_back">Retours</string>
 
 </resources>

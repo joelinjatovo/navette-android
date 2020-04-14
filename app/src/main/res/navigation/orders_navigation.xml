@@ -18,7 +18,7 @@
             app:destination="@id/navigation_auth" />
     </fragment>
 
-    <fragment
+    <dialog
         android:id="@+id/order_view_fragment"
         android:name="com.navetteclub.ui.order.OrderViewFragment"
         tools:layout="@layout/fragment_order_view">
@@ -36,8 +36,11 @@
         <action
             android:id="@+id/action_order_view_fragment_to_steps_fragment"
             app:destination="@id/steps_fragment" />
+        <action
+            android:id="@+id/action_order_view_fragment_to_order_cancel_fragment"
+            app:destination="@id/order_cancel_fragment" />
 
-    </fragment>
+    </dialog>
 
     <fragment
         android:id="@+id/order_map_fragment"
@@ -53,6 +56,25 @@
         android:id="@+id/steps_fragment"
         android:name="com.navetteclub.ui.order.StepsFragment"
         tools:layout="@layout/fragment_steps"/>
+
+    <dialog
+        android:id="@+id/order_cancel_fragment"
+        android:name="com.navetteclub.ui.order.OrderCancelFragment"
+        tools:layout="@layout/fragment_order_cancel">
+
+        <argument
+            android:name="token"
+            app:argType="string" />
+
+        <argument
+            android:name="order"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_order_cancel_fragment_to_orders_fragment"
+            app:popUpTo="@id/orders_fragment"
+            app:popUpToInclusive="false"/>
+    </dialog>
 
     <include app:graph="@navigation/checkout_navigation" />
 

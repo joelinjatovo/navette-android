@@ -11,10 +11,13 @@
         <variable name="retours" type="com.navetteclub.database.entity.Point" />
         <variable name="amount" type="String" />
         <variable name="status" type="String" />
+        <variable name="statusDesc" type="String" />
         <variable name="payment_type" type="String" />
+        <variable name="order_id" type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.navetteclub.ui.MainActivity">
@@ -30,8 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
-                app:title="@string/title_order_view"
-                app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
+                app:title="@{@string/title_view_order(order_id)}"
+                app:navigationIcon="@drawable/outline_clear_black_36"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -54,10 +57,37 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:padding="15dp"
+                    android:tint="@color/colorAccent"
+                    android:src="@drawable/outline_check_black_48"
+                    android:background="@drawable/outline_rounded"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:id="@+id/statusTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{status}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/statusDescTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{statusDesc}"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_color"/>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp">
 
                     <ImageView
@@ -295,26 +325,44 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <Button
-                    android:id="@+id/bookNowButton"
+                    android:id="@+id/cancelButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="@string/book_now"
+                    android:text="@string/button_cancel"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/viewButton"
+                    app:layout_constraintEnd_toStartOf="@+id/actionButton"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:textColor="@color/colorAccent"
+                    app:strokeColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/actionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/pay"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/liveButton"
+                    app:layout_constraintStart_toEndOf="@id/cancelButton"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/viewButton"
+                    android:id="@+id/liveButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="@string/button_more"
+                    android:text="@string/button_live"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:textColor="@color/colorAccent"
+                    app:strokeColor="@color/colorAccent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,5 +1,6 @@
 package com.navetteclub.api.services;
 
+import com.navetteclub.api.models.OrderParam;
 import com.navetteclub.api.models.OrderRequest;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.database.entity.OrderWithDatas;
@@ -27,4 +28,8 @@ public interface OrderApiService {
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/orders")
     Call<RetrofitResponse<List<OrderWithDatas>>> getAll(@Header("Authorization") String token);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/order/{action}")
+    Call<RetrofitResponse<OrderWithDatas>> cancelOrder(@Header("Authorization") String token, @Body OrderParam orderParam, @Path("action") String action);
 }

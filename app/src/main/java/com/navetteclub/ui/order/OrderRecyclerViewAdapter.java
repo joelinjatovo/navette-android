@@ -117,6 +117,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 Order order = mItem.getOrder();
                 mBinding.setAmount(order.getAmountStr());
                 mBinding.setStatus(order.getStatus());
+                mBinding.setOrderId(order.getRid());
 
                 // Points
                 mBinding.setOrigin(mItem.getOrigin());

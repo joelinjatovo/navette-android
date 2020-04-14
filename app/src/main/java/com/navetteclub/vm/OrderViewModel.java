@@ -191,6 +191,10 @@ public class OrderViewModel extends ViewModel {
             setOrigin(order.getOrigin(), false);
             setDestination(order.getDestination(), false);
             setReturn(order.getRetours(), false);
+        }else{
+            setOrigin((Point) null, false);
+            setDestination((Point) null, false);
+            setReturn((Point) null, false);
         }
         orderWithDatas = order;
         orderWithDatasLiveData.setValue(orderWithDatas);
