@@ -115,14 +115,24 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             mItem = item;
             if(mItem!=null && mItem.getOrder()!=null){
                 Order order = mItem.getOrder();
+                mBinding.setOrderId(order.getRid());
                 mBinding.setAmount(order.getAmountStr());
                 mBinding.setStatus(order.getStatus());
-                mBinding.setOrderId(order.getRid());
-
                 // Points
-                mBinding.setOrigin(mItem.getOrigin());
-                mBinding.setDestination(mItem.getDestination());
-                mBinding.setRetours(mItem.getRetours());
+                if (order.getType()!=null){
+                    switch (order.getType()){
+                        case Order.TYPE_GO:
+                            mBinding.setPointTitle("Pickup");
+                            mBinding.setPoint(mItem.getOrigin());
+                            mBinding.setClub(mItem.getDestination());
+                            break;
+                        case Order.TYPE_BACK:
+                            mBinding.setPointTitle("Drop");
+                            mBinding.setPoint(mItem.getRetours());
+                            mBinding.setClub(mItem.getOrigin());
+                            break;
+                    }
+                }
             }
         }
 

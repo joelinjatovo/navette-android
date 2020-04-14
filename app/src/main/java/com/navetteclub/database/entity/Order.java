@@ -37,12 +37,20 @@ public class Order {
 
     public static final String PAYMENT_TYPE_APPLE_PAY = "apple_pay";
 
+    public static final String TYPE_GO = "go";
+
+    public static final String TYPE_BACK = "back";
+
     @PrimaryKey
     private Long id;
 
     @SerializedName("rid")
     @ColumnInfo(name = "rid")
     private String rid; // Remote id
+
+    @SerializedName("type")
+    @ColumnInfo(name = "type")
+    private String type;
 
     @SerializedName("status")
     @ColumnInfo(name = "status")
@@ -262,5 +270,13 @@ public class Order {
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

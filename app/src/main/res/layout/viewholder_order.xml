@@ -9,21 +9,18 @@
         <variable name="isLoading" type="boolean" />
         <variable name="isUnauthenticated" type="boolean" />
         <variable name="showMoreButton" type="boolean" />
-        <variable name="origin" type="com.navetteclub.database.entity.Point" />
-        <variable name="destination" type="com.navetteclub.database.entity.Point" />
-        <variable name="retours" type="com.navetteclub.database.entity.Point" />
-
-        <variable name="isLoadingDirection" type="boolean" />
-        <variable name="distance" type="String" />
-        <variable name="delay" type="String" />
+        <variable name="orderId" type="String" />
+        <variable name="pointTitle" type="String" />
+        <variable name="point" type="com.navetteclub.database.entity.Point" />
+        <variable name="club" type="com.navetteclub.database.entity.Point" />
         <variable name="amount" type="String" />
         <variable name="status" type="String" />
-        <variable name="order_id" type="String" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="15dp"
         android:layout_marginStart="3dp"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="5dp"
@@ -34,16 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="textEnd"
-                android:text="@{@string/title_view_order(order_id)}"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textColor="@color/colorText"/>
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -52,40 +41,37 @@
                 android:layout_marginBottom="5dp">
 
                 <ImageView
-                    android:id="@+id/originLocationIcon"
+                    android:id="@+id/icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/image"
-                    android:tint="@color/colorIcon"
-                    android:src="@drawable/outline_trip_origin_black_18" />
+                    android:tint="@color/black"
+                    android:src="@drawable/outline_check_black_24" />
 
                 <TextView
-                    android:id="@+id/originLabelText"
+                    android:id="@+id/orderTitleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/originLocationIcon"
-                    android:layout_centerVertical="true"
-                    android:text="@string/origin"
-                    android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/gray"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"/>
+                    android:text="@{@string/title_view_order(orderId)}"
+                    android:layout_marginStart="10dp"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorText"
+                    android:layout_toEndOf="@id/icon"
+                    android:layout_toStartOf="@id/clubNameTextView"/>
 
                 <TextView
-                    android:id="@+id/originText"
+                    android:id="@+id/clubNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:textAlignment="textEnd"
-                    android:layout_toEndOf="@+id/originLabelText"
-                    android:text="@{origin.name}"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textColor="@color/colorText"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"/>
+                    android:text="@{club.name}"
+                    android:textColor="@color/colorIcon"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
 
             </RelativeLayout>
 
@@ -96,85 +82,40 @@
                 android:layout_marginBottom="5dp">
 
                 <ImageView
-                    android:id="@+id/destinationLocationIcon"
+                    android:id="@+id/pointIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/image"
                     android:src="@drawable/outline_place_black_18"
-                    android:tint="@color/colorAccent"/>
+                    android:tint="@color/colorIcon"/>
 
                 <TextView
-                    android:id="@+id/destinationLabelText"
+                    android:id="@+id/pointLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/destinationLocationIcon"
+                    android:layout_toEndOf="@id/pointIcon"
                     android:layout_centerVertical="true"
-                    android:text="@string/destination"
+                    android:text="@{pointTitle}"
                     android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/colorIcon"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
 
                 <TextView
-                    android:id="@+id/destinationText"
+                    android:id="@+id/pointName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:textAlignment="textEnd"
-                    android:layout_toEndOf="@+id/destinationLabelText"
-                    android:text="@{destination.name}"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:layout_toEndOf="@+id/pointLabel"
+                    android:text="@{point.name}"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:textColor="@color/colorText"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:visibility="@{retours==null?View.GONE:View.VISIBLE}">
-
-                <ImageView
-                        android:id="@+id/retoursLocationIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:contentDescription="@string/image"
-                        android:tint="@color/colorIcon"
-                        android:src="@drawable/outline_trip_origin_black_18" />
-
-                <TextView
-                    android:id="@+id/retoursLabelText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/retoursLocationIcon"
-                    android:layout_centerVertical="true"
-                    android:text="@string/origin"
-                    android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/gray"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"/>
-
-                <TextView
-                    android:id="@+id/retoursText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:textAlignment="textEnd"
-                    android:layout_toEndOf="@+id/retoursLabelText"
-                    android:text="@{retours.name}"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textColor="@color/colorText"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"/>
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
 
             </RelativeLayout>
 
