@@ -89,7 +89,7 @@ public class RidesFragment extends Fragment {
                     User user = authViewModel.getUser();
                     if(user!=null){
                         ridesViewModel.load(user);
-                        mBinding.setIsLoading(false);
+                        mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                     }else{
                         mBinding.setIsLoading(false);
@@ -105,16 +105,13 @@ public class RidesFragment extends Fragment {
 
     private void setupAuthViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         User user = authViewModel.getUser();
                         ridesViewModel.load(user);
-
-                        mBinding.setIsLoading(false);
+                        mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
                         mBinding.setIsUnauthenticated(false);
                     }else{
@@ -127,9 +124,7 @@ public class RidesFragment extends Fragment {
 
     private void setupRidesViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
-
         ridesViewModel.getRidesLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){

@@ -7,14 +7,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.navetteclub.R;
+import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.databinding.ViewholderRideBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrdersFragment;
+import com.navetteclub.utils.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,13 +44,22 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setItem(mItems.get(position));
-        holder.mBinding.getRoot().setOnClickListener(v -> {
-            if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
-                mListener.onClick(v, position, holder.mItem);
-            }
-        });
+        holder.mBinding.getRoot().setOnClickListener(
+                v -> {
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that an item has been selected.
+                        mListener.onClick(v, position, holder.mItem);
+                    }
+                });
+        holder.mBinding.moreButtom.setOnClickListener(
+                v -> {
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that an item has been selected.
+                        mListener.onClick(v, position, holder.mItem);
+                    }
+                });
     }
 
 
@@ -101,9 +115,24 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
         void setItem(RideWithDatas item){
             mItem = item;
-            if(mItem!=null && mItem.getRide()!=null){
-                // Nothing
-                mBinding.title.setText(mItem.getDriver().getName());
+            if(mItem!=null){
+                Car car = mItem.getCar();
+                if(car!=null && car.getImageUrl()!=null) {
+                    Picasso.get()
+                            .load(Constants.getBaseUrl() + car.getImageUrl())
+                            .placeholder(R.drawable.car_placeholder)
+                            .error(R.drawable.car_placeholder)
+                            .resize(80,80)
+                            .into(mBinding.carImageView);
+                }
+                Ride ride = mItem.getRide();
+                if(ride!=null) {
+                    mBinding.setRideId(String.valueOf(ride.getId()));
+                    mBinding.setStatus(ride.getStatus());
+                }
+                if(mItem.getPoints()!=null){
+                    mBinding.setPointCount(mItem.getPoints().size());
+                }
             }
         }
     }

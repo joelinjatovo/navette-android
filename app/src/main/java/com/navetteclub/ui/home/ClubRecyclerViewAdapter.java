@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.databinding.ViewholderClubHomeBinding;
@@ -100,11 +101,17 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
         void setItem(ClubAndPoint item){
             mItem = item;
-            mBinding.setClub(item.getClub());
-            Picasso.get()
-                    .load(Constants.getBaseUrl() + mItem.getClub().getImageUrl())
-                    .resize(270,135)
-                    .into(mBinding.imageView);
+            if(item.getClub()!=null) {
+                mBinding.setClub(item.getClub());
+                    if(item.getClub().getImageUrl()!=null) {
+                        Picasso.get()
+                                .load(Constants.getBaseUrl() + mItem.getClub().getImageUrl())
+                                .placeholder(R.drawable.image_placeholder)
+                                .error(R.drawable.image_placeholder)
+                                .resize(270, 135)
+                                .into(mBinding.imageView);
+                }
+            }
         }
     }
 }

@@ -162,6 +162,8 @@
     <string name="menu_histories_desc">Voir vos hostoriques de trajet</string>
     <string name="title_orders">Commandes</string>
     <string name="title_view_order">Commande N#%s</string>
+    <string name="title_view_ride">Course N#%s</string>
+    <string name="point_count">%d points</string>
     <string name="loading_orders">Chargement des commandes</string>
     <string name="notification_new_order">Nouvelle commande</string>
     <string name="notification_new_order_desc">Votre commande a été bien activé.</string>
@@ -179,7 +181,7 @@
     <string name="menu_trajet_desc">Voir le timeline de vos trajets</string>
     <string name="title_steps">Steps</string>
     <string name="empty_steps">Aucune étape trouvée</string>
-    <string name="loading_rides">Chargement des rides</string>
+    <string name="loading_rides">Chargement de vos courses</string>
     <string name="title_rides">Rides</string>
     <string name="title_ride">Ride</string>
     <string name="empty_rides">Aucun trajet trouvé</string>

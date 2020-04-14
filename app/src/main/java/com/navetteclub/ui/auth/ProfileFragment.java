@@ -102,9 +102,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
 
         mBinding.setUser(user);
-        Picasso.get()
-                .load(Constants.getBaseUrl() + user.getImageUrl())
-                .into(mBinding.avatarImageView);
+        if(user.getImageUrl()!=null){
+            Picasso.get()
+                    .load(Constants.getBaseUrl() + user.getImageUrl())
+                    .placeholder(R.drawable.user_placeholder)
+                    .error(R.drawable.user_placeholder)
+                    .into(mBinding.avatarImageView);
+        }
         if(user.getRoles()!=null && !user.getRoles().isEmpty()){
             if(user.getRoles().contains(User.ROLE_ADMIN)){
                 mBinding.setRole(getString(R.string.admin));

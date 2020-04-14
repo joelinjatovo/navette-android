@@ -106,9 +106,9 @@
                     <com.navetteclub.views.CircleImageView
                         android:id="@+id/avatarImageView"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/ic_avatar"
+                        android:src="@drawable/user_placeholder"
                         app:strokeColor="@color/colorAccent"
                         app:strokeWidth="2dp"/>
 
