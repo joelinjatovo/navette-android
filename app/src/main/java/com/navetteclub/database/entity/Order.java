@@ -72,6 +72,14 @@ public class Order {
     @ColumnInfo(name = "distance")
     private String distance;
 
+    @SerializedName("delay_value")
+    @ColumnInfo(name = "delay_value")
+    private long delayValue;
+
+    @SerializedName("distance_value")
+    @ColumnInfo(name = "distance_value")
+    private long distanceValue;
+
     @SerializedName("delay")
     @ColumnInfo(name = "delay")
     private String delay;
@@ -109,6 +117,10 @@ public class Order {
 
     @ColumnInfo(name = "car_id")
     private Long carId;
+
+    @SerializedName("picked_at")
+    @ColumnInfo(name = "picked_at")
+    private Date pickedAt;
 
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
@@ -278,5 +290,29 @@ public class Order {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Date getPickedAt() {
+        return pickedAt;
+    }
+
+    public void setPickedAt(Date pickedAt) {
+        this.pickedAt = pickedAt;
+    }
+
+    public long getDelayValue() {
+        return delayValue;
+    }
+
+    public void setDelayValue(long delayValue) {
+        this.delayValue = delayValue;
+    }
+
+    public long getDistanceValue() {
+        return distanceValue;
+    }
+
+    public void setDistanceValue(long distanceValue) {
+        this.distanceValue = distanceValue;
     }
 }

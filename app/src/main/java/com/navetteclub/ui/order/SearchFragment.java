@@ -18,6 +18,7 @@ import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -129,7 +130,17 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
                     Log.i(TAG, "Place: " + place.getName() + ", " + place.getLatLng());
-                    moveCamera(place.getLatLng());
+                    //moveCamera(place.getLatLng());
+
+                    if(searchType == SearchType.ORIGIN){
+                        Log.d(TAG, "ORIGIN");
+                        orderViewModel.setOrigin(place, true);
+                    }
+                    if(searchType == SearchType.RETOURS){
+                        Log.d(TAG, "RETOURS");
+                        orderViewModel.setReturn(place, true);
+                    }
+                    NavHostFragment.findNavController(SearchFragment.this).popBackStack();
                 }
 
                 @Override

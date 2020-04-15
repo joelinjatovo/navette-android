@@ -221,7 +221,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
                             for(Leg leg: route.getLegs()){
+                                orderViewModel.setDistance(leg.getDistance().getValue());
                                 orderViewModel.setDistance(leg.getDistance().getText());
+                                orderViewModel.setDelay(leg.getDuration().getValue());
                                 orderViewModel.setDelay(leg.getDuration().getText());
                             }
                             orderViewModel.setDirection(route.getOverviewPolyline().getPoints());

@@ -176,6 +176,18 @@ public class OrderViewModel extends ViewModel {
         loadCars(club);
     }
 
+    public void setDelay(long delay) {
+        mayBeInit();
+        Order order = orderWithDatas.getOrder();
+        order.setDelayValue(delay);
+    }
+
+    public void setDistance(long distance) {
+        mayBeInit();
+        Order order = orderWithDatas.getOrder();
+        order.setDistanceValue(distance);
+    }
+
     public void setDistance(String distance) {
         mayBeInit();
         Order order = orderWithDatas.getOrder();

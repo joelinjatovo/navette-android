@@ -1,5 +1,7 @@
 package com.navetteclub.api.models;
 
+import androidx.room.ColumnInfo;
+
 import com.google.gson.annotations.SerializedName;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
@@ -14,8 +16,14 @@ public class OrderRequest {
     @SerializedName("privatized")
     public Boolean privatized;
 
+    @SerializedName("distance_value")
+    public long distanceValue;
+
     @SerializedName("distance")
     public String distance;
+
+    @SerializedName("delay_value")
+    public long delayValue;
 
     @SerializedName("delay")
     public String delay;
@@ -38,7 +46,9 @@ public class OrderRequest {
             preordered = orderWithDatas.getOrder().getPreordered();
             privatized = orderWithDatas.getOrder().getPrivatized();
             distance = orderWithDatas.getOrder().getDistance();
+            distanceValue = orderWithDatas.getOrder().getDistanceValue();
             delay = orderWithDatas.getOrder().getDelay();
+            delayValue = orderWithDatas.getOrder().getDelayValue();
             direction = orderWithDatas.getOrder().getDirection();
         }
 

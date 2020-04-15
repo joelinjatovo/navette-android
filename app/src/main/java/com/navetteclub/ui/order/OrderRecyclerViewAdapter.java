@@ -1,5 +1,6 @@
 package com.navetteclub.ui.order;
 
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.ui.notification.NotificationFragment;
 import com.navetteclub.utils.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.ViewHolder>{
@@ -118,6 +122,13 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 mBinding.setOrderId(order.getRid());
                 mBinding.setAmount(order.getAmountStr());
                 mBinding.setStatus(order.getStatus());
+                mBinding.setPlace(order.getPlace());
+
+                long now = System.currentTimeMillis();
+                Date lastUpdated = order.getCreatedAt();
+                CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.DAY_IN_MILLIS);
+                mBinding.setDate((String) date);
+
                 // Points
                 if (order.getType()!=null){
                     switch (order.getType()){

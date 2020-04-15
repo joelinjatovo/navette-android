@@ -13,8 +13,10 @@
         <variable name="pointTitle" type="String" />
         <variable name="point" type="com.navetteclub.database.entity.Point" />
         <variable name="club" type="com.navetteclub.database.entity.Point" />
+        <variable name="date" type="String" />
         <variable name="amount" type="String" />
         <variable name="status" type="String" />
+        <variable name="place" type="int" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -48,30 +50,78 @@
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/image"
                     android:tint="@color/black"
-                    android:src="@drawable/outline_check_black_24" />
+                    android:src="@drawable/outline_check_black_18" />
 
                 <TextView
                     android:id="@+id/orderTitleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{@string/title_view_order(orderId)}"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textStyle="bold"
                     android:textColor="@color/colorText"
                     android:layout_toEndOf="@id/icon"
-                    android:layout_toStartOf="@id/clubNameTextView"/>
+                    android:layout_toStartOf="@id/statusTextView"/>
 
                 <TextView
-                    android:id="@+id/clubNameTextView"
+                    android:id="@+id/statusTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="@{club.name}"
+                    android:text="@{status}"
+                    android:background="@drawable/bg_text_rounded"
+                    android:textColor="@color/black"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+
+                <ImageView
+                    android:id="@+id/clubIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/image"
+                    android:src="@drawable/outline_trip_origin_black_18"
+                    android:tint="@color/colorIcon"/>
+
+                <TextView
+                    android:id="@+id/clubLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/clubIcon"
+                    android:layout_centerVertical="true"
+                    android:text="@string/club"
+                    android:textAppearance="?attr/textAppearanceCaption"
                     android:textColor="@color/colorIcon"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
+
+                <TextView
+                    android:id="@+id/clubName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textAlignment="textEnd"
+                    android:layout_toEndOf="@+id/clubLabel"
+                    android:text="@{club.name}"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:maxLines="1"
+                    android:textColor="@color/colorText"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
 
             </RelativeLayout>
 
@@ -113,6 +163,52 @@
                     android:layout_toEndOf="@+id/pointLabel"
                     android:text="@{point.name}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:maxLines="1"
+                    android:textColor="@color/colorText"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+
+                <ImageView
+                    android:id="@+id/dateIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/image"
+                    android:src="@drawable/outline_access_time_black_18"
+                    android:tint="@color/colorIcon"/>
+
+                <TextView
+                    android:id="@+id/dateLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/dateIcon"
+                    android:layout_centerVertical="true"
+                    android:text="@string/date"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/colorIcon"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <TextView
+                    android:id="@+id/dateName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textAlignment="textEnd"
+                    android:layout_toEndOf="@+id/dateLabel"
+                    android:text="@{date}"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:maxLines="1"
                     android:textColor="@color/colorText"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"/>
@@ -146,10 +242,10 @@
                         android:textAppearance="?attr/textAppearanceHeadline5"/>
 
                     <TextView
-                        android:id="@+id/statusLabel"
+                        android:id="@+id/placeLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{@string/order_status(status)}"/>
+                        android:text="@{@string/person_count(place)}"/>
 
                 </LinearLayout>
 
