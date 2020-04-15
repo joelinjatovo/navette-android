@@ -43,7 +43,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
             android:visibility="@{isLoading?View.VISIBLE:View.GONE}"
-            app:mSubtitle="@string/init_secured_payment"/>
+            app:mTitle="@string/init_secured_payment"/>
 
         <com.navetteclub.views.AuthErrorView
             android:id="@+id/authErrorView"

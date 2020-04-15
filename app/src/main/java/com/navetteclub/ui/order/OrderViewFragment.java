@@ -192,7 +192,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
 
                     if (orderResult.getSuccess() != null) {
                         Log.d(TAG, "'orderResult.getSuccess()'");
-                        NavHostFragment.findNavController(this).navigate(R.id.action_order_view_fragment_to_navigation_checkout);
+                        NavHostFragment.findNavController(this).navigate(R.id.action_global_checkout_fragment);
                     }
 
                     orderViewModel.setOrderResult(null);

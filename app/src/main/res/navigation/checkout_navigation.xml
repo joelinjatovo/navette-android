@@ -40,4 +40,8 @@
         android:name="com.navetteclub.ui.pay.ThanksFragment"
         tools:layout="@layout/fragment_thanks"/>
 
+    <action
+        android:id="@+id/action_global_checkout_fragment"
+        app:destination="@id/checkout_fragment" />
+
 </navigation>
