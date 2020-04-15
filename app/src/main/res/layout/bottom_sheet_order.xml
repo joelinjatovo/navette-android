@@ -8,6 +8,8 @@
         <import type="android.view.View"/>
         <variable name="showErrorLoader" type="boolean" />
         <variable name="isLoadingDirection" type="boolean" />
+        <variable name="showErrorLoaderCar" type="boolean" />
+        <variable name="isLoadingCar" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
     </data>
@@ -18,16 +20,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/white"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         app:behavior_skipCollapsed="true"
-        app:behavior_peekHeight="50dp"
+        app:behavior_peekHeight="40dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <RelativeLayout
             android:id="@+id/bsHeaderLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp">
 
@@ -42,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:text="@string/details"
+                android:text="@string/booking"
                 android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
@@ -52,6 +54,7 @@
             android:layout_height="wrap_content">
 
             <com.navetteclub.views.LoaderErrorView
+                android:id="@+id/loaderErrorView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="@{showErrorLoader?View.VISIBLE:View.GONE}"/>
@@ -69,89 +72,233 @@
                 android:orientation="vertical"
                 android:visibility="@{isLoadingDirection||showErrorLoader?View.GONE:View.VISIBLE}">
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/orderInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp">
 
-                    <androidx.cardview.widget.CardView
+                    <LinearLayout
+                        android:id="@+id/distanceLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@+id/delayLayout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/distanceLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/distance"
+                            android:textColor="@color/black"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:id="@+id/distanceValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="10 km"
+                            android:textAppearance="?attr/textAppearanceHeadline6"
+                            android:textColor="@color/colorAccent" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/delayLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintStart_toEndOf="@id/distanceLayout"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/priceLayout">
+
+                        <TextView
+                            android:id="@+id/delayLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="@color/black"
+                            android:text="@string/delay"/>
+
+                        <TextView
+                            android:id="@+id/delayValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="@color/colorAccent"
+                            android:text="10 mins"
+                            android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/priceLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintStart_toEndOf="@id/delayLayout"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:id="@+id/priceLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="@color/black"
+                            android:text="@string/total_price"/>
+
+                        <TextView
+                            android:id="@+id/priceValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="@color/colorAccent"
+                            android:text="10.00$"
+                            android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorIcon"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <Button
+                        android:id="@+id/button_refresh_car"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/refresh"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:visibility="@{showErrorLoaderCar?View.VISIBLE:View.GONE}"/>
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:visibility="@{isLoadingCar?View.VISIBLE:View.GONE}"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/colorAccent"
-                        android:padding="10dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp">
-
-                            <LinearLayout
-                                android:id="@+id/distanceLayout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_marginEnd="10dp">
-
-                                <TextView
-                                    android:id="@+id/distanceLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/white"
-                                    android:text="@string/distance"/>
-
-                                <TextView
-                                    android:id="@+id/distanceValue"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/white"
-                                    android:text="@{distance}"
-                                    android:textAppearance="?attr/textAppearanceHeadline5"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/delayLayout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:layout_marginStart="10dp"
-                                android:layout_toEndOf="@+id/distanceLayout">
-
-                                <TextView
-                                    android:id="@+id/delayLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/white"
-                                    android:text="@string/delay"/>
-
-                                <TextView
-                                    android:id="@+id/delayValue"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/white"
-                                    android:text="@{delay}"
-                                    android:textAppearance="?attr/textAppearanceHeadline6"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                    </androidx.cardview.widget.CardView>
+                        android:visibility="@{isLoadingCar||showErrorLoaderCar?View.GONE:View.VISIBLE}"/>
 
                 </RelativeLayout>
 
-                <Button
-                    android:id="@+id/bookNowButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_gravity="center"
-                    android:text="@string/book"/>
+                    android:background="@color/colorIcon"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/placeCountTitleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_place_count"
+                        android:layout_toStartOf="@id/placeCountTextView"
+                        android:textAppearance="?attr/textAppearanceBody1"/>
+
+                    <TextView
+                        android:id="@+id/placeCountTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorIcon"
+                        android:text="@{@string/person_count(1)}"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorIcon"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/privatizeTitleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/question_privatize_car"
+                        android:layout_toStartOf="@id/privatizeSwitchView"
+                        android:textAppearance="?attr/textAppearanceBody1"/>
+
+                    <Switch
+                        android:id="@+id/privatizeSwitchView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorIcon"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <Button
+                        android:id="@+id/bookNowButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/bookLaterButton"
+                        android:text="@string/book_now" />
+
+                    <Button
+                        android:id="@+id/bookLaterButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/book_later"
+                        android:layout_alignParentEnd="true"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textColor="@color/colorAccent"
+                        app:strokeColor="@color/colorAccent"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
 

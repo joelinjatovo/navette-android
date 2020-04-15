@@ -261,7 +261,7 @@
                                 android:layout_alignParentEnd="true"
                                 android:contentDescription="@string/image"
                                 android:tint="@color/black"
-                                android:src="@drawable/outline_trip_origin_black_24"
+                                android:src="@drawable/outline_clear_black_24"
                                 android:layout_centerVertical="true"/>
 
                         </RelativeLayout>

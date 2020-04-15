@@ -1,6 +1,7 @@
 package com.navetteclub.database.entity;
 
 import androidx.room.Embedded;
+import androidx.room.Ignore;
 import androidx.room.Relation;
 
 import com.google.gson.annotations.SerializedName;
@@ -18,6 +19,9 @@ public class CarAndModel {
     )
     private Car car;
 
+    @Ignore
+    private boolean selected;
+
     public CarModel getModel() {
         return model;
     }
@@ -32,5 +36,13 @@ public class CarAndModel {
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

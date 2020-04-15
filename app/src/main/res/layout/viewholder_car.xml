@@ -4,38 +4,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="270dp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="1dp"
-    android:layout_marginLeft="3dp"
-    android:layout_marginRight="3dp"
-    android:layout_marginBottom="5dp"
-    app:cardElevation="10dp">
+    android:layout_margin="1dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/carImageView"
-            android:layout_width="match_parent"
-            android:layout_height="135dp"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/outline_my_location_black_24"
-            android:contentDescription="@string/image" />
+            android:src="@drawable/car_placeholder"
+            android:contentDescription="@string/image"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"/>
 
-        <TextView
-            android:id="@+id/nameTextView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/carImageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textAlignment="center"
-            android:text="@string/settings"
-            android:gravity="center_horizontal" />
+            android:orientation="vertical"
+            android:layout_toEndOf="@+id/carImageView"
+            android:layout_centerVertical="true">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"/>
+
+            <TextView
+                android:id="@+id/descTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorIcon"
+                android:text="@string/settings"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

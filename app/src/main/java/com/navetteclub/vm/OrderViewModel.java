@@ -236,7 +236,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public boolean loadCars(){
-        if(orderWithDatas!=null){
+        if(orderWithDatas!=null && orderWithDatas.getClub()!=null){
             loadCars(orderWithDatas.getClub());
             return true;
         }

@@ -240,5 +240,7 @@
     <string name="init_secured_payment">Initialisation du paiement sécurisé.</string>
     <string name="loading_ride_points">Chargements des points GPS</string>
     <string name="button_call">Call</string>
+    <string name="book_later">Later?</string>
+    <string name="refresh">Actualiser</string>
 
 </resources>

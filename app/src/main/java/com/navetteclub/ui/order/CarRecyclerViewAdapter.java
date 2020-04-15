@@ -1,5 +1,6 @@
 package com.navetteclub.ui.order;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -21,9 +23,9 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
     private List<CarAndModel> mItems;
 
-    private final OrderFragment.OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<CarAndModel> mListener;
 
-    public CarRecyclerViewAdapter(OrderFragment.OnListFragmentInteractionListener listener) {
+    public CarRecyclerViewAdapter(OnClickItemListener<CarAndModel> listener) {
         mListener = listener;
     }
 
@@ -37,18 +39,12 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mItems.get(position);
-        holder.mNameTextView.setText(mItems.get(position).getCar().getName());
-        new Picasso.Builder(holder.mCarImageView.getContext())
-                .build()
-                .load(Constants.getBaseUrl() + mItems.get(position).getCar().getImageUrl())
-                .resize(360,180).into(holder.mCarImageView);
-
+        holder.setItem(mItems.get(position));
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, position, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }
@@ -85,13 +81,18 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     CarAndModel oldItem = mItems.get(oldItemPosition);
                     CarAndModel newItem = mItems.get(newItemPosition);
-                    return oldItem.getCar().getName()!=null && oldItem.getCar().getName().equals(newItem.getCar().getName());
+                    return oldItem.getCar().getName()!=null && oldItem.getCar().getName().equals(newItem.getCar().getName())
+                            && oldItem.isSelected() == newItem.isSelected();
                 }
             });
 
             mItems = items;
             diffResult.dispatchUpdatesTo(this);
         }
+    }
+
+    public List<CarAndModel> getItems() {
+        return this.mItems;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -105,6 +106,30 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
             mView = view;
             mCarImageView = view.findViewById(R.id.carImageView);
             mNameTextView = view.findViewById(R.id.nameTextView);
+        }
+
+        void setItem(CarAndModel item){
+            mItem = item;
+            if(mItem!=null){
+                if(mItem.isSelected())
+                    mView.setBackgroundColor(mView.getContext().getResources().getColor(R.color.colorAccent));
+                else
+                    mView.setBackgroundColor(mView.getContext().getResources().getColor(R.color.white));
+
+                if(mItem.getCar()!=null){
+                    mNameTextView.setText(mItem.getCar().getName());
+                    if(mItem.getCar().getImageUrl()!=null){
+                        /*
+                        Picasso.get()
+                                .load(Constants.getBaseUrl() + mItem.getCar().getImageUrl())
+                                .placeholder(R.drawable.car_placeholder)
+                                .error(R.drawable.car_placeholder)
+                                .resize(360,180)
+                                .into(mCarImageView);
+                         */
+                    }
+                }
+            }
         }
 
         @NonNull

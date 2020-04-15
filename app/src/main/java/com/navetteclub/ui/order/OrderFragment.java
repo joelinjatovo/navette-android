@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +21,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -47,6 +52,7 @@ import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentOrderBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
@@ -57,6 +63,7 @@ import com.navetteclub.vm.OrderViewModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,6 +107,24 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private BottomSheetBehavior sheetBehavior;
 
+    private CarRecyclerViewAdapter mAdapter;
+
+    private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
+        @Override
+        public void onClick(View v, int position, CarAndModel item) {
+            Toast.makeText(getContext(), "clic", Toast.LENGTH_SHORT).show();
+            List<CarAndModel> models = mAdapter.getItems();
+            for(CarAndModel model: models){
+                model.setSelected(false);
+            }
+            if(models.size()>position) {
+                models.get(position).setSelected(true);
+            }
+            orderViewModel.setCar(item.getCar());
+            mAdapter.setItems(models);
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -109,6 +134,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false);
 
+        mAdapter = new CarRecyclerViewAdapter(mListerner);
+        RecyclerView recyclerView = mBinding.bottomSheets.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(mAdapter);
+
         return mBinding.getRoot();
     }
 
@@ -116,7 +146,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG + "Cycle", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
-
         setupMap();
     }
 
@@ -286,6 +315,36 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             );
                         }
                     }
+                    //Club
+                    /*
+                    if(orderWithDatas.getClub()!=null){
+                        mBinding.bottomSheets.setIsLoadingCar(true);
+                        orderViewModel.loadCars(orderWithDatas.getClub());
+                    }
+                     */
+                });
+
+        orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result == null){
+                        return;
+                    }
+                    mBinding.bottomSheets.setIsLoadingCar(false);
+                    if(result.getError()!=null){
+                        // Error loading
+                        mBinding.bottomSheets.setShowErrorLoaderCar(true);
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+                    if(result.getSuccess()!=null){
+                        ArrayList<CarAndModel> items = (ArrayList<CarAndModel>) result.getSuccess();
+                        if(items.isEmpty()){
+                            mBinding.bottomSheets.setShowErrorLoaderCar(true);
+                        }else{
+                            mBinding.bottomSheets.setShowErrorLoaderCar(false);
+                            mAdapter.setItems(items);
+                        }
+                    }
+
                 });
 
     }
@@ -396,7 +455,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.retoursEndIcon.setOnClickListener(
                 v -> {
-                    getDeviceLocation(SearchType.RETOURS);
+                    orderViewModel.setReturn((Point) null, true);
                 });
         mBinding.destinationText.setOnClickListener(
                 v -> {
@@ -409,6 +468,16 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
+                });
+        mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+                    orderViewModel.setPrivatized(isChecked);
+                });
+        mBinding.bottomSheets.buttonRefreshCar.setOnClickListener(
+                v -> {
+                    mBinding.bottomSheets.setIsLoadingCar(true);
+                    mBinding.bottomSheets.setShowErrorLoaderCar(false);
+                    orderViewModel.loadCars();
                 });
     }
 
