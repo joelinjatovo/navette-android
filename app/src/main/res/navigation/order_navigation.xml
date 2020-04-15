@@ -22,6 +22,12 @@
         <action
             android:id="@+id/action_order_to_cars"
             app:destination="@id/cars_fragment" />
+        <action
+            android:id="@+id/action_order_fragment_to_place_fragment"
+            app:destination="@id/place_fragment" />
+        <action
+            android:id="@+id/action_order_fragment_to_go_and_back_fragment"
+            app:destination="@id/go_and_back_fragment" />
 
     </fragment>
 

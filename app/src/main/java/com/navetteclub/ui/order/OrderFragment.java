@@ -467,7 +467,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
+                    Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_place_fragment);
+                    //Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
