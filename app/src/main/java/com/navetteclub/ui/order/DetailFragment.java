@@ -98,57 +98,6 @@ public class DetailFragment extends Fragment {
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas == null){
-                        return;
-                    }
-
-                    if(orderWithDatas.getOrder()!=null){
-                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
-                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
-                        Double amount = orderWithDatas.getOrder().getAmount();
-                        if( amount != null && amount > 0 ){
-                            mBinding.setAmount(orderWithDatas.getOrder().getAmountStr());
-                            Log.d(TAG, "getStatus" + orderWithDatas.getOrder().getStatus());
-                            switch (orderWithDatas.getOrder().getStatus()){
-                                case Order.STATUS_PING:
-                                    mBinding.bookNowButton.setText(R.string.pay_now);
-                                    NavHostFragment.findNavController(this).navigate(R.id.navigation_checkout);
-                                break;
-                                case Order.STATUS_OK:
-                                    mBinding.bookNowButton.setText(R.string.view);
-                                    //NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_thanks_fragment);
-                                break;
-                                default:
-                                    mBinding.bookNowButton.setText(R.string.book_now);
-                                break;
-                            }
-                        }
-                    }
-                });
-
-        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
-                orderResult -> {
-                    if(orderResult == null){
-                        return;
-                    }
-
-                    progressDialog.hide();
-
-                    if (orderResult.getError() != null) {
-                        Log.d(TAG, "'orderResult.getError()'");
-                        Snackbar.make(mBinding.getRoot(), orderResult.getError(), Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    if (orderResult.getSuccess() != null) {
-                        Log.d(TAG, "'orderResult.getSuccess()'");
-                        orderViewModel.setOrder(orderResult.getSuccess());
-                    }
-
-                    orderViewModel.setOrderResult(null);
-                });
-
     }
 
     private void setupUi() {
@@ -158,16 +107,8 @@ public class DetailFragment extends Fragment {
         progressDialog.setMessage(getString(R.string.signing));
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    if(authViewModel.getUser()!=null
-                            && orderViewModel.getOrder() != null
-                            && orderViewModel.getOrder().getOrder() != null
-                            && orderViewModel.getOrder().getOrder().getRid() == null){
-                        progressDialog.show();
-
-                        orderViewModel.placeOrder(authViewModel.getUser());
-                    }
+                    // Nothing
                 });
-
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
                     User user = authViewModel.getUser();

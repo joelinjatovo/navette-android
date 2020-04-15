@@ -6,7 +6,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import com.navetteclub.database.entity.Point;
-import com.navetteclub.database.entity.PointWithOrders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +50,4 @@ public abstract class PointDao extends BaseDao<Point> {
         }
         return output;
     }
-
-    @Transaction
-    @Query("SELECT * FROM points")
-    public abstract List<PointWithOrders> findPointsWithOrders();
-
-    @Transaction
-    @Query("SELECT * FROM points")
-    public abstract LiveData<List<PointWithOrders>> loadPointsWithOrders();
 }

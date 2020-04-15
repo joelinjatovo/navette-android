@@ -3,60 +3,29 @@ package com.navetteclub.api.models;
 import androidx.room.ColumnInfo;
 
 import com.google.gson.annotations.SerializedName;
-import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.ItemWithDatas;
+import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Point;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrderRequest {
-    @SerializedName("place")
-    public Integer place;
+    @SerializedName("order")
+    public Order order;
 
-    @SerializedName("preordered")
-    public Boolean preordered;
+    @SerializedName("items")
+    public List<ItemWithDatas> items;
 
-    @SerializedName("privatized")
-    public Boolean privatized;
-
-    @SerializedName("distance_value")
-    public long distanceValue;
-
-    @SerializedName("distance")
-    public String distance;
-
-    @SerializedName("delay_value")
-    public long delayValue;
-
-    @SerializedName("delay")
-    public String delay;
-
-    @SerializedName("direction")
-    public String direction;
-
-    @SerializedName("car")
-    public Long car;
-
-    @SerializedName("origin")
-    public Point origin;
-
-    @SerializedName("retours")
-    public Point retours;
-
-    public OrderRequest(OrderWithDatas orderWithDatas){
-        if(orderWithDatas.getOrder()!=null){
-            place = orderWithDatas.getOrder().getPlace();
-            preordered = orderWithDatas.getOrder().getPreordered();
-            privatized = orderWithDatas.getOrder().getPrivatized();
-            distance = orderWithDatas.getOrder().getDistance();
-            distanceValue = orderWithDatas.getOrder().getDistanceValue();
-            delay = orderWithDatas.getOrder().getDelay();
-            delayValue = orderWithDatas.getOrder().getDelayValue();
-            direction = orderWithDatas.getOrder().getDirection();
+    public OrderRequest(Order order, ItemWithDatas goItem, ItemWithDatas backItem){
+        this.order = order;
+        items= new ArrayList<>();
+        if(goItem!=null){
+            items.add(goItem);
         }
-
-        if(orderWithDatas.getCar()!=null){
-            car = orderWithDatas.getCar().getId();
+        if(backItem!=null){
+            items.add(backItem);
         }
-
-        origin = orderWithDatas.getOrigin();
-        retours = orderWithDatas.getRetours();
     }
 }

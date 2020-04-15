@@ -41,6 +41,8 @@ public class Order {
 
     public static final String TYPE_BACK = "back";
 
+    public static final String TYPE_GO_BACK = "go-back";
+
     @PrimaryKey
     private Long id;
 
@@ -60,33 +62,17 @@ public class Order {
     @ColumnInfo(name = "place")
     private int place;
 
-    @SerializedName("amount")
-    @ColumnInfo(name = "amount")
-    private Double amount;
+    @SerializedName("distance")
+    @ColumnInfo(name = "distance")
+    private Long distance;
 
     @SerializedName("payment_type")
     @ColumnInfo(name = "payment_type")
     private String paymentType;
 
-    @SerializedName("distance")
-    @ColumnInfo(name = "distance")
-    private String distance;
-
-    @SerializedName("delay_value")
-    @ColumnInfo(name = "delay_value")
-    private long delayValue;
-
-    @SerializedName("distance_value")
-    @ColumnInfo(name = "distance_value")
-    private long distanceValue;
-
-    @SerializedName("delay")
-    @ColumnInfo(name = "delay")
-    private String delay;
-
-    @SerializedName("direction")
-    @ColumnInfo(name = "direction")
-    private String direction;
+    @SerializedName("amount")
+    @ColumnInfo(name = "amount")
+    private Double amount;
 
     @SerializedName("subtotal")
     @ColumnInfo(name = "subtotal")
@@ -112,15 +98,14 @@ public class Order {
     @ColumnInfo(name = "preordered")
     private Boolean preordered = false;
 
+    @ColumnInfo(name = "user_id")
+    private Long userId;
+
     @ColumnInfo(name = "club_id")
     private Long clubId;
 
     @ColumnInfo(name = "car_id")
     private Long carId;
-
-    @SerializedName("picked_at")
-    @ColumnInfo(name = "picked_at")
-    private Date pickedAt;
 
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
@@ -260,28 +245,12 @@ public class Order {
         this.paymentType = paymentType;
     }
 
-    public String getDistance() {
+    public Long getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(Long distance) {
         this.distance = distance;
-    }
-
-    public String getDelay() {
-        return delay;
-    }
-
-    public void setDelay(String delay) {
-        this.delay = delay;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
     }
 
     public String getType() {
@@ -292,27 +261,11 @@ public class Order {
         this.type = type;
     }
 
-    public Date getPickedAt() {
-        return pickedAt;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setPickedAt(Date pickedAt) {
-        this.pickedAt = pickedAt;
-    }
-
-    public long getDelayValue() {
-        return delayValue;
-    }
-
-    public void setDelayValue(long delayValue) {
-        this.delayValue = delayValue;
-    }
-
-    public long getDistanceValue() {
-        return distanceValue;
-    }
-
-    public void setDistanceValue(long distanceValue) {
-        this.distanceValue = distanceValue;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

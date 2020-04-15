@@ -58,7 +58,7 @@ public class GoAndBackFragment extends Fragment {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
 
-                orderViewModel.setReturn(place, true);
+                //orderViewModel.setReturn(place, true);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i(TAG, status.getStatusMessage());
@@ -70,20 +70,7 @@ public class GoAndBackFragment extends Fragment {
 
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas == null){
-                        return;
-                    }
-
-                    // Points
-                    if(orderWithDatas.getRetours()!=null) {
-                        NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
-                    }
-                });
     }
 
     private void setupUi() {
@@ -91,7 +78,7 @@ public class GoAndBackFragment extends Fragment {
         mBinding.yesButton.setOnClickListener(
                 v -> {
                     // reset return point
-                    orderViewModel.setReturn((Point) null, true);
+                    //orderViewModel.setReturn((Point) null, true);
 
                     // go to search point
                     GoAndBackFragmentDirections.ActionGoAndBackFragmentToSearchFragment action = GoAndBackFragmentDirections.actionGoAndBackFragmentToSearchFragment();

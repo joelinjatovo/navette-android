@@ -312,10 +312,10 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
                             for(Leg leg: route.getLegs()){
-                                orderViewModel.setDistance(leg.getDistance().getText());
-                                orderViewModel.setDelay(leg.getDuration().getText());
+                                //orderViewModel.setDistance(leg.getDistance().getText());
+                                //orderViewModel.setDelay(leg.getDuration().getText());
                             }
-                            orderViewModel.setDirection(route.getOverviewPolyline().getPoints());
+                            //orderViewModel.setDirection(route.getOverviewPolyline().getPoints());
                         }
                     }
                 });
@@ -340,82 +340,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-
-        orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
-                originPoint -> {
-                    if(originPoint==null){
-                        return;
-                    }
-                    mBinding.setOrigin(originPoint);
-                    mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
-                    drawOriginMarker(originPoint);
-                    if(mMap!=null){
-                        // Zoom map
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOrigin, MAP_ZOOM));
-                    }
-                    loadDirection();
-                });
-
-        orderViewModel.getDestination().observe(getViewLifecycleOwner(),
-                destinationPoint -> {
-                    if(destinationPoint==null){
-                        return;
-                    }
-                    mBinding.setDestination(destinationPoint);
-                    mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
-                    drawDestinationMarker(destinationPoint, orderViewModel.getOrder().getClub());
-                    if(mMap!=null){
-                        // Zoom map
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDestination, MAP_ZOOM));
-                    }
-                    loadDirection();
-                });
-
-        orderViewModel.getRetours().observe(getViewLifecycleOwner(),
-                retoursPoint -> {
-                    if(retoursPoint==null){
-                        return;
-                    }
-                    mBinding.setRetours(retoursPoint);
-                    mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
-                    drawRetoursMarker(retoursPoint);
-                    if(mMap!=null){
-                        // Zoom map
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mRetours, MAP_ZOOM));
-                    }
-                });
-
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas == null){
-                        return;
-                    }
-
-                    // Order
-                    if(orderWithDatas.getOrder() != null){
-                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
-                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
-
-                        String encodedString = orderWithDatas.getOrder().getDirection();
-                        if(encodedString!=null && mMap!=null){
-                            //Remove previous line from map
-                            if (line != null) {
-                                line.remove();
-                            }
-
-                            List<LatLng> list = Utils.decodePoly(encodedString);
-                            line = mMap.addPolyline(new PolylineOptions()
-                                    .addAll(list)
-                                    .width(5)
-                                    .color(R.color.colorAccent)
-                                    .geodesic(true)
-                            );
-                        }
-                    }
-                });
-
     }
 
     private void loadDirection() {
@@ -550,7 +475,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                                                     mLastKnownLocation.getLongitude()), 10));
 
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                    orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                                 }
                             }

@@ -89,7 +89,7 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(OrderViewModel.class)) {
             if(orderViewModel == null){
                 Log.d("MyViewModelFactory", "new OrderViewModel(CarRepository.getInstance(application));");
-                orderViewModel = new OrderViewModel(CarRepository.getInstance(application));
+                orderViewModel = new OrderViewModel();
             }
             return (T) orderViewModel;
         }  else if (modelClass.isAssignableFrom(OrdersViewModel.class)) {

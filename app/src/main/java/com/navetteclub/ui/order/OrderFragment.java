@@ -120,7 +120,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             if(models.size()>position) {
                 models.get(position).setSelected(true);
             }
-            orderViewModel.setCar(item.getCar());
+            orderViewModel.setCarLiveData(item.getCar());
             mAdapter.setItems(models);
         }
     };
@@ -170,7 +170,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                orderViewModel.setOrigin(place, true);
                 Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -221,12 +220,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
                             for(Leg leg: route.getLegs()){
-                                orderViewModel.setDistance(leg.getDistance().getValue());
-                                orderViewModel.setDistance(leg.getDistance().getText());
-                                orderViewModel.setDelay(leg.getDuration().getValue());
-                                orderViewModel.setDelay(leg.getDuration().getText());
                             }
-                            orderViewModel.setDirection(route.getOverviewPolyline().getPoints());
                         }
                     }
                 });
@@ -248,84 +242,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
-                originPoint -> {
-                    mBinding.setOrigin(originPoint);
-                    if(originPoint==null){
-                        getDeviceLocation(SearchType.ORIGIN);
-                        return;
-                    }
-                    mOrigin = new LatLng(originPoint.getLat(), originPoint.getLng());
-                    drawOriginMarker(originPoint);
-                    if(mMap!=null){
-                        // Zoom map
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mOrigin, MAP_ZOOM));
-                    }
-                    loadDirection();
-                });
-
-        orderViewModel.getDestination().observe(getViewLifecycleOwner(),
-                destinationPoint -> {
-                    mBinding.setDestination(destinationPoint);
-                    if(destinationPoint==null){
-                        return;
-                    }
-                    mDestination = new LatLng(destinationPoint.getLat(), destinationPoint.getLng());
-                    drawDestinationMarker(destinationPoint, orderViewModel.getOrder().getClub());
-                    if(mMap!=null){
-                        // Zoom map
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDestination, MAP_ZOOM));
-                    }
-                    loadDirection();
-                });
-
-        orderViewModel.getRetours().observe(getViewLifecycleOwner(),
-                retoursPoint -> {
-                    mBinding.setRetours(retoursPoint);
-                    if(retoursPoint==null){
-                        return;
-                    }
-                    mRetours = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
-                    drawRetoursMarker(retoursPoint);
-                    if(mMap!=null){
-                        // Zoom map
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mRetours, MAP_ZOOM));
-                    }
-                });
-
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas == null){
-                        return;
-                    }
-                    // Order
-                    if(orderWithDatas.getOrder() != null){
-                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
-                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
-                        String encodedString = orderWithDatas.getOrder().getDirection();
-                        if(encodedString!=null && mMap!=null){
-                            //Remove previous line from map
-                            if (line != null) {
-                                line.remove();
-                            }
-                            List<LatLng> list = Utils.decodePoly(encodedString);
-                            line = mMap.addPolyline(new PolylineOptions()
-                                    .addAll(list)
-                                    .width(5)
-                                    .color(R.color.colorAccent)
-                                    .geodesic(true)
-                            );
-                        }
-                    }
-                    //Club
-                    /*
-                    if(orderWithDatas.getClub()!=null){
-                        mBinding.bottomSheets.setIsLoadingCar(true);
-                        orderViewModel.loadCars(orderWithDatas.getClub());
-                    }
-                     */
-                });
-
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result == null){
@@ -457,7 +373,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.retoursEndIcon.setOnClickListener(
                 v -> {
-                    orderViewModel.setReturn((Point) null, true);
+                    //orderViewModel.setReturn((Point) null, true);
                 });
         mBinding.destinationText.setOnClickListener(
                 v -> {
@@ -474,7 +390,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
-                    orderViewModel.setPrivatized(isChecked);
+                    //orderViewModel.setPrivatized(isChecked);
                 });
         mBinding.bottomSheets.buttonRefreshCar.setOnClickListener(
                 v -> {
@@ -503,9 +419,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                                     if(searchType == SearchType.ORIGIN){
-                                        orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
+                                        //orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                     }else{
-                                        orderViewModel.setReturn(getString(R.string.my_location), latLng, true);
+                                        //orderViewModel.setReturn(getString(R.string.my_location), latLng, true);
                                     }
                                 }
                             } else {

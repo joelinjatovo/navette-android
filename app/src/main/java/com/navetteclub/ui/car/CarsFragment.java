@@ -142,7 +142,7 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
 
     @Override
     public void onListFragmentInteraction(View view, int position, CarAndModel item) {
-        orderViewModel.setCar(item.getCar());
+        orderViewModel.setCarLiveData(item.getCar());
         Navigation.findNavController(view).navigate(R.id.action_cars_fragment_to_privatize_fragment);
     }
 }

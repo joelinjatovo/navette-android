@@ -26,17 +26,8 @@ public class OrderWithDatas {
     @Embedded
     private Car car;
 
-    @SerializedName("origin")
-    @Embedded
-    private Point origin;
-
-    @SerializedName("destination")
-    @Embedded
-    private Point destination;
-
-    @SerializedName("retours")
-    @Embedded
-    private Point retours;
+    @SerializedName("items")
+    private List<ItemWithDatas> items;
 
     public Order getOrder() {
         return order;
@@ -70,27 +61,11 @@ public class OrderWithDatas {
         this.user = user;
     }
 
-    public Point getOrigin() {
-        return origin;
+    public List<ItemWithDatas> getItems() {
+        return items;
     }
 
-    public void setOrigin(Point origin) {
-        this.origin = origin;
-    }
-
-    public Point getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Point destination) {
-        this.destination = destination;
-    }
-
-    public Point getRetours() {
-        return retours;
-    }
-
-    public void setRetours(Point retours) {
-        this.retours = retours;
+    public void setItems(List<ItemWithDatas> items) {
+        this.items = items;
     }
 }

@@ -25,12 +25,8 @@ public class RideWithDatas {
     @SerializedName("points")
     private List<RidePointWithDatas> points;
 
-    @SerializedName("orders")
-    @Relation(
-            parentColumn = "id",
-            entityColumn = "order_id"
-    )
-    private List<Order> orders;
+    @SerializedName("items")
+    private List<ItemWithDatas> items;
 
     public Car getCar() {
         return car;
@@ -64,11 +60,11 @@ public class RideWithDatas {
         this.ride = ride;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public List<ItemWithDatas> getItems() {
+        return items;
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+    public void setItems(List<ItemWithDatas> items) {
+        this.items = items;
     }
 }

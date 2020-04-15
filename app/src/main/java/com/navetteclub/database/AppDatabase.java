@@ -17,7 +17,6 @@ import com.navetteclub.database.converter.ObjectConverter;
 import com.navetteclub.database.dao.CarDao;
 import com.navetteclub.database.dao.ClubDao;
 import com.navetteclub.database.dao.NotificationDao;
-import com.navetteclub.database.dao.OrderPointDao;
 import com.navetteclub.database.dao.PointDao;
 import com.navetteclub.database.dao.UserDao;
 import com.navetteclub.database.entity.Car;
@@ -25,7 +24,6 @@ import com.navetteclub.database.entity.CarModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderPoint;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
@@ -38,7 +36,6 @@ import com.navetteclub.database.entity.UserPoint;
         Club.class,
         Notification.class,
         Order.class,
-        OrderPoint.class,
         Point.class,
         Ride.class,
         RidePoint.class,
@@ -58,8 +55,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ClubDao clubDao();
 
     public abstract NotificationDao notificationDao();
-
-    public abstract OrderPointDao orderPointDao();
 
     public abstract PointDao pointDao();
 
