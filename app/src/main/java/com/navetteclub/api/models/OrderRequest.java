@@ -1,14 +1,9 @@
 package com.navetteclub.api.models;
 
-import androidx.room.ColumnInfo;
-
 import com.google.gson.annotations.SerializedName;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.Point;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRequest {
@@ -18,14 +13,13 @@ public class OrderRequest {
     @SerializedName("items")
     public List<ItemWithDatas> items;
 
-    public OrderRequest(Order order, ItemWithDatas goItem, ItemWithDatas backItem){
+    public OrderRequest setOrder(Order order) {
         this.order = order;
-        items= new ArrayList<>();
-        if(goItem!=null){
-            items.add(goItem);
-        }
-        if(backItem!=null){
-            items.add(backItem);
-        }
+        return this;
+    }
+
+    public OrderRequest setItems(List<ItemWithDatas> items) {
+        this.items = items;
+        return this;
     }
 }

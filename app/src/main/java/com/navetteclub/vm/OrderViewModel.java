@@ -52,13 +52,9 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<Car> carLiveData = new MutableLiveData<>();
 
-    private ItemWithDatas goItem;
+    private List<ItemWithDatas> items;
 
-    private MutableLiveData<ItemWithDatas> goItemLiveData = new MutableLiveData<>();
-
-    private ItemWithDatas backItem;
-
-    private MutableLiveData<ItemWithDatas> backItemLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ItemWithDatas>> itemsLiveData = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> carsResult = new MutableLiveData<>();
 
@@ -96,7 +92,8 @@ public class OrderViewModel extends ViewModel {
 
     public void placeOrder(String token) {
         Log.d(TAG, "OrderApiService.placeOrder()");
-        OrderRequest orderRequest = new OrderRequest(order, goItem, backItem);
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrder(order).setItems(items);
 
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
         Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(token, club.getId(), orderRequest);
@@ -174,24 +171,6 @@ public class OrderViewModel extends ViewModel {
         this.orderResult.setValue(value);
     }
 
-    public LiveData<ItemWithDatas> getBackItemLiveData() {
-        return backItemLiveData;
-    }
-
-    public void setBackItemLiveData(ItemWithDatas itemWithDatas) {
-        this.backItem = itemWithDatas;
-        this.backItemLiveData.setValue(itemWithDatas);
-    }
-
-    public LiveData<ItemWithDatas> getGoItemLiveData() {
-        return goItemLiveData;
-    }
-
-    public void setGoItemLiveData(ItemWithDatas goItem) {
-        this.goItem = goItem;
-        this.goItemLiveData.setValue(goItem);
-    }
-
     public LiveData<Order> getOrderLiveData() {
         return orderLiveData;
     }
@@ -205,19 +184,18 @@ public class OrderViewModel extends ViewModel {
         return order;
     }
 
-    public ItemWithDatas getGoItem() {
-        return goItem;
-    }
-
-    public ItemWithDatas getBackItem() {
-        return backItem;
-    }
-
     public LiveData<Club> getClubLiveData() {
         return clubLiveData;
     }
 
     public void setClubLiveData(Club club) {
+        if(club!=null){
+            if(order==null){
+                order = new Order();
+            }
+            this.order.setClubId(club.getId());
+            this.setOrderLiveData(this.order);
+        }
         this.club = club;
         this.clubLiveData.setValue(club);
     }
@@ -240,11 +218,35 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setCarLiveData(Car car) {
+        if(car!=null){
+            if(order==null){
+                order = new Order();
+            }
+            this.order.setCarId(car.getId());
+            this.setOrderLiveData(order);
+        }
         this.car = car;
         this.carLiveData.setValue(car);
     }
 
     public Car getCar() {
         return car;
+    }
+
+    public List<ItemWithDatas> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemWithDatas> items) {
+        this.items = items;
+    }
+
+    public MutableLiveData<List<ItemWithDatas>> getItemsLiveData() {
+        return itemsLiveData;
+    }
+
+    public void setItemsLiveData(List<ItemWithDatas> items) {
+        this.items = items;
+        this.itemsLiveData.setValue(items);
     }
 }
