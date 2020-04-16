@@ -1,5 +1,6 @@
 package com.navetteclub.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -213,4 +214,19 @@ public class Item {
     public void setRidedAt(Date ridedAt) {
         this.ridedAt = ridedAt;
     }
+
+    @NonNull
+    public String toString(){
+        return "User[id=" + id
+                + "; status=" + status
+                + "; rideStatus=" + rideStatus
+                + "; direction=" + direction
+                + "; distance=" + distance
+                + "; distanceValue=" + distanceValue
+                + "; delayValue=" + delay
+                + "; delayValue=" + delayValue
+                + "; ridedAt=" + ridedAt
+        + "]";
+    }
+
 }
