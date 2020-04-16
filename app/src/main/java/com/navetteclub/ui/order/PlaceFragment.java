@@ -86,21 +86,23 @@ public class PlaceFragment extends BottomSheetDialogFragment {
     }
 
     private void setupUi() {
-        mBinding.toolbar.setNavigationOnClickListener(
-                v -> {
-                    NavHostFragment.findNavController(this).popBackStack();
-                });
         mBinding.plus.setOnClickListener(
                 v -> {
                     if(place < max){
                         place++;
+                        mBinding.value.setText(String.valueOf(place));
                     }
                 });
         mBinding.minus.setOnClickListener(
                 v -> {
                     if(place > 2){
                         place--;
+                        mBinding.value.setText(String.valueOf(place));
                     }
+                });
+        mBinding.closeButton.setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
                 });
         mBinding.cancelButton.setOnClickListener(
                 v -> {

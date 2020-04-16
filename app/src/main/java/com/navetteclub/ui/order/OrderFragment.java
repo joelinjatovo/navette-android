@@ -354,6 +354,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         drawClubMarker(point, club);
                     }
                 });
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
+                order -> {
+                    if(order!=null) {
+                        mBinding.bottomSheets.setPlace(order.getPlace());
+                    }
+                });
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result == null){

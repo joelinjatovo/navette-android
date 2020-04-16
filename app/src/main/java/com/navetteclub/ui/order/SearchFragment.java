@@ -252,7 +252,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
     private void getGeocode(LatLng latLng) {
         try {
-            List<Address> addressList= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+            List<Address> addressList= geocoder.getFromLocation(latLng.latitude, latLng.longitude,1);
             if (addressList != null && addressList.size() > 0) {
                 String locality = addressList.get(0).getAddressLine(0);
                 String country = addressList.get(0).getCountryName();
