@@ -128,11 +128,7 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
         mBinding.payPerStripeButton.setOnClickListener(
                 v -> {
                     User user = authViewModel.getUser();
-                    OrderWithDatas orderWithDatas = orderViewModel.getOrder();
                     Order order = null;
-                    if(orderWithDatas!=null){
-                        order = orderWithDatas.getOrder();
-                    }
                     if(user!=null && order!=null){
                         CheckoutFragmentDirections.ActionCheckoutFragmentToStripeFragment action =
                                 CheckoutFragmentDirections.actionCheckoutFragmentToStripeFragment(
@@ -146,7 +142,6 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
                 v -> {
                     if(authViewModel.getUser()!=null){
                         progressDialog.show();
-                        orderViewModel.payPerCash(authViewModel.getUser());
                     }
                 });
 
@@ -185,64 +180,5 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas == null){
-                        return;
-                    }
-
-                    if(orderWithDatas.getOrder()!=null){
-                        Double amount = orderWithDatas.getOrder().getAmount();
-                        if( amount != null && amount > 0 ){
-                            String currency = orderWithDatas.getOrder().getCurrency();
-                            NumberFormat format = NumberFormat.getCurrencyInstance();
-                            //format.setMaximumFractionDigits(2);
-                            //format.setMinimumFractionDigits(2);
-                            format.setCurrency(Currency.getInstance(currency));
-                            mBinding.setAmount(format.format(amount));
-                        }
-
-                        if( orderWithDatas.getOrder().getPaymentType() != null ) {
-                            if(Order.STATUS_PING.equals(orderWithDatas.getOrder().getStatus())
-                                    ||Order.STATUS_ON_HOLD.equals(orderWithDatas.getOrder().getStatus())) {
-                                switch (orderWithDatas.getOrder().getPaymentType()) {
-                                    case Order.PAYMENT_TYPE_APPLE_PAY:
-                                    case Order.PAYMENT_TYPE_STRIPE:
-                                    case Order.PAYMENT_TYPE_PAYPAL:
-                                        NavHostFragment.findNavController(this).navigate(R.id.action_checkout_fragment_to_thanks_fragment);
-                                        break;
-                                    case Order.PAYMENT_TYPE_CASH:
-                                        mBinding.payPerCashButton.setVisibility(View.GONE);
-                                        break;
-                                }
-                            }
-                        }else{
-                            mBinding.payPerCashButton.setVisibility(View.VISIBLE);
-                        }
-
-                    }
-                });
-
-        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
-                orderResult -> {
-                    if(orderResult == null){
-                        return;
-                    }
-
-                    progressDialog.hide();
-
-                    if (orderResult.getError() != null) {
-                        Log.d(TAG, "'orderResult.getError()'");
-                        Snackbar.make(mBinding.getRoot(), orderResult.getError(), Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    if (orderResult.getSuccess() != null) {
-                        Log.d(TAG, "'orderResult.getSuccess()'");
-                        orderViewModel.setOrder(orderResult.getSuccess());
-                        NavHostFragment.findNavController(this).navigate(R.id.action_checkout_fragment_to_thanks_fragment);
-                    }
-
-                    orderViewModel.setOrderResult(null);
-                });
     }
 }

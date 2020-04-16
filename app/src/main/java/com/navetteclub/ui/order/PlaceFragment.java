@@ -48,29 +48,10 @@ public class PlaceFragment extends Fragment {
 
     private void setupUi() {
         mBinding.stepView.go(2, true);
-        mBinding.plus.setOnClickListener(
-                v -> {
-                    if( place < max ) {
-                        orderViewModel.setPlace( place + 1 );
-                    }else{
-                        orderViewModel.setPlace( max );
-                    }
-                });
-
-        mBinding.minus.setOnClickListener(
-                v -> {
-                    if(place>1){
-                        orderViewModel.setPlace( place - 1 );
-                    }else{
-                        orderViewModel.setPlace( 1 );
-                    }
-                });
-
         mBinding.ok.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_place_fragment_to_go_and_back_fragment);
                 });
-
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
@@ -80,17 +61,5 @@ public class PlaceFragment extends Fragment {
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas==null){
-                        return;
-                    }
-                    Order order = orderWithDatas.getOrder();
-                    if(order==null){
-                        return;
-                    }
-                    this.place = order.getPlace();
-                    mBinding.setPlace(place);
-                });
     }
 }

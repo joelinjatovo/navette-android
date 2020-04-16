@@ -134,11 +134,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
                     if(searchType == SearchType.ORIGIN){
                         Log.d(TAG, "ORIGIN");
-                        orderViewModel.setOrigin(place, true);
                     }
                     if(searchType == SearchType.RETOURS){
                         Log.d(TAG, "RETOURS");
-                        orderViewModel.setReturn(place, true);
                     }
                     NavHostFragment.findNavController(SearchFragment.this).popBackStack();
                 }
@@ -177,54 +175,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getOrigin().observe(getViewLifecycleOwner(),
-                originPoint -> {
-                    Log.d(TAG, "ORIGIN observe()");
-                    if(searchType == SearchType.ORIGIN) {
-                        Log.d(TAG, "ORIGIN observe() OK");
-                        if(originPoint == null){
-                            getDeviceLocation();
-                            Log.d(TAG, "ORIGIN getDeviceLocation()");
-                            return;
-                        }
-
-                        LatLng latLng = new LatLng(originPoint.getLat(), originPoint.getLng());
-
-                        if(latLng.latitude != 0.0 && latLng.longitude != 0.0){
-                            getDeviceLocation();
-                            Log.d(TAG, "ORIGIN getDeviceLocation() 2.0");
-                        }else{
-                            moveCamera(latLng);
-                            Log.d(TAG, "ORIGIN moveCamera()");
-                        }
-
-                    }
-                });
-
-        orderViewModel.getRetours().observe(getViewLifecycleOwner(),
-                retoursPoint -> {
-                    Log.d(TAG, "RETOURS observe()");
-                    if(searchType == SearchType.RETOURS) {
-                        Log.d(TAG, "RETOURS observe() OK");
-                        if(retoursPoint == null){
-                            getDeviceLocation();
-                            Log.d(TAG, "RETOURS getDeviceLocation()");
-                            return;
-                        }
-
-                        LatLng latLng = new LatLng(retoursPoint.getLat(), retoursPoint.getLng());
-                        if(latLng.latitude != 0.0 && latLng.longitude != 0.0){
-                            getDeviceLocation();
-                            Log.d(TAG, "RETOURS getDeviceLocation() 2.0");
-                        }else{
-                            moveCamera(latLng);
-                            Log.d(TAG, "RETOURS moveCamera()");
-                        }
-
-                    }
-                });
     }
 
     private void setupUi() {
@@ -247,11 +198,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 v -> {
                     if(searchType == SearchType.ORIGIN){
                         Log.d(TAG, "ORIGIN");
-                        orderViewModel.setOrigin(mBinding.locationTitle.getText().toString(), mLocation, true);
                     }
                     if(searchType == SearchType.RETOURS){
                         Log.d(TAG, "RETOURS");
-                        orderViewModel.setReturn(mBinding.locationTitle.getText().toString(), mLocation, true);
                     }
                     Navigation.findNavController(v).popBackStack();
                 });

@@ -55,13 +55,11 @@ public class PrivatizeFragment extends Fragment {
 
         mBinding.yesButton.setOnClickListener(
                 v -> {
-                    orderViewModel.setPrivatized(true);
                     Navigation.findNavController(v).navigate(R.id.action_privatize_fragment_to_place_fragment);
                 });
 
         mBinding.noButton.setOnClickListener(
                 v -> {
-                    orderViewModel.setPrivatized(false);
                     Navigation.findNavController(v).navigate(R.id.action_privatize_fragment_to_place_fragment);
                 });
 

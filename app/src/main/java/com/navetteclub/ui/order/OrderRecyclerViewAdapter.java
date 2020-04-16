@@ -134,13 +134,9 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                     switch (order.getType()){
                         case Order.TYPE_GO:
                             mBinding.setPointTitle("Pickup");
-                            mBinding.setPoint(mItem.getOrigin());
-                            mBinding.setClub(mItem.getDestination());
                             break;
                         case Order.TYPE_BACK:
                             mBinding.setPointTitle("Drop");
-                            mBinding.setPoint(mItem.getRetours());
-                            mBinding.setClub(mItem.getOrigin());
                             break;
                     }
                 }

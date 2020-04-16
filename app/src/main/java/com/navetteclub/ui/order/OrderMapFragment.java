@@ -279,38 +279,7 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                orderWithDatas -> {
-                    if(orderWithDatas == null){
-                        return;
-                    }
-
-                    // Order
-                    if(orderWithDatas.getOrder() != null){
-                        mBinding.setDistance(orderWithDatas.getOrder().getDistance());
-                        mBinding.setDelay(orderWithDatas.getOrder().getDelay());
-
-                        String encodedString = orderWithDatas.getOrder().getDirection();
-                        if(encodedString!=null && mMap!=null){
-                            //Remove previous line from map
-                            if (line != null) {
-                                line.remove();
-                            }
-
-                            List<LatLng> list = Utils.decodePoly(encodedString);
-                            line = mMap.addPolyline(new PolylineOptions()
-                                    .addAll(list)
-                                    .width(5)
-                                    .color(R.color.colorAccent)
-                                    .geodesic(true)
-                            );
-                        }
-                    }
-                });
-
     }
 
     private void setupUi() {
@@ -320,8 +289,6 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     // Live update location
-                    Toast.makeText(requireContext(), "requestLocationUpdatesButton.click",
-                            Toast.LENGTH_SHORT).show();
                     if (!checkPermissions()) {
                         requestPermissions();
                     } else {
@@ -329,8 +296,6 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }else{
                     // Remove live location update
-                    Toast.makeText(requireContext(), "removeLocationUpdatesButton.click",
-                            Toast.LENGTH_SHORT).show();
                     mService.removeLocationUpdates();
                 }
             }
@@ -355,7 +320,7 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
                                                 mLastKnownLocation.getLongitude()), 10));
 
                                 LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
+                                //orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             }
                         }
