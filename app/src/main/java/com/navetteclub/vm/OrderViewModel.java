@@ -15,7 +15,6 @@ import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.CashApiService;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.api.services.OrderApiService;
-import com.navetteclub.database.dao.PointDao_Impl;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
@@ -24,7 +23,6 @@ import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.User;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.ui.order.OrderType;
 import com.navetteclub.utils.Log;
@@ -84,15 +82,36 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
+    public String origin;
+
+    public String destination;
+
+    public String back;
+
     public OrderViewModel(){
-        orderType = OrderType.GO;
+        refresh();
     }
+
+    public void refresh(){
+        setClubLiveData(null);
+        setClubPointLiveData(new Point());
+        setItem1LiveData(new Item(), new Point());
+        setItem2LiveData(new Item(), new Point());
+        setOrderLiveData(null);
+        setCarLiveData(null);
+        setItemsLiveData(null);
+        setCarsResult(null);
+        setOrderResult(null);
+        setOrderTypeLiveData(OrderType.GO);
+    }
+
 
     public void loadCars(){
         loadCars(club);
     }
 
     public void loadCars(Club club){
+        if(club==null) return;
         Log.d(TAG, "ClubApiService.getCars(" + club.getId() +")");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
         Call<RetrofitResponse<List<CarAndModel>>> call = service.getCars(club.getId());
@@ -269,10 +288,6 @@ public class OrderViewModel extends ViewModel {
         return items;
     }
 
-    public void setItems(List<ItemWithDatas> items) {
-        this.items = items;
-    }
-
     public MutableLiveData<List<ItemWithDatas>> getItemsLiveData() {
         return itemsLiveData;
     }
@@ -303,6 +318,23 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setOrderTypeLiveData(OrderType orderType) {
+        switch (orderType){
+            case GO:
+                origin = item1Point==null?null:item1Point.getName();
+                destination = clubPoint==null?null:clubPoint.getName();
+                back = null;
+                break;
+            case BACK:
+                origin = clubPoint==null?null:clubPoint.getName();
+                destination = item1Point==null?null:item1Point.getName();
+                back = null;
+                break;
+            case GO_BACK:
+                origin = item1Point==null?null:item1Point.getName();
+                destination = clubPoint==null?null:clubPoint.getName();
+                back = item2Point==null?null:item2Point.getName();
+                break;
+        }
         this.orderType = orderType;
         this.orderTypeLiveData.setValue(orderType);
     }
@@ -462,35 +494,6 @@ public class OrderViewModel extends ViewModel {
 
     public Point getItem2Point() {
         return item2Point;
-    }
-
-    public Point getOrigin() {
-        switch (orderType){
-            case BACK:
-                return clubPoint;
-            default:
-            case GO:
-            case GO_BACK:
-                return item1Point;
-        }
-    }
-
-    public Point getDestination() {
-        switch (orderType){
-            case BACK:
-                return item1Point;
-            default:
-            case GO:
-            case GO_BACK:
-                return clubPoint;
-        }
-    }
-
-    public Point getBack() {
-        if (orderType == OrderType.GO_BACK) {
-            return item2Point;
-        }
-        return null;
     }
 
     public LiveData<Point> getItem2PointLiveData() {

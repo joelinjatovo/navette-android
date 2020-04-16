@@ -276,8 +276,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
 
     @Override
     public void onClick(View v, int position, ClubAndPoint item) {
-        //orderViewModel.refresh();
-        //orderViewModel.setClub(item.getClub(), item.getPoint());
+        orderViewModel.refresh();
+        orderViewModel.setClubLiveData(item.getClub());
+        orderViewModel.setClubPointLiveData(item.getPoint());
         Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
     }
 }

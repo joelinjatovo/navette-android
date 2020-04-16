@@ -50,7 +50,7 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentOrderBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Constants;
@@ -326,7 +326,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 orderViewModel.swap();
             }
         });
-
         mBinding.originText.setOnClickListener(
                 v -> {
                     if (orderViewModel.getOrderType() == OrderType.BACK) {
@@ -353,14 +352,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     action.setSearchType(SearchType.RETOURS);
                     Navigation.findNavController(v).navigate(action);
                 });
+        mBinding.clearRetours.setOnClickListener(v -> orderViewModel.setOrderTypeLiveData(OrderType.GO));
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_place_fragment);
-                    //Navigation.findNavController(v).navigate(R.id.action_order_to_cars);
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
-                    //orderViewModel.setPrivatized(isChecked);
+                    Order order = orderViewModel.getOrder();
+                    if(order == null){
+                        order = new Order();
+                    }
+                    order.setPrivatized(isChecked);
+                    orderViewModel.setOrderLiveData(order);
                 });
         mBinding.bottomSheets.buttonRefreshCar.setOnClickListener(
                 v -> {
