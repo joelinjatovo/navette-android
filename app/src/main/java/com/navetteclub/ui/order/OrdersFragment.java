@@ -68,18 +68,11 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         setupToolbar();
-
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
         mViewModel = new ViewModelProvider(requireActivity(), factory).get(OrdersViewModel.class);
-
         orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
-
         mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){

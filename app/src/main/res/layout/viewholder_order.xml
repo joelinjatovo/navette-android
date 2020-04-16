@@ -11,8 +11,9 @@
         <variable name="showMoreButton" type="boolean" />
         <variable name="orderId" type="String" />
         <variable name="pointTitle" type="String" />
-        <variable name="point" type="com.navetteclub.database.entity.Point" />
-        <variable name="club" type="com.navetteclub.database.entity.Point" />
+        <variable name="item1" type="String" />
+        <variable name="item2" type="String" />
+        <variable name="club" type="String" />
         <variable name="date" type="String" />
         <variable name="amount" type="String" />
         <variable name="status" type="String" />
@@ -116,7 +117,7 @@
                     android:layout_centerVertical="true"
                     android:textAlignment="textEnd"
                     android:layout_toEndOf="@+id/clubLabel"
-                    android:text="@{club.name}"
+                    android:text="@{club}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:maxLines="1"
                     android:textColor="@color/colorText"
@@ -161,7 +162,7 @@
                     android:layout_centerVertical="true"
                     android:textAlignment="textEnd"
                     android:layout_toEndOf="@+id/pointLabel"
-                    android:text="@{point.name}"
+                    android:text="@{item1}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:maxLines="1"
                     android:textColor="@color/colorText"

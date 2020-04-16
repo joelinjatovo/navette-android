@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
@@ -118,27 +120,48 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
         void setItem(OrderWithDatas item){
             mItem = item;
-            if(mItem!=null && mItem.getOrder()!=null){
+            if(mItem!=null){
                 Order order = mItem.getOrder();
-                mBinding.setOrderId(order.getRid());
-                mBinding.setAmount(order.getAmountStr());
-                mBinding.setStatus(order.getStatus());
-                mBinding.setPlace(order.getPlace());
+                if(order!=null){
+                    mBinding.setOrderId(order.getRid());
+                    mBinding.setAmount(order.getAmountStr());
+                    mBinding.setStatus(order.getStatus());
+                    mBinding.setPlace(order.getPlace());
 
-                long now = System.currentTimeMillis();
-                Date lastUpdated = order.getCreatedAt();
-                CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.DAY_IN_MILLIS);
-                mBinding.setDate((String) date);
+                    long now = System.currentTimeMillis();
+                    Date lastUpdated = order.getCreatedAt();
+                    CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.DAY_IN_MILLIS);
+                    mBinding.setDate((String) date);
 
-                // Points
-                if (order.getType()!=null){
-                    switch (order.getType()){
-                        case Order.TYPE_GO:
-                            mBinding.setPointTitle("Pickup");
-                            break;
-                        case Order.TYPE_BACK:
-                            mBinding.setPointTitle("Drop");
-                            break;
+                    // Points
+                    if (order.getType()!=null){
+                        switch (order.getType()){
+                            case Order.TYPE_GO:
+                                mBinding.setPointTitle("Pickup");
+                                break;
+                            case Order.TYPE_BACK:
+                                mBinding.setPointTitle("Drop");
+                                break;
+                            case Order.TYPE_GO_BACK:
+                                mBinding.setPointTitle("NN");
+                                break;
+                        }
+                    }
+                }
+
+                // Club
+                Club club = mItem.getClub();
+                if(club!=null){
+                    mBinding.setClub(club.getName());
+                }
+
+                //Items
+                List<ItemWithDatas> items = mItem.getItems();
+                if(items!=null && !items.isEmpty()){
+                    for(ItemWithDatas itemWithData: items){
+                        if(itemWithData!=null && itemWithData.getPoint()!=null) {
+                            mBinding.setItem1(itemWithData.getPoint().getName());
+                        }
                     }
                 }
             }
