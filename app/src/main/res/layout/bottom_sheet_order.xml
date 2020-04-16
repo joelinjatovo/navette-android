@@ -12,6 +12,7 @@
         <variable name="isLoadingCar" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
+        <variable name="amount" type="String" />
     </data>
 
     <LinearLayout
@@ -101,7 +102,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="10 km"
+                            android:text="@{distance}"
                             android:textAppearance="?attr/textAppearanceHeadline6"
                             android:textColor="@color/colorAccent" />
 
@@ -131,7 +132,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:textColor="@color/colorAccent"
-                            android:text="10 mins"
+                            android:text="@{delay}"
                             android:textAppearance="?attr/textAppearanceHeadline6"/>
 
                     </LinearLayout>
@@ -144,7 +145,8 @@
                         android:layout_marginStart="10dp"
                         app:layout_constraintStart_toEndOf="@id/delayLayout"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent">
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:visibility="@{amount==null?View.GONE:View.VISIBLE}">
 
                         <TextView
                             android:id="@+id/priceLabel"

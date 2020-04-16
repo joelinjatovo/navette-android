@@ -99,10 +99,9 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void refresh(){
-        setClubLiveData(null);
-        setClubPointLiveData(new Point());
-        setItem1LiveData(new Item(), new Point());
-        setItem2LiveData(new Item(), new Point());
+        setClubLiveData(null); setClubPointLiveData(null);
+        setItem1LiveData((Item) null); setItem1PointLiveData(null);
+        setItem2LiveData((Item) null); setItem2PointLiveData(null);
         setOrderLiveData(null);
         setCarLiveData(null);
         setItemsLiveData(null);
@@ -246,6 +245,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setClubLiveData(Club club) {
+        Log.d(TAG, "setClubLiveData() " + club);
         if(club!=null){
             if(order==null){
                 order = new Order();
@@ -262,7 +262,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setClubPointLiveData(Point point) {
-        Log.d(TAG, "setClubPointLiveData() " + orderType);
+        Log.d(TAG, "setClubPointLiveData() " + point);
         this.clubPoint = point;
         this.clubPointLiveData.setValue(point);
         reloadPointStr();
@@ -345,6 +345,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1LiveData(String name, LatLng latLng) {
+        Log.d(TAG, "setItem1LiveData() " + name + " " + latLng);
         Item item = this.getItem1();
         if(item==null){
             item = new Item();
@@ -379,14 +380,16 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1LiveData(Item item, Point point) {
-        ItemWithDatas data;
+        ItemWithDatas data = null;
         if(items==null){
             items = new ArrayList<>(2);
             items.add(null);
             items.add(null);
             data = new ItemWithDatas();
         }else{
-            data = items.get(0);
+            if(items.size()>1){
+                data = items.get(0);
+            }
             if(data==null){
                 data = new ItemWithDatas();
             }
@@ -400,10 +403,23 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1LiveData(Item item1) {
+        ItemWithDatas data = null;
         if(items==null){
             items = new ArrayList<>(2);
-            //items.set(0, item1);
+            items.add(null);
+            items.add(null);
+            data = new ItemWithDatas();
+        }else{
+            if(items.size()>1){
+                data = items.get(0);
+            }
+            if(data==null){
+                data = new ItemWithDatas();
+            }
         }
+        data.setItem(item1);
+        items.set(0, data);
+
         this.item1 = item1;
         this.item1LiveData.setValue(item1);
     }
@@ -417,6 +433,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem2LiveData(String name, LatLng latLng) {
+        Log.d(TAG, "setItem2LiveData() " + name + " " + latLng);
         Item item = this.getItem2();
         if(item==null){
             item = new Item();
@@ -451,27 +468,46 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem2LiveData(Item item, Point point) {
-        ItemWithDatas data;
+        ItemWithDatas data = null;
         if(items==null){
             items = new ArrayList<>(2);
             items.add(null);
             items.add(null);
             data = new ItemWithDatas();
         }else{
-            data = items.get(1);
+            if(items.size()>2){
+                data = items.get(1);
+            }
             if(data==null){
                 data = new ItemWithDatas();
             }
         }
-
         data.setItem(item);
         data.setPoint(point);
         items.set(1, data);
+
         setItem2LiveData(item);
         setItem2PointLiveData(point);
     }
 
     public void setItem2LiveData(Item item2) {
+        ItemWithDatas data = null;
+        if(items==null){
+            items = new ArrayList<>(2);
+            items.add(null);
+            items.add(null);
+            data = new ItemWithDatas();
+        }else{
+            if(items.size()>2){
+                data = items.get(1);
+            }
+            if(data==null){
+                data = new ItemWithDatas();
+            }
+        }
+        data.setItem(item1);
+        items.set(1, data);
+
         this.item2 = item2;
         this.item2LiveData.setValue(item2);
     }
@@ -486,6 +522,23 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem1PointLiveData(Point point) {
         Log.d(TAG, "setItem1PointLiveData() " + orderType);
+        ItemWithDatas data = null;
+        if(items==null){
+            items = new ArrayList<>(2);
+            items.add(null);
+            items.add(null);
+            data = new ItemWithDatas();
+        }else{
+            if(items.size()>1){
+                data = items.get(0);
+            }
+            if(data==null){
+                data = new ItemWithDatas();
+            }
+        }
+        data.setPoint(point);
+        items.set(0, data);
+
         this.item1Point = point;
         this.item1PointLiveData.setValue(point);
         reloadPointStr();
@@ -501,6 +554,23 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem2PointLiveData(Point point) {
         Log.d(TAG, "setItem2PointLiveData() " + orderType);
+        ItemWithDatas data = null;
+        if(items==null){
+            items = new ArrayList<>(2);
+            items.add(null);
+            items.add(null);
+            data = new ItemWithDatas();
+        }else{
+            if(items.size()>2){
+                data = items.get(1);
+            }
+            if(data==null){
+                data = new ItemWithDatas();
+            }
+        }
+        data.setPoint(point);
+        items.set(1, data);
+
         this.item2Point = point;
         this.item2PointLiveData.setValue(point);
         reloadPointStr();
@@ -568,5 +638,44 @@ public class OrderViewModel extends ViewModel {
                 setOrderTypeLiveData(OrderType.GO);
                 break;
         }
+    }
+
+    public Point getOriginPoint() {
+        if(orderType!=null) {
+            switch (orderType) {
+                case BACK:
+                    return clubPoint;
+                default:
+                case GO:
+                    return item1Point;
+            }
+        }
+        return item1Point;
+    }
+
+    public Point getDestinationPoint() {
+        if(orderType!=null) {
+            switch (orderType) {
+                case BACK:
+                    return item1Point;
+                default:
+                case GO:
+                    return clubPoint;
+            }
+        }
+        return clubPoint;
+    }
+
+    public Point getBackPoint() {
+        if(orderType!=null) {
+            switch (orderType) {
+                case BACK:
+                    return null;
+                default:
+                case GO:
+                    return item2Point;
+            }
+        }
+        return item2Point;
     }
 }

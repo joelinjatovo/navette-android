@@ -1,5 +1,6 @@
 package com.navetteclub.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
@@ -32,5 +33,10 @@ public class ClubAndPoint {
 
     public void setClub(Club club) {
         this.club = club;
+    }
+
+    @NonNull
+    public String toString(){
+        return "ClubAndPoint[id=" + club + ";" + point + "]";
     }
 }

@@ -1,5 +1,6 @@
 package com.navetteclub.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -83,5 +84,13 @@ public class Club {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @NonNull
+    public String toString(){
+        return "Club[id=" + id
+                + "; name=" + name
+                + "; imageUrl=" + imageUrl
+            + "]";
     }
 }

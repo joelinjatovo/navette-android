@@ -50,6 +50,8 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
+import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentOrderBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -89,17 +91,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private OrderViewModel orderViewModel;
 
-    private GoogleViewModel googleViewModel;
+    private GoogleViewModel googleViewModel1;
+
+    private GoogleViewModel googleViewModel2;
 
     private Polyline lineGo;
 
     private Polyline lineBack;
 
-    private Marker mOriginMarker;
+    private Marker item1Marker;
 
-    private Marker mDestinationMarker;
+    private Marker clubMarker;
 
-    private Marker mBackMarker;
+    private Marker item2Marker;
 
     private CarRecyclerViewAdapter mAdapter;
 
@@ -144,13 +148,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupUi();
-        setupOrderViewModel();
-        setupGoogleViewModel();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        setupOrderViewModel();
+        setupGoogleViewModel();
     }
 
     private void setupMap() {
@@ -171,8 +175,44 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupGoogleViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
-        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+        googleViewModel1 = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
+        googleViewModel1.getDirectionResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    mBinding.setIsLoadingDirection(false);
+                    mBinding.setShowErrorLoader(false);
+                    if(result.body()!=null){
+                        for (int i = 0; i < result.body().getRoutes().size(); i++) {
+                            Route route = result.body().getRoutes().get(i);
+                            String direction = route.getOverviewPolyline().getPoints();
+                            for(Leg leg: route.getLegs()){
+                                Item item = orderViewModel.getItem1();
+                                if(item==null){
+                                    item = new Item();
+                                }
+                                item.setDelay(leg.getDuration().getText());
+                                item.setDelayValue(leg.getDuration().getValue());
+                                item.setDistance(leg.getDistance().getText());
+                                item.setDistanceValue(leg.getDistance().getValue());
+                                item.setDirection(direction);
+                                orderViewModel.setItem1LiveData(item);
+                            }
+                        }
+                    }
+                });
+        googleViewModel1.getErrorResult().observe(getViewLifecycleOwner(),
+                error -> {
+                    if(error==null){
+                        return;
+                    }
+                    mBinding.setIsLoadingDirection(false);
+                    showDirectionError(error);
+                });
+
+        googleViewModel2 = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
+        googleViewModel2.getDirectionResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -183,18 +223,18 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
                             for(Leg leg: route.getLegs()){
+                                Item item = orderViewModel.getItem2();
+                                if(item==null){
+                                    item = new Item();
+                                }
+                                item.setDelay(leg.getDuration().getText());
+                                item.setDelayValue(leg.getDuration().getValue());
+                                item.setDistance(leg.getDistance().getText());
+                                item.setDistanceValue(leg.getDistance().getValue());
+                                orderViewModel.setItem2LiveData(item);
                             }
                         }
                     }
-                });
-
-        googleViewModel.getErrorResult().observe(getViewLifecycleOwner(),
-                error -> {
-                    if(error==null){
-                        return;
-                    }
-                    mBinding.setIsLoadingDirection(false);
-                    showDirectionError(error);
                 });
     }
 
@@ -208,6 +248,98 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getOriginLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setOrigin(value));
         orderViewModel.getDestinationLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setDestination(value));
         orderViewModel.getBackLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setBack(value));
+        orderViewModel.getItem1PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    Point origin = orderViewModel.getOriginPoint();
+                    Point destination = orderViewModel.getDestinationPoint();
+                    if(origin!=null && destination!=null){
+                        loadDirection(googleViewModel1, origin.toLatLng(), destination.toLatLng());
+                    }
+                    if(point!=null){
+                        item1Marker = drawItemMarker(item1Marker, point);
+                    }
+                });
+        orderViewModel.getClubPointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    Point origin = orderViewModel.getOriginPoint();
+                    Point destination = orderViewModel.getDestinationPoint();
+                    Point back = orderViewModel.getBackPoint();
+                    if(origin!=null && destination!=null){
+                        loadDirection(googleViewModel1, origin.toLatLng(), destination.toLatLng());
+                    }
+                    if(back!=null && destination!=null){
+                        loadDirection(googleViewModel2, destination.toLatLng(), back.toLatLng());
+                    }
+                    Club club = orderViewModel.getClub();
+                    Log.d(TAG, "getClubPointLiveData.club" + club);
+                    Log.d(TAG, "getClubPointLiveData.point" + point);
+                    if(point!=null && club!=null){
+                        drawClubMarker(point, club);
+                    }
+                });
+        orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    Point destination = orderViewModel.getDestinationPoint();
+                    Point back = orderViewModel.getBackPoint();
+                    if(back!=null && destination!=null){
+                        loadDirection(googleViewModel2, destination.toLatLng(), back.toLatLng());
+                    }
+                    if(point!=null){
+                        item2Marker = drawItemMarker(item2Marker, point);
+                    }
+                });
+        orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
+                item -> {
+                    if(item!=null){
+                        mBinding.bottomSheets.setDelay(item.getDelay());
+                        mBinding.bottomSheets.setDistance(item.getDistance());
+                        String direction = item.getDirection();
+                        if(direction!=null && mMap!=null) {
+                            List<LatLng> points = Utils.decodePoly(direction);
+                            //Remove previous line from map
+                            if (lineGo != null) lineGo.remove();
+                            lineGo = mMap.addPolyline(new PolylineOptions()
+                                    .addAll(points)
+                                    .width(5)
+                                    .color(R.color.colorAccent)
+                                    .geodesic(true)
+                            );
+                        }
+
+                    }
+                });
+        orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
+                item -> {
+                    if(item!=null){
+                        // @TODO
+                        String direction = item.getDirection();
+                        if(direction!=null && mMap!=null) {
+                            List<LatLng> points = Utils.decodePoly(direction);
+                            //Remove previous line from map
+                            if (lineBack != null) lineBack.remove();
+                            lineBack = mMap.addPolyline(new PolylineOptions()
+                                    .addAll(points)
+                                    .width(5)
+                                    .color(R.color.colorAlert)
+                                    .geodesic(true)
+                            );
+                        }
+                    }
+                });
+        orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
+                club -> {
+                    if(club!=null){
+                        mBinding.bottomSheets.setIsLoadingCar(true);
+                        mBinding.bottomSheets.setShowErrorLoaderCar(false);
+                        orderViewModel.loadCars(club);
+                    }
+                    Point point = orderViewModel.getClubPoint();
+                    Log.d(TAG, "getClubLiveData.club" + club);
+                    Log.d(TAG, "getClubLiveData.point" + point);
+                    if(point!=null && club!=null){
+                        drawClubMarker(point, club);
+                    }
+                });
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result == null){
@@ -229,108 +361,107 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result == null){
+                        return;
+                    }
+                    if(result.getError()!=null){
+                        // Error loading
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+                    if(result.getSuccess()!=null){
+                        Order order = result.getSuccess().getOrder();
+                        if(order!=null){
+                            mBinding.bottomSheets.setAmount(order.getAmountStr());
+                        }
+                    }
 
+                });
     }
 
-    private void loadDirection() {
-        /*
-            mBinding.setIsLoading(true);
-            mBinding.setShowErrorLoader(false);
-            expandOrderDetails();
-            googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination);
-         */
-    }
-
-    /*
-    private void drawOriginMarker(Point point) {
-        if(mMap==null){
+    private void loadDirection(GoogleViewModel googleViewModel, LatLng origin, LatLng destination) {
+        if( (origin == null) || (destination == null)){
             return;
         }
+        mBinding.setIsLoading(true);
+        mBinding.setShowErrorLoader(false);
+        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, origin);
+    }
 
-        if(mOriginMarker!=null){
-            mOriginMarker.remove();
+    private Marker drawItemMarker(Marker marker, Point point) {
+        if(mMap==null){
+            return marker;
         }
 
-        LatLng latLng = new LatLng(point.getLat(),point.getLng());
+        if(marker!=null){
+            marker.remove();
+        }
+
+        LatLng latLng = point.toLatLng();
+        Log.d(TAG, "drawItemMarker.latLng " + point);
+        Log.d(TAG, "drawItemMarker.latLng " + latLng);
         MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
         options.position(latLng); // Setting the position of the marker
         options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
         //options.anchor(1, 0.5f);
 
-        mOriginMarker = mMap.addMarker(options);
+        return mMap.addMarker(options);
     }
 
-    private void drawRetoursMarker(Point point) {
+    private void drawClubMarker(Point point, Club club) {
         if(mMap==null){
             return;
         }
 
-        if(mRetoursMarker!=null){
-            mRetoursMarker.remove();
+        if(clubMarker!=null){
+            clubMarker.remove();
         }
 
-        LatLng latLng = new LatLng(point.getLat(),point.getLng());
-        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
-        options.position(latLng); // Setting the position of the marker
-        options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
-        //options.anchor(1, 0.5f);
-
-        mRetoursMarker = mMap.addMarker(options);
-    }
-
-    private void drawDestinationMarker(Point point, Club club) {
-        if(mMap==null){
-            return;
-        }
-
-        if(mDestinationMarker!=null){
-            mDestinationMarker.remove();
-        }
-
-        LatLng latLng = new LatLng(point.getLat(),point.getLng());
+        LatLng latLng = point.toLatLng();
+        Log.d(TAG, "drawClubMarker.point " + point);
+        Log.d(TAG, "drawClubMarker.latLng " + latLng);
         MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
         options.position(latLng); // Setting the position of the marker
         if(club!=null){
-            new Picasso.Builder(requireContext())
-                    .build()
+            Log.d(TAG, "drawClubMarker. club!=null ");
+            Picasso.get()
                     .load(Constants.getBaseUrl() + club.getImageUrl())
                     .resize(64,64)
                     .into(new Target() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            Log.d(TAG, "drawClubMarker.onBitmapLoaded ");
                             // loaded bitmap is here (bitmap)
                             options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), club.getName(), bitmap));
                             //options.anchor(0.5f, 1);
-                            mDestinationMarker = mMap.addMarker(options);
+                            clubMarker = mMap.addMarker(options);
                         }
 
                         @Override
                         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Log.e(TAG, "drawClubMarker.onBitmapFailed ", e);
                             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                            mDestinationMarker = mMap.addMarker(options);
+                            clubMarker = mMap.addMarker(options);
                         }
 
                         @Override
                         public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            Log.d(TAG, "drawClubMarker.onPrepareLoad ");
                         }
                     });
         }else{
             options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
-            mDestinationMarker = mMap.addMarker(options);
+            clubMarker = mMap.addMarker(options);
         }
     }
-     */
 
     private void setupUi() {
-        mBinding.swapPoints.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                orderViewModel.swap();
-            }
-        });
+        mBinding.swapPoints.setOnClickListener(v -> orderViewModel.swap());
         mBinding.originText.setOnClickListener(
                 v -> {
-                    if (orderViewModel.getOrderType() == OrderType.BACK) {
+                    OrderType orderType = orderViewModel.getOrderType();
+                    if (orderType == OrderType.BACK) {
                         Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                     } else {
                         OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
@@ -340,7 +471,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.destinationText.setOnClickListener(
                 v -> {
-                    if (orderViewModel.getOrderType() == OrderType.BACK) {
+                    OrderType orderType = orderViewModel.getOrderType();
+                    if (orderType == OrderType.BACK) {
                         OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
                         action.setSearchType(SearchType.ORIGIN);
                         Navigation.findNavController(v).navigate(action);

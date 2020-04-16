@@ -45,7 +45,6 @@ public class Point {
     private Date createdAt;
 
     public Point(){
-
     }
 
     public Point(String name, LatLng latLng){
@@ -111,4 +110,18 @@ public class Point {
     public void setType(String type) {
         this.type = type;
     }
+
+    public LatLng toLatLng() {
+        return new LatLng(getLat()==null?0.00:getLat(), getLng()==null?0.00:getLng());
+    }
+
+    @NonNull
+    public String toString(){
+        return "Point[id=" + id
+                + "; name=" + name
+                + "; getLat=" + getLat()
+                + "; getLng=" + getLng()
+            + "]";
+    }
+
 }
