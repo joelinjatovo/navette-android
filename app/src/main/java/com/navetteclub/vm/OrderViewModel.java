@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.model.Place;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.OrderParam;
@@ -17,15 +19,17 @@ import com.navetteclub.database.dao.PointDao_Impl;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.models.RemoteLoaderResult;
+import com.navetteclub.ui.order.OrderType;
 import com.navetteclub.utils.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,6 +39,10 @@ import retrofit2.Response;
 public class OrderViewModel extends ViewModel {
 
     private static final String TAG = OrderViewModel.class.getSimpleName();
+
+    private OrderType orderType;
+
+    private MutableLiveData<OrderType> orderTypeLiveData = new MutableLiveData<>();
 
     private Club club;
 
@@ -52,6 +60,22 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<Car> carLiveData = new MutableLiveData<>();
 
+    private Item item1;
+
+    private MutableLiveData<Item> item1LiveData = new MutableLiveData<>();
+
+    private Point item1Point;
+
+    private MutableLiveData<Point> item1PointLiveData = new MutableLiveData<>();
+
+    private Item item2;
+
+    private MutableLiveData<Item> item2LiveData = new MutableLiveData<>();
+
+    private Point item2Point;
+
+    private MutableLiveData<Point> item2PointLiveData = new MutableLiveData<>();
+
     private List<ItemWithDatas> items;
 
     private MutableLiveData<List<ItemWithDatas>> itemsLiveData = new MutableLiveData<>();
@@ -59,6 +83,10 @@ public class OrderViewModel extends ViewModel {
     private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> carsResult = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
+
+    public OrderViewModel(){
+        orderType = OrderType.GO;
+    }
 
     public void loadCars(){
         loadCars(club);
@@ -188,6 +216,10 @@ public class OrderViewModel extends ViewModel {
         return clubLiveData;
     }
 
+    public Club getClub() {
+        return this.club;
+    }
+
     public void setClubLiveData(Club club) {
         if(club!=null){
             if(order==null){
@@ -248,5 +280,236 @@ public class OrderViewModel extends ViewModel {
     public void setItemsLiveData(List<ItemWithDatas> items) {
         this.items = items;
         this.itemsLiveData.setValue(items);
+    }
+
+    public boolean isTypeGo() {
+        return orderType == OrderType.GO;
+    }
+
+    public boolean isTypeBack() {
+        return orderType == OrderType.BACK;
+    }
+
+    public boolean isTypeGoBack() {
+        return orderType == OrderType.GO_BACK;
+    }
+
+    public boolean isTypeCustom() {
+        return orderType == OrderType.CUSTOM;
+    }
+
+    public OrderType getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderTypeLiveData(OrderType orderType) {
+        this.orderType = orderType;
+        this.orderTypeLiveData.setValue(orderType);
+    }
+
+    public Item getItem1() {
+        return item1;
+    }
+
+    public LiveData<Item> getItem1LiveData() {
+        return item1LiveData;
+    }
+
+    public void setItem1LiveData(String name, LatLng latLng) {
+        Item item = this.getItem1();
+        if(item==null){
+            item = new Item();
+        }
+        Point point = this.getItem1Point();
+        if(point==null){
+            point = new Point();
+        }
+        point.setName(name);
+        if(latLng!=null){
+            point.setLat(latLng.latitude);
+            point.setLng(latLng.longitude);
+        }
+        setItem1LiveData(item, point);
+    }
+
+    public void setItem1LiveData(Place place) {
+        Item item = this.getItem2();
+        if(item==null){
+            item = new Item();
+        }
+        Point point = this.getItem2Point();
+        if(point==null){
+            point = new Point();
+        }
+        if(place.getLatLng()!=null) {
+            point.setName(place.getName());
+            point.setLat(place.getLatLng().latitude);
+            point.setLng(place.getLatLng().longitude);
+        }
+        setItem1LiveData(item, point);
+    }
+
+    public void setItem1LiveData(Item item, Point point) {
+        ItemWithDatas data;
+        if(items==null){
+            items = new ArrayList<>(2);
+            items.add(null);
+            items.add(null);
+            data = new ItemWithDatas();
+        }else{
+            data = items.get(0);
+            if(data==null){
+                data = new ItemWithDatas();
+            }
+        }
+
+        data.setItem(item);
+        data.setPoint(point);
+        items.set(0, data);
+        setItem1LiveData(item);
+        setItem1PointLiveData(point);
+    }
+
+    public void setItem1LiveData(Item item1) {
+        if(items==null){
+            items = new ArrayList<>(2);
+            //items.set(0, item1);
+        }
+        this.item1 = item1;
+        this.item1LiveData.setValue(item1);
+    }
+
+    public Item getItem2() {
+        return item2;
+    }
+
+    public MutableLiveData<Item> getItem2LiveData() {
+        return item2LiveData;
+    }
+
+    public void setItem2LiveData(String name, LatLng latLng) {
+        Item item = this.getItem2();
+        if(item==null){
+            item = new Item();
+        }
+        Point point = this.getItem2Point();
+        if(point==null){
+            point = new Point();
+        }
+        point.setName(name);
+        if(latLng!=null){
+            point.setLat(latLng.latitude);
+            point.setLng(latLng.longitude);
+        }
+        setItem2LiveData(item, point);
+    }
+
+    public void setItem2LiveData(Place place) {
+        Item item = this.getItem2();
+        if(item==null){
+            item = new Item();
+        }
+        Point point = this.getItem2Point();
+        if(point==null){
+            point = new Point();
+        }
+        if(place.getLatLng()!=null) {
+            point.setName(place.getName());
+            point.setLat(place.getLatLng().latitude);
+            point.setLng(place.getLatLng().longitude);
+        }
+        setItem2LiveData(item, point);
+    }
+
+    public void setItem2LiveData(Item item, Point point) {
+        ItemWithDatas data;
+        if(items==null){
+            items = new ArrayList<>(2);
+            items.add(null);
+            items.add(null);
+            data = new ItemWithDatas();
+        }else{
+            data = items.get(1);
+            if(data==null){
+                data = new ItemWithDatas();
+            }
+        }
+
+        data.setItem(item);
+        data.setPoint(point);
+        items.set(1, data);
+        setItem2LiveData(item);
+        setItem2PointLiveData(point);
+    }
+
+    public void setItem2LiveData(Item item2) {
+        this.item2 = item2;
+        this.item2LiveData.setValue(item2);
+    }
+
+    public Point getItem1Point() {
+        return item1Point;
+    }
+
+    public LiveData<Point> getItem1PointLiveData() {
+        return item1PointLiveData;
+    }
+
+    public void setItem1PointLiveData(Point point) {
+        this.item1Point = point;
+        this.item1PointLiveData.setValue(point);
+    }
+
+    public Point getItem2Point() {
+        return item2Point;
+    }
+
+    public Point getOrigin() {
+        switch (orderType){
+            case BACK:
+                return clubPoint;
+            default:
+            case GO:
+            case GO_BACK:
+                return item1Point;
+        }
+    }
+
+    public Point getDestination() {
+        switch (orderType){
+            case BACK:
+                return item1Point;
+            default:
+            case GO:
+            case GO_BACK:
+                return clubPoint;
+        }
+    }
+
+    public Point getBack() {
+        if (orderType == OrderType.GO_BACK) {
+            return item2Point;
+        }
+        return null;
+    }
+
+    public LiveData<Point> getItem2PointLiveData() {
+        return item2PointLiveData;
+    }
+
+    public void setItem2PointLiveData(Point point) {
+        this.item2Point = point;
+        this.item2PointLiveData.setValue(point);
+    }
+
+    public void swap() {
+        switch (orderType){
+            case GO:
+                setOrderTypeLiveData(OrderType.BACK);
+                break;
+            case BACK:
+                setOrderTypeLiveData(OrderType.GO);
+                break;
+        }
     }
 }

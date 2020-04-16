@@ -91,21 +91,15 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleViewModel googleViewModel;
 
-    private Polyline line;
+    private Polyline lineGo;
 
-    private LatLng mOrigin;
-
-    private LatLng mDestination;
-
-    private LatLng mRetours;
+    private Polyline lineBack;
 
     private Marker mOriginMarker;
 
     private Marker mDestinationMarker;
 
-    private Marker mRetoursMarker;
-
-    private BottomSheetBehavior sheetBehavior;
+    private Marker mBackMarker;
 
     private CarRecyclerViewAdapter mAdapter;
 
@@ -130,8 +124,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d(TAG + "Cycle", "onCreateView");
-
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_order, container, false);
 
         mAdapter = new CarRecyclerViewAdapter(mListerner);
@@ -144,40 +136,16 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG + "Cycle", "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         setupMap();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG + "Cycle", "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
-        setupBottomSheet();
         setupUi();
         setupOrderViewModel();
         setupGoogleViewModel();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG + "Cycle", "onDestroyView");
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.i(TAG, "The user canceled the operation.");
-            }
-        }
     }
 
     @Override
@@ -199,11 +167,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         }
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-    }
-
-    private void setupBottomSheet() {
-        sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
-        //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private void setupGoogleViewModel() {
@@ -242,6 +205,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        mBinding.setViewModel(orderViewModel);
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result == null){
@@ -262,20 +226,20 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             mAdapter.setItems(items);
                         }
                     }
-
                 });
 
     }
 
     private void loadDirection() {
-        if(mOrigin!=null && mDestination!=null){
+        /*
             mBinding.setIsLoading(true);
             mBinding.setShowErrorLoader(false);
             expandOrderDetails();
             googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination);
-        }
+         */
     }
 
+    /*
     private void drawOriginMarker(Point point) {
         if(mMap==null){
             return;
@@ -353,35 +317,41 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             mDestinationMarker = mMap.addMarker(options);
         }
     }
+     */
 
     private void setupUi() {
-        mBinding.originEndIcon.setOnClickListener(
-                v -> {
-                    getDeviceLocation(SearchType.ORIGIN);
-                });
+        mBinding.swapPoints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderViewModel.swap();
+            }
+        });
+
         mBinding.originText.setOnClickListener(
                 v -> {
-                    OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
-                    action.setSearchType(SearchType.ORIGIN);
-                    Navigation.findNavController(v).navigate(action);
+                    if (orderViewModel.getOrderType() == OrderType.BACK) {
+                        Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                    } else {
+                        OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
+                        action.setSearchType(SearchType.ORIGIN);
+                        Navigation.findNavController(v).navigate(action);
+                    }
+                });
+        mBinding.destinationText.setOnClickListener(
+                v -> {
+                    if (orderViewModel.getOrderType() == OrderType.BACK) {
+                        OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
+                        action.setSearchType(SearchType.ORIGIN);
+                        Navigation.findNavController(v).navigate(action);
+                    }else{
+                        Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
+                    }
                 });
         mBinding.retoursText.setOnClickListener(
                 v -> {
                     OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
                     action.setSearchType(SearchType.RETOURS);
                     Navigation.findNavController(v).navigate(action);
-                });
-        mBinding.retoursEndIcon.setOnClickListener(
-                v -> {
-                    //orderViewModel.setReturn((Point) null, true);
-                });
-        mBinding.destinationText.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
-                });
-        mBinding.destinationEndIcon.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                 });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
@@ -400,11 +370,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
+    /*
     private void expandOrderDetails() {
         if(sheetBehavior != null && mOrigin != null && mDestination != null){
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
+     */
 
     private void getDeviceLocation(SearchType searchType) {
         try {

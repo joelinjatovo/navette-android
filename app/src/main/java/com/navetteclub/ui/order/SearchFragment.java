@@ -55,6 +55,8 @@ import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.navetteclub.database.entity.Item;
+import com.navetteclub.database.entity.Point;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -134,9 +136,12 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
                     if(searchType == SearchType.ORIGIN){
                         Log.d(TAG, "ORIGIN");
+                        orderViewModel.setItem1LiveData(place);
                     }
+
                     if(searchType == SearchType.RETOURS){
                         Log.d(TAG, "RETOURS");
+                        orderViewModel.setItem2LiveData(place);
                     }
                     NavHostFragment.findNavController(SearchFragment.this).popBackStack();
                 }
@@ -158,18 +163,13 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         mMap.setOnCameraIdleListener(() -> {
             LatLng latLng = mMap.getCameraPosition().target;
-            Log.i(TAG, "OnCameraIdleListener: " + latLng);
-
             if(latLng.latitude != 0.0 && latLng.longitude != 0.0){
                 setLocation(latLng);
             }
         });
-
         mMap.setOnMapClickListener(this::moveCamera);
-
         geocoder = new Geocoder(requireContext());
     }
 
@@ -189,19 +189,22 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
             mBinding.toolbar.setTitle(R.string.title_retours);
         }
 
-        mBinding.myLocation.setOnClickListener(
-                v->{
-                    getDeviceLocation();
-                });
+        mBinding.myLocation.setOnClickListener(v -> getDeviceLocation());
 
         mBinding.okButton.setOnClickListener(
                 v -> {
                     if(searchType == SearchType.ORIGIN){
                         Log.d(TAG, "ORIGIN");
+                        String name = mBinding.locationTitle.getText().toString();
+                        orderViewModel.setItem1LiveData(name, mLocation);
                     }
+
                     if(searchType == SearchType.RETOURS){
                         Log.d(TAG, "RETOURS");
+                        String name = mBinding.locationTitle.getText().toString();
+                        orderViewModel.setItem2LiveData(name, mLocation);
                     }
+
                     Navigation.findNavController(v).popBackStack();
                 });
     }
@@ -234,7 +237,6 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         mLocation = latLng;
 
         if(handler!=null){
-            Log.e(TAG, "removeCallbacksAndMessages" );
             handler.removeCallbacksAndMessages(null);
         }else{
             handler = new Handler();
@@ -243,7 +245,6 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         int secondsDelayed = 3;
         handler.postDelayed(new Runnable() {
             public void run() {
-                Log.e(TAG, "postDelayed" );
                 getGeocode(latLng);
             }
         }, secondsDelayed * 1000);
@@ -253,19 +254,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         try {
             List<Address> addressList= geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
             if (addressList != null && addressList.size() > 0) {
-                for(Address address: addressList){
-                    Log.e(TAG, "getAdminArea = " + address.getMaxAddressLineIndex());
-                    Log.e(TAG, "getAdminArea = " + address.getAdminArea());
-                    Log.e(TAG, "getLocality = " + address.getLocality());
-                    Log.e(TAG, "getCountryName = " + address.getCountryName());
-                    for(int i=0; i < address.getMaxAddressLineIndex(); i++){
-                        Log.e(TAG, "getAddressLine(" + i + ") = " + address.getAddressLine(i));
-                    }
-                }
                 String locality = addressList.get(0).getAddressLine(0);
                 String country = addressList.get(0).getCountryName();
-                Log.e(TAG, "locality = " + locality);
-                Log.e(TAG, "country = " + country);
                 if (locality!=null && !locality.isEmpty() && country!=null && !country.isEmpty()){
                     mBinding.locationTitle.setText(locality);
                     mBinding.locationSubtitle.setText(country);
