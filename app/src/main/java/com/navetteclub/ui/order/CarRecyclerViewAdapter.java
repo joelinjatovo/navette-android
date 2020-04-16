@@ -99,6 +99,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         final View mView;
         final ImageView mCarImageView;
         final TextView mNameTextView;
+        final TextView mDescTextView;
         CarAndModel mItem;
 
         ViewHolder(View view) {
@@ -106,6 +107,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
             mView = view;
             mCarImageView = view.findViewById(R.id.carImageView);
             mNameTextView = view.findViewById(R.id.nameTextView);
+            mDescTextView = view.findViewById(R.id.descTextView);
         }
 
         void setItem(CarAndModel item){
@@ -118,6 +120,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
                 if(mItem.getCar()!=null){
                     mNameTextView.setText(mItem.getCar().getName());
+                    mDescTextView.setText(String.valueOf(mItem.getCar().getPlace()));
                     if(mItem.getCar().getImageUrl()!=null){
                         /*
                         Picasso.get()

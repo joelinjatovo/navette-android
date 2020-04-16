@@ -59,6 +59,7 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(GoogleViewModel.class)) {
+            Log.d("MyViewModelFactory", "GoogleViewModel.class");
             return (T) new GoogleViewModel();
         } else if (modelClass.isAssignableFrom(UserViewModel.class)) {
             return (T) new UserViewModel(application);

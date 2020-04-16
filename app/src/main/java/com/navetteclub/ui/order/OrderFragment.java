@@ -105,6 +105,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private Marker item2Marker;
 
+    private BottomSheetBehavior sheetBehavior;
+
     private CarRecyclerViewAdapter mAdapter;
 
     private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
@@ -148,6 +150,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupUi();
+        setupBottomSheet();
+    }
+
+    private void setupBottomSheet() {
+        sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
     }
 
     @Override
@@ -302,6 +309,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 item -> {
                     Log.d(TAG+"Item", "Changement du Item1 " + item);
                     if(item!=null){
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         mBinding.bottomSheets.setDelay(item.getDelay());
                         mBinding.bottomSheets.setDistance(item.getDistance());
                         String direction = item.getDirection();
@@ -500,10 +508,19 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     action.setSearchType(SearchType.RETOURS);
                     Navigation.findNavController(v).navigate(action);
                 });
-        mBinding.clearRetours.setOnClickListener(v -> orderViewModel.setOrderTypeLiveData(OrderType.GO));
+        mBinding.clearRetours.setOnClickListener(
+                v -> {
+                    orderViewModel.setOrderTypeLiveData(OrderType.GO);
+                    orderViewModel.setItem2PointLiveData(null);
+                });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_place_fragment);
+                    Log.d(TAG, "bookNowButton() = " + orderViewModel.getOrderType());
+                    if(orderViewModel.getOrderType()==OrderType.GO){
+                        Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_go_and_back_fragment);
+                    }else{
+                        Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_detail_fragment);
+                    }
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {

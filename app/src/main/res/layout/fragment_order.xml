@@ -181,7 +181,8 @@
                             android:layout_centerVertical="true"
                             android:contentDescription="@string/image"
                             android:src="@drawable/baseline_swap_vert_black_24"
-                            android:tint="@color/colorAccent" />
+                            android:tint="@color/colorAccent"
+                            android:visibility="@{back!=null?View.GONE:View.VISIBLE}"/>
 
                     </RelativeLayout>
 

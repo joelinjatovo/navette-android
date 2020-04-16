@@ -28,6 +28,7 @@ public class GoogleViewModel extends ViewModel {
     private MutableLiveData<Response<GoogleDirectionResponse>> directionResult;
 
     public GoogleViewModel() {
+        Log.d(TAG, "GoogleViewModel CONSTRUCTOR");
         directionResult = new MutableLiveData<>();
         errorResult = new MutableLiveData<>();
     }

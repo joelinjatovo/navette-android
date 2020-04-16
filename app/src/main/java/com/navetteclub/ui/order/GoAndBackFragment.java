@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -19,6 +20,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.FragmentGoAndBackBinding;
@@ -26,7 +28,7 @@ import com.navetteclub.utils.Log;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
-public class GoAndBackFragment extends Fragment {
+public class GoAndBackFragment extends BottomSheetDialogFragment {
 
     private static final String TAG = GoAndBackFragment.class.getSimpleName();
 
@@ -51,49 +53,45 @@ public class GoAndBackFragment extends Fragment {
         setupUi();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getLatLng() + ", " + place.getName() + ", " + place.getId());
-
-                //orderViewModel.setReturn(place, true);
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.i(TAG, "The user canceled the operation.");
-            }
-        }
-    }
-
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    if(point!=null){
+                        NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
+                    }
+                });
     }
 
     private void setupUi() {
-        mBinding.stepView.go(3, true);
         mBinding.yesButton.setOnClickListener(
                 v -> {
-                    // reset return point
-                    //orderViewModel.setReturn((Point) null, true);
-
+                    orderViewModel.setOrderTypeLiveData(OrderType.GO_BACK);
                     // go to search point
                     GoAndBackFragmentDirections.ActionGoAndBackFragmentToSearchFragment action = GoAndBackFragmentDirections.actionGoAndBackFragmentToSearchFragment();
                     action.setSearchType(SearchType.RETOURS);
-                    Navigation.findNavController(v).navigate(action);
+                    NavHostFragment.findNavController(this).navigate(action);
                 });
 
         mBinding.noButton.setOnClickListener(
                 v -> {
+                    orderViewModel.setOrderTypeLiveData(OrderType.GO);
                     Navigation.findNavController(v).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
                 });
-
-        mBinding.toolbar.setNavigationOnClickListener(
+        mBinding.closeButton.setOnClickListener(
                 v -> {
+                    orderViewModel.setOrderTypeLiveData(OrderType.GO);
                     NavHostFragment.findNavController(this).popBackStack();
+                });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        orderViewModel.setOrderTypeLiveData(OrderType.GO);
+                        NavHostFragment.findNavController(GoAndBackFragment.this).popBackStack();
+                    }
                 });
     }
 

@@ -25,9 +25,13 @@
         <action
             android:id="@+id/action_order_fragment_to_place_fragment"
             app:destination="@id/place_fragment" />
+
         <action
             android:id="@+id/action_order_fragment_to_go_and_back_fragment"
             app:destination="@id/go_and_back_fragment" />
+        <action
+            android:id="@+id/action_order_fragment_to_detail_fragment"
+            app:destination="@id/detail_fragment" />
 
     </fragment>
 
@@ -99,7 +103,7 @@
             app:destination="@id/order_fragment" />
     </dialog>
 
-    <fragment
+    <dialog
         android:id="@+id/go_and_back_fragment"
         android:name="com.navetteclub.ui.order.GoAndBackFragment"
         tools:layout="@layout/fragment_go_and_back">
@@ -112,7 +116,7 @@
             android:id="@+id/action_go_and_back_fragment_to_detail_fragment"
             app:destination="@id/detail_fragment" />
 
-    </fragment>
+    </dialog>
 
     <fragment
         android:id="@+id/detail_fragment"
