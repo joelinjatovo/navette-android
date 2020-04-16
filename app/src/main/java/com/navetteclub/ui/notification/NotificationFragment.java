@@ -25,9 +25,11 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.navetteclub.R;
+import com.navetteclub.api.models.google.Step;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentNotificationBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
@@ -35,7 +37,7 @@ import com.navetteclub.vm.NotificationViewModel;
 
 import java.util.ArrayList;
 
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment  implements OnClickItemListener<Notification> {
 
     private static final String TAG = NotificationFragment.class.getSimpleName();
 
@@ -55,7 +57,7 @@ public class NotificationFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_notification, container, false);
 
         // Set the adapter
-        mAdapter = new NotificationRecyclerViewAdapter(mListener);
+        mAdapter = new NotificationRecyclerViewAdapter(this);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -184,15 +186,9 @@ public class NotificationFragment extends Fragment {
         mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
 
-    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
-        @Override
-        public void onListFragmentInteraction(View v, Notification item) {
-            //
-        }
-    };
+    @Override
+    public void onClick(View v, int position, Notification item) {
 
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, Notification item);
     }
 
 }

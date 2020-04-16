@@ -15,6 +15,7 @@ import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.databinding.ViewholderNotificationBinding;
 import com.navetteclub.databinding.ViewholderOrderBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrderRecyclerViewAdapter;
 
 import java.util.List;
@@ -23,15 +24,15 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
     private List<Notification> mItems;
 
-    private final NotificationFragment.OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<Notification> mListener;
 
-    public NotificationRecyclerViewAdapter(NotificationFragment.OnListFragmentInteractionListener listener) {
+    public NotificationRecyclerViewAdapter(OnClickItemListener<Notification> listener) {
         mListener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ViewholderNotificationBinding itemBinding = ViewholderNotificationBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
         return new ViewHolder(itemBinding);
@@ -42,9 +43,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         holder.setItem(mItems.get(position));
         holder.mBinding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }

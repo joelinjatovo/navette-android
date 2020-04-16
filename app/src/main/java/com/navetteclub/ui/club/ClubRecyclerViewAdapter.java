@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
-import com.navetteclub.ui.club.ClubsFragment.OnListFragmentInteractionListener;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -27,9 +27,9 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
     private List<ClubAndPoint> mOriginItems;
 
-    private final OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<ClubAndPoint> mListener;
 
-    public ClubRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
+    public ClubRecyclerViewAdapter(OnClickItemListener<ClubAndPoint> listener) {
         mListener = listener;
     }
 
@@ -53,7 +53,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }

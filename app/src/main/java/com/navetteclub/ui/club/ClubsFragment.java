@@ -30,7 +30,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.databinding.FragmentClubsBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
@@ -41,7 +43,7 @@ import com.navetteclub.vm.OrderViewModel;
 
 import java.util.List;
 
-public class ClubsFragment extends BottomSheetDialogFragment {
+public class ClubsFragment extends BottomSheetDialogFragment implements OnClickItemListener<ClubAndPoint> {
 
     private static final String TAG = OrdersFragment.class.getSimpleName();
 
@@ -86,7 +88,7 @@ public class ClubsFragment extends BottomSheetDialogFragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_clubs, container, false);
 
         // Set the adapter
-        mAdapter = new ClubRecyclerViewAdapter(mListener);
+        mAdapter = new ClubRecyclerViewAdapter(this);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -193,15 +195,9 @@ public class ClubsFragment extends BottomSheetDialogFragment {
          });
     }
 
-    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
-        @Override
-        public void onListFragmentInteraction(View v, ClubAndPoint item) {
-            clubViewModel.setClub(item);
-            NavHostFragment.findNavController(ClubsFragment.this).navigate(R.id.club_fragment);
-        }
-    };
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, ClubAndPoint item);
+    @Override
+    public void onClick(View view, int position, ClubAndPoint item) {
+        clubViewModel.setClub(item);
+        NavHostFragment.findNavController(ClubsFragment.this).navigate(R.id.club_fragment);
     }
 }

@@ -19,6 +19,7 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.ViewholderOrderBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.notification.NotificationFragment;
 import com.navetteclub.utils.Log;
 
@@ -31,9 +32,9 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
     private List<OrderWithDatas> mItems;
 
-    private final OrdersFragment.OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<OrderWithDatas>  mListener;
 
-    public OrderRecyclerViewAdapter(OrdersFragment.OnListFragmentInteractionListener listener) {
+    public OrderRecyclerViewAdapter(OnClickItemListener<OrderWithDatas> listener) {
         mListener = listener;
     }
 
@@ -52,14 +53,14 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
         holder.mBinding.moreButtom.setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }

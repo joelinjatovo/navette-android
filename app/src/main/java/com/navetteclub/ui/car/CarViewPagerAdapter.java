@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.CarRecyclerViewAdapter;
 import com.navetteclub.ui.order.OrderFragment;
 import com.navetteclub.utils.Constants;
@@ -26,9 +27,9 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
 
     private List<CarAndModel> mItems;
 
-    private final OrderFragment.OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<CarAndModel> mListener;
 
-    public CarViewPagerAdapter(OrderFragment.OnListFragmentInteractionListener listener) {
+    public CarViewPagerAdapter(OnClickItemListener<CarAndModel> listener) {
         mListener = listener;
     }
 
@@ -53,7 +54,7 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, position, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
 
@@ -61,7 +62,7 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, position, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }

@@ -376,7 +376,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             mBinding.bottomSheets.setAmount(order.getAmountStr());
                         }
                     }
-
                 });
     }
 
@@ -575,10 +574,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View view, int position, CarAndModel item);
     }
 
 }

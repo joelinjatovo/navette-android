@@ -27,10 +27,12 @@ import com.navetteclub.R;
 import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.models.google.Step;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentStepsBinding;
 import com.navetteclub.databinding.FragmentTimelineBinding;
 import com.navetteclub.models.Timeline;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
@@ -39,7 +41,7 @@ import com.navetteclub.vm.MyViewModelFactory;
 
 import java.util.Arrays;
 
-public class StepsFragment extends BottomSheetDialogFragment {
+public class StepsFragment extends BottomSheetDialogFragment implements OnClickItemListener<Step> {
 
     private static final String TAG = StepsFragment.class.getSimpleName();
 
@@ -79,7 +81,7 @@ public class StepsFragment extends BottomSheetDialogFragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_steps, container, false);
 
-        mAdapter = new StepRecyclerViewAdapter(mListener);
+        mAdapter = new StepRecyclerViewAdapter(this);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -192,15 +194,8 @@ public class StepsFragment extends BottomSheetDialogFragment {
         googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination);
     }
 
-    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
-        @Override
-        public void onListFragmentInteraction(View v, Step item) {
-            //
-        }
-    };
+    @Override
+    public void onClick(View v, int position, Step item) {
 
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, Step item);
     }
-
 }

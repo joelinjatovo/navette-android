@@ -24,6 +24,7 @@ import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.databinding.FragmentCarsBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrderFragment;
 import com.navetteclub.ui.order.ProcessFragment;
 import com.navetteclub.utils.UiUtils;
@@ -32,7 +33,7 @@ import com.navetteclub.vm.OrderViewModel;
 
 import java.util.ArrayList;
 
-public class CarsFragment extends Fragment implements OrderFragment.OnListFragmentInteractionListener {
+public class CarsFragment extends Fragment implements OnClickItemListener<CarAndModel> {
 
     private static final String TAG = CarsFragment.class.getSimpleName();
 
@@ -141,7 +142,7 @@ public class CarsFragment extends Fragment implements OrderFragment.OnListFragme
     }
 
     @Override
-    public void onListFragmentInteraction(View view, int position, CarAndModel item) {
+    public void onClick(View view, int position, CarAndModel item) {
         orderViewModel.setCarLiveData(item.getCar());
         Navigation.findNavController(view).navigate(R.id.action_cars_fragment_to_privatize_fragment);
     }

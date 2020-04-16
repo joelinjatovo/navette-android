@@ -17,6 +17,7 @@ import com.navetteclub.api.models.google.Step;
 import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.databinding.ViewholderStepBinding;
 import com.navetteclub.models.Timeline;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Log;
 
 import java.util.List;
@@ -26,15 +27,15 @@ public class StepRecyclerViewAdapter
 
     private List<Step> mItems;
 
-    private final StepsFragment.OnListFragmentInteractionListener mListener;
+    private final OnClickItemListener<Step> mListener;
 
-    public StepRecyclerViewAdapter(StepsFragment.OnListFragmentInteractionListener listener) {
+    public StepRecyclerViewAdapter(OnClickItemListener<Step> listener) {
         mListener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ViewholderStepBinding itemBinding = ViewholderStepBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
         return new ViewHolder(itemBinding);
@@ -43,12 +44,9 @@ public class StepRecyclerViewAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setItem(mItems.get(position));
-
         holder.mBinding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(v, holder.mItem);
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }

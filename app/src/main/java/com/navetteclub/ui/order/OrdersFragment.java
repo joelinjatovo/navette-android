@@ -23,9 +23,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
+import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
+import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
@@ -34,7 +36,7 @@ import com.navetteclub.vm.OrdersViewModel;
 
 import java.util.ArrayList;
 
-public class OrdersFragment extends Fragment {
+public class OrdersFragment extends Fragment implements OnClickItemListener<OrderWithDatas> {
 
     private static final String TAG = OrdersFragment.class.getSimpleName();
 
@@ -55,7 +57,7 @@ public class OrdersFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_orders, container, false);
 
-        mAdapter = new OrderRecyclerViewAdapter(mListener);
+        mAdapter = new OrderRecyclerViewAdapter(this);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -187,15 +189,9 @@ public class OrdersFragment extends Fragment {
         mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
 
-    private OnListFragmentInteractionListener mListener = new OnListFragmentInteractionListener() {
-        @Override
-        public void onListFragmentInteraction(View v, OrderWithDatas item) {
-            NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
-        }
-    };
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(View v, OrderWithDatas item);
+    @Override
+    public void onClick(View view, int position, OrderWithDatas item) {
+        NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
     }
 
 }
