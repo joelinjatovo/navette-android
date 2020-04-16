@@ -207,7 +207,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
         orderViewModel.getOriginLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setOrigin(value));
         orderViewModel.getDestinationLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setDestination(value));
-        orderViewModel.getBackLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setDestination(value));
+        orderViewModel.getBackLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setBack(value));
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result == null){

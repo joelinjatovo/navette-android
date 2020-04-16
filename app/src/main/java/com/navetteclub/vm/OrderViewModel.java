@@ -262,8 +262,10 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setClubPointLiveData(Point point) {
+        Log.d(TAG, "setClubPointLiveData() " + orderType);
         this.clubPoint = point;
         this.clubPointLiveData.setValue(point);
+        reloadPointStr();
     }
 
     public Point getClubPoint() {
@@ -328,8 +330,10 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setOrderTypeLiveData(OrderType orderType) {
+        Log.d(TAG, "setOrderTypeLiveData() " + orderType);
         this.orderType = orderType;
         this.orderTypeLiveData.setValue(orderType);
+        reloadPointStr();
     }
 
     public Item getItem1() {
@@ -481,9 +485,10 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1PointLiveData(Point point) {
+        Log.d(TAG, "setItem1PointLiveData() " + orderType);
         this.item1Point = point;
         this.item1PointLiveData.setValue(point);
-        reloadPointStr(this.orderType);
+        reloadPointStr();
     }
 
     public Point getItem2Point() {
@@ -495,9 +500,10 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem2PointLiveData(Point point) {
+        Log.d(TAG, "setItem2PointLiveData() " + orderType);
         this.item2Point = point;
         this.item2PointLiveData.setValue(point);
-        reloadPointStr(this.orderType);
+        reloadPointStr();
     }
 
     public void setOriginLiveData(String value){
@@ -527,7 +533,8 @@ public class OrderViewModel extends ViewModel {
         return this.backLiveData;
     }
 
-    private void reloadPointStr(OrderType orderType) {
+    private void reloadPointStr() {
+        Log.d(TAG, "reloadPointStr() " + orderType);
         if(orderType!=null){
             switch (orderType){
                 case GO:
@@ -547,6 +554,9 @@ public class OrderViewModel extends ViewModel {
                     break;
             }
         }
+        Log.d(TAG, "reloadPointStr().origin " + origin);
+        Log.d(TAG, "reloadPointStr().destination " + destination);
+        Log.d(TAG, "reloadPointStr().back " + back);
     }
 
     public void swap() {
