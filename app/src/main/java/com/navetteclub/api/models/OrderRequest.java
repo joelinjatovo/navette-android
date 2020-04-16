@@ -1,9 +1,13 @@
 package com.navetteclub.api.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderRequest {
@@ -19,7 +23,29 @@ public class OrderRequest {
     }
 
     public OrderRequest setItems(List<ItemWithDatas> items) {
-        this.items = items;
+        this.items = new ArrayList<>(items);
         return this;
+    }
+
+    public OrderRequest checkElement() {
+        if(items!=null && order!=null && order.getType()!=null){
+            switch (order.getType()){
+                case Order.TYPE_BACK:
+                case Order.TYPE_GO:
+                    if(this.items.size()>1) {
+                        this.items.remove(1);
+                    }
+                break;
+            }
+        }
+        return this;
+    }
+
+    @NonNull
+    public String toString(){
+        return "OrderRequest[ "
+                + order
+                + ", " + items
+                + " ]";
     }
 }

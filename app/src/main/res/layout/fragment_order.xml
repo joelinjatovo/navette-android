@@ -256,7 +256,8 @@
             app:showErrorLoader="@{showErrorLoader}"
             app:isLoadingDirection="@{isLoadingDirection}"
             app:distance="@{distance}"
-            app:delay="@{delay}"/>
+            app:delay="@{delay}"
+            app:amount="@{amount}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

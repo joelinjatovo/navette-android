@@ -25,6 +25,8 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
     private final OnClickItemListener<CarAndModel> mListener;
 
+    private int selected;
+
     public CarRecyclerViewAdapter(OnClickItemListener<CarAndModel> listener) {
         mListener = listener;
     }
@@ -93,6 +95,14 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
     public List<CarAndModel> getItems() {
         return this.mItems;
+    }
+
+    public int getSelected() {
+        return selected;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -126,7 +126,10 @@ public class PlaceFragment extends BottomSheetDialogFragment {
                 });
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 order -> {
-                    if(order!=null) place = order.getPlace();
+                    if(order!=null){
+                        place = order.getPlace();
+                        mBinding.value.setText(String.valueOf(place));
+                    }
                 });
     }
 }

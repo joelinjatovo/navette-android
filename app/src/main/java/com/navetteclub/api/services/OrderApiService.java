@@ -18,8 +18,12 @@ import retrofit2.http.Path;
 public interface OrderApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("api/v1/club/{club}/order")
-    Call<RetrofitResponse<OrderWithDatas>> createOrder(@Header("Authorization") String token, @Path("club") Long clubId, @Body OrderRequest orderRequest);
+    @POST("api/v1/order")
+    Call<RetrofitResponse<OrderWithDatas>> createOrder(@Header("Authorization") String token, @Body OrderRequest orderRequest);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/cart")
+    Call<RetrofitResponse<OrderWithDatas>> getCart(@Body OrderRequest orderRequest);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/orders")

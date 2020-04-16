@@ -1,5 +1,6 @@
 package com.navetteclub.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 
 import com.google.gson.annotations.SerializedName;
@@ -52,5 +53,15 @@ public class ItemWithDatas {
 
     public void setRide(Ride ride) {
         this.ride = ride;
+    }
+
+    @NonNull
+    public String toString() {
+        return "ItemWithData[ "
+                +  item
+                +  point
+                +  driver
+                +  ride
+                + " ]";
     }
 }

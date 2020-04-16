@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,13 +18,23 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
+import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentDetailBinding;
+import com.navetteclub.ui.pay.StripeFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+
+import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DetailFragment extends Fragment {
 
@@ -98,16 +109,39 @@ public class DetailFragment extends Fragment {
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null) return;
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        showError(result.getError());
+                    }
+
+                    if(result.getSuccess()!=null){
+                        OrderWithDatas data = result.getSuccess();
+                        if(data!=null){
+                            Order order = data.getOrder();
+                            orderViewModel.setOrderLiveData(order);
+                            List<ItemWithDatas> items = data.getItems();
+                            orderViewModel.setItemsLiveData(items);
+                            NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_navigation_checkout);
+                        }
+                    }
+                    orderViewModel.setOrderResult(null);
+                });
     }
 
     private void setupUi() {
-        mBinding.stepView.go(5, true);
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    // Nothing
+                    placeOrder();
+                });
+        mBinding.closeButton.setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
                 });
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
@@ -123,6 +157,30 @@ public class DetailFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    private void placeOrder() {
+        User user = authViewModel.getUser();
+        if(user!=null){
+            progressDialog.show();
+            orderViewModel.placeOrder(user.getAuthorizationToken());
+        }
+    }
+
+    private void showError(@StringRes Integer error) {
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Oops...")
+                .setContentText(getString(error))
+                .setConfirmText("Yes, retry!")
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    placeOrder();
+                })
+                .setCancelButton("Cancel", sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    NavHostFragment.findNavController(DetailFragment.this).popBackStack();
+                })
+                .show();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.navetteclub.database.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -98,12 +99,15 @@ public class Order {
     @ColumnInfo(name = "preordered")
     private Boolean preordered = false;
 
+    @SerializedName("user_id")
     @ColumnInfo(name = "user_id")
     private Long userId;
 
+    @SerializedName("club_id")
     @ColumnInfo(name = "club_id")
     private Long clubId;
 
+    @SerializedName("car_id")
     @ColumnInfo(name = "car_id")
     private Long carId;
 
@@ -267,5 +271,16 @@ public class Order {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @NonNull
+    public String toString() {
+        return "Order[ "
+                + "type=" + type
+                + "status=" + status
+                + "clubId=" + clubId
+                + " ,carId=" + carId
+                + ", createdAt= " + createdAt
+                + " ]";
     }
 }

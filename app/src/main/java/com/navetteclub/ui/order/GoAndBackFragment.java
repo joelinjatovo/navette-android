@@ -77,7 +77,7 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
         mBinding.noButton.setOnClickListener(
                 v -> {
                     orderViewModel.setOrderTypeLiveData(OrderType.GO);
-                    Navigation.findNavController(v).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
+                    NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
                 });
         mBinding.closeButton.setOnClickListener(
                 v -> {

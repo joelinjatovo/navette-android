@@ -82,6 +82,8 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
 
+    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> cartResult = new MutableLiveData<>();
+
     public String origin;
 
     private MutableLiveData<String> originLiveData = new MutableLiveData<>();
@@ -102,14 +104,15 @@ public class OrderViewModel extends ViewModel {
         setClubLiveData(null); setClubPointLiveData(null);
         setItem1LiveData((Item) null); setItem1PointLiveData(null);
         setItem2LiveData((Item) null); setItem2PointLiveData(null);
-        setOrderLiveData(null);
+        Order order = new Order();
+        order.setPlace(1);
+        setOrderLiveData(order);
         setCarLiveData(null);
         setItemsLiveData(null);
         setCarsResult(null);
         setOrderResult(null);
         setOrderTypeLiveData(OrderType.GO);
     }
-
 
     public void loadCars(){
         loadCars(club);
@@ -145,10 +148,11 @@ public class OrderViewModel extends ViewModel {
     public void placeOrder(String token) {
         Log.d(TAG, "OrderApiService.placeOrder()");
         OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setOrder(order).setItems(items);
+        orderRequest.setOrder(order).setItems(items).checkElement();
+        Log.d(TAG, "placeOrder(" + orderRequest + ")");
 
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(token, club.getId(), orderRequest);
+        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(token, orderRequest);
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
@@ -173,6 +177,42 @@ public class OrderViewModel extends ViewModel {
                 orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
+    }
+
+    public Call<RetrofitResponse<OrderWithDatas>> getCart() {
+        Log.d(TAG+"Cart", "OrderApiService.getCart()");
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrder(order).setItems(items).checkElement();
+        Log.d(TAG+"Cart", "getCart(" + orderRequest + ")");
+
+        OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
+        Call<RetrofitResponse<OrderWithDatas>> call = service.getCart(orderRequest);
+        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+                Log.e(TAG+"Cart", response.toString());
+                if (response.body() != null){
+                    Log.e(TAG+"Cart", response.body().toString());
+                    if(response.body().isSuccess()) {
+                        cartResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                    }else{
+                        cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                    }
+                } else {
+                    cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+                                  @NonNull Throwable throwable) {
+                Log.e(TAG+"Cart", throwable.getMessage(), throwable);
+                cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+            }
+        });
+
+        return call;
     }
 
     public void payPerCash(String token, String orderId) {
@@ -331,6 +371,23 @@ public class OrderViewModel extends ViewModel {
 
     public void setOrderTypeLiveData(OrderType orderType) {
         Log.d(TAG, "setOrderTypeLiveData() " + orderType);
+        Order order = getOrder();
+        if(order == null){
+            order = new Order();
+        }
+        if(orderType!=null){
+            switch (orderType){
+                case GO:
+                    order.setType(Order.TYPE_GO);
+                    break;
+                case BACK:
+                    order.setType(Order.TYPE_BACK);
+                    break;
+                case GO_BACK:
+                    order.setType(Order.TYPE_GO_BACK);
+                    break;
+            }
+        }
         this.orderType = orderType;
         this.orderTypeLiveData.setValue(orderType);
         reloadPointStr();
@@ -387,14 +444,13 @@ public class OrderViewModel extends ViewModel {
             items.add(null);
             data = new ItemWithDatas();
         }else{
-            if(items.size()>1){
+            if(items.size()>0){
                 data = items.get(0);
             }
             if(data==null){
                 data = new ItemWithDatas();
             }
         }
-
         data.setItem(item);
         data.setPoint(point);
         items.set(0, data);
@@ -410,13 +466,22 @@ public class OrderViewModel extends ViewModel {
             items.add(null);
             data = new ItemWithDatas();
         }else{
-            if(items.size()>1){
+            if(items.size()>0){
                 data = items.get(0);
             }
             if(data==null){
                 data = new ItemWithDatas();
             }
         }
+
+        if(item1!=null) {
+            if (orderType == OrderType.BACK) {
+                item1.setType(Order.TYPE_BACK);
+            } else {
+                item1.setType(Order.TYPE_GO);
+            }
+        }
+
         data.setItem(item1);
         items.set(0, data);
 
@@ -475,7 +540,7 @@ public class OrderViewModel extends ViewModel {
             items.add(null);
             data = new ItemWithDatas();
         }else{
-            if(items.size()>2){
+            if(items.size()>1){
                 data = items.get(1);
             }
             if(data==null){
@@ -498,14 +563,19 @@ public class OrderViewModel extends ViewModel {
             items.add(null);
             data = new ItemWithDatas();
         }else{
-            if(items.size()>2){
+            if(items.size()>1){
                 data = items.get(1);
             }
             if(data==null){
                 data = new ItemWithDatas();
             }
         }
-        data.setItem(item1);
+
+        if(item2!=null) {
+            item2.setType(Order.TYPE_BACK);
+        }
+
+        data.setItem(item2);
         items.set(1, data);
 
         this.item2 = item2;
@@ -630,12 +700,18 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void swap() {
+
+
         switch (orderType){
             case GO:
                 setOrderTypeLiveData(OrderType.BACK);
+                setItem1LiveData(item1);
+                setItem1LiveData(item2);
                 break;
             case BACK:
                 setOrderTypeLiveData(OrderType.GO);
+                setItem1LiveData(item1);
+                setItem1LiveData(item2);
                 break;
         }
     }
@@ -677,5 +753,13 @@ public class OrderViewModel extends ViewModel {
             }
         }
         return item2Point;
+    }
+
+    public LiveData<RemoteLoaderResult<OrderWithDatas>> getCartResult() {
+        return cartResult;
+    }
+
+    public void setCartResult(RemoteLoaderResult<OrderWithDatas> cartResult) {
+        this.cartResult.setValue(cartResult);
     }
 }

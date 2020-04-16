@@ -48,9 +48,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
+import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
+import com.navetteclub.database.entity.ItemWithDatas;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentOrderBinding;
@@ -68,6 +71,8 @@ import com.squareup.picasso.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
 
 
 public class OrderFragment extends Fragment implements OnMapReadyCallback {
@@ -109,6 +114,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private CarRecyclerViewAdapter mAdapter;
 
+    private Call<RetrofitResponse<OrderWithDatas>> cartRetrofitRequest;
+
     private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
         @Override
         public void onClick(View v, int position, CarAndModel item) {
@@ -122,6 +129,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             }
             orderViewModel.setCarLiveData(item.getCar());
             mAdapter.setItems(models);
+
+            mAdapter.notifyItemChanged(mAdapter.getSelected());
+            mAdapter.notifyItemChanged(position);
+            mAdapter.setSelected(position);
         }
     };
 
@@ -362,10 +373,44 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         drawClubMarker(point, club);
                     }
                 });
+        orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
+                item1 -> {
+                    if(item1==null) return;
+                    loadCart();
+                });
+        orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
+                item2 -> {
+                    if(item2==null) return;
+                    loadCart();
+                });
+        orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
+                club -> {
+                    if(club==null) return;
+                    loadCart();
+                });
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 order -> {
                     if(order!=null) {
                         mBinding.bottomSheets.setPlace(order.getPlace());
+                        loadCart();
+                    }
+                });
+        orderViewModel.getCartResult().observe(getViewLifecycleOwner(),
+                cart -> {
+                    if(cart!=null) {
+                        if(cart.getError()!=null){
+                            // @TODO
+                        }
+                        if(cart.getSuccess()!=null){
+                            OrderWithDatas data = cart.getSuccess();
+                            if(data!=null){
+                                Order order = data.getOrder();
+                                if(order!=null) {
+                                    //orderViewModel.setOrderLiveData(order);
+                                    mBinding.setAmount(order.getAmountStr());
+                                }
+                            }
+                        }
                     }
                 });
         orderViewModel.getCarsResult().observe(getViewLifecycleOwner(),
@@ -405,6 +450,17 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
+    }
+
+    private void loadCart() {
+        Club club = orderViewModel.getClub();
+        if(club==null) return;
+        Item item = orderViewModel.getItem1();
+        if(item==null) return;
+        if(cartRetrofitRequest!=null){
+            cartRetrofitRequest.cancel();
+        }
+        cartRetrofitRequest = orderViewModel.getCart();
     }
 
     private void loadDirection(GoogleViewModel googleViewModel, LatLng origin, LatLng destination) {
