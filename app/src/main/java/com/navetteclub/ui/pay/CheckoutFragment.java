@@ -31,6 +31,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
@@ -57,8 +60,11 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CheckoutFragment extends BottomSheetDialogFragment {
 
@@ -128,7 +134,7 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
         mBinding.payPerStripeButton.setOnClickListener(
                 v -> {
                     User user = authViewModel.getUser();
-                    Order order = null;
+                    Order order = orderViewModel.getOrder();
                     if(user!=null && order!=null){
                         CheckoutFragmentDirections.ActionCheckoutFragmentToStripeFragment action =
                                 CheckoutFragmentDirections.actionCheckoutFragmentToStripeFragment(
@@ -140,9 +146,7 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
 
         mBinding.payPerCashButton.setOnClickListener(
                 v -> {
-                    if(authViewModel.getUser()!=null){
-                        progressDialog.show();
-                    }
+                    payPerCash();
                 });
 
         mBinding.toolbar.setNavigationOnClickListener(
@@ -180,5 +184,46 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getPaymentResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null) return;
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        showError(result.getError());
+                    }
+
+                    if(result.getSuccess()!=null){
+                        OrderWithDatas data = result.getSuccess();
+                        if(data!=null){
+                            NavHostFragment.findNavController(this).navigate(R.id.action_checkout_fragment_to_thanks_fragment);
+                        }
+                    }
+                    orderViewModel.setPaymentResult(null);
+                });
+    }
+
+    private void payPerCash() {
+        User user = authViewModel.getUser();
+        Order order = orderViewModel.getOrder();
+        if(user!=null && order!=null && order.getRid()!=null){
+            progressDialog.show();
+            orderViewModel.payPerCash(user.getAuthorizationToken(), order.getRid());
+        }
+    }
+
+    private void showError(Integer error) {
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Oops...")
+                .setContentText(getString(error))
+                .setConfirmText("Yes, retry!")
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    payPerCash();
+                })
+                .setCancelButton("Cancel", sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    NavHostFragment.findNavController(CheckoutFragment.this).popBackStack();
+                })
+                .show();
     }
 }

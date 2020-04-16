@@ -118,7 +118,7 @@
 
     </dialog>
 
-    <fragment
+    <dialog
         android:id="@+id/detail_fragment"
         android:name="com.navetteclub.ui.order.DetailFragment"
         tools:layout="@layout/fragment_detail">
@@ -128,7 +128,7 @@
         <action
             android:id="@+id/action_detail_fragment_to_thanks_fragment"
             app:destination="@id/thanks_fragment" />
-    </fragment>
+    </dialog>
 
     <fragment
         android:id="@+id/thanks_fragment"

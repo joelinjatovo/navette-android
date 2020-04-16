@@ -1,14 +1,19 @@
 package com.navetteclub.ui.order;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +21,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Car;
@@ -28,6 +36,7 @@ import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.ui.pay.StripeFragment;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
@@ -36,7 +45,7 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends BottomSheetDialogFragment {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
 
@@ -56,6 +65,37 @@ public class DetailFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false);
 
         return mBinding.getRoot();
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                ConstraintLayout constraintLayout = d.findViewById(R.id.constraintLayout);
+                FrameLayout.LayoutParams params = null;
+                if (constraintLayout != null) {
+                    params = (FrameLayout.LayoutParams) constraintLayout.getLayoutParams();
+                    params.height = UiUtils.getScreenHeight();
+                    constraintLayout.setLayoutParams(params);
+                }
+
+                FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+                    sheetBehavior.setSkipCollapsed(true);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    //sheetBehavior.setPeekHeight(UiUtils.getScreenHeight(), true);
+                }
+            }
+        });
+
+        return dialog;
     }
 
     @Override
