@@ -120,14 +120,54 @@ public class DetailFragment extends Fragment {
                     if(result.getSuccess()!=null){
                         OrderWithDatas data = result.getSuccess();
                         if(data!=null){
-                            Order order = data.getOrder();
-                            orderViewModel.setOrderLiveData(order);
+                            Order orderOnline = data.getOrder();
+                            if(orderOnline!=null){
+                                Car carOnline = data.getCar();
+                                if(carOnline!=null){
+                                    orderOnline.setCarId(carOnline.getId());
+                                }
+                                Club clubOnline = data.getClub();
+                                if(clubOnline!=null){
+                                    orderOnline.setClubId(clubOnline.getId());
+                                }
+                                orderViewModel.setOrderLiveData(orderOnline);
+                            }
                             List<ItemWithDatas> items = data.getItems();
                             orderViewModel.setItemsLiveData(items);
                             NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_navigation_checkout);
                         }
                     }
                     orderViewModel.setOrderResult(null);
+                });
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
+                order -> {
+                    if(order==null) return;
+                    if(order.getStatus()!=null){
+                        switch (order.getStatus()){
+                            case Order.STATUS_PING:
+                            case Order.STATUS_ON_HOLD:
+                            case Order.STATUS_PROCESSING:
+                                mBinding.bookNowButton.setText(R.string.pay_now);
+                                break;
+                            case Order.STATUS_OK:
+                                if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
+                                    mBinding.bookNowButton.setText(R.string.pay_now);
+                                }else{
+                                    mBinding.bookNowButton.setText(R.string.button_close);
+                                }
+                                break;
+                            case Order.STATUS_ACTIVE:
+                            case Order.STATUS_COMPLETED:
+                            case Order.STATUS_CANCELED:
+                                mBinding.bookNowButton.setText(R.string.button_close);
+                            break;
+                            default:
+                                mBinding.bookNowButton.setText(R.string.book_now);
+                            break;
+                        }
+                    }else{
+                        mBinding.bookNowButton.setText(R.string.book_now);
+                    }
                 });
     }
 
@@ -137,7 +177,44 @@ public class DetailFragment extends Fragment {
         progressDialog.setMessage(getString(R.string.signing));
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    placeOrder();
+                    Order order = orderViewModel.getOrder();
+                    if(order==null) return;
+                    if(order.getStatus()!=null){
+                        switch (order.getStatus()){
+                            case Order.STATUS_PING:
+                            case Order.STATUS_ON_HOLD:
+                            case Order.STATUS_PROCESSING:
+                                // GO to checkout
+                                NavHostFragment.findNavController(this)
+                                        .navigate(R.id.action_detail_fragment_to_navigation_checkout);
+                                break;
+                            case Order.STATUS_OK:
+                                if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
+                                    // GO to checkout
+                                    NavHostFragment.findNavController(this)
+                                            .navigate(R.id.action_detail_fragment_to_navigation_checkout);
+                                }else{
+                                    // GO back
+                                    NavHostFragment.findNavController(this)
+                                            .popBackStack();
+                                }
+                                break;
+                            case Order.STATUS_ACTIVE:
+                            case Order.STATUS_COMPLETED:
+                            case Order.STATUS_CANCELED:
+                                // GO back
+                                NavHostFragment.findNavController(this)
+                                        .popBackStack();
+                                break;
+                            default:
+                                // Create order
+                                placeOrder();
+                                break;
+                        }
+                    }else{
+                        // Create order
+                        placeOrder();
+                    }
                 });
         mBinding.closeButton.setOnClickListener(
                 v -> {
