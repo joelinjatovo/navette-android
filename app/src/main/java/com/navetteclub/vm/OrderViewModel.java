@@ -84,9 +84,15 @@ public class OrderViewModel extends ViewModel {
 
     public String origin;
 
+    private MutableLiveData<String> originLiveData = new MutableLiveData<>();
+
     public String destination;
 
+    private MutableLiveData<String> destinationLiveData = new MutableLiveData<>();
+
     public String back;
+
+    private MutableLiveData<String> backLiveData = new MutableLiveData<>();
 
     public OrderViewModel(){
         refresh();
@@ -317,24 +323,11 @@ public class OrderViewModel extends ViewModel {
         return orderType;
     }
 
+    public LiveData<OrderType> getOrderTypeLiveData() {
+        return orderTypeLiveData;
+    }
+
     public void setOrderTypeLiveData(OrderType orderType) {
-        switch (orderType){
-            case GO:
-                origin = item1Point==null?null:item1Point.getName();
-                destination = clubPoint==null?null:clubPoint.getName();
-                back = null;
-                break;
-            case BACK:
-                origin = clubPoint==null?null:clubPoint.getName();
-                destination = item1Point==null?null:item1Point.getName();
-                back = null;
-                break;
-            case GO_BACK:
-                origin = item1Point==null?null:item1Point.getName();
-                destination = clubPoint==null?null:clubPoint.getName();
-                back = item2Point==null?null:item2Point.getName();
-                break;
-        }
         this.orderType = orderType;
         this.orderTypeLiveData.setValue(orderType);
     }
@@ -490,6 +483,7 @@ public class OrderViewModel extends ViewModel {
     public void setItem1PointLiveData(Point point) {
         this.item1Point = point;
         this.item1PointLiveData.setValue(point);
+        reloadPointStr(this.orderType);
     }
 
     public Point getItem2Point() {
@@ -503,6 +497,56 @@ public class OrderViewModel extends ViewModel {
     public void setItem2PointLiveData(Point point) {
         this.item2Point = point;
         this.item2PointLiveData.setValue(point);
+        reloadPointStr(this.orderType);
+    }
+
+    public void setOriginLiveData(String value){
+        this.origin = value;
+        this.originLiveData.setValue(value);
+    }
+
+    public LiveData<String> getOriginLiveData(){
+        return this.originLiveData;
+    }
+
+    public void setDestinationLiveData(String value){
+        this.destination = value;
+        this.destinationLiveData.setValue(value);
+    }
+
+    public LiveData<String> getDestinationLiveData(){
+        return this.destinationLiveData;
+    }
+
+    public void setBackLiveData(String value){
+        this.back = value;
+        this.backLiveData.setValue(value);
+    }
+
+    public LiveData<String> getBackLiveData(){
+        return this.backLiveData;
+    }
+
+    private void reloadPointStr(OrderType orderType) {
+        if(orderType!=null){
+            switch (orderType){
+                case GO:
+                    setOriginLiveData(item1Point==null?null:item1Point.getName());
+                    setDestinationLiveData(clubPoint==null?null:clubPoint.getName());
+                    setBackLiveData(null);
+                    break;
+                case BACK:
+                    setOriginLiveData(clubPoint==null?null:clubPoint.getName());
+                    setDestinationLiveData(item1Point==null?null:item1Point.getName());
+                    setBackLiveData(null);
+                    break;
+                case GO_BACK:
+                    setOriginLiveData(item1Point==null?null:item1Point.getName());
+                    setDestinationLiveData(clubPoint==null?null:clubPoint.getName());
+                    setBackLiveData(item2Point==null?null:item2Point.getName());
+                    break;
+            }
+        }
     }
 
     public void swap() {
