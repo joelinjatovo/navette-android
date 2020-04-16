@@ -184,6 +184,18 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
+                order -> {
+                    if(order == null){
+                        return;
+                    }
+                    mBinding.setAmount(order.getAmountStr());
+
+                    if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())){
+                        mBinding.payPerCashButton.setVisibility(View.GONE);
+                    }
+
+                });
         orderViewModel.getPaymentResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
