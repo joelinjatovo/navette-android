@@ -87,14 +87,17 @@
             app:destination="@id/place_fragment" />
     </fragment>
 
-    <fragment
+    <dialog
         android:id="@+id/place_fragment"
         android:name="com.navetteclub.ui.order.PlaceFragment"
         tools:layout="@layout/fragment_place" >
         <action
             android:id="@+id/action_place_fragment_to_go_and_back_fragment"
             app:destination="@id/go_and_back_fragment" />
-    </fragment>
+        <action
+            android:id="@+id/action_place_fragment_to_order_fragment"
+            app:destination="@id/order_fragment" />
+    </dialog>
 
     <fragment
         android:id="@+id/go_and_back_fragment"

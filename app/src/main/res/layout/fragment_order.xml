@@ -15,6 +15,7 @@
         <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="delay" type="String" />
+        <variable name="amount" type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -49,7 +50,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="wrap_content"                    android:paddingBottom="5dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -124,14 +125,21 @@
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="@color/colorText" />
 
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:layout_marginStart="10dp"
-                                    android:layout_marginEnd="10dp"
-                                    android:background="@color/colorAccent" />
-
                             </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:background="@color/colorAccent" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:background="@color/colorAccent" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"

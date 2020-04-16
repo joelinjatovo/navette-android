@@ -514,6 +514,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     mBinding.bottomSheets.setShowErrorLoaderCar(false);
                     orderViewModel.loadCars();
                 });
+        mBinding.bottomSheets.placeCountTextView.setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).navigate(R.id.action_order_fragment_to_place_fragment);
+                });
     }
 
     /*

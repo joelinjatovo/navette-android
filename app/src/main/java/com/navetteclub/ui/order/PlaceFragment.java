@@ -1,18 +1,26 @@
 package com.navetteclub.ui.order;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Order;
@@ -23,7 +31,7 @@ import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
-public class PlaceFragment extends Fragment {
+public class PlaceFragment extends BottomSheetDialogFragment {
 
     private OrderViewModel orderViewModel;
 
@@ -32,6 +40,37 @@ public class PlaceFragment extends Fragment {
     private int place = 0;
 
     private int max = 10;
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                ConstraintLayout constraintLayout = d.findViewById(R.id.constraintLayout);
+                FrameLayout.LayoutParams params = null;
+                if (constraintLayout != null) {
+                    params = (FrameLayout.LayoutParams) constraintLayout.getLayoutParams();
+                    params.height = UiUtils.getScreenHeight();
+                    constraintLayout.setLayoutParams(params);
+                }
+
+                FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
+                    sheetBehavior.setSkipCollapsed(true);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    //sheetBehavior.setPeekHeight(UiUtils.getScreenHeight(), true);
+                }
+            }
+        });
+
+        return dialog;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,13 +86,31 @@ public class PlaceFragment extends Fragment {
     }
 
     private void setupUi() {
-        mBinding.stepView.go(2, true);
-        mBinding.ok.setOnClickListener(
-                v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_place_fragment_to_go_and_back_fragment);
-                });
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
+                });
+        mBinding.plus.setOnClickListener(
+                v -> {
+                    if(place < max){
+                        place++;
+                    }
+                });
+        mBinding.minus.setOnClickListener(
+                v -> {
+                    if(place > 2){
+                        place--;
+                    }
+                });
+        mBinding.cancelButton.setOnClickListener(
+                v -> {
+                    NavHostFragment.findNavController(this).popBackStack();
+                });
+        mBinding.confirmButton.setOnClickListener(
+                v -> {
+                    Order order = orderViewModel.getOrder();
+                    order.setPlace(place);
+                    orderViewModel.setOrderLiveData(order);
                     NavHostFragment.findNavController(this).popBackStack();
                 });
     }
@@ -61,5 +118,13 @@ public class PlaceFragment extends Fragment {
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getCarLiveData().observe(getViewLifecycleOwner(),
+                car -> {
+                    if(car!=null) max = car.getPlace();
+                });
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
+                order -> {
+                    if(order!=null) place = order.getPlace();
+                });
     }
 }
