@@ -567,6 +567,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         mBinding.clearRetours.setOnClickListener(
                 v -> {
                     orderViewModel.setOrderTypeLiveData(OrderType.GO);
+                    orderViewModel.setItem2LiveData((Item) null);
                     orderViewModel.setItem2PointLiveData(null);
                 });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
