@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -24,7 +25,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentDetailBinding;
@@ -37,6 +42,9 @@ import com.navetteclub.vm.OrderViewModel;
 
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class OrderViewFragment extends BottomSheetDialogFragment {
 
@@ -126,6 +134,26 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 order1 -> {
                     setOrder(order1);
+                });
+
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null) return;
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        showError(result.getError());
+                    }
+
+                    if(result.getSuccess()!=null){
+                        OrderWithDatas data = result.getSuccess();
+                        if(data!=null){
+                            Order orderOnline = data.getOrder();
+                            if(orderOnline!=null){
+                                setOrder(order);
+                            }
+                        }
+                    }
+                    orderViewModel.setOrderResult(null);
                 });
     }
 
@@ -244,6 +272,29 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         }
                     }
                 });
+    }
+
+    private void showError(@StringRes Integer error) {
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Oops...")
+                .setContentText(getString(error))
+                .setConfirmText("Yes, retry!")
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    placeOrder();
+                })
+                .setCancelButton("Cancel", sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    NavHostFragment.findNavController(OrderViewFragment.this).popBackStack();
+                })
+                .show();
+    }
+
+    private void placeOrder() {
+        User user = authViewModel.getUser();
+        if(user!=null && order != null && order.getRid() != null) {
+            orderViewModel.placeOrder(user.getAuthorizationToken());
+        }
     }
 
 }

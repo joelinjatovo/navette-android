@@ -86,6 +86,8 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> cartResult = new MutableLiveData<>();
 
+    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> cancelResult = new MutableLiveData<>();
+
     public String origin;
 
     private MutableLiveData<String> originLiveData = new MutableLiveData<>();
@@ -771,6 +773,14 @@ public class OrderViewModel extends ViewModel {
 
     public void setCartResult(RemoteLoaderResult<OrderWithDatas> cartResult) {
         this.cartResult.setValue(cartResult);
+    }
+
+    public LiveData<RemoteLoaderResult<OrderWithDatas>> getCancelResult() {
+        return cancelResult;
+    }
+
+    public void setCancelResult(RemoteLoaderResult<OrderWithDatas> cancelResult) {
+        this.cancelResult.setValue(cancelResult);
     }
 
     public void attach(OrderWithDatas item) {
