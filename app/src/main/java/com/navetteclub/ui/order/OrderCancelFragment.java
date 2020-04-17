@@ -1,6 +1,7 @@
 package com.navetteclub.ui.order;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -54,6 +55,8 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
 
     private String orderRid;
 
+    private ProgressDialog progressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +108,9 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
         NavController navController = NavHostFragment.findNavController(this);
         mBinding.backButton.setOnClickListener(
                 v -> {
@@ -122,6 +128,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
 
     private void cancelOrder(String token, String orderRid) {
         Log.d(TAG, "OrderApiService.cancelOrder()");
+        progressDialog.show();
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
         Call<RetrofitResponse<OrderWithDatas>> call = service.cancel(token, new OrderParam(orderRid));
         call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
@@ -129,6 +136,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
                                    @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
                 Log.e(TAG, response.toString());
+                progressDialog.hide();
                 if (response.body() != null){
                     Log.e(TAG, response.body().toString());
                     if(response.body().isSuccess()) {
@@ -144,6 +152,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
                                   @NonNull Throwable throwable) {
+                progressDialog.hide();
                 Log.e(TAG, throwable.getMessage(), throwable);
             }
         });

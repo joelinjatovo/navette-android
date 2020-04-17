@@ -58,7 +58,7 @@
         android:name="com.navetteclub.ui.order.StepsFragment"
         tools:layout="@layout/fragment_steps"/>
 
-    <dialog
+    <fragment
         android:id="@+id/order_cancel_fragment"
         android:name="com.navetteclub.ui.order.OrderCancelFragment"
         tools:layout="@layout/fragment_order_cancel">
@@ -75,7 +75,7 @@
             android:id="@+id/action_order_cancel_fragment_to_orders_fragment"
             app:popUpTo="@id/orders_fragment"
             app:popUpToInclusive="false"/>
-    </dialog>
+    </fragment>
 
     <include app:graph="@navigation/checkout_navigation" />
 

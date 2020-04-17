@@ -772,4 +772,41 @@ public class OrderViewModel extends ViewModel {
     public void setCartResult(RemoteLoaderResult<OrderWithDatas> cartResult) {
         this.cartResult.setValue(cartResult);
     }
+
+    public void attach(OrderWithDatas item) {
+        this.setOrderLiveData(item.getOrder());
+        this.setClubLiveData(item.getClub());
+        this.setClubPointLiveData(item.getClubPoint());
+        this.setCarLiveData(item.getCar());
+
+        List<ItemWithDatas> items = item.getItems();
+        if(items!=null) {
+            for (int i=0; (i < items.size()) && (i < 2); i++) {
+                ItemWithDatas itemWithData = items.get(i);
+                if(itemWithData!=null){
+                    if(i==0){
+                        this.setItem1LiveData(itemWithData.getItem(), itemWithData.getPoint());
+                    }else{
+                        this.setItem2LiveData(itemWithData.getItem(), itemWithData.getPoint());
+                    }
+                }
+            }
+        }
+
+        if(item.getOrder()!=null){
+            if(item.getOrder().getType()!=null){
+                switch (item.getOrder().getType()){
+                    case Order.TYPE_GO:
+                        setOrderTypeLiveData(OrderType.GO);
+                        break;
+                    case Order.TYPE_BACK:
+                        setOrderTypeLiveData(OrderType.BACK);
+                        break;
+                    case Order.TYPE_GO_BACK:
+                        setOrderTypeLiveData(OrderType.GO_BACK);
+                        break;
+                }
+            }
+        }
+    }
 }

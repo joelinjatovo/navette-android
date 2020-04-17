@@ -24,7 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
+import com.navetteclub.database.entity.ItemWithDatas;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -35,6 +40,7 @@ import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.OrdersViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrdersFragment extends Fragment implements OnClickItemListener<OrderWithDatas> {
 
@@ -184,6 +190,8 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
 
     @Override
     public void onClick(View view, int position, OrderWithDatas item) {
+        orderViewModel.refresh();
+        orderViewModel.attach(item);
         NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
     }
 

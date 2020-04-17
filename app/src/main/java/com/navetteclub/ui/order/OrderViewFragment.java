@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.databinding.FragmentOrderViewBinding;
 import com.navetteclub.utils.Log;
@@ -122,6 +123,54 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
+                order1 -> {
+                    setOrder(order1);
+                });
+    }
+
+    private void setOrder(Order order1) {
+        this.order = order1;
+        if(order==null) return;
+
+        mBinding.setOrderId(order.getRid());
+        mBinding.setAmount(order.getAmountStr());
+
+        if(order.getPaymentType()!=null){
+            switch (order.getPaymentType()){
+                case Order.PAYMENT_TYPE_CASH:
+                    mBinding.editChip.setVisibility(View.VISIBLE);
+                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                    mBinding.setPaymentType(getString(R.string.cash));
+                    break;
+                case Order.PAYMENT_TYPE_STRIPE:
+                    mBinding.editChip.setVisibility(View.GONE);
+                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                    mBinding.setPaymentType(getString(R.string.stripe));
+                    break;
+                case Order.PAYMENT_TYPE_PAYPAL:
+                    mBinding.editChip.setVisibility(View.GONE);
+                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                    mBinding.setPaymentType(getString(R.string.paypal));
+                    break;
+                default:
+                    mBinding.paymentMethods.setVisibility(View.GONE);
+                    break;
+            }
+        }else{
+            mBinding.paymentMethods.setVisibility(View.GONE);
+        }
+
+        mBinding.cancelButton.setVisibility(Order.STATUS_OK.equals(order.getStatus())?View.VISIBLE:View.GONE);
+        mBinding.liveButton.setVisibility(Order.STATUS_ACTIVE.equals(order.getStatus())?View.VISIBLE:View.GONE);
+        if(order.getStatus()!=null){
+            mBinding.setStatus(order.getStatus());
+            mBinding.actionButton.setVisibility(Order.STATUS_PING.equals(order.getStatus())||Order.STATUS_ON_HOLD.equals(order.getStatus())?View.VISIBLE:View.GONE);
+            mBinding.actionButton.setText(R.string.button_pay);
+        }else{
+            mBinding.actionButton.setVisibility(View.VISIBLE);
+            mBinding.actionButton.setText(R.string.button_confirm);
+        }
     }
 
     private void setupUi() {
@@ -134,18 +183,10 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                 v -> {
                     navController.popBackStack();
                 });
-
-        /*
-        * Close dialog
-         */
         mBinding.closeButton.setOnClickListener(
                 v -> {
                     navController.popBackStack();
                 });
-
-        /*
-        * Cancel order with status PING
-         */
         mBinding.cancelButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
@@ -157,35 +198,36 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         navController.navigate(action);
                     }
                 });
-
-        /*
-         * Live order with status ACTIVE
-         */
         mBinding.liveButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
                         switch (order.getStatus()){
                             case Order.STATUS_OK:
-                            case Order.STATUS_PROCESSING:
+                            case Order.STATUS_ACTIVE:
                                 navController.navigate(R.id.action_order_view_fragment_to_live_fragment);
                                 break;
                         }
                     }
                 });
-
-        /*
-         * Go to checkout for PING or ON_HOLD status
-         * Place order if status is null
-         */
         mBinding.actionButton.setOnClickListener(
                 v -> {
-                    if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
-                        if (Order.STATUS_PING.equals(order.getStatus())||Order.STATUS_ON_HOLD.equals(order.getStatus())){
-                            // Go to checkout
-                            navController.navigate(R.id.action_order_view_fragment_to_navigation_checkout);
+                    User user = authViewModel.getUser();
+                    if(user!=null && order != null && order.getRid() != null){
+                        if(order.getStatus()!=null){
+                            switch (order.getStatus()){
+                                case Order.STATUS_PING:
+                                case Order.STATUS_ON_HOLD:
+                                case Order.STATUS_PROCESSING:
+                                    navController.navigate(R.id.action_order_view_fragment_to_navigation_checkout);
+                                    break;
+                                case Order.STATUS_OK:
+                                    if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())){
+                                        navController.navigate(R.id.action_order_view_fragment_to_navigation_checkout);
+                                    }
+                                    break;
+                            }
                         }else{
-                            // Place order
-                            //orderViewModel.placeOrder(authViewModel.getUser());
+                            orderViewModel.placeOrder(user.getAuthorizationToken());
                         }
                     }
                 });
