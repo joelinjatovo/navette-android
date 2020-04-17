@@ -442,19 +442,17 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem1LiveData(Item item, Point point) {
         ItemWithDatas data = null;
-        if(items==null){
-            items = new ArrayList<>(2);
-            items.add(null);
-            items.add(null);
-            data = new ItemWithDatas();
-        }else{
-            if(items.size()>0){
-                data = items.get(0);
-            }
-            if(data==null){
-                data = new ItemWithDatas();
-            }
+        if(items==null) {
+            items = new ArrayList<>();
         }
+        while (items.size()<2){
+            items.add(null);
+        }
+        data = items.get(0);
+        if(data==null){
+            data = new ItemWithDatas();
+        }
+
         data.setItem(item);
         data.setPoint(point);
         items.set(0, data);
@@ -464,18 +462,15 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem1LiveData(Item item1) {
         ItemWithDatas data = null;
-        if(items==null){
-            items = new ArrayList<>(2);
+        if(items==null) {
+            items = new ArrayList<>();
+        }
+        while (items.size()<2){
             items.add(null);
-            items.add(null);
+        }
+        data = items.get(0);
+        if(data==null){
             data = new ItemWithDatas();
-        }else{
-            if(items.size()>0){
-                data = items.get(0);
-            }
-            if(data==null){
-                data = new ItemWithDatas();
-            }
         }
 
         if(item1!=null) {
@@ -538,19 +533,17 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem2LiveData(Item item, Point point) {
         ItemWithDatas data = null;
-        if(items==null){
-            items = new ArrayList<>(2);
-            items.add(null);
-            items.add(null);
-            data = new ItemWithDatas();
-        }else{
-            if(items.size()>1){
-                data = items.get(1);
-            }
-            if(data==null){
-                data = new ItemWithDatas();
-            }
+        if(items==null) {
+            items = new ArrayList<>();
         }
+        while (items.size()<3){
+            items.add(null);
+        }
+        data = items.get(1);
+        if(data==null){
+            data = new ItemWithDatas();
+        }
+
         data.setItem(item);
         data.setPoint(point);
         items.set(1, data);
@@ -560,19 +553,17 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem2LiveData(Item item2) {
+        Log.d(TAG, "setItem2LiveData(Item) " + item2);
         ItemWithDatas data = null;
-        if(items==null){
-            items = new ArrayList<>(2);
+        if(items==null) {
+            items = new ArrayList<>();
+        }
+        while (items.size()<3){
             items.add(null);
-            items.add(null);
+        }
+        data = items.get(1);
+        if(data==null){
             data = new ItemWithDatas();
-        }else{
-            if(items.size()>1){
-                data = items.get(1);
-            }
-            if(data==null){
-                data = new ItemWithDatas();
-            }
         }
 
         if(item2!=null) {

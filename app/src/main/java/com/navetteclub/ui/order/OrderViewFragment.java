@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
@@ -42,6 +44,7 @@ import com.navetteclub.vm.OrderViewModel;
 
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.Date;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -131,11 +134,39 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                order1 -> {
-                    setOrder(order1);
+        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(), this::setOrder);
+        orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
+                club -> {
+                    if(club!=null){
+                        mBinding.setPoint2Title("Club");
+                        mBinding.setPoint2(club.getName());
+                    }
                 });
-
+        orderViewModel.getItem1PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    if(point!=null){
+                        Item item1 = orderViewModel.getItem1();
+                        if(item1!=null){
+                            if(Order.TYPE_BACK.equals(item1.getType())){
+                                mBinding.setPoint3Title("Drop");
+                                mBinding.setPoint3(point.getName());
+                            }else{
+                                mBinding.setPoint1Title("Pickup");
+                                mBinding.setPoint1(point.getName());
+                            }
+                        }
+                    }
+                });
+        orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    if(point!=null){
+                        Item item2 = orderViewModel.getItem2();
+                        if(item2!=null){
+                            mBinding.setPoint3Title("Drop");
+                            mBinding.setPoint3(point.getName());
+                        }
+                    }
+                });
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
@@ -163,6 +194,11 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
 
         mBinding.setOrderId(order.getRid());
         mBinding.setAmount(order.getAmountStr());
+
+        long now = System.currentTimeMillis();
+        Date lastUpdated = order.getCreatedAt();
+        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+        mBinding.setDate((String) date);
 
         if(order.getPaymentType()!=null){
             switch (order.getPaymentType()){
