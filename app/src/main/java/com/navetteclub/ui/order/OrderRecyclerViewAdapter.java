@@ -42,7 +42,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
         return new ViewHolder(itemBinding);
@@ -132,35 +132,32 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                     Date lastUpdated = order.getCreatedAt();
                     CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.DAY_IN_MILLIS);
                     mBinding.setDate((String) date);
-
-                    // Points
-                    if (order.getType()!=null){
-                        switch (order.getType()){
-                            case Order.TYPE_GO:
-                                mBinding.setPointTitle("Pickup");
-                                break;
-                            case Order.TYPE_BACK:
-                                mBinding.setPointTitle("Drop");
-                                break;
-                            case Order.TYPE_GO_BACK:
-                                mBinding.setPointTitle("NN");
-                                break;
-                        }
-                    }
                 }
 
                 // Club
                 Club club = mItem.getClub();
                 if(club!=null){
-                    mBinding.setClub(club.getName());
+                    mBinding.setPoint2Title("Club");
+                    mBinding.setPoint2(club.getName());
                 }
 
                 //Items
                 List<ItemWithDatas> items = mItem.getItems();
+                int i = 0;
                 if(items!=null && !items.isEmpty()){
                     for(ItemWithDatas itemWithData: items){
-                        if(itemWithData!=null && itemWithData.getPoint()!=null) {
-                            mBinding.setItem1(itemWithData.getPoint().getName());
+                        if(itemWithData!=null && itemWithData.getItem()!=null && itemWithData.getPoint()!=null) {
+                            if(Order.TYPE_BACK.equals(itemWithData.getItem().getType())){
+                                mBinding.setPoint3Title("Drop");
+                                mBinding.setPoint3(itemWithData.getPoint().getName());
+                            }else{
+                                mBinding.setPoint1Title("Pickup");
+                                mBinding.setPoint1(itemWithData.getPoint().getName());
+                            }
+                            i++;
+                            if(i>2){
+                                break;
+                            }
                         }
                     }
                 }

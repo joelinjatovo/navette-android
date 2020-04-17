@@ -6,14 +6,13 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="isLoading" type="boolean" />
-        <variable name="isUnauthenticated" type="boolean" />
-        <variable name="showMoreButton" type="boolean" />
         <variable name="orderId" type="String" />
-        <variable name="pointTitle" type="String" />
-        <variable name="item1" type="String" />
-        <variable name="item2" type="String" />
-        <variable name="club" type="String" />
+        <variable name="point1" type="String" />
+        <variable name="point1Title" type="String" />
+        <variable name="point2" type="String" />
+        <variable name="point2Title" type="String" />
+        <variable name="point3" type="String" />
+        <variable name="point3Title" type="String" />
         <variable name="date" type="String" />
         <variable name="amount" type="String" />
         <variable name="status" type="String" />
@@ -85,39 +84,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="5dp"
+                android:visibility="@{point1==null?View.GONE:View.VISIBLE}">
 
                 <ImageView
-                    android:id="@+id/clubIcon"
+                    android:id="@+id/point1Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/image"
-                    android:src="@drawable/outline_trip_origin_black_18"
+                    android:src="@drawable/outline_place_black_18"
                     android:tint="@color/colorIcon"/>
 
                 <TextView
-                    android:id="@+id/clubLabel"
+                    android:id="@+id/point1Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/clubIcon"
+                    android:layout_toEndOf="@id/point1Icon"
                     android:layout_centerVertical="true"
-                    android:text="@string/club"
+                    android:text="@{point1Title}"
                     android:textAppearance="?attr/textAppearanceCaption"
                     android:textColor="@color/colorIcon"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
 
                 <TextView
-                    android:id="@+id/clubName"
+                    android:id="@+id/point1Name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:textAlignment="textEnd"
-                    android:layout_toEndOf="@+id/clubLabel"
-                    android:text="@{club}"
+                    android:layout_toEndOf="@id/point1Label"
+                    android:text="@{point1}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:maxLines="1"
                     android:textColor="@color/colorText"
@@ -130,10 +130,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="5dp"
+                android:visibility="@{point2==null?View.GONE:View.VISIBLE}">
 
                 <ImageView
-                    android:id="@+id/pointIcon"
+                    android:id="@+id/point2Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/image"
+                    android:src="@drawable/outline_trip_origin_black_18"
+                    android:tint="@color/colorIcon"/>
+
+                <TextView
+                    android:id="@+id/point2Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/point2Icon"
+                    android:layout_centerVertical="true"
+                    android:text="@{point2Title}"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/colorIcon"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"/>
+
+                <TextView
+                    android:id="@+id/point2Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textAlignment="textEnd"
+                    android:layout_toEndOf="@+id/point2Label"
+                    android:text="@{point2}"
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                    android:maxLines="1"
+                    android:textColor="@color/colorText"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="@{point3==null?View.GONE:View.VISIBLE}">
+
+                <ImageView
+                    android:id="@+id/point3Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -143,26 +190,26 @@
                     android:tint="@color/colorIcon"/>
 
                 <TextView
-                    android:id="@+id/pointLabel"
+                    android:id="@+id/point3Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/pointIcon"
+                    android:layout_toEndOf="@id/point3Icon"
                     android:layout_centerVertical="true"
-                    android:text="@{pointTitle}"
+                    android:text="@{point3Title}"
                     android:textAppearance="?attr/textAppearanceCaption"
                     android:textColor="@color/colorIcon"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
 
                 <TextView
-                    android:id="@+id/pointName"
+                    android:id="@+id/point3Name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:textAlignment="textEnd"
-                    android:layout_toEndOf="@+id/pointLabel"
-                    android:text="@{item1}"
+                    android:layout_toEndOf="@id/point3Label"
+                    android:text="@{point3}"
                     android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:maxLines="1"
                     android:textColor="@color/colorText"

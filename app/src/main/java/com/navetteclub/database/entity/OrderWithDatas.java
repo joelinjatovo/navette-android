@@ -22,6 +22,10 @@ public class OrderWithDatas {
     @Embedded
     private Club club;
 
+    @SerializedName("club_point")
+    @Embedded
+    private Point clubPoint;
+
     @SerializedName("car")
     @Embedded
     private Car car;
@@ -67,5 +71,13 @@ public class OrderWithDatas {
 
     public void setItems(List<ItemWithDatas> items) {
         this.items = items;
+    }
+
+    public Point getClubPoint() {
+        return clubPoint;
+    }
+
+    public void setClubPoint(Point clubPoint) {
+        this.clubPoint = clubPoint;
     }
 }
