@@ -44,8 +44,8 @@ public class OrderRequest {
     @NonNull
     public String toString(){
         return "OrderRequest[ "
-                + order
-                + ", " + items
-                + " ]";
+                + "\n order = " + order
+                + "; \n items = "  + items
+            + " ]";
     }
 }

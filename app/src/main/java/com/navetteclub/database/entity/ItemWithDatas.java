@@ -57,11 +57,9 @@ public class ItemWithDatas {
 
     @NonNull
     public String toString() {
-        return "ItemWithData[ "
-                +  item
-                +  point
-                +  driver
-                +  ride
-                + " ]";
+        return "\n ItemWithData[ "
+                +  " \n \t item = " + item
+                +  " \n \t point = " + point
+            + " \n ]";
     }
 }

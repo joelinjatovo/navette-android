@@ -150,6 +150,10 @@ public class Order {
         }
 
         String currency = getCurrency();
+        if(currency==null){
+            currency = "EUR";
+        }
+
         NumberFormat format = NumberFormat.getCurrencyInstance();
         //format.setMaximumFractionDigits(2);
         //format.setMinimumFractionDigits(2);
@@ -275,12 +279,12 @@ public class Order {
 
     @NonNull
     public String toString() {
-        return "Order[ "
-                + "type=" + type
+        return "\n Order[ "
+                + "\n \t type=" + type
                 + "status=" + status
                 + "clubId=" + clubId
                 + " ,carId=" + carId
                 + ", createdAt= " + createdAt
-                + " ]";
+                + " \n ]";
     }
 }

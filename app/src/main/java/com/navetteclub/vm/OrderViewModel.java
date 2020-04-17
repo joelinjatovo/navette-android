@@ -406,7 +406,7 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1LiveData(String name, LatLng latLng) {
-        Log.d(TAG, "setItem1LiveData() " + name + " " + latLng);
+        Log.d(TAG, "setItem1LiveData() name " + name + " latLng =" + latLng);
         Item item = this.getItem1();
         if(item==null){
             item = new Item();
@@ -441,13 +441,9 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1LiveData(Item item, Point point) {
+        mayBeInitItems();
+
         ItemWithDatas data = null;
-        if(items==null) {
-            items = new ArrayList<>();
-        }
-        while (items.size()<2){
-            items.add(null);
-        }
         data = items.get(0);
         if(data==null){
             data = new ItemWithDatas();
@@ -461,13 +457,9 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1LiveData(Item item1) {
+        mayBeInitItems();
+
         ItemWithDatas data = null;
-        if(items==null) {
-            items = new ArrayList<>();
-        }
-        while (items.size()<2){
-            items.add(null);
-        }
         data = items.get(0);
         if(data==null){
             data = new ItemWithDatas();
@@ -532,13 +524,9 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem2LiveData(Item item, Point point) {
+        mayBeInitItems();
+
         ItemWithDatas data = null;
-        if(items==null) {
-            items = new ArrayList<>();
-        }
-        while (items.size()<3){
-            items.add(null);
-        }
         data = items.get(1);
         if(data==null){
             data = new ItemWithDatas();
@@ -554,13 +542,9 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem2LiveData(Item item2) {
         Log.d(TAG, "setItem2LiveData(Item) " + item2);
+        mayBeInitItems();
+
         ItemWithDatas data = null;
-        if(items==null) {
-            items = new ArrayList<>();
-        }
-        while (items.size()<3){
-            items.add(null);
-        }
         data = items.get(1);
         if(data==null){
             data = new ItemWithDatas();
@@ -586,21 +570,15 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void setItem1PointLiveData(Point point) {
-        Log.d(TAG, "setItem1PointLiveData() " + orderType);
+        Log.d(TAG, "setItem1PointLiveData() [point] " + point);
+        mayBeInitItems();
+
         ItemWithDatas data = null;
-        if(items==null){
-            items = new ArrayList<>(2);
-            items.add(null);
-            items.add(null);
+        data = items.get(0);
+        if(data==null){
             data = new ItemWithDatas();
-        }else{
-            if(items.size()>1){
-                data = items.get(0);
-            }
-            if(data==null){
-                data = new ItemWithDatas();
-            }
         }
+
         data.setPoint(point);
         items.set(0, data);
 
@@ -619,20 +597,14 @@ public class OrderViewModel extends ViewModel {
 
     public void setItem2PointLiveData(Point point) {
         Log.d(TAG, "setItem2PointLiveData() " + orderType);
+        mayBeInitItems();
+
         ItemWithDatas data = null;
-        if(items==null){
-            items = new ArrayList<>(2);
-            items.add(null);
-            items.add(null);
+        data = items.get(1);
+        if(data==null){
             data = new ItemWithDatas();
-        }else{
-            if(items.size()>2){
-                data = items.get(1);
-            }
-            if(data==null){
-                data = new ItemWithDatas();
-            }
         }
+
         data.setPoint(point);
         items.set(1, data);
 
@@ -748,6 +720,16 @@ public class OrderViewModel extends ViewModel {
             }
         }
         return item2Point;
+    }
+
+    private void mayBeInitItems() {
+        if(items==null) {
+            items = new ArrayList<>();
+        }
+
+        while (items.size()<3){
+            items.add(null);
+        }
     }
 
     public LiveData<RemoteLoaderResult<OrderWithDatas>> getPaymentResult() {
