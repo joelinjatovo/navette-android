@@ -130,7 +130,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
                     long now = System.currentTimeMillis();
                     Date lastUpdated = order.getCreatedAt();
-                    CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.DAY_IN_MILLIS);
+                    CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
                     mBinding.setDate((String) date);
                 }
 
