@@ -19,32 +19,29 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePointWithDatas;
+import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentRidePointBinding;
+import com.navetteclub.databinding.FragmentRidePointsBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.order.SearchFragmentArgs;
-import com.navetteclub.ui.pay.StripeFragment;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.RidesViewModel;
 
-import java.util.ArrayList;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class RidePointFragment extends Fragment {
+public class RidePointsFragment extends Fragment {
 
-    private static final String TAG = RidePointFragment.class.getSimpleName();
+    private static final String TAG = RidePointsFragment.class.getSimpleName();
 
-    private FragmentRidePointBinding mBinding;
+    private FragmentRidePointsBinding mBinding;
 
     private ProgressDialog progressDialog;
 
@@ -60,19 +57,21 @@ public class RidePointFragment extends Fragment {
 
     private Long rideId;
 
+    private RideWithDatas rideWithDatas;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            token = RidePointFragmentArgs.fromBundle(getArguments()).getToken();
-            rideId = RidePointFragmentArgs.fromBundle(getArguments()).getRideId();
+            token = RidePointsFragmentArgs.fromBundle(getArguments()).getToken();
+            rideId = RidePointsFragmentArgs.fromBundle(getArguments()).getRideId();
         }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_point, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_points, container, false);
 
         mAdapter = new RidePointRecyclerViewAdapter(mListener, mCallListener);
         RecyclerView recyclerView = mBinding.recyclerView;
@@ -93,6 +92,7 @@ public class RidePointFragment extends Fragment {
     private void setupRidesViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
+        ridesViewModel.getRideLiveData().observe(getViewLifecycleOwner(), this::setRide);
         ridesViewModel.getPointsLiveData().observe(getViewLifecycleOwner(),
                 points -> {
                     if(points==null){
@@ -112,35 +112,84 @@ public class RidePointFragment extends Fragment {
 
                 });
 
-        ridesViewModel.getRideLiveData().observe(getViewLifecycleOwner(),
-                ride -> {
-                    if(ride==null){
+        ridesViewModel.getRideStartResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
                         return;
                     }
                     progressDialog.hide();
 
-                    if(ride.getError()!=null){
-                        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Oops...")
-                                .setContentText(getString(ride.getError()))
-                                .show();
+                    if(result.getError()!=null){
+                        showSweetError(getString(result.getError()));
                     }
 
-                    if(ride.getSuccess()!=null){
+                    if(result.getSuccess()!=null){
+                        this.setRide(result.getSuccess());
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success")
                                 .setContentText("Votre course a bien commencé!")
                                 .setConfirmText("Yes, go to live")
                                 .setConfirmClickListener(sDialog -> {
                                     sDialog.dismissWithAnimation();
-                                    NavHostFragment.findNavController(RidePointFragment.this).navigate(R.id.action_ride_point_fragment_to_ride_map_fragment);
+                                    NavHostFragment.findNavController(RidePointsFragment.this).navigate(R.id.action_ride_point_fragment_to_ride_map_fragment);
                                 })
                                 .setCancelButton("Ok", SweetAlertDialog::dismissWithAnimation)
                                 .show();
                     }
 
-                    ridesViewModel.setRideLiveData(null);
+                    ridesViewModel.setRideStartResult(null);
                 });
+
+        ridesViewModel.getRideCancelResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+
+                    if(result.getError()!=null){
+                        showSweetError(getString(result.getError()));
+                    }
+
+                    if(result.getSuccess()!=null){
+                        this.setRide(result.getSuccess());
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Success")
+                                .setContentText("Votre course a bien annulé!")
+                                .setCancelButton("Ok", SweetAlertDialog::dismissWithAnimation)
+                                .show();
+                    }
+
+                    ridesViewModel.setRideCancelResult(null);
+                });
+    }
+
+    private void showSweetError(String string) {
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Oops...")
+                .setContentText(string)
+                .show();
+    }
+
+    private void setRide(RideWithDatas rideWithDatas) {
+        mBinding.liveButton.setVisibility(View.GONE);
+        this.rideWithDatas = rideWithDatas;
+        if(rideWithDatas==null) return;
+        Ride ride = rideWithDatas.getRide();
+        if(ride!=null){
+            if(Ride.STATUS_PING.equals(ride.getStatus())){
+                mBinding.actionButton.setText(R.string.button_start_ride);
+                mBinding.actionButton.setVisibility(View.VISIBLE);
+                mBinding.liveButton.setVisibility(View.GONE);
+            }else if(Ride.STATUS_ACTIVE.equals(ride.getStatus())){
+                mBinding.actionButton.setText(R.string.button_cancel_ride);
+                mBinding.actionButton.setVisibility(View.VISIBLE);
+                mBinding.liveButton.setVisibility(View.VISIBLE);
+            }else{
+                mBinding.actionButton.setVisibility(View.GONE);
+                mBinding.liveButton.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void setupAuthViewModel() {
@@ -166,15 +215,32 @@ public class RidePointFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
 
+        NavController navController = NavHostFragment.findNavController(this);
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
-                    NavHostFragment.findNavController(this).popBackStack();
+                    navController.popBackStack();
                 });
-
-        mBinding.startRideButton.setOnClickListener(v->{
+        mBinding.closeButton.setOnClickListener(
+                v -> {
+                    navController.popBackStack();
+                });
+        mBinding.liveButton.setOnClickListener(
+                v -> {
+                    navController.navigate(R.id.action_ride_point_fragment_to_ride_map_fragment);
+                });
+        mBinding.actionButton.setOnClickListener(v->{
             if(token!=null && rideId!=null){
-                progressDialog.show();
-                ridesViewModel.start(token, rideId);
+                if(rideWithDatas==null) return;
+                Ride ride = rideWithDatas.getRide();
+                if(ride!=null){
+                    if(Ride.STATUS_PING.equals(ride.getStatus())){
+                        progressDialog.show();
+                        ridesViewModel.start(token, rideId);
+                    }else if(Ride.STATUS_ACTIVE.equals(ride.getStatus())){
+                        progressDialog.show();
+                        ridesViewModel.cancel(token, rideId);
+                    }
+                }
             }
         });
 

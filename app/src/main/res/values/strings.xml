@@ -242,5 +242,7 @@
     <string name="button_call">Call</string>
     <string name="book_later">Later?</string>
     <string name="refresh">Actualiser</string>
+    <string name="button_start_ride">Commencer</string>
+    <string name="button_cancel_ride">Annuler</string>
 
 </resources>

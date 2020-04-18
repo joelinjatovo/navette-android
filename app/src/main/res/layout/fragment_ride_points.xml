@@ -45,7 +45,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/viewholder_order"
+                tools:listitem="@layout/viewholder_ride_point"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"/>
@@ -79,14 +80,42 @@
             android:layout_marginTop="?attr/actionBarSize"
             android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/start_ride_button"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="15dp"
-            android:text="@string/start_ride"/>
+            android:layout_gravity="bottom"
+            android:layout_margin="5dp">
+
+            <Button
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_close"
+                app:layout_constraintStart_toStartOf="parent"
+                style="?attr/materialButtonOutlinedStyle"
+                android:textColor="@color/colorAccent"
+                app:strokeColor="@color/colorAccent" />
+
+            <Button
+                android:id="@+id/action_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start_ride"
+                app:layout_constraintStart_toEndOf="@id/close_button"
+                app:layout_constraintEnd_toStartOf="@id/live_button"/>
+
+            <Button
+                android:id="@+id/live_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_live"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="?attr/materialButtonOutlinedStyle"
+                android:textColor="@color/colorAccent"
+                app:strokeColor="@color/colorAccent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

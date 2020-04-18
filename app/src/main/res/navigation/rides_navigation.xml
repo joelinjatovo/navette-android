@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/ride_point_fragment"
-        android:name="com.navetteclub.ui.driver.RidePointFragment"
+        android:name="com.navetteclub.ui.driver.RidePointsFragment"
         android:label="@string/title_ride"
         tools:layout="@layout/fragment_ride_point" >
         <action

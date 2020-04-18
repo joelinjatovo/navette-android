@@ -52,7 +52,7 @@ public class RidesFragment extends Fragment {
     private SearchView searchView;;
 
     private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
-        ridesViewModel.setRideWithDatas(item);
+        ridesViewModel.setRideLiveData(item);
         if(authViewModel.getUser()!=null && item!=null && item.getRide()!=null){
             RidesFragmentDirections.ActionRidesFragmentToRidePointFragment action = RidesFragmentDirections
                     .actionRidesFragmentToRidePointFragment(
