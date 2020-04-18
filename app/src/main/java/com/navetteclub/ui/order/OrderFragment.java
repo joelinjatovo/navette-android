@@ -96,9 +96,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private OrderViewModel orderViewModel;
 
-    private GoogleViewModel googleViewModel1;
-
-    private GoogleViewModel googleViewModel2;
+    private GoogleViewModel googleViewModel;
 
     private Polyline lineGo;
 
@@ -193,8 +191,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private void setupGoogleViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        googleViewModel1 = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
-        googleViewModel1.getDirectionResult().observe(getViewLifecycleOwner(),
+        googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
+
+        /* Course d'aller */
+        googleViewModel.getDirection1Result().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -220,7 +220,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
-        googleViewModel1.getErrorResult().observe(getViewLifecycleOwner(),
+        googleViewModel.getError1Result().observe(getViewLifecycleOwner(),
                 error -> {
                     if(error==null){
                         return;
@@ -229,8 +229,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     showDirectionError(error);
                 });
 
-        googleViewModel2 = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
-        googleViewModel2.getDirectionResult().observe(getViewLifecycleOwner(),
+        /* Course de retours */
+        googleViewModel.getDirection2Result().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -268,13 +268,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getBackLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setBack(value));
         orderViewModel.getItem1PointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
-                    Log.d(TAG+"Point", "Changement du Point1");
                     Point origin = orderViewModel.getOriginPoint();
                     Point destination = orderViewModel.getDestinationPoint();
-                    Log.d(TAG+"Point", "Changement du Point1 [origin] " + origin);
-                    Log.d(TAG+"Point", "Changement du Point1 [destination] " + destination);
                     if(origin!=null && destination!=null){
-                        loadDirection(googleViewModel1, origin.toLatLng(), destination.toLatLng());
+                        loadDirection(googleViewModel, origin.toLatLng(), destination.toLatLng(), true);
                     }
                     if(point!=null){
                         item1Marker = drawItemMarker(item1Marker, point);
@@ -282,35 +279,27 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         orderViewModel.getClubPointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
-                    Log.d(TAG+"Point", "Changement du point de club");
+                    expandOrderDetails();
                     Point origin = orderViewModel.getOriginPoint();
                     Point destination = orderViewModel.getDestinationPoint();
                     Point back = orderViewModel.getBackPoint();
-                    Log.d(TAG+"Point", "Changement du point de club [origin]" + origin);
-                    Log.d(TAG+"Point", "Changement du point de club [destination]" + destination);
-                    Log.d(TAG+"Point", "Changement du point de club [back]" + back);
                     if(origin!=null && destination!=null){
-                        loadDirection(googleViewModel1, origin.toLatLng(), destination.toLatLng());
+                        loadDirection(googleViewModel, origin.toLatLng(), destination.toLatLng(), true);
                     }
                     if(back!=null && destination!=null){
-                        loadDirection(googleViewModel2, destination.toLatLng(), back.toLatLng());
+                        loadDirection(googleViewModel, destination.toLatLng(), back.toLatLng(), false);
                     }
                     Club club = orderViewModel.getClub();
-                    Log.d(TAG, "getClubPointLiveData.club" + club);
-                    Log.d(TAG, "getClubPointLiveData.point" + point);
                     if(point!=null && club!=null){
                         drawClubMarker(point, club);
                     }
                 });
         orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
-                    Log.d(TAG+"Point", "Changement du Point2");
                     Point destination = orderViewModel.getDestinationPoint();
                     Point back = orderViewModel.getBackPoint();
-                    Log.d(TAG+"Point", "Changement du Point2 [destination] " + destination);
-                    Log.d(TAG+"Point", "Changement du Point2 [back] " + back);
                     if(back!=null && destination!=null){
-                        loadDirection(googleViewModel2, destination.toLatLng(), back.toLatLng());
+                        loadDirection(googleViewModel, destination.toLatLng(), back.toLatLng(), false);
                     }
                     if(point!=null){
                         item2Marker = drawItemMarker(item2Marker, point);
@@ -318,16 +307,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
                 item -> {
-                    Log.d(TAG+"Item", "Changement du Item1 " + item);
                     if(item!=null){
-                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        expandOrderDetails();
                         mBinding.bottomSheets.setDelay(item.getDelay());
                         mBinding.bottomSheets.setDistance(item.getDistance());
                         String direction = item.getDirection();
-                        Log.d(TAG+"Direction", "direction == " + direction);
                         if(direction!=null && mMap!=null) {
                             List<LatLng> points = Utils.decodePoly(direction);
-                            Log.d(TAG+"Direction", "decodePoly == " + points);
                             //Remove previous line from map
                             if (lineGo != null) lineGo.remove();
                             lineGo = mMap.addPolyline(new PolylineOptions()
@@ -342,11 +328,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
                 item -> {
-                    Log.d(TAG+"Item", "Changement du Item2 " + item);
                     if(item!=null){
                         // @TODO
                         String direction = item.getDirection();
-                        Log.d(TAG+"Direction", "getItem2LiveData " + direction);
                         if(direction!=null && mMap!=null) {
                             List<LatLng> points = Utils.decodePoly(direction);
                             //Remove previous line from map
@@ -362,7 +346,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
                 club -> {
-                    Log.d(TAG+"Item", "Changement du club");
                     if(club!=null){
                         mBinding.bottomSheets.setIsLoadingCar(true);
                         mBinding.bottomSheets.setShowErrorLoaderCar(false);
@@ -406,7 +389,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             if(data!=null){
                                 Order order = data.getOrder();
                                 if(order!=null) {
-                                    //orderViewModel.setOrderLiveData(order);
                                     mBinding.setAmount(order.getAmountStr());
                                 }
                             }
@@ -463,13 +445,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         cartRetrofitRequest = orderViewModel.getCart();
     }
 
-    private void loadDirection(GoogleViewModel googleViewModel, LatLng origin, LatLng destination) {
+    private void loadDirection(GoogleViewModel googleViewModel, LatLng origin, LatLng destination, boolean isMain) {
         if( (origin == null) || (destination == null)){
             return;
         }
         mBinding.setIsLoading(true);
         mBinding.setShowErrorLoader(false);
-        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination);
+        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, null, isMain);
     }
 
     private Marker drawItemMarker(Marker marker, Point point) {
@@ -600,13 +582,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
-    /*
     private void expandOrderDetails() {
-        if(sheetBehavior != null && mOrigin != null && mDestination != null){
+        Club club = orderViewModel.getClub();
+        Item item1 = orderViewModel.getItem1();
+        if(sheetBehavior != null && club != null && item1 != null){
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
-     */
 
     private void getDeviceLocation(SearchType searchType) {
         try {

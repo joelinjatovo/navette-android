@@ -120,7 +120,7 @@ public class StepsFragment extends BottomSheetDialogFragment implements OnClickI
         googleViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(GoogleViewModel.class);
 
-        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+        googleViewModel.getDirection1Result().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -140,7 +140,7 @@ public class StepsFragment extends BottomSheetDialogFragment implements OnClickI
                     }
                 });
 
-        googleViewModel.getErrorResult().observe(getViewLifecycleOwner(),
+        googleViewModel.getError1Result().observe(getViewLifecycleOwner(),
                 error -> {
                     if(error==null){
                         return;
@@ -191,7 +191,7 @@ public class StepsFragment extends BottomSheetDialogFragment implements OnClickI
     private void loadDirection() {
         LatLng origin = new LatLng(-18.9175793, 47.5422862);
         LatLng destination = new LatLng(-18.9127615, 47.5344172);
-        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination);
+        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, null, true);
     }
 
     @Override

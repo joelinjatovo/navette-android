@@ -23,40 +23,73 @@ public class GoogleViewModel extends ViewModel {
 
     private static final String TAG = GoogleViewModel.class.getSimpleName();
 
-    private MutableLiveData<String> errorResult;
+    private MutableLiveData<String> error1Result;
+    private MutableLiveData<String> error2Result;
 
-    private MutableLiveData<Response<GoogleDirectionResponse>> directionResult;
+    private MutableLiveData<Response<GoogleDirectionResponse>> direction1Result;
+    private MutableLiveData<Response<GoogleDirectionResponse>> direction2Result;
 
     public GoogleViewModel() {
-        Log.d(TAG, "GoogleViewModel CONSTRUCTOR");
-        directionResult = new MutableLiveData<>();
-        errorResult = new MutableLiveData<>();
+        direction1Result = new MutableLiveData<>();
+        direction2Result = new MutableLiveData<>();
+        error1Result = new MutableLiveData<>();
+        error2Result = new MutableLiveData<>();
     }
 
-    public void loadDirection(String apiKey, LatLng origin, LatLng destination) {
+    public void loadDirection1(String apiKey, LatLng origin, LatLng destination, String waypoints) {
+        loadDirection(apiKey, origin, destination, waypoints, true);
+    }
+
+    public void loadDirection2(String apiKey, LatLng origin, LatLng destination, String waypoints) {
+        loadDirection(apiKey, origin, destination, waypoints, false);
+    }
+
+
+    public void loadDirection(String apiKey, LatLng origin, LatLng destination, String waypoints, boolean isMain) {
         String url = "https://maps.googleapis.com/maps/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<GoogleDirectionResponse> call = service.getDirection(
-                apiKey,
-                "metric",
-                origin.latitude + "," + origin.longitude,
-                destination.latitude + "," + destination.longitude,
-                "driving"
-        );
+        Call<GoogleDirectionResponse> call;
+        if(waypoints==null){
+
+            call = service.getDirection(
+                    apiKey,
+                    "metric",
+                    origin.latitude + "," + origin.longitude,
+                    destination.latitude + "," + destination.longitude,
+                    "driving"
+            );
+        }else{
+            call = service.getDirection(
+                    apiKey,
+                    "metric",
+                    origin.latitude + "," + origin.longitude,
+                    destination.latitude + "," + destination.longitude,
+                    "driving",
+                    waypoints
+            );
+        }
 
         call.enqueue(new Callback<GoogleDirectionResponse>() {
             @Override
             public void onResponse(@NonNull Call<GoogleDirectionResponse> call,
                                    @NonNull Response<GoogleDirectionResponse> response) {
                 if(response.isSuccessful()){
-                    directionResult.setValue(response);
+                    if(isMain)
+                        direction1Result.setValue(response);
+                    else
+                        direction2Result.setValue(response);
                 }else{
-                    directionResult.setValue(null);
-                    errorResult.setValue(response.message());
+                    if(isMain) {
+                        direction1Result.setValue(null);
+                        error1Result.setValue(response.message());
+                    }else{
+                        direction2Result.setValue(null);
+                        error2Result.setValue(response.message());
+                    }
                 }
             }
 
@@ -64,63 +97,46 @@ public class GoogleViewModel extends ViewModel {
             public void onFailure(@NonNull Call<GoogleDirectionResponse> call,
                                   @NonNull Throwable t) {
                 Log.e(TAG, t.toString(), t);
-                directionResult.setValue(null);
-                errorResult.setValue(t.getMessage());
-            }
-        });
-    }
-
-    public void loadDirection(String apiKey, LatLng origin, LatLng destination, String waypoints) {
-        String url = "https://maps.googleapis.com/maps/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        GoogleApiService service = retrofit.create(GoogleApiService.class);
-        Call<GoogleDirectionResponse> call = service.getDirection(
-                apiKey,
-                "metric",
-                origin.latitude + "," + origin.longitude,
-                destination.latitude + "," + destination.longitude,
-                "driving",
-                waypoints
-        );
-
-        call.enqueue(new Callback<GoogleDirectionResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<GoogleDirectionResponse> call,
-                                   @NonNull Response<GoogleDirectionResponse> response) {
-                if(response.isSuccessful()){
-                    directionResult.setValue(response);
+                if(isMain) {
+                    direction1Result.setValue(null);
+                    error1Result.setValue(t.getMessage());
                 }else{
-                    directionResult.setValue(null);
-                    errorResult.setValue(response.message());
+                    direction2Result.setValue(null);
+                    error2Result.setValue(t.getMessage());
                 }
             }
-
-            @Override
-            public void onFailure(@NonNull Call<GoogleDirectionResponse> call,
-                                  @NonNull Throwable t) {
-                Log.e(TAG, t.toString(), t);
-                directionResult.setValue(null);
-                errorResult.setValue(t.getMessage());
-            }
         });
     }
 
-    public MutableLiveData<Response<GoogleDirectionResponse>> getDirectionResult() {
-        return directionResult;
+    public MutableLiveData<Response<GoogleDirectionResponse>> getDirection1Result() {
+        return direction1Result;
     }
 
-    public void setDirectionResult(MutableLiveData<Response<GoogleDirectionResponse>> directionResult) {
-        this.directionResult = directionResult;
+    public MutableLiveData<Response<GoogleDirectionResponse>> getDirection2Result() {
+        return direction2Result;
     }
 
-    public MutableLiveData<String> getErrorResult() {
-        return errorResult;
+    public void setDirection1Result(Response<GoogleDirectionResponse> directionResult) {
+        this.direction1Result.setValue(directionResult);
     }
 
-    public void setErrorResult(String error) {
-        this.errorResult.setValue(error);
+    public void setDirection2Result(Response<GoogleDirectionResponse> directionResult) {
+        this.direction2Result.setValue(directionResult);
+    }
+
+    public MutableLiveData<String> getError1Result() {
+        return error1Result;
+    }
+
+    public void setError1Result(String error) {
+        this.error1Result.setValue(error);
+    }
+
+    public MutableLiveData<String> getError2Result() {
+        return error2Result;
+    }
+
+    public void setError2Result(String error) {
+        this.error2Result.setValue(error);
     }
 }

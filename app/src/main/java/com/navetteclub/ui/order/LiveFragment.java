@@ -299,7 +299,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         googleViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(GoogleViewModel.class);
 
-        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+        googleViewModel.getDirection1Result().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -320,7 +320,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                     }
                 });
 
-        googleViewModel.getErrorResult().observe(getViewLifecycleOwner(),
+        googleViewModel.getError1Result().observe(getViewLifecycleOwner(),
                 error -> {
                     if(error==null){
                         return;
@@ -348,7 +348,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
             mBinding.setIsLoading(true);
             mBinding.setShowErrorLoader(false);
             expandOrderDetails();
-            googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination);
+            googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination, null, true);
         }
     }
 

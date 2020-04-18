@@ -308,7 +308,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         googleViewModel = new ViewModelProvider(requireActivity(),
                 factory).get(GoogleViewModel.class);
-        googleViewModel.getDirectionResult().observe(getViewLifecycleOwner(),
+        googleViewModel.getDirection1Result().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result == null) {
                         return;
@@ -387,7 +387,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         for(Point userPoint: points){
             waypoints += "|" + userPoint.getLat() + "," + userPoint.getLng();
         }
-        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, waypoints);
+        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, waypoints, true);
 
         if(mMap!=null) {
             LatLng latLng = new LatLng(clubPoint.getLat(), clubPoint.getLng());

@@ -63,7 +63,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchFragment extends Fragment implements OnMapReadyCallback {
+public class SearchFragment extends BottomSheetDialogFragment implements OnMapReadyCallback {
     private static final String TAG = SearchFragment.class.getSimpleName();;
 
     // Used in checking for runtime permissions.

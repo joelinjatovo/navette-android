@@ -263,7 +263,7 @@ public class DetailFragment extends BottomSheetDialogFragment {
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
                     User user = authViewModel.getUser();
-                    NavController navController = Navigation.findNavController(v);
+                    NavController navController = NavHostFragment.findNavController(this);
                     if(user==null){
                         navController.navigate(R.id.navigation_auth);
                     }else{
