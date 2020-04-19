@@ -160,7 +160,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private RideWithDatas rideWithDatas;
 
-    private RidePointRecyclerViewAdapter mAdapter;
+    private RidePointMapRecyclerViewAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,7 +179,8 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         Log.d(TAG + "Cycle", "onCreateView");
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_map, container, false);
 
-        mAdapter = new RidePointRecyclerViewAdapter(mListener, mCallListener);
+        mAdapter = new RidePointMapRecyclerViewAdapter();
+        mAdapter.setOnClickListener(mListener);
         RecyclerView recyclerView = mBinding.bottomSheets.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(mAdapter);
@@ -410,7 +411,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                             Log.d(TAG, "drawClubMarker.onBitmapLoaded ");
                             if(mClubMarker!=null){
-                                mClubMarker.remove();
+                                //mClubMarker.remove();
                             }
                             mClubMarker = MapUiUtils.drawClubMarker(requireContext(), mMap, point, club.getName(), bitmap);
                         }
@@ -419,7 +420,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                             Log.e(TAG, "drawClubMarker.onBitmapFailed ", e);
                             if(mClubMarker!=null){
-                                mClubMarker.remove();
+                                //mClubMarker.remove();
                             }
                             LatLng latLng = point.toLatLng();
                             MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
@@ -435,7 +436,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     });
         }else{
             if(mClubMarker!=null){
-                mClubMarker.remove();
+                //mClubMarker.remove();
             }
 
             LatLng latLng = point.toLatLng();
@@ -761,13 +762,20 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
-        //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
-    };
-
-    private OnClickItemListener<RidePointWithDatas> mCallListener = (v, pos, item) -> {
-        if (item.getUser() != null && item.getUser().getPhone() != null) {
-            onCallBtnClick(item.getUser().getPhone());
+        switch (v.getId()){
+            case R.id.callButtom:
+                if (item.getUser() != null && item.getUser().getPhone() != null) {
+                    onCallBtnClick(item.getUser().getPhone());
+                }
+            break;
+            case R.id.cancelButton:
+                // @TODO Cancel order item
+            break;
+            case R.id.actionButton:
+                // @TODO Action for order item
+            break;
         }
+        //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
     };
 
 }

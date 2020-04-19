@@ -244,5 +244,8 @@
     <string name="refresh">Actualiser</string>
     <string name="button_start_ride">Commencer</string>
     <string name="button_cancel_ride">Annuler</string>
+    <string name="button_active">Activer</string>
+    <string name="button_go">Go</string>
+    <string name="button_next">Next</string>
 
 </resources>

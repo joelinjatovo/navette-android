@@ -12,124 +12,117 @@
         <variable name="rideStatus" type="String" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="1dp"
-        app:cardElevation="10dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@drawable/bg_rounded_top"
             android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp">
+            android:layout_marginEnd="5dp"
+            android:paddingTop="50dp"
+            android:layout_below="@id/topConstraintLayout">
 
-            <RelativeLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{user.name}"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textStyle="bold"
+                android:textColor="@color/colorText"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_text_rounded"
+                android:text="@{rideStatus}"
+                android:textColor="@color/gray"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/typeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{rideType}"
+                android:background="@drawable/bg_text_rounded"
+                android:textColor="@color/gray"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
+                android:layout_margin="10dp">
 
-                <com.navetteclub.views.CircleImageView
-                    android:id="@+id/avatarImageView"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_margin="5dp"
-                    android:layout_alignParentStart="true"
-                    android:contentDescription="@string/image"
-                    android:src="@drawable/user_placeholder" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/cancelButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_toEndOf="@id/avatarImageView">
+                    android:layout_margin="5dp"
+                    android:text="@string/button_cancel"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/actionButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:textColor="@color/colorAccent"
+                    app:strokeColor="@color/colorAccent"  />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/actionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/button_active"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/cancelButton"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-                        <TextView
-                            android:id="@+id/nameTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{user.name}"
-                            android:textAppearance="?attr/textAppearanceBody1"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorText"
-                            android:layout_alignParentStart="true"
-                            android:layout_toStartOf="@id/roleTextView"/>
-
-                        <TextView
-                            android:id="@+id/roleTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:background="@drawable/bg_text_rounded"
-                            android:layout_alignParentEnd="true"
-                            android:text="@{rideStatus}"
-                            android:textColor="@color/gray"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_toStartOf="@id/call_buttom"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/delayDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceBody2"
-                                android:text="20 mins" />
-
-                            <TextView
-                                android:id="@+id/typeLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@{rideType}"
-                                android:background="@drawable/bg_text_rounded"
-                                android:textColor="@color/gray"/>
-
-
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/call_buttom"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="0dp"
-                            android:layout_margin="0dp"
-                            android:layout_alignParentEnd="true"
-                            android:text="@string/button_call"
-                            android:layout_centerVertical="true"
-                            style="?attr/materialButtonOutlinedStyle"
-                            android:textColor="@color/colorAccent"
-                            app:strokeColor="@color/colorAccent"/>
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-            </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="-40dp">
+
+            <com.navetteclub.views.CircleImageView
+                android:id="@+id/avatarImageView"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:contentDescription="@string/image"
+                android:src="@drawable/user_placeholder"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/callButtom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/outline_call_black_24"
+                android:tint="@color/colorAccent"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
 </layout>

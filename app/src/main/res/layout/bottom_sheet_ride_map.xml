@@ -13,40 +13,16 @@
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        app:behavior_peekHeight="40dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        app:behavior_peekHeight="90dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
-
-        <RelativeLayout
-            android:id="@+id/bsHeaderLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
-
-            <View
-                android:layout_width="64dp"
-                android:layout_height="5dp"
-                android:background="@color/colorIcon"
-                android:layout_centerHorizontal="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:text="@string/booking"
-                android:layout_centerHorizontal="true" />
-
-        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/bsHeaderLayout"/>
+            android:layout_alignParentTop="true"/>
 
         <com.shuhart.stepview.StepView
             android:id="@+id/stepView"

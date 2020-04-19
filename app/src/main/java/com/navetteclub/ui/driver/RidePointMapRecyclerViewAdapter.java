@@ -1,6 +1,7 @@
 package com.navetteclub.ui.driver;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
+import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.databinding.ViewholderRidePointBinding;
 import com.navetteclub.databinding.ViewpagerRidePointBinding;
@@ -18,23 +20,21 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class RidePointViewPager2Adapter extends RecyclerView.Adapter<RidePointViewPager2Adapter.ViewHolder>{
+public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePointMapRecyclerViewAdapter.ViewHolder>{
 
     private List<RidePointWithDatas> mItems;
 
-    private final OnClickItemListener<RidePointWithDatas> mListener;
-    private final OnClickItemListener<RidePointWithDatas> mCallListener;
+    private OnClickItemListener<RidePointWithDatas> mListener;
 
-    public RidePointViewPager2Adapter(OnClickItemListener<RidePointWithDatas> listener, OnClickItemListener<RidePointWithDatas> callListener) {
+    public RidePointMapRecyclerViewAdapter setOnClickListener(OnClickItemListener<RidePointWithDatas> listener){
         mListener = listener;
-        mCallListener = callListener;
+        return this;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ViewpagerRidePointBinding itemBinding = ViewpagerRidePointBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-
         return new ViewHolder(itemBinding);
     }
 
@@ -48,9 +48,19 @@ public class RidePointViewPager2Adapter extends RecyclerView.Adapter<RidePointVi
                 mListener.onClick(v, position, holder.mItem);
             }
         });
+        holder.mBinding.cancelButton.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onClick(v, position, holder.mItem);
+            }
+        });
         holder.mBinding.callButtom.setOnClickListener(v -> {
-            if (null != mCallListener) {
-                mCallListener.onClick(v, position, holder.mItem);
+            if (null != mListener) {
+                mListener.onClick(v, position, holder.mItem);
+            }
+        });
+        holder.mBinding.actionButton.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }
@@ -109,9 +119,25 @@ public class RidePointViewPager2Adapter extends RecyclerView.Adapter<RidePointVi
         void setItem(RidePointWithDatas item){
             mItem = item;
             if(mItem!=null){
-                if(mItem.getRidePoint()!=null){
-                    mBinding.setRideType(mItem.getRidePoint().getType());
-                    mBinding.setRideStatus(mItem.getRidePoint().getStatus());
+                RidePoint ridePoint = mItem.getRidePoint();
+                if(ridePoint!=null){
+                    mBinding.setRideType(ridePoint.getType());
+                    mBinding.setRideStatus(ridePoint.getStatus());
+                    if(RidePoint.STATUS_PING.equals(ridePoint.getStatus())){
+                        mBinding.actionButton.setText(R.string.button_next);
+                        mBinding.actionButton.setVisibility(View.GONE);
+                    }
+                    if(RidePoint.STATUS_ACTIVE.equals(ridePoint.getStatus())){
+                        mBinding.actionButton.setText(R.string.button_go);
+                        mBinding.actionButton.setVisibility(View.GONE);
+                    }
+                    if(RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
+                        mBinding.actionButton.setText(R.string.button_active);
+                        mBinding.actionButton.setVisibility(View.VISIBLE);
+                    }
+                    if(RidePoint.STATUS_ONLINE.equals(ridePoint.getStatus())){
+                        mBinding.actionButton.setVisibility(View.GONE);
+                    }
                 }
                 if(mItem.getUser()!=null){
                     mBinding.setUser(mItem.getUser());
@@ -130,7 +156,7 @@ public class RidePointViewPager2Adapter extends RecyclerView.Adapter<RidePointVi
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mBinding.nameTextView.getText() + "'";
+            return super.toString();
         }
     }
 }
