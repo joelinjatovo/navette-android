@@ -37,6 +37,10 @@ public interface RideApiService {
     Call<RetrofitResponse<RideWithDatas>> getRide(@Header("Authorization") String token, @Path("ride") Long rideId);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/ride/direction")
+    Call<RetrofitResponse<RideWithDatas>> direction(@Header("Authorization") String token, @Body RideParam rideParam);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/ride/start")
     Call<RetrofitResponse<RideWithDatas>> start(@Header("Authorization") String token, @Body RideParam rideParam);
 

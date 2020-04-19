@@ -142,6 +142,28 @@ public class RidePointsFragment extends Fragment {
                     }
                 });
 
+        ridesViewModel.getRideDirectionResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+
+                    if(result.getError()!=null){
+                        showSweetError(getString(result.getError()));
+                    }
+
+                    if(result.getSuccess()!=null){
+                        this.setRide(result.getSuccess());
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Success")
+                                .setContentText("Votre course est actualisé!")
+                                .show();
+                    }
+
+                    ridesViewModel.setRideDirectionResult(null);
+                });
+
         ridesViewModel.getRideStartResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
@@ -158,10 +180,6 @@ public class RidePointsFragment extends Fragment {
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success")
                                 .setContentText("Votre course a bien commencé!")
-                                .setConfirmText("OK")
-                                .setConfirmClickListener(sDialog -> {
-                                    sDialog.dismissWithAnimation();
-                                })
                                 .show();
                     }
 
@@ -184,7 +202,6 @@ public class RidePointsFragment extends Fragment {
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success")
                                 .setContentText("Votre course a bien annulé!")
-                                .setCancelButton("Ok", SweetAlertDialog::dismissWithAnimation)
                                 .show();
                     }
 
@@ -215,13 +232,16 @@ public class RidePointsFragment extends Fragment {
                 mBinding.actionButton.setText(R.string.button_start_ride);
                 mBinding.actionButton.setVisibility(View.VISIBLE);
                 mBinding.liveButton.setVisibility(View.GONE);
+                mBinding.actualizeButton.setVisibility(View.GONE);
             }else if(Ride.STATUS_ACTIVE.equals(ride.getStatus())){
                 mBinding.actionButton.setText(R.string.button_cancel_ride);
                 mBinding.actionButton.setVisibility(View.VISIBLE);
                 mBinding.liveButton.setVisibility(View.VISIBLE);
+                mBinding.actualizeButton.setVisibility(View.VISIBLE);
             }else{
                 mBinding.actionButton.setVisibility(View.GONE);
                 mBinding.liveButton.setVisibility(View.GONE);
+                mBinding.actualizeButton.setVisibility(View.GONE);
             }
         }
 
@@ -240,9 +260,12 @@ public class RidePointsFragment extends Fragment {
                 v -> {
                     navController.popBackStack();
                 });
-        mBinding.closeButton.setOnClickListener(
+        mBinding.actualizeButton.setOnClickListener(
                 v -> {
-                    navController.popBackStack();
+                    if(token!=null && rideId!=null) {
+                        progressDialog.show();
+                        ridesViewModel.direction(token, rideId);
+                    }
                 });
         mBinding.liveButton.setOnClickListener(
                 v -> {

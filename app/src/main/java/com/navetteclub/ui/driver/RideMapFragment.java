@@ -775,7 +775,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 // @TODO Action for order item
             break;
         }
-        //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
     };
 
 }
