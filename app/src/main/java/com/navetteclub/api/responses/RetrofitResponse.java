@@ -113,4 +113,12 @@ public class RetrofitResponse<T> {
             default: return R.string.error_unkown;
         }
     }
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
+    }
 }
