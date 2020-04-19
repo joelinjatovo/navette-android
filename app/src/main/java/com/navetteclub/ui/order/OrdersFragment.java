@@ -33,6 +33,7 @@ import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.ui.OnClickItemListener;
+import com.navetteclub.ui.PaginationListener;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
@@ -66,6 +67,7 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
         mAdapter = new OrderRecyclerViewAdapter(this);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        //recyclerView.addOnScrollListener(mScrollListener);
         recyclerView.setAdapter(mAdapter);
 
         return mBinding.getRoot();
@@ -194,5 +196,36 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
         orderViewModel.attach(item);
         NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
     }
+
+
+    /**
+    private void doApiCall() {
+
+    }
+
+    private int currentPage = 1;
+    private boolean isLastPage = false;
+    private int totalPage = 10;
+    private boolean isLoading = false;
+    int itemCount = 0;
+    private RecyclerView.OnScrollListener mScrollListener = new PaginationListener(layoutManager) {
+        @Override
+        protected void loadMoreItems() {
+            isLoading = true;
+            currentPage++;
+            doApiCall();
+        }
+
+        @Override
+        public boolean isLastPage() {
+            return isLastPage;
+        }
+
+        @Override
+        public boolean isLoading() {
+            return isLoading;
+        }
+    };
+     */
 
 }
