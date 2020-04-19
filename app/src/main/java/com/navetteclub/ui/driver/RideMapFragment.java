@@ -180,8 +180,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_map, container, false);
 
         mAdapter = new RidePointRecyclerViewAdapter(mListener, mCallListener);
-        RecyclerView viewPager2 = mBinding.bottomSheets.viewPager2;
-        viewPager2.setAdapter(mAdapter);
+        RecyclerView recyclerView = mBinding.bottomSheets.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(mAdapter);
 
         return mBinding.getRoot();
     }
@@ -352,6 +353,8 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
         if(rideWithDatas.getPoints()!=null) {
             mAdapter.setItems(rideWithDatas1.getPoints());
+            updateStepView(rideWithDatas1.getPoints());
+            scrollRecylerView(rideWithDatas1.getPoints());
             drawPoints(rideWithDatas1.getPoints());
         }
 
@@ -361,6 +364,35 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             if(direction!=null){
                 drawLine(direction);
             }
+        }
+    }
+
+    private void updateStepView(List<RidePointWithDatas> ridePointWithDatas) {
+        if(ridePointWithDatas==null) return;
+        mBinding.bottomSheets.stepView.setStepsNumber(ridePointWithDatas.size());
+        int i = 0;
+        for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
+            RidePoint ridePoint = ridePointWithData.getRidePoint();
+            if(ridePoint!=null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
+                mBinding.bottomSheets.stepView.go(ridePoint.getOrder(), true);
+                break;
+            }
+            i++;
+        }
+    }
+
+    private void scrollRecylerView(List<RidePointWithDatas> ridePointWithDatas) {
+        if(ridePointWithDatas==null) return;
+        int i = 0;
+        for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
+            RidePoint ridePoint = ridePointWithData.getRidePoint();
+            if(ridePoint!=null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
+                if(mBinding.bottomSheets.recyclerView.getLayoutManager()!=null) {
+                    mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(i);
+                }
+                break;
+            }
+            i++;
         }
     }
 

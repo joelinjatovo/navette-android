@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
 public class RidePointWithDatas {
+
     @SerializedName("ride_point")
     @Embedded
     private RidePoint ridePoint;

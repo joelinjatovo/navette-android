@@ -10,6 +10,19 @@ import com.google.gson.annotations.SerializedName;
     tableName = "ride_point"
 )
 public class RidePoint {
+
+    public static final String STATUS_PING = "ping";
+
+    public static final String STATUS_NEXT = "next";
+
+    public static final String STATUS_ACTIVE = "active";
+
+    public static final String STATUS_ONLINE = "online";
+
+    public static final String STATUS_CANCELED = "canceled";
+
+    public static final String STATUS_COMPLETED = "completed";
+
     @PrimaryKey
     private Long id;
 
