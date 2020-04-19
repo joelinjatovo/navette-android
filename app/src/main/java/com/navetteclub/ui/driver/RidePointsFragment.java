@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
+import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
@@ -34,6 +35,8 @@ import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.RidesViewModel;
+
+import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -89,27 +92,54 @@ public class RidePointsFragment extends Fragment {
         setupRidesViewModel();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean permissionGranted = false;
+        switch(requestCode){
+            case 9:
+                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if(!permissionGranted){
+            Toast.makeText(requireActivity(), "You don't assign permission.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setupAuthViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        loadRide();
+                        mBinding.setIsLoading(true);
+                        mBinding.setShowError(false);
+                        mBinding.setIsUnauthenticated(false);
+                    }else{
+                        mBinding.setIsLoading(false);
+                        mBinding.setShowError(false);
+                        mBinding.setIsUnauthenticated(true);
+                    }
+                });
+    }
+
     private void setupRidesViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
-        ridesViewModel.getRideLiveData().observe(getViewLifecycleOwner(), this::setRide);
-        ridesViewModel.getPointsLiveData().observe(getViewLifecycleOwner(),
-                points -> {
-                    if(points==null){
+        ridesViewModel.getRideResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
                         return;
                     }
                     mBinding.setIsLoading(false);
-                    if(points.getError()!=null){
+                    if(result.getError()!=null){
                         mBinding.setShowError(true);
-                        mBinding.loaderErrorView.getSubtitleView().setText(points.getError());
+                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
                     }
-                    if(points.getSuccess()!=null){
+                    if(result.getSuccess()!=null){
                         mBinding.setShowError(false);
-                        mAdapter.setItems(points.getSuccess());
+                        setRide(result.getSuccess());
                     }
-
-                    //ridesViewModel.setPointsLiveData(null);
-
                 });
 
         ridesViewModel.getRideStartResult().observe(getViewLifecycleOwner(),
@@ -128,12 +158,10 @@ public class RidePointsFragment extends Fragment {
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success")
                                 .setContentText("Votre course a bien commencé!")
-                                .setConfirmText("Yes, go to live")
+                                .setConfirmText("OK")
                                 .setConfirmClickListener(sDialog -> {
                                     sDialog.dismissWithAnimation();
-                                    NavHostFragment.findNavController(RidePointsFragment.this).navigate(R.id.action_ride_point_fragment_to_ride_map_fragment);
                                 })
-                                .setCancelButton("Ok", SweetAlertDialog::dismissWithAnimation)
                                 .show();
                     }
 
@@ -171,10 +199,16 @@ public class RidePointsFragment extends Fragment {
                 .show();
     }
 
+    private void loadRide() {
+        ridesViewModel.loadRide(token, rideId);
+    }
+
     private void setRide(RideWithDatas rideWithDatas) {
         mBinding.liveButton.setVisibility(View.GONE);
         this.rideWithDatas = rideWithDatas;
         if(rideWithDatas==null) return;
+
+        // Ride
         Ride ride = rideWithDatas.getRide();
         if(ride!=null){
             if(Ride.STATUS_PING.equals(ride.getStatus())){
@@ -190,24 +224,10 @@ public class RidePointsFragment extends Fragment {
                 mBinding.liveButton.setVisibility(View.GONE);
             }
         }
-    }
 
-    private void setupAuthViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
-                authenticationState -> {
-                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        ridesViewModel.loadPoints(token, rideId);
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
-                        mBinding.setIsUnauthenticated(false);
-                    }else{
-                        mBinding.setIsLoading(false);
-                        mBinding.setShowError(false);
-                        mBinding.setIsUnauthenticated(true);
-                    }
-                });
+        // Ride points
+        List<RidePointWithDatas> points = rideWithDatas.getPoints();
+        mAdapter.setItems(points);
     }
 
     private void setupUI() {
@@ -226,7 +246,13 @@ public class RidePointsFragment extends Fragment {
                 });
         mBinding.liveButton.setOnClickListener(
                 v -> {
-                    navController.navigate(R.id.action_ride_point_fragment_to_ride_map_fragment);
+                    if(rideWithDatas!=null) {
+                        RidePointsFragmentDirections.ActionRidePointFragmentToRideMapFragment action = RidePointsFragmentDirections
+                                .actionRidePointFragmentToRideMapFragment(
+                                        authViewModel.getUser().getAuthorizationToken(),
+                                        rideWithDatas.getRide().getId());
+                        NavHostFragment.findNavController(RidePointsFragment.this).navigate(action);
+                    }
                 });
         mBinding.actionButton.setOnClickListener(v->{
             if(token!=null && rideId!=null){
@@ -246,14 +272,9 @@ public class RidePointsFragment extends Fragment {
 
         mBinding.loaderErrorView.getButton().setOnClickListener(
                 v -> {
-                    User user = authViewModel.getUser();
-                    if(user!=null){
-                        ridesViewModel.loadPoints(token, rideId);
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
-                    }else{
-                        mBinding.setIsLoading(false);
-                    }
+                    loadRide();
+                    mBinding.setIsLoading(true);
+                    mBinding.setShowError(false);
                 });
 
         mBinding.authErrorView.getButton().setOnClickListener(
@@ -282,19 +303,6 @@ public class RidePointsFragment extends Fragment {
     private void phoneCall(String phone) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
         startActivity(intent);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        boolean permissionGranted = false;
-        switch(requestCode){
-            case 9:
-                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if(!permissionGranted){
-            Toast.makeText(requireActivity(), "You don't assign permission.", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {

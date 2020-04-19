@@ -14,6 +14,10 @@ public class RideWithDatas {
     @Embedded
     private Ride ride;
 
+    @SerializedName("club")
+    @Embedded
+    private ClubAndPoint clubAndPoint;
+
     @SerializedName("driver")
     @Embedded
     private User driver;
@@ -66,5 +70,13 @@ public class RideWithDatas {
 
     public void setItems(List<ItemWithDatas> items) {
         this.items = items;
+    }
+
+    public ClubAndPoint getClubAndPoint() {
+        return clubAndPoint;
+    }
+
+    public void setClubAndPoint(ClubAndPoint clubAndPoint) {
+        this.clubAndPoint = clubAndPoint;
     }
 }

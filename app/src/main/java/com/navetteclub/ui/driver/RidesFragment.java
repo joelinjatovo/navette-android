@@ -52,7 +52,6 @@ public class RidesFragment extends Fragment {
     private SearchView searchView;;
 
     private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
-        ridesViewModel.setRideLiveData(item);
         if(authViewModel.getUser()!=null && item!=null && item.getRide()!=null){
             RidesFragmentDirections.ActionRidesFragmentToRidePointFragment action = RidesFragmentDirections
                     .actionRidesFragmentToRidePointFragment(
@@ -131,7 +130,7 @@ public class RidesFragment extends Fragment {
     private void setupRidesViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
-        ridesViewModel.getRidesLiveData().observe(getViewLifecycleOwner(),
+        ridesViewModel.getRidesResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -164,7 +163,7 @@ public class RidesFragment extends Fragment {
                     }
 
                     // Reset remote result
-                    ridesViewModel.setRidesLiveData(null);
+                    ridesViewModel.setRidesResult(null);
                 });
     }
 
@@ -201,5 +200,4 @@ public class RidesFragment extends Fragment {
 
         mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
-
 }

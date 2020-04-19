@@ -3,6 +3,7 @@ package com.navetteclub.api.services;
 import com.navetteclub.api.models.OrderRequest;
 import com.navetteclub.api.models.RideParam;
 import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
@@ -24,12 +25,16 @@ public interface RideApiService {
     Call<RetrofitResponse<List<RideWithDatas>>> getAll(@Header("Authorization") String token);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @GET("api/v1/ride/{ride}/orders")
-    Call<RetrofitResponse<List<OrderWithDatas>>> getOrders(@Header("Authorization") String token, @Path("ride") Long rideId);
+    @GET("api/v1/ride/{ride}/items")
+    Call<RetrofitResponse<List<ItemWithDatas>>> getItems(@Header("Authorization") String token, @Path("ride") Long rideId);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/ride/{ride}/points")
     Call<RetrofitResponse<List<RidePointWithDatas>>> getPoints(@Header("Authorization") String token, @Path("ride") Long rideId);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @GET("api/v1/ride/{ride}")
+    Call<RetrofitResponse<RideWithDatas>> getRide(@Header("Authorization") String token, @Path("ride") Long rideId);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/ride/start")

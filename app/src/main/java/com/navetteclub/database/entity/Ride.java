@@ -25,6 +25,18 @@ public class Ride {
     @ColumnInfo(name = "status")
     private String status;
 
+    @SerializedName("distance")
+    @ColumnInfo(name = "distance")
+    private Long distance;
+
+    @SerializedName("delay")
+    @ColumnInfo(name = "delay")
+    private Long delay;
+
+    @SerializedName("direction")
+    @ColumnInfo(name = "direction")
+    private String direction;
+
     @ColumnInfo(name = "driver_id")
     private Long driverId;
 
@@ -109,5 +121,29 @@ public class Ride {
 
     public void setCanceledAt(Date canceledAt) {
         this.canceledAt = canceledAt;
+    }
+
+    public Long getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Long distance) {
+        this.distance = distance;
+    }
+
+    public Long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(Long delay) {
+        this.delay = delay;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 }

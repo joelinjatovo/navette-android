@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -27,6 +30,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -34,6 +40,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -54,18 +61,27 @@ import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.Ride;
+import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.RidePointWithDatas;
+import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.databinding.FragmentRideMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
+import com.navetteclub.ui.OnClickItemListener;
+import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.MapUiUtils;
+import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.RidesViewModel;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,9 +97,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
-    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
-
 
     // The BroadcastReceiver used to listen from broadcasts from the service.
     private MyReceiver myReceiver;
@@ -135,7 +148,28 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     Polyline line2;
 
+    private Marker mClubMarker;
+
+    private ArrayList<Marker> mMarkers;
+
     private ArrayList<Point> mPoints;
+
+    private String token;
+
+    private Long rideId;
+
+    private RideWithDatas rideWithDatas;
+
+    private RidePointRecyclerViewAdapter mAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            token = RideMapFragmentArgs.fromBundle(getArguments()).getToken();
+            rideId = RideMapFragmentArgs.fromBundle(getArguments()).getRideId();
+        }
+    }
 
     @Nullable
     @Override
@@ -144,6 +178,10 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable Bundle savedInstanceState) {
         Log.d(TAG + "Cycle", "onCreateView");
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_map, container, false);
+
+        mAdapter = new RidePointRecyclerViewAdapter(mListener, mCallListener);
+        RecyclerView viewPager2 = mBinding.bottomSheets.viewPager2;
+        viewPager2.setAdapter(mAdapter);
 
         return mBinding.getRoot();
     }
@@ -169,58 +207,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG + "Cycle", "onViewCreated");
         setupUi();
-    }
-
-    private void setupRidesViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
-        ridesViewModel.getPointsLiveData().observe(getViewLifecycleOwner(),
-                points -> {
-                    if(points==null){
-                        return;
-                    }
-                    if(points.getError()!=null){
-                        if(points.getError() == R.string.error_401) { // Error 401: Unauthorized
-                            authViewModel.logout(requireContext());
-                        }else{
-                            // Error loading
-                            mBinding.setIsLoading(false);
-                        }
-                    }
-                    if(points.getSuccess()!=null){
-                        mBinding.setIsLoading(false);
-                        ArrayList<RidePointWithDatas> items = (ArrayList<RidePointWithDatas>) points.getSuccess();
-                        if(!items.isEmpty()){
-                            mPoints = new ArrayList<>();
-                            Point point = null;
-                            for(RidePointWithDatas item: items){
-                                if(item.getPoint()!=null) {
-                                    mPoints.add(item.getPoint());
-                                }
-                            }
-
-                            if(mPoints.size()>0){
-                                loadDirection(mPoints.get(0), mPoints);
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void setupAuthViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // Bind to the service. If the service is in foreground mode, this signals to the service
-        // that since this activity is in the foreground, the service can exit foreground mode.
         requireActivity().bindService(new Intent(requireContext(), LocationUpdatesService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -241,9 +233,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStop() {
         if (mBound) {
-            // Unbind from the service. This signals to the service that this activity is no longer
-            // in the foreground, and the service can respond by promoting itself to a foreground
-            // service.
             requireActivity().unbindService(mServiceConnection);
             mBound = false;
         }
@@ -251,18 +240,11 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        Log.d(TAG + "Cycle", "onDestroyView");
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        setupAuthViewModel();
         setupGoogleViewModel();
         setupRidesViewModel();
+        setupAuthViewModel();
         getDeviceLocation();
     }
 
@@ -301,6 +283,177 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                         .show();
             }
         }
+        if(requestCode == 9){
+            boolean permissionGranted = false;
+            permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+            if(!permissionGranted){
+                Toast.makeText(requireActivity(), "You don't assign permission.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void setupRidesViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
+        ridesViewModel.getRideResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    mBinding.setIsLoading(false);
+                    if(result.getError()!=null){
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }
+                    }
+                    if(result.getSuccess()!=null){
+                        setRide(result.getSuccess());
+                    }
+                });
+    }
+
+    private void setupAuthViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        loadRide();
+                    }else{
+                        mBinding.setIsLoading(false);
+                    }
+                });
+    }
+
+    private void loadRide() {
+        ridesViewModel.loadRide(token, rideId);
+        mBinding.setIsLoading(true);
+    }
+
+    private void setRide(RideWithDatas rideWithDatas1) {
+        this.rideWithDatas = rideWithDatas1;
+        if(rideWithDatas==null){
+            return;
+        }
+
+        ClubAndPoint clubAndPoint = rideWithDatas.getClubAndPoint();
+        if(clubAndPoint!=null){
+            Point point = clubAndPoint.getPoint();
+            Club club = clubAndPoint.getClub();
+            if(club!=null && point!=null){
+                drawClubMarker(point, club);
+
+                if(mMap!=null){
+                    LatLng latLng = point.toLatLng();
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                }
+            }
+        }
+
+        if(rideWithDatas.getPoints()!=null) {
+            mAdapter.setItems(rideWithDatas1.getPoints());
+            drawPoints(rideWithDatas1.getPoints());
+        }
+
+        Ride ride = rideWithDatas.getRide();
+        if(ride!=null){
+            String direction = ride.getDirection();
+            if(direction!=null){
+                drawLine(direction);
+            }
+        }
+    }
+
+    private void drawClubMarker(Point point, Club club) {
+        if(mMap==null){
+            return;
+        }
+
+        if(club!=null){
+            Picasso.get()
+                    .load(Constants.getBaseUrl() + club.getImageUrl())
+                    .resize(64,64)
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            Log.d(TAG, "drawClubMarker.onBitmapLoaded ");
+                            if(mClubMarker!=null){
+                                mClubMarker.remove();
+                            }
+                            mClubMarker = MapUiUtils.drawClubMarker(requireContext(), mMap, point, club.getName(), bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Log.e(TAG, "drawClubMarker.onBitmapFailed ", e);
+                            if(mClubMarker!=null){
+                                mClubMarker.remove();
+                            }
+                            LatLng latLng = point.toLatLng();
+                            MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+                            options.position(latLng); // Setting the position of the marker
+                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                            mClubMarker = mMap.addMarker(options);
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            Log.d(TAG, "drawClubMarker.onPrepareLoad ");
+                        }
+                    });
+        }else{
+            if(mClubMarker!=null){
+                mClubMarker.remove();
+            }
+
+            LatLng latLng = point.toLatLng();
+            MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+            options.position(latLng); // Setting the position of the marker
+            options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
+            mClubMarker = mMap.addMarker(options);
+        }
+
+    }
+
+    private void drawPoints(List<RidePointWithDatas> points) {
+        if(mMarkers==null){
+            mMarkers = new ArrayList<>();
+        }
+
+        for(Marker marker: mMarkers){
+            marker.remove();
+        }
+        mMarkers.clear();
+
+        for(RidePointWithDatas ridePointWithDatas: points){
+            Marker marker = drawPoint(ridePointWithDatas);
+            if(marker!=null){
+                mMarkers.add(marker);
+            }
+        }
+    }
+
+    private Marker drawPoint(RidePointWithDatas ridePointWithDatas) {
+        if(mMap==null){
+            return null;
+        }
+
+        Point point = ridePointWithDatas.getPoint();
+        if(point==null){
+            return null;
+        }
+
+        RidePoint ridePoint = ridePointWithDatas.getRidePoint();
+        if(ridePoint==null){
+            return null;
+        }
+
+        User customer = ridePointWithDatas.getUser();
+        if(customer==null){
+            return null;
+        }
+
+        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, String.valueOf(ridePoint.getOrder()), customer.getName());
     }
 
 
@@ -378,25 +531,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 .color(R.color.colorAlert)
                 .geodesic(true)
         );
-    }
-
-    private void loadDirection(Point clubPoint, List<Point> points) {
-        LatLng origin = new LatLng(clubPoint.getLat(), clubPoint.getLng());
-        LatLng destination = new LatLng(clubPoint.getLat(), clubPoint.getLng());
-        String waypoints = "optimize:true";
-        for(Point userPoint: points){
-            waypoints += "|" + userPoint.getLat() + "," + userPoint.getLng();
-        }
-        googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, waypoints, true);
-
-        if(mMap!=null) {
-            LatLng latLng = new LatLng(clubPoint.getLat(), clubPoint.getLng());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(clubPoint.getName()));
-            for(Point userPoint: points){
-                latLng = new LatLng(userPoint.getLat(), userPoint.getLng());
-                mMap.addMarker(new MarkerOptions().position(latLng).title(userPoint.getName()));
-            }
-        }
     }
 
     private void setupMap() {
@@ -570,5 +704,38 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     }
+
+
+    private void phoneCall(String phone) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+        startActivity(intent);
+    }
+
+    private void onCallBtnClick(String phone){
+        if (Build.VERSION.SDK_INT < 23) {
+            phoneCall(phone);
+        }else {
+
+            if (ActivityCompat.checkSelfPermission(requireActivity(),
+                    Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+
+                phoneCall(phone);
+            }else {
+                final String[] PERMISSIONS_STORAGE = {Manifest.permission.CALL_PHONE};
+                //Asking request Permissions
+                ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS_STORAGE, 9);
+            }
+        }
+    }
+
+    private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
+        //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
+    };
+
+    private OnClickItemListener<RidePointWithDatas> mCallListener = (v, pos, item) -> {
+        if (item.getUser() != null && item.getUser().getPhone() != null) {
+            onCallBtnClick(item.getUser().getPhone());
+        }
+    };
 
 }
