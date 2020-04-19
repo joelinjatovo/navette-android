@@ -250,5 +250,6 @@
     <string name="button_actualize">Actualiser</string>
     <string name="error_ride_empty_points">Cette course n\'a pas de commande en cours.</string>
     <string name="error_ride_no_route">Aucune route trouvée pour cette course.</string>
+    <string name="button_complete">Terminer</string>
 
 </resources>

@@ -44,6 +44,8 @@ public class RidesViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<RideWithDatas>> rideCancelResult = new MutableLiveData<>();
 
+    private MutableLiveData<RemoteLoaderResult<RideWithDatas>> rideCompleteResult = new MutableLiveData<>();
+
     private MutableLiveData<RemoteLoaderResult<List<ItemWithDatas>>> itemsResult = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<List<RidePointWithDatas>>> pointsResult = new MutableLiveData<>();
@@ -93,7 +95,7 @@ public class RidesViewModel extends ViewModel {
                                 rideDirectionResult.setValue(new RemoteLoaderResult<>(R.string.error_ride_no_route));
                             break;
                             default:
-                                rideDirectionResult.setValue(new RemoteLoaderResult<>(response.body().getStatusResString()));
+                                rideDirectionResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                             break;
                         }
                     }
@@ -123,7 +125,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         rideStartResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        rideStartResult.setValue(new RemoteLoaderResult<>(response.body().getStatusResString()));
+                        rideStartResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     rideStartResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -151,7 +153,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         rideCancelResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        rideCancelResult.setValue(new RemoteLoaderResult<>(response.body().getStatusResString()));
+                        rideCancelResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     rideCancelResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -162,6 +164,34 @@ public class RidesViewModel extends ViewModel {
             public void onFailure(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
                                   @NonNull Throwable throwable) {
                 rideCancelResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
+            }
+        });
+    }
+
+    public void complete(String token, Long rideId){
+        RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
+        Call<RetrofitResponse<RideWithDatas>> call = service.complete(token, new RideParam(rideId));
+        call.enqueue(new Callback<RetrofitResponse<RideWithDatas>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
+                                   @NonNull Response<RetrofitResponse<RideWithDatas>> response) {
+                Log.d(TAG, response.toString());
+                if (response.body() != null) {
+                    Log.d(TAG, response.body().toString());
+                    if(response.body().isSuccess()) {
+                        rideCompleteResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    }else{
+                        rideCompleteResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
+                    }
+                }else{
+                    rideCompleteResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
+                                  @NonNull Throwable throwable) {
+                rideCompleteResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
             }
         });
     }
@@ -180,7 +210,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         ridesResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        ridesResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                        ridesResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     ridesResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -210,7 +240,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         itemsResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        itemsResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                        itemsResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     itemsResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -240,7 +270,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         pointsResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        pointsResult.setValue(new RemoteLoaderResult<>(response.body().getStatusResString()));
+                        pointsResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     pointsResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -270,7 +300,7 @@ public class RidesViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         rideResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        rideResult.setValue(new RemoteLoaderResult<>(response.body().getStatusResString()));
+                        rideResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     rideResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -330,5 +360,13 @@ public class RidesViewModel extends ViewModel {
 
     public void setRideDirectionResult(RemoteLoaderResult<RideWithDatas> directionResult) {
         this.rideDirectionResult.setValue(directionResult);
+    }
+
+    public LiveData<RemoteLoaderResult<RideWithDatas>> getRideCompleteResult() {
+        return rideCompleteResult;
+    }
+
+    public void setRideCompleteResult(RemoteLoaderResult<RideWithDatas> rideCompleteResult) {
+        this.rideCompleteResult.setValue(rideCompleteResult);
     }
 }

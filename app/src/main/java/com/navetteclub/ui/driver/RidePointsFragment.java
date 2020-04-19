@@ -207,6 +207,28 @@ public class RidePointsFragment extends Fragment {
 
                     ridesViewModel.setRideCancelResult(null);
                 });
+
+        ridesViewModel.getRideCompleteResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+
+                    if(result.getError()!=null){
+                        showSweetError(getString(result.getError()));
+                    }
+
+                    if(result.getSuccess()!=null){
+                        this.setRide(result.getSuccess());
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Success")
+                                .setContentText("Votre course a terminé!")
+                                .show();
+                    }
+
+                    ridesViewModel.setRideCompleteResult(null);
+                });
     }
 
     private void showSweetError(String string) {
@@ -228,7 +250,12 @@ public class RidePointsFragment extends Fragment {
         // Ride
         Ride ride = rideWithDatas.getRide();
         if(ride!=null){
-            if(Ride.STATUS_PING.equals(ride.getStatus())){
+            if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
+                mBinding.actionButton.setText(R.string.button_complete);
+                mBinding.actionButton.setVisibility(View.VISIBLE);
+                mBinding.liveButton.setVisibility(View.GONE);
+                mBinding.actualizeButton.setVisibility(View.GONE);
+            }else if(Ride.STATUS_PING.equals(ride.getStatus())){
                 mBinding.actionButton.setText(R.string.button_start_ride);
                 mBinding.actionButton.setVisibility(View.VISIBLE);
                 mBinding.liveButton.setVisibility(View.GONE);
@@ -237,7 +264,11 @@ public class RidePointsFragment extends Fragment {
                 mBinding.actionButton.setText(R.string.button_cancel_ride);
                 mBinding.actionButton.setVisibility(View.VISIBLE);
                 mBinding.liveButton.setVisibility(View.VISIBLE);
-                mBinding.actualizeButton.setVisibility(View.VISIBLE);
+                if(ride.getDirection()!=null){
+                    mBinding.actualizeButton.setVisibility(View.GONE);
+                }else{
+                    mBinding.actualizeButton.setVisibility(View.VISIBLE);
+                }
             }else{
                 mBinding.actionButton.setVisibility(View.GONE);
                 mBinding.liveButton.setVisibility(View.GONE);
@@ -282,6 +313,10 @@ public class RidePointsFragment extends Fragment {
                 if(rideWithDatas==null) return;
                 Ride ride = rideWithDatas.getRide();
                 if(ride!=null){
+                    if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
+                        progressDialog.show();
+                        ridesViewModel.complete(token, rideId);
+                    }
                     if(Ride.STATUS_PING.equals(ride.getStatus())){
                         progressDialog.show();
                         ridesViewModel.start(token, rideId);

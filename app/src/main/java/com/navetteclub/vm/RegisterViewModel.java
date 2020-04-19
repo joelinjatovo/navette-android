@@ -55,7 +55,7 @@ public class RegisterViewModel extends ViewModel implements Callback<RetrofitRes
                 Log.d(TAG, response.body().getData().toString());
                 registerResult.setValue(new RemoteLoaderResult<User>(response.body().getData()));
             }else{
-                registerResult.setValue(new RemoteLoaderResult<User>(response.body().getStatusResString()));
+                registerResult.setValue(new RemoteLoaderResult<User>(response.body().getErrorResString()));
             }
         }else{
             registerResult.setValue(new RemoteLoaderResult<User>(R.string.register_failed));

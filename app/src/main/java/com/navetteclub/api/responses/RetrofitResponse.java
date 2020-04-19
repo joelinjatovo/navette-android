@@ -97,7 +97,12 @@ public class RetrofitResponse<T> {
     }
 
     @StringRes
-    public Integer getStatusResString() {
+    public Integer getErrorResString() {
+        switch (getCode()){
+            case 114: return R.string.error_ride_empty_points;
+            case 115: return R.string.error_ride_no_route;
+        }
+
         switch (getStatus()){
             case 400: return R.string.error_400;
             case 401: return R.string.error_401;

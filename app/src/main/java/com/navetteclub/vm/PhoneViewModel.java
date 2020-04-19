@@ -67,7 +67,7 @@ public class PhoneViewModel extends ViewModel {
                         Log.d(TAG, "Data " + response.body().getData());
                         phoneResult.setValue(new RemoteLoaderResult<User>(response.body().getData()));
                     }else{
-                        phoneResult.setValue(new RemoteLoaderResult<User>(response.body().getStatusResString()));
+                        phoneResult.setValue(new RemoteLoaderResult<User>(response.body().getErrorResString()));
                     }
                 }else{
                     phoneResult.setValue(new RemoteLoaderResult<User>(R.string.update_failed));

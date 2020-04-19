@@ -142,7 +142,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
                     if(response.body().isSuccess()) {
                         showSuccessSweetAlert();
                     }else{
-                        showErrorSweetAlert(getString(response.body().getStatusResString()), token, orderRid);
+                        showErrorSweetAlert(getString(response.body().getErrorResString()), token, orderRid);
                     }
                 } else {
                     showErrorSweetAlert(getString(R.string.error_bad_request), token, orderRid);

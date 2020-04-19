@@ -1,6 +1,7 @@
 package com.navetteclub.ui.driver;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -79,6 +80,7 @@ import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.navetteclub.vm.RideViewModel;
 import com.navetteclub.vm.RidesViewModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -142,6 +144,8 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private RidesViewModel ridesViewModel;
 
+    private RideViewModel rideViewModel;
+
     List<LatLng> list;
 
     Polyline line1;
@@ -161,6 +165,8 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     private RideWithDatas rideWithDatas;
 
     private RidePointMapRecyclerViewAdapter mAdapter;
+
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -246,6 +252,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         setupGoogleViewModel();
         setupRidesViewModel();
+        setupRideViewModel();
         setupAuthViewModel();
         getDeviceLocation();
     }
@@ -292,6 +299,43 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(requireActivity(), "You don't assign permission.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void setupRideViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        rideViewModel = new ViewModelProvider(requireActivity(), factory).get(RideViewModel.class);
+        rideViewModel.getRideFinishResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }
+                    }
+                    if(result.getSuccess()!=null){
+                        setRide(result.getSuccess());
+                    }
+                    rideViewModel.setRideFinishResult(null);
+                });
+        rideViewModel.getRideCancelResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }
+                    }
+                    if(result.getSuccess()!=null){
+                        setRide(result.getSuccess());
+                    }
+                    rideViewModel.setRideCancelResult(null);
+                });
     }
 
     private void setupRidesViewModel() {
@@ -370,12 +414,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private void updateStepView(List<RidePointWithDatas> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
-        mBinding.bottomSheets.stepView.setStepsNumber(ridePointWithDatas.size());
+        mBinding.bottomSheets.stepView.setStepsNumber(ridePointWithDatas.size() + 1);
         int i = 0;
         for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
             RidePoint ridePoint = ridePointWithData.getRidePoint();
             if(ridePoint!=null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
-                mBinding.bottomSheets.stepView.go(ridePoint.getOrder(), true);
+                mBinding.bottomSheets.stepView.go(ridePoint.getOrder()>0?ridePoint.getOrder()-1:0, true);
                 break;
             }
             i++;
@@ -583,6 +627,10 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupUi() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
+
         // Nothing
         mBinding.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -594,12 +642,14 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     if (!checkPermissions()) {
                         requestPermissions();
                     } else {
+                        mMap.setMyLocationEnabled(true);
                         mService.requestLocationUpdates();
                     }
                 }else{
                     // Remove live location update
                     Toast.makeText(requireContext(), "removeLocationUpdatesButton.click",
                             Toast.LENGTH_SHORT).show();
+                    mMap.setMyLocationEnabled(false);
                     mService.removeLocationUpdates();
                 }
             }
@@ -761,18 +811,30 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
+    private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, ridePointWithDatas) -> {
+        if(ridePointWithDatas==null) return;
+        RidePoint ridePoint = ridePointWithDatas.getRidePoint();
         switch (v.getId()){
             case R.id.callButtom:
-                if (item.getUser() != null && item.getUser().getPhone() != null) {
-                    onCallBtnClick(item.getUser().getPhone());
+                if (ridePointWithDatas.getUser() != null && ridePointWithDatas.getUser().getPhone() != null) {
+                    onCallBtnClick(ridePointWithDatas.getUser().getPhone());
                 }
             break;
-            case R.id.cancelButton:
-                // @TODO Cancel order item
-            break;
             case R.id.actionButton:
-                // @TODO Action for order item
+                if(ridePoint!=null) {
+                    if (RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
+                        progressDialog.show();
+                        rideViewModel.finishRidePoint(token, ridePoint.getRid());
+                    }
+                }
+                break;
+            case R.id.cancelButton:
+                if(ridePoint!=null) {
+                    if(!RidePoint.STATUS_CANCELED.equals(ridePoint.getStatus())) {
+                        progressDialog.show();
+                        rideViewModel.cancelRidePoint(token, ridePoint.getRid());
+                    }
+                }
             break;
         }
     };

@@ -42,6 +42,8 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private static RidesViewModel ridesViewModel;
 
+    private static RideViewModel rideViewModel;
+
     public static MyViewModelFactory getInstance(Application application){
         Log.d("MyViewModelFactory", "MyViewModelFactory getInstance -");
         if(instance==null){
@@ -98,11 +100,16 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
                 ordersViewModel = new OrdersViewModel();
             }
             return (T) ordersViewModel;
-        }   else if (modelClass.isAssignableFrom(RidesViewModel.class)) {
+        }  else if (modelClass.isAssignableFrom(RidesViewModel.class)) {
             if(ridesViewModel == null){
                 ridesViewModel = new RidesViewModel();
             }
             return (T) ridesViewModel;
+        }   else if (modelClass.isAssignableFrom(RideViewModel.class)) {
+            if(rideViewModel == null){
+                rideViewModel = new RideViewModel();
+            }
+            return (T) rideViewModel;
         } else if (modelClass.isAssignableFrom(AuthViewModel.class)) {
             if(authViewModel == null){
                 authViewModel = new AuthViewModel(UserRepository.getInstance(application));

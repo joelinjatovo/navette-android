@@ -136,12 +136,13 @@ public class RidesFragment extends Fragment {
                         return;
                     }
 
+                    mBinding.setIsLoading(false);
+
                     if(result.getError()!=null){
                         if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
                             authViewModel.logout(requireContext());
                         }else{
                             // Error loading
-                            mBinding.setIsLoading(false);
                             mBinding.setShowError(true);
                             mBinding.loaderErrorView.getTitleView().setText(R.string.loader_error_title);
                             mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
@@ -150,7 +151,6 @@ public class RidesFragment extends Fragment {
                     }
 
                     if(result.getSuccess()!=null){
-                        mBinding.setIsLoading(false);
                         ArrayList<RideWithDatas> items = (ArrayList<RideWithDatas>) result.getSuccess();
                         if(items.isEmpty()){
                             mBinding.setShowError(true);

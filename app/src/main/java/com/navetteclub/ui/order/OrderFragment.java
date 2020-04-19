@@ -601,7 +601,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 mLastKnownLocation = (Location) task.getResult();
                                 if (mLastKnownLocation != null) {
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                                     if(searchType == SearchType.ORIGIN){
                                         //orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
                                     }else{

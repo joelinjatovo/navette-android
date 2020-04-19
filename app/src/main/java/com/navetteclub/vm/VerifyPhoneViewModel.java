@@ -57,7 +57,7 @@ public class VerifyPhoneViewModel extends ViewModel {
                         Log.d(TAG, "Data " +response.body().getData());
                         verifyPhoneResult.setValue(new RemoteLoaderResult<User>(response.body().getData()));
                     }else{
-                        verifyPhoneResult.setValue(new RemoteLoaderResult<User>(response.body().getStatusResString()));
+                        verifyPhoneResult.setValue(new RemoteLoaderResult<User>(response.body().getErrorResString()));
                     }
                 }else{
                     verifyPhoneResult.setValue(new RemoteLoaderResult<User>(R.string.update_failed));
@@ -87,7 +87,7 @@ public class VerifyPhoneViewModel extends ViewModel {
                         Log.d(TAG, "Data " + response.body().getData());
                         resendCodeResult.setValue(new RemoteLoaderResult<Object>(response.body().getData()));
                     }else{
-                        resendCodeResult.setValue(new RemoteLoaderResult<Object>(response.body().getStatusResString()));
+                        resendCodeResult.setValue(new RemoteLoaderResult<Object>(response.body().getErrorResString()));
                     }
                 }else{
                     resendCodeResult.setValue(new RemoteLoaderResult<Object>(R.string.update_failed));
