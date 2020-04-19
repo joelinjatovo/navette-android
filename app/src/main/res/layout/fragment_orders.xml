@@ -36,7 +36,7 @@
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
             android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}">
@@ -47,7 +47,6 @@
                 android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
                 tools:listitem="@layout/viewholder_order"/>
-
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <LinearLayout
