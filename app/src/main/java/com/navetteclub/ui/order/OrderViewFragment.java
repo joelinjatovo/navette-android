@@ -138,8 +138,13 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
                 club -> {
                     if(club!=null){
+                        // Aller
                         mBinding.setPoint2Title("Club");
                         mBinding.setPoint2(club.getName());
+
+                        // Retours
+                        mBinding.setPoint3Title("Club");
+                        mBinding.setPoint3(club.getName());
                     }
                 });
         orderViewModel.getItem1PointLiveData().observe(getViewLifecycleOwner(),
@@ -148,11 +153,15 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         Item item1 = orderViewModel.getItem1();
                         if(item1!=null){
                             if(Order.TYPE_BACK.equals(item1.getType())){
-                                mBinding.setPoint3Title("Drop");
-                                mBinding.setPoint3(point.getName());
+                                mBinding.setPoint4Title("Drop");
+                                mBinding.setPoint4(point.getName());
+                                mBinding.setDelay2(item1.getDelay());
+                                mBinding.setDistance2(item1.getDistance());
                             }else{
                                 mBinding.setPoint1Title("Pickup");
                                 mBinding.setPoint1(point.getName());
+                                mBinding.setDelay1(item1.getDelay());
+                                mBinding.setDistance1(item1.getDistance());
                             }
                         }
                     }
@@ -162,8 +171,10 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(point!=null){
                         Item item2 = orderViewModel.getItem2();
                         if(item2!=null){
-                            mBinding.setPoint3Title("Drop");
-                            mBinding.setPoint3(point.getName());
+                            mBinding.setPoint4Title("Drop");
+                            mBinding.setPoint4(point.getName());
+                            mBinding.setDelay2(item2.getDelay());
+                            mBinding.setDistance2(item2.getDistance());
                         }
                     }
                 });
@@ -193,7 +204,8 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         if(order==null) return;
 
         mBinding.setOrderId(order.getRid());
-        mBinding.setAmount(order.getAmountStr());
+        mBinding.setSubtotal(order.getSubtotalStr());
+        mBinding.setTotal(order.getTotalStr());
 
         long now = System.currentTimeMillis();
         Date lastUpdated = order.getCreatedAt();

@@ -109,6 +109,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="10dp"
                                     android:layout_marginEnd="10dp"
+                                    android:layout_marginTop="5dp"
                                     android:text="@string/origin"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/colorText" />
@@ -152,6 +153,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="10dp"
                                     android:layout_marginEnd="10dp"
+                                    android:layout_marginTop="5dp"
                                     android:text="@string/destination"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/colorText" />
@@ -212,6 +214,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginEnd="10dp"
+                                android:layout_marginTop="5dp"
                                 android:text="@string/retours"
                                 android:textAppearance="?attr/textAppearanceCaption"
                                 android:textColor="@color/colorText" />

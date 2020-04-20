@@ -105,7 +105,7 @@
                     android:layout_centerVertical="true"
                     android:text="@{point1Title}"
                     android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/colorIcon"
+                    android:textColor="@color/gray"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
 
@@ -147,13 +147,12 @@
                     android:id="@+id/point2Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@id/point2Icon"
-                    android:layout_centerVertical="true"
                     android:text="@{point2Title}"
                     android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/colorIcon"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"/>
+                    android:textColor="@color/gray" />
 
                 <TextView
                     android:id="@+id/point2Name"
@@ -197,7 +196,7 @@
                     android:layout_centerVertical="true"
                     android:text="@{point3Title}"
                     android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/colorIcon"
+                    android:textColor="@color/gray"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
 

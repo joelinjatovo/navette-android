@@ -161,6 +161,42 @@ public class Order {
         return format.format(amount);
     }
 
+    public String getTotalStr() {
+        Double amount = getTotal();
+        if(amount==null){
+            amount = 0.00;
+        }
+
+        String currency = getCurrency();
+        if(currency==null){
+            currency = "EUR";
+        }
+
+        NumberFormat format = NumberFormat.getCurrencyInstance();
+        //format.setMaximumFractionDigits(2);
+        //format.setMinimumFractionDigits(2);
+        format.setCurrency(Currency.getInstance(currency));
+        return format.format(amount);
+    }
+
+    public String getSubtotalStr() {
+        Double amount = getSubtotal();
+        if(amount==null){
+            amount = 0.00;
+        }
+
+        String currency = getCurrency();
+        if(currency==null){
+            currency = "EUR";
+        }
+
+        NumberFormat format = NumberFormat.getCurrencyInstance();
+        //format.setMaximumFractionDigits(2);
+        //format.setMinimumFractionDigits(2);
+        format.setCurrency(Currency.getInstance(currency));
+        return format.format(amount);
+    }
+
     public void setAmount(Double amount) {
         this.amount = amount;
     }
