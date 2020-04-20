@@ -14,6 +14,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface OrderApiService {
 
@@ -27,7 +28,7 @@ public interface OrderApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/orders")
-    Call<RetrofitResponse<List<OrderWithDatas>>> getAll(@Header("Authorization") String token);
+    Call<RetrofitResponse<List<OrderWithDatas>>> getAll(@Header("Authorization") String token, @Query("page") int page);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/order/cancel")

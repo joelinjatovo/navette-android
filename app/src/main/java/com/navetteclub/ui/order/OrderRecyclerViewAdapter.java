@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,10 +28,14 @@ import com.navetteclub.utils.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.ViewHolder>{
+public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.BaseViewHolder>{
+    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
+    private boolean isLoaderVisible = false;
 
     private List<OrderWithDatas> mItems;
 
@@ -42,38 +47,88 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case VIEW_TYPE_NORMAL:
+                ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
-        return new ViewHolder(itemBinding);
+                return new ViewHolder(itemBinding);
+            case VIEW_TYPE_LOADING:
+                return new ProgressHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_loader, parent, false));
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final BaseViewHolder holder, int position) {
+        holder.onBind(position);
         holder.setItem(mItems.get(position));
-        holder.mBinding.getRoot().setOnClickListener(v -> {
-            if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
-                mListener.onClick(v, position, holder.mItem);
-            }
-        });
-        holder.mBinding.moreButtom.setOnClickListener(v -> {
-            if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
-                mListener.onClick(v, position, holder.mItem);
-            }
-        });
+        holder.setListener(mListener);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        Log.e("OrderRecyclerViewAdapter", "isLoaderVisible " + isLoaderVisible);
+        if (isLoaderVisible) {
+            if(position == getItemCount() - 1){
+                Log.e("OrderRecyclerViewAdapter", "VIEW_TYPE_LOADING " + position);
+                return VIEW_TYPE_LOADING;
+            }
+        }
+        Log.e("OrderRecyclerViewAdapter", "VIEW_TYPE_NORMAL " + position);
+        return VIEW_TYPE_NORMAL;
+    }
 
     @Override
     public int getItemCount() {
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<OrderWithDatas> items){
+    public void addLoading() {
+        Log.e("OrderRecyclerViewAdapter", "addLoading");
+        if(mItems!=null){
+            Log.e("OrderRecyclerViewAdapter", "addLoading --- hehrh");
+            isLoaderVisible = true;
+            mItems.add(new OrderWithDatas());
+            notifyItemInserted(getItemCount() - 1);
+        }
+    }
+
+    public void removeLoading() {
+        Log.e("OrderRecyclerViewAdapter", "removeLoading");
+        isLoaderVisible = false;
+        int position = getItemCount() - 1;
+        OrderWithDatas item = getItem(position);
+        if (item != null && mItems!=null) {
+            mItems.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        Log.e("OrderRecyclerViewAdapter", "clear");
+        if(mItems!=null) {
+            mItems.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    OrderWithDatas getItem(int position) {
+        return mItems.get(position);
+    }
+
+    public void addItems(List<OrderWithDatas> items) {
+        if (mItems == null) {
+            setItems(items);
+        }else{
+            List<OrderWithDatas> clone = new ArrayList<>(mItems);
+            clone.addAll(items);
+            setItems(clone);
+        }
+    }
+
+    private void setItems(List<OrderWithDatas> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -93,7 +148,9 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     OrderWithDatas oldItem = mItems.get(oldItemPosition);
                     OrderWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getOrder().getId() == newItem.getOrder().getId();
+                    return oldItem.getOrder() != null &&
+                            newItem.getOrder() != null &&
+                            oldItem.getOrder().getId() == newItem.getOrder().getId();
                 }
 
                 @Override
@@ -109,17 +166,22 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends BaseViewHolder {
         final ViewholderOrderBinding mBinding;
-        OrderWithDatas mItem;
 
         ViewHolder(ViewholderOrderBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
         }
 
+        @Override
+        public void onBind(int position) {
+            super.onBind(position);
+        }
+
+        @Override
         void setItem(OrderWithDatas item){
-            mItem = item;
+            super.setItem(item);
             if(mItem!=null){
                 Order order = mItem.getOrder();
                 if(order!=null){
@@ -161,6 +223,17 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                         }
                     }
                 }
+
+                mBinding.getRoot().setOnClickListener(v -> {
+                    if (null != mListener) {
+                        mListener.onClick(v, getCurrentPosition(), mItem);
+                    }
+                });
+                mBinding.moreButtom.setOnClickListener(v -> {
+                    if (null != mListener) {
+                        mListener.onClick(v, getCurrentPosition(), mItem);
+                    }
+                });
             }
         }
 
@@ -168,6 +241,53 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         @Override
         public String toString() {
             return super.toString() + " '" + mBinding.amountValue.getText() + "'";
+        }
+
+        @Override
+        protected void clear() {
+
+        }
+    }
+
+    public static class ProgressHolder extends BaseViewHolder {
+        ProgressHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        protected void clear() {
+        }
+    }
+
+    public abstract static class BaseViewHolder extends RecyclerView.ViewHolder {
+
+        private int mCurrentPosition;
+
+        protected OrderWithDatas mItem;
+
+        protected OnClickItemListener<OrderWithDatas>  mListener;
+
+        public BaseViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        protected abstract void clear();
+
+        void setListener(OnClickItemListener<OrderWithDatas> listener){
+            mListener = listener;
+        }
+
+        void setItem(OrderWithDatas item){
+            mItem = item;
+        }
+
+        public void onBind(int position) {
+            mCurrentPosition = position;
+            clear();
+        }
+
+        public int getCurrentPosition() {
+            return mCurrentPosition;
         }
     }
 }

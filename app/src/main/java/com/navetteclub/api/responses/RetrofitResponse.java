@@ -93,6 +93,7 @@ public class RetrofitResponse<T> {
                 + "; message=" + getMessage()
                 + "; data=" + getData()
                 + "; validation=" + getValidation()
+                + "; pagination=" + getPagination()
             + "]";
     }
 

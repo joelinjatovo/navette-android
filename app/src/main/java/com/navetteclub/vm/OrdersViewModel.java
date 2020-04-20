@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.Pagination;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.NotificationApiService;
 import com.navetteclub.api.services.OrderApiService;
@@ -27,12 +28,14 @@ public class OrdersViewModel extends ViewModel {
 
     private static final String TAG = OrdersViewModel.class.getSimpleName();
 
-    private MutableLiveData<RemoteLoaderResult<List<OrderWithDatas>>> ordersLiveData = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<OrderWithDatas>>> ordersResult = new MutableLiveData<>();
 
-    public void load(User user){
+    private MutableLiveData<Pagination> paginationResult = new MutableLiveData<>();
+
+    public void load(User user, int page){
         Log.d(TAG, "OrderApiService.getAll( " +  user.getAuthorizationToken() + ")");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<List<OrderWithDatas>>> call = service.getAll(user.getAuthorizationToken());
+        Call<RetrofitResponse<List<OrderWithDatas>>> call = service.getAll(user.getAuthorizationToken(), page);
         call.enqueue(new Callback<RetrofitResponse<List<OrderWithDatas>>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<List<OrderWithDatas>>> call,
@@ -41,31 +44,13 @@ public class OrdersViewModel extends ViewModel {
                 if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
                     if(response.body().isSuccess()) {
-                        ordersLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                        paginationResult.setValue(response.body().getPagination());
+                        ordersResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        switch (response.body().getStatus()){
-                            case 400:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_400));
-                            break;
-                            case 401:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_401));
-                            break;
-                            case 402:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_402));
-                            break;
-                            case 403:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_403));
-                            break;
-                            case 404:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_404));
-                            break;
-                            default:
-                                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
-                            break;
-                        }
+                        ordersResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
-                    ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
+                    ordersResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
                 }
             }
 
@@ -73,16 +58,24 @@ public class OrdersViewModel extends ViewModel {
             public void onFailure(@NonNull Call<RetrofitResponse<List<OrderWithDatas>>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.toString(), throwable);
-                ordersLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                ordersResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
     }
 
-    public MutableLiveData<RemoteLoaderResult<List<OrderWithDatas>>> getOrdersLiveData() {
-        return ordersLiveData;
+    public LiveData<RemoteLoaderResult<List<OrderWithDatas>>> getOrdersResult() {
+        return ordersResult;
     }
 
-    public void setOrdersLiveData(RemoteLoaderResult<List<OrderWithDatas>> result) {
-        ordersLiveData.setValue(result);
+    public void setOrdersResult(RemoteLoaderResult<List<OrderWithDatas>> result) {
+        ordersResult.setValue(result);
+    }
+
+    public LiveData<Pagination> getPaginationResult() {
+        return paginationResult;
+    }
+
+    public void setPaginationResult(Pagination paginationResult) {
+        this.paginationResult.setValue(paginationResult);
     }
 }

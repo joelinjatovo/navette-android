@@ -21,8 +21,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.navetteclub.R;
+import com.navetteclub.api.models.Pagination;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
@@ -43,15 +45,16 @@ import com.navetteclub.vm.OrdersViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrdersFragment extends Fragment implements OnClickItemListener<OrderWithDatas> {
+public class OrdersFragment extends Fragment implements OnClickItemListener<OrderWithDatas>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = OrdersFragment.class.getSimpleName();
+    private static final int PAGE_START = 1;
 
     private FragmentOrdersBinding mBinding;
 
     private OrderRecyclerViewAdapter mAdapter;
 
-    private OrdersViewModel mViewModel;
+    private OrdersViewModel ordersViewModel;
 
     private OrderViewModel orderViewModel;
 
@@ -59,15 +62,41 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
 
     private SearchView searchView;
 
+    private Pagination pagination;
+
+    private int currentPage = 0;
+
+    private boolean isLoading = false;
+
+    private PaginationListener scrollListener;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_orders, container, false);
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        scrollListener = new PaginationListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                doApiCall();
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return pagination != null && pagination.isLastPage();
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        };
+
         mAdapter = new OrderRecyclerViewAdapter(this);
         RecyclerView recyclerView = mBinding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        //recyclerView.addOnScrollListener(mScrollListener);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setAdapter(mAdapter);
 
         return mBinding.getRoot();
@@ -79,13 +108,28 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
         setupToolbar();
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-        mViewModel = new ViewModelProvider(requireActivity(), factory).get(OrdersViewModel.class);
+        ordersViewModel = new ViewModelProvider(requireActivity(), factory).get(OrdersViewModel.class);
         orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
-        mViewModel.getOrdersLiveData().observe(getViewLifecycleOwner(),
+        ordersViewModel.getPaginationResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
                     }
+                    pagination = result;
+                    currentPage = pagination.currentPage;
+                    if(scrollListener!=null){
+                        scrollListener.setPageSize(pagination.perPage);
+                    }
+                });
+        ordersViewModel.getOrdersResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+
+                    isLoading = false;
+                    mBinding.swipeRefresh.setRefreshing(false);
+                    if (currentPage > 1) mAdapter.removeLoading();
 
                     if(result.getError()!=null){
                         if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
@@ -109,22 +153,22 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
                             mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_orders);
                         }else{
                             mBinding.setShowError(false);
-                            mAdapter.setItems(items);
+                            mAdapter.addItems(items);
+
+                            if(pagination!=null && !pagination.isLastPage()){
+                                mAdapter.addLoading();
+                            }
                         }
                     }
 
                     // Reset remote result
-                    mViewModel.setOrdersLiveData(null);
+                    ordersViewModel.setOrdersResult(null);
                 });
 
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        User user = authViewModel.getUser();
-                        mViewModel.load(user);
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
-                        mBinding.setIsUnauthenticated(false);
+                        doApiCall();
                     }else{
                         mBinding.setIsLoading(false);
                         mBinding.setShowError(false);
@@ -141,9 +185,8 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
                 v -> {
                     User user = authViewModel.getUser();
                     if(user!=null){
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
-                        mViewModel.load(user);
+                        if(currentPage>0) currentPage--;
+                        doApiCall();
                     }else{
                         mBinding.setIsLoading(false);
                     }
@@ -152,8 +195,24 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
-                }
-        );
+                });
+
+        mBinding.swipeRefresh.setOnRefreshListener(this);
+    }
+
+    @Override
+    public void onClick(View view, int position, OrderWithDatas item) {
+        orderViewModel.refresh();
+        orderViewModel.attach(item);
+        NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
+    }
+
+    @Override
+    public void onRefresh() {
+        currentPage = 0;
+        isLoading = false;
+        mAdapter.clear();
+        doApiCall();
     }
 
     private void setupToolbar() {
@@ -190,42 +249,18 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
         mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
     }
 
-    @Override
-    public void onClick(View view, int position, OrderWithDatas item) {
-        orderViewModel.refresh();
-        orderViewModel.attach(item);
-        NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
-    }
-
-
-    /**
     private void doApiCall() {
-
-    }
-
-    private int currentPage = 1;
-    private boolean isLastPage = false;
-    private int totalPage = 10;
-    private boolean isLoading = false;
-    int itemCount = 0;
-    private RecyclerView.OnScrollListener mScrollListener = new PaginationListener(layoutManager) {
-        @Override
-        protected void loadMoreItems() {
+        User user = authViewModel.getUser();
+        if(user!=null && !isLoading){
             isLoading = true;
             currentPage++;
-            doApiCall();
+            ordersViewModel.load(user, currentPage);
+            mBinding.setShowError(false);
+            mBinding.setIsUnauthenticated(false);
+            if(currentPage==1){
+                // Show main loader view for the first page only
+                mBinding.setIsLoading(true);
+            }
         }
-
-        @Override
-        public boolean isLastPage() {
-            return isLastPage;
-        }
-
-        @Override
-        public boolean isLoading() {
-            return isLoading;
-        }
-    };
-     */
-
+    }
 }

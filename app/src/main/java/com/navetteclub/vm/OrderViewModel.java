@@ -667,18 +667,16 @@ public class OrderViewModel extends ViewModel {
     }
 
     public void swap() {
-
-
         switch (orderType){
             case GO:
-                setOrderTypeLiveData(OrderType.BACK);
-                setItem1LiveData(item1);
-                setItem1LiveData(item2);
+                setOrderTypeLiveData(OrderType.BACK); // This line change order type only
+                setItem1LiveData(item1, item1Point); // To change item type
+                setItem2LiveData(item2, item2Point); // To change item type
                 break;
             case BACK:
-                setOrderTypeLiveData(OrderType.GO);
-                setItem1LiveData(item1);
-                setItem1LiveData(item2);
+                setOrderTypeLiveData(OrderType.GO); // This line change order type only
+                setItem1LiveData(item1, item1Point); // To change item type
+                setItem2LiveData(item2, item2Point); // To change item type
                 break;
         }
     }

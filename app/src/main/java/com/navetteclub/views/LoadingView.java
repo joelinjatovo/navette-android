@@ -35,7 +35,6 @@ public class LoadingView extends LinearLayout {
         // Inflate view
         LayoutInflater  mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (mInflater == null) {
-
             return;
         }
 
