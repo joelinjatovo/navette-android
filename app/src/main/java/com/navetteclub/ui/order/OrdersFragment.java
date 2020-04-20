@@ -168,6 +168,7 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        currentPage = 0;
                         doApiCall();
                     }else{
                         mBinding.setIsLoading(false);

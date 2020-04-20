@@ -4,11 +4,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -41,6 +43,7 @@ import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -149,6 +152,49 @@ public class DetailFragment extends BottomSheetDialogFragment {
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
+                club -> {
+                    if(club!=null){
+                        // Aller
+                        mBinding.setPoint2Title("Club");
+                        mBinding.setPoint2(club.getName());
+
+                        // Retours
+                        mBinding.setPoint3Title("Club");
+                        mBinding.setPoint3(club.getName());
+                    }
+                });
+        orderViewModel.getItem1PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    if(point!=null){
+                        Item item1 = orderViewModel.getItem1();
+                        if(item1!=null){
+                            if(Order.TYPE_BACK.equals(item1.getType())){
+                                mBinding.setPoint4Title("Drop");
+                                mBinding.setPoint4(point.getName());
+                                mBinding.setDelay2(item1.getDelay());
+                                mBinding.setDistance2(item1.getDistance());
+                            }else{
+                                mBinding.setPoint1Title("Pickup");
+                                mBinding.setPoint1(point.getName());
+                                mBinding.setDelay1(item1.getDelay());
+                                mBinding.setDistance1(item1.getDistance());
+                            }
+                        }
+                    }
+                });
+        orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
+                point -> {
+                    if(point!=null){
+                        Item item2 = orderViewModel.getItem2();
+                        if(item2!=null){
+                            mBinding.setPoint4Title("Drop");
+                            mBinding.setPoint4(point.getName());
+                            mBinding.setDelay2(item2.getDelay());
+                            mBinding.setDistance2(item2.getDistance());
+                        }
+                    }
+                });
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
@@ -182,33 +228,68 @@ public class DetailFragment extends BottomSheetDialogFragment {
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
                 order -> {
                     if(order==null) return;
-                    if(order.getStatus()!=null){
-                        switch (order.getStatus()){
-                            case Order.STATUS_PING:
-                            case Order.STATUS_ON_HOLD:
-                            case Order.STATUS_PROCESSING:
-                                mBinding.bookNowButton.setText(R.string.pay_now);
-                                break;
-                            case Order.STATUS_OK:
-                                if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
-                                    mBinding.bookNowButton.setText(R.string.pay_now);
-                                }else{
-                                    mBinding.bookNowButton.setText(R.string.button_close);
-                                }
-                                break;
-                            case Order.STATUS_ACTIVE:
-                            case Order.STATUS_COMPLETED:
-                            case Order.STATUS_CANCELED:
-                                mBinding.bookNowButton.setText(R.string.button_close);
-                            break;
-                            default:
-                                mBinding.bookNowButton.setText(R.string.book_now);
-                            break;
-                        }
-                    }else{
-                        mBinding.bookNowButton.setText(R.string.book_now);
-                    }
+                    updateUiWithOrderData(order);
                 });
+    }
+
+    private void updateUiWithOrderData(Order order) {
+        if(order==null) return;
+
+        mBinding.setOrderId(order.getRid());
+        mBinding.setSubtotal(order.getSubtotalStr());
+        mBinding.setTotal(order.getTotalStr());
+
+        if(order.getPaymentType()!=null){
+            switch (order.getPaymentType()){
+                case Order.PAYMENT_TYPE_CASH:
+                    mBinding.editChip.setVisibility(View.VISIBLE);
+                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                    mBinding.setPaymentType(getString(R.string.cash));
+                    break;
+                case Order.PAYMENT_TYPE_STRIPE:
+                    mBinding.editChip.setVisibility(View.GONE);
+                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                    mBinding.setPaymentType(getString(R.string.stripe));
+                    break;
+                case Order.PAYMENT_TYPE_PAYPAL:
+                    mBinding.editChip.setVisibility(View.GONE);
+                    mBinding.paymentMethods.setVisibility(View.VISIBLE);
+                    mBinding.setPaymentType(getString(R.string.paypal));
+                    break;
+                default:
+                    mBinding.paymentMethods.setVisibility(View.GONE);
+                    break;
+            }
+        }else{
+            mBinding.paymentMethods.setVisibility(View.GONE);
+        }
+
+        if(order.getStatus()!=null){
+            switch (order.getStatus()){
+                case Order.STATUS_PING:
+                case Order.STATUS_ON_HOLD:
+                case Order.STATUS_PROCESSING:
+                    mBinding.bookNowButton.setText(R.string.pay_now);
+                    break;
+                case Order.STATUS_OK:
+                    if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
+                        mBinding.bookNowButton.setText(R.string.pay_now);
+                    }else{
+                        mBinding.bookNowButton.setText(R.string.button_close);
+                    }
+                    break;
+                case Order.STATUS_ACTIVE:
+                case Order.STATUS_COMPLETED:
+                case Order.STATUS_CANCELED:
+                    mBinding.bookNowButton.setText(R.string.button_close);
+                    break;
+                default:
+                    mBinding.bookNowButton.setText(R.string.book_now);
+                    break;
+            }
+        }else{
+            mBinding.bookNowButton.setText(R.string.book_now);
+        }
     }
 
     private void setupUi() {

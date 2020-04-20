@@ -6,17 +6,29 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="isLoading" type="boolean" />
         <variable name="isUnauthenticated" type="boolean" />
-        <variable name="showMoreButton" type="boolean" />
-        <variable name="origin" type="com.navetteclub.database.entity.Point" />
-        <variable name="destination" type="com.navetteclub.database.entity.Point" />
-        <variable name="retours" type="com.navetteclub.database.entity.Point" />
+        <variable name="total" type="String" />
+        <variable name="subtotal" type="String" />
 
-        <variable name="isLoadingDirection" type="boolean" />
-        <variable name="distance" type="String" />
-        <variable name="delay" type="String" />
-        <variable name="amount" type="String" />
+        <variable name="point1" type="String" />
+        <variable name="point1Title" type="String" />
+        <variable name="point2" type="String" />
+        <variable name="point2Title" type="String" />
+        <variable name="distance1" type="String" />
+        <variable name="delay1" type="String" />
+
+        <variable name="point3" type="String" />
+        <variable name="point3Title" type="String" />
+        <variable name="point4" type="String" />
+        <variable name="point4Title" type="String" />
+        <variable name="amount2" type="String" />
+        <variable name="distance2" type="String" />
+        <variable name="delay2" type="String" />
+
+        <variable name="status" type="String" />
+        <variable name="statusDesc" type="String" />
+        <variable name="payment_type" type="String" />
+        <variable name="order_id" type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,254 +67,532 @@
             app:layout_constraintVertical_bias="0"
             android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
 
-
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                app:cardCornerRadius="0dp">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="5dp"
-                    android:padding="10dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardBackgroundColor="@color/colorBackground">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp">
-
-                            <ImageView
-                                android:id="@+id/originLocationIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentStart="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorIcon"
-                                android:src="@drawable/outline_trip_origin_black_18"
-                                android:layout_centerVertical="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/originLinearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@+id/originLocationIcon"
-                                android:layout_alignParentEnd="true"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/originLabelText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/origin"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"/>
-
-                                <TextView
-                                    android:id="@+id/originText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@{origin==null?@string/search:origin.name}"
-                                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingBottom="5dp"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/colorAccent"
-                            android:layout_marginLeft="28dp"
-                            android:layout_marginStart="28dp" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp">
-
-                            <ImageView
-                                android:id="@+id/destinationLocationIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentStart="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAccent"
-                                android:src="@drawable/outline_place_black_24"
-                                android:layout_centerVertical="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/destinationLinearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@+id/destinationLocationIcon"
-                                android:layout_alignParentEnd="true"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/destinationLabelText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/destination"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"/>
-
-                                <TextView
-                                    android:id="@+id/destinationText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@{destination==null?@string/search:destination.name}"
-                                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingBottom="5dp"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/colorAccent"
-                            android:layout_marginLeft="28dp"
-                            android:layout_marginStart="28dp"
-                            android:visibility="@{retours==null?View.GONE:View.VISIBLE}" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:visibility="@{retours==null?View.GONE:View.VISIBLE}">
-
-                            <ImageView
-                                android:id="@+id/retoursLocationIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_alignParentStart="true"
-                                android:contentDescription="@string/image"
-                                android:tint="@color/colorAccent"
-                                android:src="@drawable/outline_trip_origin_black_18"
-                                android:layout_centerVertical="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/retoursLinearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@+id/retoursLocationIcon"
-                                android:layout_alignParentEnd="true"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/retoursLabelText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/retours"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"/>
-
-                                <TextView
-                                    android:id="@+id/retoursText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@{retours==null?@string/search:retours.name}"
-                                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                                    android:textColor="@color/colorText"
-                                    android:paddingLeft="12dp"
-                                    android:paddingRight="12dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingBottom="5dp"/>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/orderPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/colorAccent"
-                    android:padding="10dp">
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp">
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
 
-                        <LinearLayout
-                            android:id="@+id/amountLayout"
+                        <TextView
+                            android:id="@+id/faireLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginEnd="10dp">
+                            android:layout_centerVertical="true"
+                            android:text="Faire"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="@color/gray"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
 
-                            <TextView
-                                android:id="@+id/amountLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@string/amount"/>
-
-                            <TextView
-                                android:id="@+id/amountValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:text="@{amount}"
-                                android:textAppearance="?attr/textAppearanceHeadline5"/>
-
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/faireValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/faireLabel"
+                            android:maxLines="1"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@{subtotal}"
+                            android:textAlignment="textEnd"
+                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:textColor="@color/colorText" />
 
                     </RelativeLayout>
 
-                </androidx.cardview.widget.CardView>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
 
-            </RelativeLayout>
+                        <TextView
+                            android:id="@+id/totalLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="Total à payer"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="@color/gray"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                        <TextView
+                            android:id="@+id/totalValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/totalLabel"
+                            android:maxLines="1"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@{total}"
+                            android:textAlignment="textEnd"
+                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:textColor="@color/colorText" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/background"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                app:cardCornerRadius="0dp"
+                android:visibility="@{(point1==null)||(point2==null)?View.GONE:View.VISIBLE}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:id="@+id/point1Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="@string/image"
+                            android:src="@drawable/outline_place_black_18"
+                            android:tint="@color/colorAccent"/>
+
+                        <TextView
+                            android:id="@+id/point1Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/point1Icon"
+                            android:layout_alignParentEnd="true"
+                            android:text="@{point1Title}"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="@color/gray"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                        <TextView
+                            android:id="@+id/point1Name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@id/point1Label"
+                            android:layout_toEndOf="@id/point1Icon"
+                            android:text="@{point1}"
+                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:maxLines="1"
+                            android:textColor="@color/colorText"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:id="@+id/point2Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="@string/image"
+                            android:src="@drawable/outline_trip_origin_black_18"
+                            android:tint="@color/colorAlert"/>
+
+                        <TextView
+                            android:id="@+id/point2Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/point2Icon"
+                            android:layout_alignParentEnd="true"
+                            android:text="@{point2Title}"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="@color/gray"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                        <TextView
+                            android:id="@+id/point2Name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_toEndOf="@id/point2Icon"
+                            android:layout_below="@+id/point2Label"
+                            android:text="@{point2}"
+                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:maxLines="1"
+                            android:textColor="@color/colorText"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                    </RelativeLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/order1Info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <LinearLayout
+                            android:id="@+id/distance1Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/separator1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/distance1Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/distance"
+                                android:textColor="@color/black"
+                                android:layout_gravity="center"/>
+
+                            <TextView
+                                android:id="@+id/distance1Value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@{distance1}"
+                                android:textAppearance="?attr/textAppearanceHeadline6"
+                                android:textColor="@color/colorAccent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/separator1"
+                            android:layout_height="20dp"
+                            android:layout_width="1dp"
+                            android:background="@color/colorIcon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/delay1Layout"
+                            app:layout_constraintStart_toEndOf="@id/distance1Layout"/>
+
+                        <LinearLayout
+                            android:id="@+id/delay1Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/separator1"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+
+                            <TextView
+                                android:id="@+id/delay1Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/black"
+                                android:text="@string/delay"/>
+
+                            <TextView
+                                android:id="@+id/delay1Value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/colorAccent"
+                                android:text="@{delay1}"
+                                android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/background"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                app:cardCornerRadius="0dp"
+                android:visibility="@{(point3==null)||(point4==null)?View.GONE:View.VISIBLE}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:id="@+id/point3Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="@string/image"
+                            android:src="@drawable/outline_trip_origin_black_18"
+                            android:tint="@color/colorAlert"/>
+
+                        <TextView
+                            android:id="@+id/point3Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_toEndOf="@id/point3Icon"
+                            android:text="@{point3Title}"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="@color/gray"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                        <TextView
+                            android:id="@+id/point3Name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_toEndOf="@+id/point3Icon"
+                            android:layout_below="@+id/point3Label"
+                            android:text="@{point3}"
+                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:maxLines="1"
+                            android:textColor="@color/colorText"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:id="@+id/point4Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="@string/image"
+                            android:src="@drawable/outline_place_black_18"
+                            android:tint="@color/colorAccent"/>
+
+                        <TextView
+                            android:id="@+id/point4Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/point4Icon"
+                            android:layout_alignParentEnd="true"
+                            android:text="@{point4Title}"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="@color/gray"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                        <TextView
+                            android:id="@+id/point4Name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_toEndOf="@id/point4Icon"
+                            android:layout_below="@id/point4Label"
+                            android:text="@{point4}"
+                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:maxLines="1"
+                            android:textColor="@color/colorText"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"/>
+
+                    </RelativeLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/order2Info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <LinearLayout
+                            android:id="@+id/distance2Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toStartOf="@+id/separator2"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/distance2Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/distance"
+                                android:textColor="@color/black"
+                                android:layout_gravity="center"/>
+
+                            <TextView
+                                android:id="@+id/distance2Value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@{distance2}"
+                                android:textAppearance="?attr/textAppearanceHeadline6"
+                                android:textColor="@color/colorAccent" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/separator2"
+                            android:layout_height="20dp"
+                            android:layout_width="1dp"
+                            android:background="@color/colorIcon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/delay2Layout"
+                            app:layout_constraintStart_toEndOf="@id/distance2Layout"/>
+
+
+                        <LinearLayout
+                            android:id="@+id/delay2Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp"
+                            app:layout_constraintStart_toEndOf="@id/separator2"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+
+                            <TextView
+                                android:id="@+id/delay2Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/black"
+                                android:text="@string/delay"/>
+
+                            <TextView
+                                android:id="@+id/delay2Value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/colorAccent"
+                                android:text="@{delay2}"
+                                android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/background"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                app:cardCornerRadius="0dp">
+
+                <LinearLayout
+                    android:id="@+id/paymentMethods"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_methods"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip"
+                            style="@style/Widget.MaterialComponents.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{payment_type}"
+                            android:checked="true"/>
+
+                        <ImageView
+                            android:id="@+id/editChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_toEndOf="@id/chip"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/colorAccent"
+                            android:src="@drawable/outline_edit_black_24"
+                            android:contentDescription="@string/image"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/background"/>
 
         </LinearLayout>
 
@@ -311,7 +601,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:layout_gravity="center"
             android:text="@string/book_now"
             app:layout_constraintBottom_toBottomOf="parent"
