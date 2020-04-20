@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.Pagination;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.NotificationApiService;
 import com.navetteclub.database.entity.Notification;
@@ -27,7 +28,9 @@ public class NotificationViewModel extends ViewModel {
 
     private final NotificationRepository notificationRepository;
 
-    private MutableLiveData<RemoteLoaderResult<List<Notification>>> notificationsLiveData = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<Notification>>> notificationsResult = new MutableLiveData<>();
+
+    private MutableLiveData<Pagination> paginationResult = new MutableLiveData<>();
 
     NotificationViewModel(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
@@ -37,36 +40,49 @@ public class NotificationViewModel extends ViewModel {
         return notificationRepository.getList();
     }
 
-    public void load(User user){
+    public void load(User user, int page){
         Log.d(TAG, "service.load()");
         NotificationApiService service = RetrofitClient.getInstance().create(NotificationApiService.class);
-        Call<RetrofitResponse<List<Notification>>> call = service.getAll(user.getAuthorizationToken());
+        Call<RetrofitResponse<List<Notification>>> call = service.getAll(user.getAuthorizationToken(), page);
         call.enqueue(new Callback<RetrofitResponse<List<Notification>>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<List<Notification>>> call,
                                    @NonNull Response<RetrofitResponse<List<Notification>>> response) {
                 Log.d(TAG, response.toString());
-                if (response.body() != null && response.body().isSuccess()) {
+                if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
-                    notificationsLiveData.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    if(response.body().isSuccess()) {
+                        paginationResult.setValue(response.body().getPagination());
+                        notificationsResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                    }else{
+                        notificationsResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
+                    }
                 }else{
-                    notificationsLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                    notificationsResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse<List<Notification>>> call, @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.toString(), throwable);
-                notificationsLiveData.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                notificationsResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
     }
 
-    public MutableLiveData<RemoteLoaderResult<List<Notification>>> getNotificationsLiveData() {
-        return notificationsLiveData;
+    public LiveData<RemoteLoaderResult<List<Notification>>> getNotificationResult() {
+        return notificationsResult;
     }
 
-    public void setNotificationsLiveData(RemoteLoaderResult<List<Notification>> result) {
-        notificationsLiveData.setValue(result);
+    public void setNotificationsResult(RemoteLoaderResult<List<Notification>> result) {
+        notificationsResult.setValue(result);
+    }
+
+    public MutableLiveData<Pagination> getPaginationResult() {
+        return paginationResult;
+    }
+
+    public void setPaginationResult(Pagination paginationResult) {
+        this.paginationResult.setValue(paginationResult);
     }
 }

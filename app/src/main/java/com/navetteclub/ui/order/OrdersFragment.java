@@ -194,7 +194,7 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
 
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
-                    Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
+                    NavHostFragment.findNavController(this).navigate(R.id.action_orders_fragment_to_navigation_auth);
                 });
 
         mBinding.swipeRefresh.setOnRefreshListener(this);

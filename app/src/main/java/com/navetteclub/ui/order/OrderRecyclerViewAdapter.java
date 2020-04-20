@@ -68,6 +68,12 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     @Override
+    public int getItemCount() {
+        return mItems==null?0:mItems.size();
+    }
+
+
+    @Override
     public int getItemViewType(int position) {
         if (isLoaderVisible) {
             if(position == getItemCount() - 1){
@@ -75,11 +81,6 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             }
         }
         return VIEW_TYPE_NORMAL;
-    }
-
-    @Override
-    public int getItemCount() {
-        return mItems==null?0:mItems.size();
     }
 
     public void addLoading() {
@@ -108,6 +109,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     OrderWithDatas getItem(int position) {
+        if(mItems==null) return null;
         return mItems.get(position);
     }
 
