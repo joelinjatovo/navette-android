@@ -58,7 +58,6 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         return mItems==null?0:mItems.size();
     }
 
-
     @Override
     public int getItemViewType(int position) {
         if (isLoaderVisible) {
@@ -94,7 +93,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         }
     }
 
-    Notification getItem(int position) {
+    private Notification getItem(int position) {
         if(mItems==null) return null;
         return mItems.get(position);
     }

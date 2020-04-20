@@ -17,12 +17,13 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RideApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/rides")
-    Call<RetrofitResponse<List<RideWithDatas>>> getAll(@Header("Authorization") String token);
+    Call<RetrofitResponse<List<RideWithDatas>>> getAll(@Header("Authorization") String token, @Query("page") int page);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/ride/{ride}/items")

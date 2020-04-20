@@ -19,14 +19,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.navetteclub.R;
+import com.navetteclub.api.models.Pagination;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.databinding.FragmentRidesBinding;
 import com.navetteclub.ui.OnClickItemListener;
+import com.navetteclub.ui.PaginationListener;
+import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
 import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
@@ -37,7 +41,7 @@ import com.navetteclub.vm.RidesViewModel;
 
 import java.util.ArrayList;
 
-public class RidesFragment extends Fragment {
+public class RidesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = RidesFragment.class.getSimpleName();
 
@@ -49,7 +53,15 @@ public class RidesFragment extends Fragment {
 
     private RidesViewModel ridesViewModel;
 
-    private SearchView searchView;;
+    private SearchView searchView;
+
+    private Pagination pagination;
+
+    private int currentPage = 0;
+
+    private boolean isLoading = false;
+
+    private PaginationListener scrollListener;
 
     private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
         if(authViewModel.getUser()!=null && item!=null && item.getRide()!=null){
@@ -66,9 +78,28 @@ public class RidesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_rides, container, false);
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        scrollListener = new PaginationListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                doApiCall();
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return pagination != null && pagination.isLastPage();
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        };
+
         mAdapter = new RideRecyclerViewAdapter(mListener);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setAdapter(mAdapter);
 
         return mBinding.getRoot();
@@ -83,6 +114,14 @@ public class RidesFragment extends Fragment {
         setupRidesViewModel();
     }
 
+    @Override
+    public void onRefresh() {
+        currentPage = 0;
+        isLoading = false;
+        mAdapter.clear();
+        doApiCall();
+    }
+
     private void setupUI() {
         mBinding.toolbar.setNavigationOnClickListener(
                 v -> {
@@ -93,9 +132,8 @@ public class RidesFragment extends Fragment {
                 v -> {
                     User user = authViewModel.getUser();
                     if(user!=null){
-                        ridesViewModel.load(user);
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
+                        if(currentPage>0) currentPage--;
+                        doApiCall();
                     }else{
                         mBinding.setIsLoading(false);
                     }
@@ -104,8 +142,9 @@ public class RidesFragment extends Fragment {
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
                     Navigation.findNavController(v).navigate(R.id.action_orders_fragment_to_navigation_auth);
-                }
-        );
+                });
+
+        mBinding.swipeRefresh.setOnRefreshListener(this);
     }
 
     private void setupAuthViewModel() {
@@ -114,11 +153,7 @@ public class RidesFragment extends Fragment {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        User user = authViewModel.getUser();
-                        ridesViewModel.load(user);
-                        mBinding.setIsLoading(true);
-                        mBinding.setShowError(false);
-                        mBinding.setIsUnauthenticated(false);
+                        doApiCall();
                     }else{
                         mBinding.setIsLoading(false);
                         mBinding.setShowError(false);
@@ -130,6 +165,17 @@ public class RidesFragment extends Fragment {
     private void setupRidesViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         ridesViewModel = new ViewModelProvider(requireActivity(), factory).get(RidesViewModel.class);
+        ridesViewModel.getPaginationResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    pagination = result;
+                    currentPage = pagination.currentPage;
+                    if(scrollListener!=null){
+                        scrollListener.setPageSize(pagination.perPage);
+                    }
+                });
         ridesViewModel.getRidesResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
@@ -137,6 +183,8 @@ public class RidesFragment extends Fragment {
                     }
 
                     mBinding.setIsLoading(false);
+                    mBinding.swipeRefresh.setRefreshing(false);
+                    if (currentPage > 1) mAdapter.removeLoading();
 
                     if(result.getError()!=null){
                         if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
@@ -158,7 +206,11 @@ public class RidesFragment extends Fragment {
                             mBinding.loaderErrorView.getSubtitleView().setText(R.string.empty_rides);
                         }else{
                             mBinding.setShowError(false);
-                            mAdapter.setItems(items);
+                            mAdapter.addItems(items);
+
+                            if(pagination!=null && !pagination.isLastPage()){
+                                mAdapter.addLoading();
+                            }
                         }
                     }
 
@@ -199,5 +251,20 @@ public class RidesFragment extends Fragment {
         }
 
         mBinding.toolbar.setOnMenuItemClickListener(item -> item.getItemId() != R.id.search);
+    }
+
+    private void doApiCall() {
+        User user = authViewModel.getUser();
+        if(user!=null && !isLoading){
+            isLoading = true;
+            currentPage++;
+            ridesViewModel.load(user, currentPage);
+            mBinding.setShowError(false);
+            mBinding.setIsUnauthenticated(false);
+            if(currentPage==1){
+                // Show main loader view for the first page only
+                mBinding.setIsLoading(true);
+            }
+        }
     }
 }

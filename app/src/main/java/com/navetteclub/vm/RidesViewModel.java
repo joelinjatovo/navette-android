@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
+import com.navetteclub.api.models.Pagination;
 import com.navetteclub.api.models.RideParam;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.OrderApiService;
@@ -50,6 +51,8 @@ public class RidesViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<List<RidePointWithDatas>>> pointsResult = new MutableLiveData<>();
 
+    private MutableLiveData<Pagination> paginationResult = new MutableLiveData<>();
+
     public void setRidesResult(RemoteLoaderResult<List<RideWithDatas>> result) {
         ridesResult.setValue(result);
     }
@@ -74,6 +77,14 @@ public class RidesViewModel extends ViewModel {
         this.pointsResult.setValue(pointsResult);
     }
 
+    public MutableLiveData<Pagination> getPaginationResult() {
+        return paginationResult;
+    }
+
+    public void setPaginationResult(Pagination paginationResult) {
+        this.paginationResult.setValue(paginationResult);
+    }
+
     public void direction(String token, Long rideId){
         RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
         Call<RetrofitResponse<RideWithDatas>> call = service.direction(token, new RideParam(rideId));
@@ -85,19 +96,10 @@ public class RidesViewModel extends ViewModel {
                 if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
                     if(response.body().isSuccess()) {
+                        paginationResult.setValue(response.body().getPagination());
                         rideDirectionResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        switch (response.body().getCode()){
-                            case 114:
-                                rideDirectionResult.setValue(new RemoteLoaderResult<>(R.string.error_ride_empty_points));
-                            break;
-                            case 115:
-                                rideDirectionResult.setValue(new RemoteLoaderResult<>(R.string.error_ride_no_route));
-                            break;
-                            default:
-                                rideDirectionResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
-                            break;
-                        }
+                        rideDirectionResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
                     rideDirectionResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
@@ -196,10 +198,10 @@ public class RidesViewModel extends ViewModel {
         });
     }
 
-    public void load(User user){
+    public void load(User user, int page){
         Log.d(TAG, "RidesApiService.getAll( " +  user.getAuthorizationToken() + ")");
         RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
-        Call<RetrofitResponse<List<RideWithDatas>>> call = service.getAll(user.getAuthorizationToken());
+        Call<RetrofitResponse<List<RideWithDatas>>> call = service.getAll(user.getAuthorizationToken(), page);
         call.enqueue(new Callback<RetrofitResponse<List<RideWithDatas>>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<List<RideWithDatas>>> call,

@@ -102,7 +102,6 @@ public class NotificationFragment extends Fragment implements OnClickItemListene
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         notificationViewModel = new ViewModelProvider(requireActivity(), factory).get(NotificationViewModel.class);
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
-
         notificationViewModel.getPaginationResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){

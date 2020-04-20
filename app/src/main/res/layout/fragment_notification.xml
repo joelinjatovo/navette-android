@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
+            app:mTitle="@string/loading_notifications"
             android:visibility="@{isLoading?View.VISIBLE:View.GONE}" />
 
         <com.navetteclub.views.LoaderErrorView

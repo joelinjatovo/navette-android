@@ -117,7 +117,7 @@
     <string name="retours">Retours</string>
     <string name="loader_error_title">Erreur de chargement</string>
     <string name="loader_error_subtitle">Une erreur s\'est produite.</string>
-    <string name="loading_notification">Chargement des notifications</string>
+    <string name="loading_notifications">Chargement des notifications</string>
     <string name="loading_direction">Calcul de la distance et durée du trajet</string>
     <string name="visit_club">Allez à ce club</string>
     <string name="choose_club">Choisir club</string>

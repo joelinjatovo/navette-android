@@ -33,14 +33,22 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/viewholder_ride"
-            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}"/>
+            android:visibility="@{showError||isLoading||isUnauthenticated?View.GONE:View.VISIBLE}">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/viewholder_ride"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.navetteclub.views.LoadingView
             android:layout_width="match_parent"
