@@ -69,14 +69,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
     @Override
     public int getItemViewType(int position) {
-        Log.e("OrderRecyclerViewAdapter", "isLoaderVisible " + isLoaderVisible);
         if (isLoaderVisible) {
             if(position == getItemCount() - 1){
-                Log.e("OrderRecyclerViewAdapter", "VIEW_TYPE_LOADING " + position);
                 return VIEW_TYPE_LOADING;
             }
         }
-        Log.e("OrderRecyclerViewAdapter", "VIEW_TYPE_NORMAL " + position);
         return VIEW_TYPE_NORMAL;
     }
 
@@ -86,9 +83,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     public void addLoading() {
-        Log.e("OrderRecyclerViewAdapter", "addLoading");
         if(mItems!=null){
-            Log.e("OrderRecyclerViewAdapter", "addLoading --- hehrh");
             isLoaderVisible = true;
             mItems.add(new OrderWithDatas());
             notifyItemInserted(getItemCount() - 1);
@@ -96,7 +91,6 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     public void removeLoading() {
-        Log.e("OrderRecyclerViewAdapter", "removeLoading");
         isLoaderVisible = false;
         int position = getItemCount() - 1;
         OrderWithDatas item = getItem(position);
@@ -107,7 +101,6 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     }
 
     public void clear() {
-        Log.e("OrderRecyclerViewAdapter", "clear");
         if(mItems!=null) {
             mItems.clear();
             notifyDataSetChanged();
