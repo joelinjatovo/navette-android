@@ -156,12 +156,12 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                             if(Order.TYPE_BACK.equals(item1.getType())){
                                 mBinding.setPoint4Title("Drop");
                                 mBinding.setPoint4(point.getName());
-                                mBinding.setDelay2(item1.getDelay());
+                                mBinding.setDuration2(item1.getDuration());
                                 mBinding.setDistance2(item1.getDistance());
                             }else{
                                 mBinding.setPoint1Title("Pickup");
                                 mBinding.setPoint1(point.getName());
-                                mBinding.setDelay1(item1.getDelay());
+                                mBinding.setDuration1(item1.getDuration());
                                 mBinding.setDistance1(item1.getDistance());
                             }
                         }
@@ -175,7 +175,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                             mBinding.setItem2Id(item2.getRid());
                             mBinding.setPoint4Title("Drop");
                             mBinding.setPoint4(point.getName());
-                            mBinding.setDelay2(item2.getDelay());
+                            mBinding.setDuration2(item2.getDuration());
                             mBinding.setDistance2(item2.getDistance());
                         }
                     }

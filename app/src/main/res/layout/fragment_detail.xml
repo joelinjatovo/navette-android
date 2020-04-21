@@ -15,7 +15,7 @@
         <variable name="point2" type="String" />
         <variable name="point2Title" type="String" />
         <variable name="distance1" type="String" />
-        <variable name="delay1" type="String" />
+        <variable name="duration1" type="String" />
 
         <variable name="point3" type="String" />
         <variable name="point3Title" type="String" />
@@ -23,7 +23,7 @@
         <variable name="point4Title" type="String" />
         <variable name="amount2" type="String" />
         <variable name="distance2" type="String" />
-        <variable name="delay2" type="String" />
+        <variable name="duration2" type="String" />
 
         <variable name="status" type="String" />
         <variable name="statusDesc" type="String" />
@@ -332,7 +332,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:textColor="@color/colorAccent"
-                                android:text="@{delay1}"
+                                android:text="@{duration1}"
                                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
                         </LinearLayout>
@@ -523,7 +523,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:textColor="@color/colorAccent"
-                                android:text="@{delay2}"
+                                android:text="@{duration2}"
                                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
                         </LinearLayout>

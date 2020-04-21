@@ -30,9 +30,9 @@ public class Ride {
     @ColumnInfo(name = "distance")
     private Long distance;
 
-    @SerializedName("delay")
-    @ColumnInfo(name = "delay")
-    private Long delay;
+    @SerializedName("duration")
+    @ColumnInfo(name = "duration")
+    private Long duration;
 
     @SerializedName("direction")
     @ColumnInfo(name = "direction")
@@ -132,12 +132,12 @@ public class Ride {
         this.distance = distance;
     }
 
-    public Long getDelay() {
-        return delay;
+    public Long getDuration() {
+        return duration;
     }
 
-    public void setDelay(Long delay) {
-        this.delay = delay;
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 
     public String getDirection() {

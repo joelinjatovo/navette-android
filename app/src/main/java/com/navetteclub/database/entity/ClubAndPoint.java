@@ -37,6 +37,6 @@ public class ClubAndPoint {
 
     @NonNull
     public String toString(){
-        return "ClubAndPoint[id=" + club + ";" + point + "]";
+        return "ClubAndPoint[club=" + club + "; point=" + point + "]";
     }
 }

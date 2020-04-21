@@ -14,7 +14,7 @@
         <variable name="showErrorLoader" type="boolean" />
         <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />
-        <variable name="delay" type="String" />
+        <variable name="duration" type="String" />
         <variable name="amount" type="String" />
     </data>
 
@@ -259,7 +259,7 @@
             app:showErrorLoader="@{showErrorLoader}"
             app:isLoadingDirection="@{isLoadingDirection}"
             app:distance="@{distance}"
-            app:delay="@{delay}"
+            app:duration="@{duration}"
             app:amount="@{amount}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

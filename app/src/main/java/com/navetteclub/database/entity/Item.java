@@ -43,13 +43,13 @@ public class Item {
     @ColumnInfo(name = "distance")
     private String distance;
 
-    @SerializedName("delay_value")
-    @ColumnInfo(name = "delay_value")
-    private Long delayValue;
+    @SerializedName("duration_value")
+    @ColumnInfo(name = "duration_value")
+    private Long durationValue;
 
-    @SerializedName("delay")
-    @ColumnInfo(name = "delay")
-    private String delay;
+    @SerializedName("duration")
+    @ColumnInfo(name = "duration")
+    private String duration;
 
     @SerializedName("direction")
     @ColumnInfo(name = "direction")
@@ -143,20 +143,20 @@ public class Item {
         this.distanceValue = distanceValue;
     }
 
-    public Long getDelayValue() {
-        return delayValue;
+    public Long getDurationValue() {
+        return durationValue;
     }
 
-    public void setDelayValue(Long delayValue) {
-        this.delayValue = delayValue;
+    public void setDurationValue(Long durationValue) {
+        this.durationValue = durationValue;
     }
 
-    public String getDelay() {
-        return delay;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setDelay(String delay) {
-        this.delay = delay;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public String getDirection() {
@@ -223,8 +223,8 @@ public class Item {
                 + "; direction=" + direction
                 + "; distance=" + distance
                 + "; distanceValue=" + distanceValue
-                + "; delayValue=" + delay
-                + "; delayValue=" + delayValue
+                + "; duration=" + duration
+                + "; durationValue=" + durationValue
                 + "; ridedAt=" + ridedAt
         + "]";
     }

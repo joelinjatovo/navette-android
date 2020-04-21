@@ -210,8 +210,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 if(item==null){
                                     item = new Item();
                                 }
-                                item.setDelay(leg.getDuration().getText());
-                                item.setDelayValue(leg.getDuration().getValue());
+                                item.setDuration(leg.getDuration().getText());
+                                item.setDurationValue(leg.getDuration().getValue());
                                 item.setDistance(leg.getDistance().getText());
                                 item.setDistanceValue(leg.getDistance().getValue());
                                 item.setDirection(direction);
@@ -245,8 +245,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                                 if(item==null){
                                     item = new Item();
                                 }
-                                item.setDelay(leg.getDuration().getText());
-                                item.setDelayValue(leg.getDuration().getValue());
+                                item.setDuration(leg.getDuration().getText());
+                                item.setDurationValue(leg.getDuration().getValue());
                                 item.setDistance(leg.getDistance().getText());
                                 item.setDistanceValue(leg.getDistance().getValue());
                                 orderViewModel.setItem2LiveData(item);
@@ -309,7 +309,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 item -> {
                     if(item!=null){
                         expandOrderDetails();
-                        mBinding.bottomSheets.setDelay(item.getDelay());
+                        mBinding.bottomSheets.setDuration(item.getDuration());
                         mBinding.bottomSheets.setDistance(item.getDistance());
                         String direction = item.getDirection();
                         if(direction!=null && mMap!=null) {

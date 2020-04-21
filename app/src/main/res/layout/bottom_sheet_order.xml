@@ -11,7 +11,7 @@
         <variable name="showErrorLoaderCar" type="boolean" />
         <variable name="isLoadingCar" type="boolean" />
         <variable name="distance" type="String" />
-        <variable name="delay" type="String" />
+        <variable name="duration" type="String" />
         <variable name="amount" type="String" />
         <variable name="place" type="int" />
     </data>
@@ -133,7 +133,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:textColor="@color/colorAccent"
-                            android:text="@{delay}"
+                            android:text="@{duration}"
                             android:textAppearance="?attr/textAppearanceHeadline6"/>
 
                     </LinearLayout>
