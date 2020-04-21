@@ -236,6 +236,36 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
         Item item = itemWithData.getItem();
         if(item!=null){
+            if(item.getStatus()!=null){
+                switch (item.getStatus()) {
+                    case Item.STATUS_PING:
+                        mBinding.statusTextView.setText(R.string.status_ping);
+                        mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                        mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
+                        break;
+                    case Item.STATUS_NEXT:
+                        mBinding.statusTextView.setText(R.string.status_next);
+                        mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                        mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        break;
+                    case Item.STATUS_COMPLETED:
+                        mBinding.statusTextView.setText(R.string.status_completed);
+                        mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                        mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        break;
+                    case Item.STATUS_CANCELED:
+                        mBinding.statusTextView.setText(R.string.status_canceled);
+                        mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
+                        mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
+                        break;
+                    case Item.STATUS_ONLINE:
+                        mBinding.statusTextView.setText(R.string.status_online);
+                        mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                        mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        break;
+                }
+
+            }
             String direction = item.getDirection();
             if(direction!=null){
                 drawLine(direction);

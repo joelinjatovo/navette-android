@@ -16,6 +16,11 @@ import java.util.Date;
 )
 public class Item {
 
+    public static final String STATUS_PING = "ping";
+    public static final String STATUS_CANCELED = "canceled";
+    public static final String STATUS_NEXT = "next";
+    public static final String STATUS_ONLINE = "online";
+    public static final String STATUS_COMPLETED = "completed";
     @PrimaryKey
     private Long id;
 

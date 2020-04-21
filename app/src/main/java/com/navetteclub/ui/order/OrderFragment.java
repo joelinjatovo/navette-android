@@ -389,7 +389,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                             if(data!=null){
                                 Order order = data.getOrder();
                                 if(order!=null) {
-                                    mBinding.setAmount(order.getAmountStr());
+                                    Order orderLive = orderViewModel.getOrder();
+                                    orderLive.setSubtotal(order.getSubtotal());
+                                    orderLive.setTotal(order.getTotal());
+                                    orderLive.setAmount(order.getAmount());
+                                    orderViewModel.setOrderLiveData(orderLive);
+                                    mBinding.setAmount(order.getTotalStr());
                                 }
                             }
                         }

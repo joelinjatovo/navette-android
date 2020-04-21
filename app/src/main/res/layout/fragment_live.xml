@@ -96,6 +96,7 @@
                         android:layout_height="64dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
+                        android:layout_marginStart="10dp"
                         android:adjustViewBounds="true"
                         android:src="@drawable/user_placeholder"
                         app:strokeColor="@color/colorAccent"
@@ -113,7 +114,7 @@
                         android:layout_marginBottom="5dp"
                         android:layout_toStartOf="@+id/statusTextView"
                         android:layout_toEndOf="@id/avatarImageView"
-                        android:text="@string/payment_success"
+                        android:text="@string/name"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         android:textColor="@color/black" />
 
@@ -121,16 +122,15 @@
                         android:id="@+id/statusTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_text_rounded"
-                        android:padding="5dp"
+                        android:background="@drawable/bg_text_alert_success"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="5dp"
-                        android:text="@string/button_call"
-                        android:textColor="@color/gray" />
+                        android:text="@string/order_status"
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:id="@+id/roleTextView"
@@ -141,12 +141,15 @@
                         android:layout_alignParentEnd="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="@string/thanks_you_for_purchasing"
+                        android:text="@string/unknown_role"
                         android:textColor="@color/gray" />
 
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorIcon"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -160,7 +163,9 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:text="@string/button_cancel_ride"
-                        app:icon="@drawable/outline_arrow_back_ios_black_24"
+                        android:textColor="@color/colorAlert"
+                        app:icon="@drawable/outline_cancel_black_24"
+                        app:iconTint="@color/colorAlert"
                         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                         android:layout_alignParentStart="true"/>
 

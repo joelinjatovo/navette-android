@@ -211,8 +211,10 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
 
         long now = System.currentTimeMillis();
         Date lastUpdated = order.getCreatedAt();
-        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
-        mBinding.setDate((String) date);
+        if(lastUpdated!=null){
+            CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+            mBinding.setDate((String) date);
+        }
 
         if(order.getPaymentType()!=null){
             switch (order.getPaymentType()){
