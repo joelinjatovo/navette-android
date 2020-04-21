@@ -22,6 +22,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="bottom"
             android:layout_alignParentTop="true"/>
 
         <com.shuhart.stepview.StepView
@@ -29,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            app:sv_stepsNumber="7"
             app:sv_selectedCircleColor="@color/colorAccent"
             app:sv_selectedTextColor="@color/white"
             app:sv_stepLineWidth="1dp"

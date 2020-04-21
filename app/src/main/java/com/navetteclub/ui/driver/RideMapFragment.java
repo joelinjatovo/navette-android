@@ -89,6 +89,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -357,6 +358,34 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     }
                     ridesViewModel.setRideResult(null);
                 });
+        ridesViewModel.getRideCompleteResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+
+                    if(result.getError()!=null){
+                        showSweetError(getString(result.getError()));
+                    }
+
+                    if(result.getSuccess()!=null){
+                        this.setRide(result.getSuccess());
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Success")
+                                .setContentText("Votre course a terminé!")
+                                .show();
+                    }
+
+                    ridesViewModel.setRideCompleteResult(null);
+                });
+    }
+
+    private void showSweetError(String string) {
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Oops...")
+                .setContentText(string)
+                .show();
     }
 
     private void setupAuthViewModel() {
@@ -400,7 +429,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         if(rideWithDatas.getPoints()!=null) {
             mAdapter.setItems(rideWithDatas1.getPoints());
             updateStepView(rideWithDatas1.getPoints());
-            scrollRecylerView(rideWithDatas1.getPoints());
+            scrollRecyclerView(rideWithDatas1.getPoints());
             drawPoints(rideWithDatas1.getPoints());
         }
 
@@ -409,6 +438,14 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             String direction = ride.getDirection();
             if(direction!=null){
                 drawLine(direction);
+            }
+
+            if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
+                mAdapter.addCompleting();
+                mBinding.bottomSheets.stepView.go(mBinding.bottomSheets.stepView.getStepCount(), true);
+                if(mBinding.bottomSheets.recyclerView.getLayoutManager()!=null) {
+                    mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(mAdapter.getItemCount());
+                }
             }
         }
     }
@@ -427,7 +464,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void scrollRecylerView(List<RidePointWithDatas> ridePointWithDatas) {
+    private void scrollRecyclerView(List<RidePointWithDatas> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
         int i = 0;
         for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
@@ -836,6 +873,10 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                         rideViewModel.cancelRidePoint(token, ridePoint.getRid());
                     }
                 }
+            break;
+            case R.id.button_complete:
+                progressDialog.show();
+                ridesViewModel.complete(token, rideId);
             break;
         }
     };

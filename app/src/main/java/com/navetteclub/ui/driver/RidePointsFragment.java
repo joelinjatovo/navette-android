@@ -254,7 +254,7 @@ public class RidePointsFragment extends Fragment {
             if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
                 mBinding.actionButton.setText(R.string.button_complete);
                 mBinding.actionButton.setVisibility(View.VISIBLE);
-                mBinding.liveButton.setVisibility(View.GONE);
+                mBinding.liveButton.setVisibility(View.VISIBLE); // <-- here
                 mBinding.actualizeButton.setVisibility(View.GONE);
             }else if(Ride.STATUS_PING.equals(ride.getStatus())){
                 mBinding.actionButton.setText(R.string.button_start_ride);

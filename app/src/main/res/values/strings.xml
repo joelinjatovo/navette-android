@@ -254,5 +254,7 @@
     <string name="ride_pickup">Pickup</string>
     <string name="ride_back">Back</string>
     <string name="ride_drop">Drop</string>
+    <string name="ride_complete">Complete</string>
+    <string name="ride_complete_desc">Vous avez passer sur tous les points.\nCliquer sur le bouton suivant\ndès que vous arrivez au club</string>
 
 </resources>
