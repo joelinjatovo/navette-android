@@ -355,6 +355,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     if(result.getSuccess()!=null){
                         setRide(result.getSuccess());
                     }
+                    ridesViewModel.setRideResult(null);
                 });
     }
 

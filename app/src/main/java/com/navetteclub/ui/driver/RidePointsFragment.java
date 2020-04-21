@@ -140,6 +140,7 @@ public class RidePointsFragment extends Fragment {
                         mBinding.setShowError(false);
                         setRide(result.getSuccess());
                     }
+                    ridesViewModel.setRideResult(null);
                 });
 
         ridesViewModel.getRideDirectionResult().observe(getViewLifecycleOwner(),

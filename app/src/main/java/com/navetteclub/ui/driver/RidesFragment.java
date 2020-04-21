@@ -153,6 +153,8 @@ public class RidesFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        isLoading = false;
+                        currentPage = 0;
                         doApiCall();
                     }else{
                         mBinding.setIsLoading(false);
