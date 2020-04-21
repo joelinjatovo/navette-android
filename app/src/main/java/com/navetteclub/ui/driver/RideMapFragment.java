@@ -31,6 +31,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -366,7 +367,16 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     progressDialog.hide();
 
                     if(result.getError()!=null){
-                        showSweetError(getString(result.getError()));
+                        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Oops...")
+                                .setContentText(getString(result.getError()))
+                                .setConfirmClickListener(sweetAlertDialog -> {
+                                    sweetAlertDialog.dismissWithAnimation();
+                                    progressDialog.show();
+                                    ridesViewModel.complete(token, rideId);
+                                })
+                                .setCancelButton("Annuler", SweetAlertDialog::dismissWithAnimation)
+                                .show();
                     }
 
                     if(result.getSuccess()!=null){
@@ -374,6 +384,10 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success")
                                 .setContentText("Votre course a terminé!")
+                                .setConfirmClickListener(sweetAlertDialog -> {
+                                    sweetAlertDialog.dismissWithAnimation();
+                                    NavHostFragment.findNavController(RideMapFragment.this).popBackStack();
+                                })
                                 .show();
                     }
 
