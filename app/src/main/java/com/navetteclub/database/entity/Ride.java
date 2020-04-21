@@ -2,9 +2,11 @@ package com.navetteclub.database.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.api.models.google.Route;
 
 import java.util.Date;
 
@@ -59,6 +61,10 @@ public class Ride {
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
+
+    @SerializedName("route")
+    @Ignore
+    private Route route;
 
     public Long getId() {
         return id;
@@ -146,5 +152,13 @@ public class Ride {
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
     }
 }
