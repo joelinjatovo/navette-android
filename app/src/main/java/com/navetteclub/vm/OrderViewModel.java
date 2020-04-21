@@ -88,6 +88,8 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> cancelResult = new MutableLiveData<>();
 
+    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> viewResult = new MutableLiveData<>();
+
     public String origin;
 
     private MutableLiveData<String> originLiveData = new MutableLiveData<>();
@@ -167,7 +169,7 @@ public class OrderViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         orderResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
                     }else{
-                        orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                        orderResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 } else {
                     orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -201,7 +203,7 @@ public class OrderViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         cartResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
                     }else{
-                        cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                        cartResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 } else {
                     cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -213,6 +215,38 @@ public class OrderViewModel extends ViewModel {
                                   @NonNull Throwable throwable) {
                 Log.e(TAG+"Cart", throwable.getMessage(), throwable);
                 cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+            }
+        });
+
+        return call;
+    }
+
+    public Call<RetrofitResponse<OrderWithDatas>> getOrder(String token, String orderId) {
+        Log.d(TAG+"Cart", "OrderApiService.getOrder(" + orderId + ")");
+        OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
+        Call<RetrofitResponse<OrderWithDatas>> call = service.getOrder(token, orderId);
+        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+                Log.e(TAG+"View", response.toString());
+                if (response.body() != null){
+                    Log.e(TAG+"View", response.body().toString());
+                    if(response.body().isSuccess()) {
+                        viewResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                    }else{
+                        viewResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
+                    }
+                } else {
+                    viewResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+                                  @NonNull Throwable throwable) {
+                Log.e(TAG+"View", throwable.getMessage(), throwable);
+                viewResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
 
@@ -235,7 +269,7 @@ public class OrderViewModel extends ViewModel {
                     if(response.body().isSuccess()) {
                         paymentResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
                     }else{
-                        paymentResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                        paymentResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 } else {
                     paymentResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -789,5 +823,13 @@ public class OrderViewModel extends ViewModel {
                 }
             }
         }
+    }
+
+    public LiveData<RemoteLoaderResult<OrderWithDatas>> getViewResult() {
+        return viewResult;
+    }
+
+    public void setViewResult(RemoteLoaderResult<OrderWithDatas> viewResult) {
+        this.viewResult.setValue(viewResult);
     }
 }

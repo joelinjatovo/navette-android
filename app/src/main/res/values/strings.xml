@@ -251,5 +251,8 @@
     <string name="error_ride_empty_points">Cette course n\'a pas de commande en cours.</string>
     <string name="error_ride_no_route">Aucune route trouvée pour cette course.</string>
     <string name="button_complete">Terminer</string>
+    <string name="ride_pickup">Pickup</string>
+    <string name="ride_back">Back</string>
+    <string name="ride_drop">Drop</string>
 
 </resources>

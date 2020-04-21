@@ -2,6 +2,7 @@ package com.navetteclub.ui.order;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -59,10 +60,14 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.databinding.FragmentOrderBinding;
 import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
+import com.navetteclub.ui.driver.RideMapFragmentArgs;
+import com.navetteclub.ui.driver.RidePointMapRecyclerViewAdapter;
 import com.navetteclub.ui.maps.MapsFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
@@ -130,6 +135,23 @@ public class OrderMapFragment extends Fragment implements OnMapReadyCallback {
     private Marker myPositionMarker;
 
     private BottomSheetBehavior sheetBehavior;
+
+    private String token;
+
+    private Long orderId;
+
+    private OrderWithDatas orderWithDatas;
+
+    private ProgressDialog progressDialog;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            token = OrderMapFragmentArgs.fromBundle(getArguments()).getToken();
+            orderId = OrderMapFragmentArgs.fromBundle(getArguments()).getOrderId();
+        }
+    }
 
     @Nullable
     @Override

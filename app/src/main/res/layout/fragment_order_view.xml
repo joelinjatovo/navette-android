@@ -9,6 +9,7 @@
         <variable name="total" type="String" />
         <variable name="subtotal" type="String" />
 
+        <variable name="item1Id" type="String" />
         <variable name="point1" type="String" />
         <variable name="point1Title" type="String" />
         <variable name="point2" type="String" />
@@ -16,6 +17,7 @@
         <variable name="distance1" type="String" />
         <variable name="delay1" type="String" />
 
+        <variable name="item2Id" type="String" />
         <variable name="point3" type="String" />
         <variable name="point3Title" type="String" />
         <variable name="point4" type="String" />
@@ -163,6 +165,61 @@
                         android:background="@color/background" />
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/live1Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="1dp"
+                        android:visibility="@{(point1==null)||(point2==null)?View.GONE:View.VISIBLE}"
+                        app:cardCornerRadius="0dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:id="@+id/point1MainIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:contentDescription="@string/image"
+                                android:src="@drawable/round_swap_vertical_circle_black_24"
+                                android:tint="@color/colorAccent" />
+
+                            <TextView
+                                android:id="@+id/point1MainLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/point1MainDetail"
+                                android:layout_toEndOf="@id/point1MainIcon"
+                                android:text="@string/ride_pickup"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/gray" />
+
+                            <TextView
+                                android:id="@+id/point1MainDetail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_alignParentEnd="true"
+                                android:text="@string/details"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/colorAccent" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="@color/background" />
+
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="1dp"
@@ -188,7 +245,7 @@
                                     android:layout_alignParentStart="true"
                                     android:layout_centerVertical="true"
                                     android:contentDescription="@string/image"
-                                    android:src="@drawable/outline_place_black_18"
+                                    android:src="@drawable/round_lens_black_18"
                                     android:tint="@color/colorAccent" />
 
                                 <TextView
@@ -234,7 +291,7 @@
                                     android:layout_alignParentStart="true"
                                     android:layout_centerVertical="true"
                                     android:contentDescription="@string/image"
-                                    android:src="@drawable/outline_trip_origin_black_18"
+                                    android:src="@drawable/round_lens_black_18"
                                     android:tint="@color/colorAlert" />
 
                                 <TextView
@@ -342,13 +399,66 @@
 
                                 </LinearLayout>
 
-
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                         </LinearLayout>
 
                     </androidx.cardview.widget.CardView>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="@color/background" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/live2Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="1dp"
+                        android:visibility="@{(point3==null)||(point4==null)?View.GONE:View.VISIBLE}"
+                        app:cardCornerRadius="0dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:id="@+id/point2MainIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:contentDescription="@string/image"
+                                android:src="@drawable/round_swap_vertical_circle_black_24"
+                                android:tint="@color/colorAccent" />
+
+                            <TextView
+                                android:id="@+id/point2MainLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/point2MainDetail"
+                                android:layout_toEndOf="@id/point2MainIcon"
+                                android:text="@string/ride_drop"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/gray" />
+
+                            <TextView
+                                android:id="@+id/point2MainDetail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_alignParentEnd="true"
+                                android:text="@string/details"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/colorAccent" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="3dp"
@@ -380,7 +490,7 @@
                                     android:layout_alignParentStart="true"
                                     android:layout_centerVertical="true"
                                     android:contentDescription="@string/image"
-                                    android:src="@drawable/outline_trip_origin_black_18"
+                                    android:src="@drawable/round_lens_black_18"
                                     android:tint="@color/colorAlert" />
 
                                 <TextView
@@ -426,7 +536,7 @@
                                     android:layout_alignParentStart="true"
                                     android:layout_centerVertical="true"
                                     android:contentDescription="@string/image"
-                                    android:src="@drawable/outline_place_black_18"
+                                    android:src="@drawable/round_lens_black_18"
                                     android:tint="@color/colorAccent" />
 
                                 <TextView
@@ -534,7 +644,6 @@
                                 </LinearLayout>
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
                         </LinearLayout>
 
@@ -656,26 +765,13 @@
                 android:layout_alignParentBottom="true">
 
                 <Button
-                    android:id="@+id/closeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_back"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/cancelButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:textColor="@color/colorAccent"
-                    app:strokeColor="@color/colorAccent"  />
-
-                <Button
                     android:id="@+id/cancelButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/button_cancel"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/actionButton"
-                    app:layout_constraintStart_toEndOf="@id/closeButton"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <Button
@@ -693,6 +789,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/button_live"
+                    app:layout_constraintStart_toEndOf="@id/actionButton"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

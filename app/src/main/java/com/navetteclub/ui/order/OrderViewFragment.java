@@ -152,6 +152,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(point!=null){
                         Item item1 = orderViewModel.getItem1();
                         if(item1!=null){
+                            mBinding.setItem1Id(item1.getRid());
                             if(Order.TYPE_BACK.equals(item1.getType())){
                                 mBinding.setPoint4Title("Drop");
                                 mBinding.setPoint4(point.getName());
@@ -171,6 +172,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(point!=null){
                         Item item2 = orderViewModel.getItem2();
                         if(item2!=null){
+                            mBinding.setItem2Id(item2.getRid());
                             mBinding.setPoint4Title("Drop");
                             mBinding.setPoint4(point.getName());
                             mBinding.setDelay2(item2.getDelay());
@@ -255,14 +257,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         progressDialog.setMessage(getString(R.string.signing));
 
         NavController navController = NavHostFragment.findNavController(this);
-        mBinding.toolbar.setNavigationOnClickListener(
-                v -> {
-                    navController.popBackStack();
-                });
-        mBinding.closeButton.setOnClickListener(
-                v -> {
-                    navController.popBackStack();
-                });
+        mBinding.toolbar.setNavigationOnClickListener(v -> navController.popBackStack());
         mBinding.cancelButton.setOnClickListener(
                 v -> {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
@@ -274,15 +269,28 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         navController.navigate(action);
                     }
                 });
-        mBinding.liveButton.setOnClickListener(
+        mBinding.live1Button.setOnClickListener(
                 v -> {
-                    if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
-                        switch (order.getStatus()){
-                            case Order.STATUS_OK:
-                            case Order.STATUS_ACTIVE:
-                                navController.navigate(R.id.action_order_view_fragment_to_live_fragment);
-                                break;
-                        }
+                    User user = authViewModel.getUser();
+                    if(user!=null && user.getAuthorizationToken() != null && mBinding.getItem1Id()!=null){
+                        OrderViewFragmentDirections.ActionOrderViewFragmentToLiveFragment action =
+                                OrderViewFragmentDirections.actionOrderViewFragmentToLiveFragment(
+                                        user.getAuthorizationToken(),
+                                        mBinding.getItem1Id()
+                                );
+                        navController.navigate(action);
+                    }
+                });
+        mBinding.live2Button.setOnClickListener(
+                v -> {
+                    User user = authViewModel.getUser();
+                    if(user!=null && user.getAuthorizationToken() != null && mBinding.getItem2Id()!=null){
+                        OrderViewFragmentDirections.ActionOrderViewFragmentToLiveFragment action =
+                                OrderViewFragmentDirections.actionOrderViewFragmentToLiveFragment(
+                                        user.getAuthorizationToken(),
+                                        mBinding.getItem2Id()
+                                );
+                        navController.navigate(action);
                     }
                 });
         mBinding.actionButton.setOnClickListener(

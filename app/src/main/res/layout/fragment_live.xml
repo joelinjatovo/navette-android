@@ -6,16 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="isLoading" type="boolean" />
-        <variable name="origin" type="com.navetteclub.database.entity.Point" />
-        <variable name="destination" type="com.navetteclub.database.entity.Point" />
-        <variable name="retours" type="com.navetteclub.database.entity.Point" />
-
-        <variable name="showErrorLoader" type="boolean" />
-        <variable name="isLoadingDirection" type="boolean" />
-        <variable name="distance" type="String" />
-        <variable name="delay" type="String" />
-        <variable name="amount" type="String" />
+        <variable name="user" type="com.navetteclub.database.entity.User" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -35,71 +26,162 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                app:layout_constraintTop_toTopOf="parent">
 
-                <RelativeLayout
-                    android:id="@+id/relativeLayout"
+                <ImageView
+                    android:id="@+id/backButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image"
+                    android:padding="10dp"
+                    android:src="@drawable/outline_arrow_back_ios_black_24"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:id="@+id/titleView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:padding="10dp"
+                    android:text="@string/live_order"
+                    android:layout_toEndOf="@id/backButton"
+                    android:layout_toStartOf="@id/liveTitleView"
+                    android:textAppearance="?attr/textAppearanceBody1"/>
 
-                    <ImageView
-                        android:id="@+id/backButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/image"
-                        android:padding="10dp"
-                        android:src="@drawable/outline_arrow_back_ios_black_24"
-                        android:layout_centerVertical="true"/>
+                <TextView
+                    android:id="@+id/liveTitleView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/live"
+                    android:textAlignment="textEnd"
+                    android:layout_toStartOf="@id/switchView"
+                    android:textAppearance="?attr/textAppearanceBody1"/>
+
+                <Switch
+                    android:id="@+id/switchView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/bottomView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_top"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="@{user==null?View.VISIBLE:View.GONE}"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{user==null?View.GONE:View.VISIBLE}">
+
+                    <com.navetteclub.views.CircleImageView
+                        android:id="@+id/avatarImageView"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/user_placeholder"
+                        app:strokeColor="@color/colorAccent"
+                        app:strokeWidth="2dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"/>
 
                     <TextView
-                        android:id="@+id/titleView"
+                        android:id="@+id/nameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_toStartOf="@+id/statusTextView"
+                        android:layout_toEndOf="@id/avatarImageView"
+                        android:text="@string/payment_success"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/statusTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text_rounded"
+                        android:padding="5dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="@string/button_call"
+                        android:textColor="@color/gray" />
+
+                    <TextView
+                        android:id="@+id/roleTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:text="@string/live_order"
-                        android:layout_toEndOf="@id/backButton"
-                        android:layout_toStartOf="@id/liveTitleView"
-                        android:textAppearance="?attr/textAppearanceBody1"/>
-
-                    <TextView
-                        android:id="@+id/liveTitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:text="@string/live"
-                        android:textAlignment="textEnd"
-                        android:layout_toStartOf="@id/switchView"
-                        android:textAppearance="?attr/textAppearanceBody1"/>
-
-                    <Switch
-                        android:id="@+id/switchView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_below="@id/nameTextView"
+                        android:layout_toEndOf="@id/avatarImageView"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="@string/thanks_you_for_purchasing"
+                        android:textColor="@color/gray" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{user==null?View.GONE:View.VISIBLE}">
+
+                    <Button
+                        android:id="@+id/button_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="@string/button_cancel_ride"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textColor="@color/colorAccent"
+                        app:strokeColor="@color/white"
+                        android:layout_alignParentStart="true"/>
+
+                    <Button
+                        android:id="@+id/button_call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="@string/button_call"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textColor="@color/colorAccent"
+                        app:strokeColor="@color/colorAccent"
+                        android:layout_alignParentEnd="true"/>
 
                 </RelativeLayout>
 
             </LinearLayout>
 
         </RelativeLayout>
-
-        <!-- Adding bottom sheet  -->
-        <include
-            layout="@layout/bottom_sheet_order_map"
-            android:id="@+id/bottom_sheets"
-            app:showErrorLoader="@{showErrorLoader}"
-            app:isLoadingDirection="@{isLoadingDirection}"
-            app:origin="@{origin}"
-            app:destination="@{destination}"
-            app:retours="@{retours}"
-            app:amount="@{amount}"
-            app:distance="@{distance}"
-            app:delay="@{delay}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

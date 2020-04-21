@@ -30,6 +30,10 @@ public class OrderWithDatas {
     @Embedded
     private Car car;
 
+    @SerializedName("car_driver")
+    @Embedded
+    private User carDriver;
+
     @SerializedName("items")
     private List<ItemWithDatas> items;
 
@@ -79,5 +83,13 @@ public class OrderWithDatas {
 
     public void setClubPoint(Point clubPoint) {
         this.clubPoint = clubPoint;
+    }
+
+    public User getCarDriver() {
+        return carDriver;
+    }
+
+    public void setCarDriver(User carDriver) {
+        this.carDriver = carDriver;
     }
 }

@@ -46,12 +46,26 @@
     <fragment
         android:id="@+id/order_map_fragment"
         android:name="com.navetteclub.ui.order.OrderMapFragment"
-        tools:layout="@layout/fragment_order_map"/>
+        tools:layout="@layout/fragment_order_map">
+        <argument
+            android:name="token"
+            app:argType="string" />
+        <argument
+            android:name="orderId"
+            app:argType="long" />
+    </fragment>
 
     <fragment
         android:id="@+id/live_fragment"
         android:name="com.navetteclub.ui.order.LiveFragment"
-        tools:layout="@layout/fragment_live"/>
+        tools:layout="@layout/fragment_live">
+        <argument
+            android:name="token"
+            app:argType="string" />
+        <argument
+            android:name="itemId"
+            app:argType="string"/>
+    </fragment>
 
     <fragment
         android:id="@+id/steps_fragment"

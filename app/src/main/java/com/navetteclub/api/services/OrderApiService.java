@@ -23,6 +23,10 @@ public interface OrderApiService {
     Call<RetrofitResponse<OrderWithDatas>> createOrder(@Header("Authorization") String token, @Body OrderRequest orderRequest);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @GET("api/v1/order/{order}")
+    Call<RetrofitResponse<OrderWithDatas>> getOrder(@Header("Authorization") String token, @Path("order") String orderId);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/cart")
     Call<RetrofitResponse<OrderWithDatas>> getCart(@Body OrderRequest orderRequest);
 

@@ -1,6 +1,7 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -52,17 +53,27 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
+import com.navetteclub.database.entity.ItemWithDatas;
+import com.navetteclub.database.entity.Order;
+import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.RidePoint;
+import com.navetteclub.database.entity.RidePointWithDatas;
+import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentLiveBinding;
 import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.MapUiUtils;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.navetteclub.vm.RideViewModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -119,39 +130,36 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private FragmentLiveBinding mBinding;
 
-    private OrderViewModel orderViewModel;
+    private RideViewModel rideViewModel;
 
     private GoogleViewModel googleViewModel;
 
-    private Polyline line;
-
-    private LatLng mOldOrigin;
-
-    private LatLng mOrigin;
-
-    private LatLng mOldDestination;
-
-    private LatLng mDestination;
-
-    private LatLng mRetours;
-
-    private Marker mOriginMarker;
-
-    private Marker mDestinationMarker;
-
-    private Marker mRetoursMarker;
+    private AuthViewModel authViewModel;
 
     private Marker myPositionMarker;
 
-    private BottomSheetBehavior sheetBehavior;
+    private String token;
+
+    private String itemId;
+
+    private Polyline line1;
+
+    private Marker mClubMarker;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null) {
+            token = LiveFragmentArgs.fromBundle(getArguments()).getToken();
+            itemId = LiveFragmentArgs.fromBundle(getArguments()).getItemId();
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d(TAG + "Cycle", "onCreateView");
-
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_live, container, false);
 
         return mBinding.getRoot();
@@ -177,23 +185,77 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG + "Cycle", "onViewCreated");
-
-        setupBottomSheet();
-
         setupUi();
-
-        setupOrderViewModel();
-
+        setupRideViewModel();
         setupGoogleViewModel();
+        setupAuthViewModel();
+    }
+
+    private void setupRideViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        rideViewModel = new ViewModelProvider(requireActivity(), factory).get(RideViewModel.class);
+        rideViewModel.getItemViewResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null) return;
+
+                    if(result.getError()!=null){
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(result.getSuccess()!=null){
+                        Toast.makeText(requireContext(), "HAhAHAHAH", Toast.LENGTH_SHORT).show();
+                        updateUi(result.getSuccess());
+                    }
+                });
+    }
+
+    private void updateUi(ItemWithDatas itemWithData) {
+        if(itemWithData==null) return;
+        User driver = itemWithData.getDriver();
+        if(driver!=null){
+            mBinding.setUser(driver);
+            mBinding.nameTextView.setText(driver.getName());
+            mBinding.roleTextView.setText(driver.getRole());
+            if (driver.getImageUrl() != null) {
+                Picasso.get()
+                        .load(Constants.getBaseUrl() + driver.getImageUrl())
+                        .placeholder(R.drawable.user_placeholder)
+                        .error(R.drawable.user_placeholder)
+                        .into(mBinding.avatarImageView);
+            }
+        }
+
+        Item item = itemWithData.getItem();
+        if(item!=null){
+            String direction = item.getDirection();
+            if(direction!=null){
+                drawLine(direction);
+            }
+        }
+
+        Point point = itemWithData.getPoint();
+        if(point!=null){
+            drawPoint(point, String.valueOf(1));
+            if(mMap!=null){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point.toLatLng(), 15));
+            }
+        }
+    }
+
+    private void setupAuthViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        rideViewModel.loadItem(token, itemId);
+                    }
+                });
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // Bind to the service. If the service is in foreground mode, this signals to the service
-        // that since this activity is in the foreground, the service can exit foreground mode.
         requireActivity().bindService(new Intent(requireContext(), LocationUpdatesService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -212,9 +274,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStop() {
         if (mBound) {
-            // Unbind from the service. This signals to the service that this activity is no longer
-            // in the foreground, and the service can respond by promoting itself to a foreground
-            // service.
             requireActivity().unbindService(mServiceConnection);
             mBound = false;
         }
@@ -224,15 +283,11 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        Log.d(TAG + "Cycle", "onDestroyView");
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
 
@@ -289,145 +344,138 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 
-    private void setupBottomSheet() {
-        sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
-    }
-
     private void setupGoogleViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
+    }
 
-        googleViewModel = new ViewModelProvider(requireActivity(),
-                factory).get(GoogleViewModel.class);
+    private void updateUiWithOrder(OrderWithDatas orderWithDatas) {
+        if(orderWithDatas==null) return;
+        User user = orderWithDatas.getCarDriver();
+        if(user!=null) {
+            mBinding.setUser(user);
+            mBinding.nameTextView.setText(user.getName());
+            mBinding.roleTextView.setText(user.getRole());
+            if (user.getImageUrl() != null) {
+                Picasso.get()
+                        .load(Constants.getBaseUrl() + user.getImageUrl())
+                        .placeholder(R.drawable.user_placeholder)
+                        .error(R.drawable.user_placeholder)
+                        .into(mBinding.avatarImageView);
+            }
+        }
 
-        googleViewModel.getDirection1Result().observe(getViewLifecycleOwner(),
-                result -> {
-                    if(result==null){
-                        return;
-                    }
+        Order order = orderWithDatas.getOrder();
+        if(order!=null){
+            mBinding.statusTextView.setText(order.getStatus());
+        }
 
-                    mBinding.setIsLoadingDirection(false);
-                    mBinding.setShowErrorLoader(false);
+        Club club = orderWithDatas.getClub();
+        Point clubPoint = orderWithDatas.getClubPoint();
+        if(club!=null && clubPoint!=null){
+            drawClubMarker(clubPoint, club);
+        }
 
-                    if(result.body()!=null){
-                        for (int i = 0; i < result.body().getRoutes().size(); i++) {
-                            Route route = result.body().getRoutes().get(i);
-                            for(Leg leg: route.getLegs()){
-                                //orderViewModel.setDistance(leg.getDistance().getText());
-                                //orderViewModel.setDelay(leg.getDuration().getText());
-                            }
-                            //orderViewModel.setDirection(route.getOverviewPolyline().getPoints());
+        if(clubPoint!=null){
+            drawPoint(clubPoint, "0");
+        }
+
+        List<ItemWithDatas> itemWithDatas = orderWithDatas.getItems();
+        if(itemWithDatas!=null){
+            int i = 1;
+            for(ItemWithDatas itemWithDatas1: itemWithDatas){
+                if(itemWithDatas1!=null && itemWithDatas1.getItem()!=null){
+                    Point point = itemWithDatas1.getPoint();
+                    if(point!=null){
+                        drawPoint(point, String.valueOf(i));
+                        if(mMap!=null){
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point.toLatLng(), 15));
                         }
                     }
-                });
-
-        googleViewModel.getError1Result().observe(getViewLifecycleOwner(),
-                error -> {
-                    if(error==null){
-                        return;
+                    Item item = itemWithDatas1.getItem();
+                    if(item!=null){
+                        String direction = item.getDirection();
+                        if(direction!=null){
+                            drawLine(direction);
+                        }
                     }
-
-                    mBinding.setIsLoadingDirection(false);
-
-                    showDirectionError(error);
-
-                });
-
-    }
-
-    private void showDirectionError(String error) {
-        mBinding.setShowErrorLoader(false);
-    }
-
-    private void setupOrderViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-    }
-
-    private void loadDirection() {
-        if(mOrigin!=null && mDestination!=null){
-            mBinding.setIsLoading(true);
-            mBinding.setShowErrorLoader(false);
-            expandOrderDetails();
-            googleViewModel.loadDirection(getString(R.string.google_maps_key), mOrigin, mDestination, null, true);
+                }
+            }
         }
     }
 
-    private void drawOriginMarker(Point point) {
+    private void drawClubMarker(Point point, Club club) {
         if(mMap==null){
             return;
         }
 
-        if(mOriginMarker!=null){
-            mOriginMarker.remove();
-        }
-
-        LatLng latLng = new LatLng(point.getLat(),point.getLng());
-        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
-        options.position(latLng); // Setting the position of the marker
-        options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
-        //options.anchor(1, 0.5f);
-
-        mOriginMarker = mMap.addMarker(options);
-    }
-
-    private void drawRetoursMarker(Point point) {
-        if(mMap==null){
-            return;
-        }
-
-        if(mRetoursMarker!=null){
-            mRetoursMarker.remove();
-        }
-
-        LatLng latLng = new LatLng(point.getLat(),point.getLng());
-        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
-        options.position(latLng); // Setting the position of the marker
-        options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
-        //options.anchor(1, 0.5f);
-
-        mRetoursMarker = mMap.addMarker(options);
-    }
-
-    private void drawDestinationMarker(Point point, Club club) {
-        if(mMap==null){
-            return;
-        }
-
-        if(mDestinationMarker!=null){
-            mDestinationMarker.remove();
-        }
-
-        LatLng latLng = new LatLng(point.getLat(),point.getLng());
-        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
-        options.position(latLng); // Setting the position of the marker
         if(club!=null){
-            new Picasso.Builder(requireContext())
-                    .build()
+            Picasso.get()
                     .load(Constants.getBaseUrl() + club.getImageUrl())
                     .resize(64,64)
                     .into(new Target() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            // loaded bitmap is here (bitmap)
-                            options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), club.getName(), bitmap));
-                            //options.anchor(0.5f, 1);
-                            mDestinationMarker = mMap.addMarker(options);
+                            Log.d(TAG, "drawClubMarker.onBitmapLoaded ");
+                            if(mClubMarker!=null){
+                                //mClubMarker.remove();
+                            }
+                            mClubMarker = MapUiUtils.drawClubMarker(requireContext(), mMap, point, club.getName(), bitmap);
                         }
 
                         @Override
                         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Log.e(TAG, "drawClubMarker.onBitmapFailed ", e);
+                            if(mClubMarker!=null){
+                                //mClubMarker.remove();
+                            }
+                            LatLng latLng = point.toLatLng();
+                            MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+                            options.position(latLng); // Setting the position of the marker
                             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                            mDestinationMarker = mMap.addMarker(options);
+                            mClubMarker = mMap.addMarker(options);
                         }
 
                         @Override
                         public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            Log.d(TAG, "drawClubMarker.onPrepareLoad ");
                         }
                     });
         }else{
+            if(mClubMarker!=null){
+                //mClubMarker.remove();
+            }
+
+            LatLng latLng = point.toLatLng();
+            MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+            options.position(latLng); // Setting the position of the marker
             options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
-            mDestinationMarker = mMap.addMarker(options);
+            mClubMarker = mMap.addMarker(options);
         }
+
+    }
+
+    private void drawLine(String encodedString) {
+        if(mMap==null){
+            return;
+        }
+
+        //Remove previous line from map
+        if (line1 != null) {
+            line1.remove();
+        }
+
+        List<LatLng> list = Utils.decodePoly(encodedString);
+        line1 = mMap.addPolyline(new PolylineOptions()
+                .addAll(list)
+                .width(5)
+                .color(R.color.colorAlert)
+                .geodesic(true)
+        );
+    }
+
+    private Marker drawPoint(Point point, String step) {
+        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, step, point.getName());
     }
 
     private void setupUi() {
@@ -436,8 +484,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 (buttonView, isChecked) -> {
                     if(isChecked){
                         // Live update location
-                        Toast.makeText(requireContext(), "requestLocationUpdatesButton.click",
-                                Toast.LENGTH_SHORT).show();
                         if (!checkPermissions()) {
                             requestPermissions();
                         } else {
@@ -445,17 +491,9 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }else{
                         // Remove live location update
-                        Toast.makeText(requireContext(), "removeLocationUpdatesButton.click",
-                                Toast.LENGTH_SHORT).show();
                         mService.removeLocationUpdates();
                     }
                 });
-    }
-
-    private void expandOrderDetails() {
-        if(sheetBehavior != null && mOrigin != null && mDestination != null){
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
     }
 
     private void getDeviceLocation() {
