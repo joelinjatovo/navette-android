@@ -751,7 +751,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                        android:layout_height="26dp"
                         android:background="@color/background" />
 
                 </LinearLayout>
@@ -772,7 +772,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/actionButton"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:textColor="@color/colorAccent"
+                    app:strokeColor="@color/colorAccent"/>
 
                 <Button
                     android:id="@+id/actionButton"
@@ -780,22 +783,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/pay"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/liveButton"
-                    app:layout_constraintStart_toEndOf="@id/cancelButton"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/liveButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_live"
-                    app:layout_constraintStart_toEndOf="@id/actionButton"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:textColor="@color/colorAccent"
-                    app:strokeColor="@color/colorAccent" />
+                    app:layout_constraintStart_toEndOf="@id/cancelButton"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

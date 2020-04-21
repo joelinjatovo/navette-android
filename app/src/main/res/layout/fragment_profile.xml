@@ -119,7 +119,9 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:text="@string/edit"
-                        android:visibility="@{user.verified?View.VISIBLE:View.GONE}"/>
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textColor="@color/colorAccent"
+                        app:strokeColor="@color/colorAccent"/>
 
                 </LinearLayout>
 
@@ -130,7 +132,6 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <LinearLayout
                 android:id="@+id/navigation_view"
@@ -172,10 +173,10 @@
                     android:background="@color/colorIcon"/>
 
                 <com.navetteclub.views.MenuItemView
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                     android:id="@+id/menu_histories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/menuitem_background"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     app:iconTint="@color/colorAccent"

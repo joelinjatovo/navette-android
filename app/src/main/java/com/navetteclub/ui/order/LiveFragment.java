@@ -74,10 +74,20 @@ import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.RideViewModel;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.PrivateChannelEventListener;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+import com.pusher.client.util.HttpAuthorizer;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -203,7 +213,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     if(result.getSuccess()!=null){
-                        Toast.makeText(requireContext(), "HAhAHAHAH", Toast.LENGTH_SHORT).show();
                         updateUi(result.getSuccess());
                     }
                 });
@@ -249,6 +258,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         rideViewModel.loadItem(token, itemId);
+                        User user = authViewModel.getUser();
+                        connectPrivatePush();
                     }
                 });
     }
@@ -585,6 +596,46 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         }
+    }
+
+    private void connectPrivatePush() {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Authorization", token);
+        HttpAuthorizer authorizer = new HttpAuthorizer(Constants.getBaseUrl() + "broadcasting/auth");
+        authorizer.setHeaders(headers);
+        PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
+        options.setCluster(Constants.getPusherAppCluster());
+        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                Log.i(TAG + "Pusher", "Connection State Change: " + change.toString());
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+                Log.i(TAG + "Pusher", String.format("Connection Error: [%s], exception was [%s]", message, e));
+            }
+        }, ConnectionState.ALL);
+
+        pusher.subscribePrivate("private-App.Item."+ itemId, new PrivateChannelEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG + "Pusher", "onEvent");
+                Log.d(TAG + "Pusher", event.getEventName());
+                Log.d(TAG + "Pusher", event.getData());
+            }
+
+            @Override
+            public void onSubscriptionSucceeded(String channelName) {
+                Log.d(TAG + "Pusher", "onSubscriptionSucceeded " + channelName);
+            }
+
+            @Override
+            public void onAuthenticationFailure(String message, Exception e) {
+                Log.d(TAG + "Pusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
+            }
+        }, "item.created", "item.updated");
     }
 
 }

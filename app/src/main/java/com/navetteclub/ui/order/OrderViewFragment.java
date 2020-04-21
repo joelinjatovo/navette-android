@@ -240,7 +240,6 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         }
 
         mBinding.cancelButton.setVisibility(Order.STATUS_OK.equals(order.getStatus())?View.VISIBLE:View.GONE);
-        mBinding.liveButton.setVisibility(Order.STATUS_ACTIVE.equals(order.getStatus())?View.VISIBLE:View.GONE);
         if(order.getStatus()!=null){
             mBinding.setStatus(order.getStatus());
             mBinding.actionButton.setVisibility(Order.STATUS_PING.equals(order.getStatus())||Order.STATUS_ON_HOLD.equals(order.getStatus())?View.VISIBLE:View.GONE);

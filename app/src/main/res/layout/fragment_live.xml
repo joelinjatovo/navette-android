@@ -160,9 +160,8 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:text="@string/button_cancel_ride"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:textColor="@color/colorAccent"
-                        app:strokeColor="@color/white"
+                        app:icon="@drawable/outline_arrow_back_ios_black_24"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                         android:layout_alignParentStart="true"/>
 
                     <Button
@@ -172,9 +171,8 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:text="@string/button_call"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:textColor="@color/colorAccent"
-                        app:strokeColor="@color/colorAccent"
+                        app:icon="@drawable/outline_call_black_24"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                         android:layout_alignParentEnd="true"/>
 
                 </RelativeLayout>
