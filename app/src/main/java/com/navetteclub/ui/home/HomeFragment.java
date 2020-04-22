@@ -42,6 +42,7 @@ import com.navetteclub.ui.order.SearchType;
 import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
+import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
@@ -68,6 +69,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
     private ClubViewModel clubViewModel;
 
     private OrderViewModel orderViewModel;
+
+    private GoogleViewModel googleViewModel;
 
     @Nullable
     @Override
@@ -96,6 +99,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         setupClubViewModel(factory);
         setupOrderViewModel(factory);
+        setupGoogleViewModel(factory);
         setupUi();
     }
 
@@ -140,6 +144,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(requireActivity(), factory).get(OrderViewModel.class);
+    }
+
+    private void setupGoogleViewModel(MyViewModelFactory factory) {
+        googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
     }
 
     private void setupClubViewModel(MyViewModelFactory factory) {
@@ -276,6 +284,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
 
     @Override
     public void onClick(View v, int position, ClubAndPoint item) {
+        googleViewModel.refresh();
         orderViewModel.refresh();
         orderViewModel.setClubLiveData(item.getClub());
         orderViewModel.setClubPointLiveData(item.getPoint());

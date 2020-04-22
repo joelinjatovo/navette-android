@@ -15,7 +15,7 @@ public final class Constants {
     };
 
     //public static final String BASE_URL = "http://10.11.12.100:8000/"; // Work
-    private static final String BASE_URL = "http://192.168.43.6:8000/"; // Home
+    private static final String BASE_URL = "https://navetteclub.com/"; // Home
     private static final String BASE_URL_DEV = "http://192.168.43.6:8000/";
     public static String getBaseUrl(){
         if (BuildConfig.DEBUG) {

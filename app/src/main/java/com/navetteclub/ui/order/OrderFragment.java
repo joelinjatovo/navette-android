@@ -117,19 +117,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
     private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
         @Override
         public void onClick(View v, int position, CarAndModel item) {
-            Toast.makeText(getContext(), "clic", Toast.LENGTH_SHORT).show();
-            List<CarAndModel> models = mAdapter.getItems();
-            for(CarAndModel model: models){
-                model.setSelected(false);
-            }
-            if(models.size()>position) {
-                models.get(position).setSelected(true);
-            }
             orderViewModel.setCarLiveData(item.getCar());
-            mAdapter.setItems(models);
-
-            mAdapter.notifyItemChanged(mAdapter.getSelected());
-            mAdapter.notifyItemChanged(position);
             mAdapter.setSelected(position);
         }
     };
@@ -418,6 +406,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         }else{
                             mBinding.bottomSheets.setShowErrorLoaderCar(false);
                             mAdapter.setItems(items);
+                            orderViewModel.setCarLiveData(items.get(0).getCar());
+                            mAdapter.setSelected(0);
                         }
                     }
                 });

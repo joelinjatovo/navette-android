@@ -139,4 +139,11 @@ public class GoogleViewModel extends ViewModel {
     public void setError2Result(String error) {
         this.error2Result.setValue(error);
     }
+
+    public void refresh() {
+        error1Result.setValue(null);
+        direction1Result.setValue(null);
+        error2Result.setValue(null);
+        direction2Result.setValue(null);
+    }
 }
