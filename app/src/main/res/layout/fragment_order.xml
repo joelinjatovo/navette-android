@@ -6,13 +6,10 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="isLoading" type="boolean" />
         <variable name="origin" type="String" />
         <variable name="destination" type="String" />
         <variable name="back" type="String" />
 
-        <variable name="showErrorLoader" type="boolean" />
-        <variable name="isLoadingDirection" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="duration" type="String" />
         <variable name="amount" type="String" />
@@ -256,8 +253,6 @@
         <include
             layout="@layout/bottom_sheet_order"
             android:id="@+id/bottom_sheets"
-            app:showErrorLoader="@{showErrorLoader}"
-            app:isLoadingDirection="@{isLoadingDirection}"
             app:distance="@{distance}"
             app:duration="@{duration}"
             app:amount="@{amount}"/>

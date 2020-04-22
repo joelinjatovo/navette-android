@@ -42,6 +42,10 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<OrderType> orderTypeLiveData = new MutableLiveData<>();
 
+    private Integer place;
+
+    private MutableLiveData<Integer> placeLiveData = new MutableLiveData<>();
+
     private Club club;
 
     private MutableLiveData<Club> clubLiveData = new MutableLiveData<>();
@@ -112,6 +116,7 @@ public class OrderViewModel extends ViewModel {
         setItem2LiveData((Item) null); setItem2PointLiveData(null);
         Order order = new Order();
         order.setPlace(1);
+        setPlaceLiveData(1);
         setOrderLiveData(order);
         setCarLiveData(null);
         setItemsLiveData(null);
@@ -831,5 +836,18 @@ public class OrderViewModel extends ViewModel {
 
     public void setViewResult(RemoteLoaderResult<OrderWithDatas> viewResult) {
         this.viewResult.setValue(viewResult);
+    }
+
+    public MutableLiveData<Integer> getPlaceLiveData() {
+        return placeLiveData;
+    }
+
+    public void setPlaceLiveData(Integer place) {
+        this.place = place;
+        this.placeLiveData.setValue(place);
+    }
+
+    public Integer getPlace() {
+        return place;
     }
 }

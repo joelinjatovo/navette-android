@@ -49,6 +49,7 @@ import com.navetteclub.R;
 import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.responses.RetrofitResponse;
+import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
@@ -187,8 +188,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     if(result==null){
                         return;
                     }
-                    mBinding.setIsLoadingDirection(false);
-                    mBinding.setShowErrorLoader(false);
+                    mBinding.bottomSheets.setIsLoadingDirection(false);
+                    mBinding.bottomSheets.setShowErrorLoaderDirection(false);
                     if(result.body()!=null){
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
@@ -213,8 +214,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     if(error==null){
                         return;
                     }
-                    mBinding.setIsLoadingDirection(false);
-                    showDirectionError(error);
+                    mBinding.bottomSheets.setIsLoadingDirection(false);
+                    mBinding.bottomSheets.setShowErrorLoaderDirection(true);
                 });
 
         /* Course de retours */
@@ -223,8 +224,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     if(result==null){
                         return;
                     }
-                    mBinding.setIsLoadingDirection(false);
-                    mBinding.setShowErrorLoader(false);
+                    mBinding.bottomSheets.setIsLoadingDirection(false);
+                    mBinding.bottomSheets.setShowErrorLoaderDirection(false);
                     if(result.body()!=null){
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
@@ -242,10 +243,14 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
-    }
-
-    private void showDirectionError(String error) {
-        mBinding.setShowErrorLoader(false);
+        googleViewModel.getError2Result().observe(getViewLifecycleOwner(),
+                error -> {
+                    if(error==null){
+                        return;
+                    }
+                    mBinding.bottomSheets.setIsLoadingDirection(false);
+                    mBinding.bottomSheets.setShowErrorLoaderDirection(true);
+                });
     }
 
     private void setupOrderViewModel() {
@@ -296,6 +301,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
                 item -> {
                     if(item!=null){
+                        loadCart();
                         expandOrderDetails();
                         mBinding.bottomSheets.setDuration(item.getDuration());
                         mBinding.bottomSheets.setDistance(item.getDistance());
@@ -317,7 +323,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
                 item -> {
                     if(item!=null){
-                        // @TODO
+                        loadCart();
                         String direction = item.getDirection();
                         if(direction!=null && mMap!=null) {
                             List<LatLng> points = Utils.decodePoly(direction);
@@ -335,6 +341,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
                 club -> {
                     if(club!=null){
+                        loadCart();
                         mBinding.bottomSheets.setIsLoadingCar(true);
                         mBinding.bottomSheets.setShowErrorLoaderCar(false);
                         orderViewModel.loadCars(club);
@@ -344,33 +351,25 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         drawClubMarker(point, club);
                     }
                 });
-        orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
-                item1 -> {
-                    if(item1==null) return;
-                    loadCart();
-                });
-        orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
-                item2 -> {
-                    if(item2==null) return;
-                    loadCart();
-                });
-        orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
-                club -> {
-                    if(club==null) return;
-                    loadCart();
-                });
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                order -> {
-                    if(order!=null) {
-                        mBinding.bottomSheets.setPlace(order.getPlace());
-                        loadCart();
+        orderViewModel.getCarLiveData().observe(getViewLifecycleOwner(),
+                car -> {
+                    if(car!=null){
+                        Order order = orderViewModel.getOrder();
+                        if(order!=null && order.getPrivatized()){
+                            orderViewModel.setPlaceLiveData(car.getPlace());
+                        }
                     }
                 });
+        orderViewModel.getPlaceLiveData().observe(getViewLifecycleOwner(), place -> {
+            mBinding.bottomSheets.setPlace(place);
+            loadCart();
+        });
         orderViewModel.getCartResult().observe(getViewLifecycleOwner(),
                 cart -> {
                     if(cart!=null) {
+                        mBinding.bottomSheets.setIsLoadingCart(false);
                         if(cart.getError()!=null){
-                            // @TODO
+                            mBinding.bottomSheets.setShowErrorLoaderCart(true);
                         }
                         if(cart.getSuccess()!=null){
                             OrderWithDatas data = cart.getSuccess();
@@ -395,9 +394,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     }
                     mBinding.bottomSheets.setIsLoadingCar(false);
                     if(result.getError()!=null){
-                        // Error loading
                         mBinding.bottomSheets.setShowErrorLoaderCar(true);
-                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
                     if(result.getSuccess()!=null){
                         ArrayList<CarAndModel> items = (ArrayList<CarAndModel>) result.getSuccess();
@@ -423,7 +420,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     if(result.getSuccess()!=null){
                         Order order = result.getSuccess().getOrder();
                         if(order!=null){
-                            mBinding.bottomSheets.setAmount(order.getAmountStr());
+                            mBinding.bottomSheets.setAmount(order.getTotalStr());
                         }
                     }
                 });
@@ -438,14 +435,16 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
             cartRetrofitRequest.cancel();
         }
         cartRetrofitRequest = orderViewModel.getCart();
+        mBinding.bottomSheets.setIsLoadingCart(true);
+        mBinding.bottomSheets.setShowErrorLoaderCart(false);
     }
 
     private void loadDirection(GoogleViewModel googleViewModel, LatLng origin, LatLng destination, boolean isMain) {
         if( (origin == null) || (destination == null)){
             return;
         }
-        mBinding.setIsLoading(true);
-        mBinding.setShowErrorLoader(false);
+        mBinding.bottomSheets.setIsLoadingDirection(true);
+        mBinding.bottomSheets.setShowErrorLoaderDirection(false);
         googleViewModel.loadDirection(getString(R.string.google_maps_key), origin, destination, null, isMain);
     }
 
@@ -549,7 +548,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
-                    Log.d(TAG, "bookNowButton() = " + orderViewModel.getOrderType());
                     if(orderViewModel.getOrderType()==OrderType.GO){
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_go_and_back_fragment);
                     }else{
@@ -563,7 +561,26 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         order = new Order();
                     }
                     order.setPrivatized(isChecked);
+
+                    Car car = orderViewModel.getCar();
+                    if(car!=null){
+                        orderViewModel.setPlaceLiveData(car.getPlace());
+                        order.setPlace(car.getPlace());
+                    }
                     orderViewModel.setOrderLiveData(order);
+                    mBinding.bottomSheets.setIsPrivatized(isChecked);
+                });
+        mBinding.bottomSheets.priceError.setOnClickListener(
+                v -> {
+                    loadCart();
+                });
+        mBinding.bottomSheets.delayError.setOnClickListener(
+                v -> {
+                    //loadDirection();
+                });
+        mBinding.bottomSheets.distanceError.setOnClickListener(
+                v -> {
+                    //loadDirection();
                 });
         mBinding.bottomSheets.buttonRefreshCar.setOnClickListener(
                 v -> {

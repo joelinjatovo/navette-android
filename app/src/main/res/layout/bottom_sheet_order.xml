@@ -6,10 +6,13 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="showErrorLoader" type="boolean" />
+        <variable name="isPrivatized" type="boolean" />
         <variable name="isLoadingDirection" type="boolean" />
-        <variable name="showErrorLoaderCar" type="boolean" />
+        <variable name="showErrorLoaderDirection" type="boolean" />
+        <variable name="isLoadingCart" type="boolean" />
+        <variable name="showErrorLoaderCart" type="boolean" />
         <variable name="isLoadingCar" type="boolean" />
+        <variable name="showErrorLoaderCar" type="boolean" />
         <variable name="distance" type="String" />
         <variable name="duration" type="String" />
         <variable name="amount" type="String" />
@@ -38,7 +41,7 @@
             <View
                 android:layout_width="64dp"
                 android:layout_height="5dp"
-                android:background="@color/colorIcon"
+                android:background="@color/red"
                 android:layout_centerHorizontal="true"/>
 
             <TextView
@@ -47,263 +50,290 @@
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:text="@string/booking"
+                android:textColor="@color/colorIcon"
                 android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/orderInfo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.navetteclub.views.LoaderErrorView
-                android:id="@+id/loaderErrorView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="@{showErrorLoader?View.VISIBLE:View.GONE}"/>
-
-            <com.navetteclub.views.LoadingView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="50dp"
-                android:visibility="@{isLoadingDirection?View.VISIBLE:View.GONE}"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/distanceLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="@{isLoadingDirection||showErrorLoader?View.GONE:View.VISIBLE}">
+                app:layout_constraintEnd_toStartOf="@+id/delayLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/orderInfo"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/distanceLabel"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp">
+                    android:text="@string/distance"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"/>
 
-                    <LinearLayout
-                        android:id="@+id/distanceLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintEnd_toStartOf="@+id/delayLayout"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/distanceLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/distance"
-                            android:textColor="@color/black"
-                            android:layout_gravity="center"/>
-
-                        <TextView
-                            android:id="@+id/distanceValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@{distance}"
-                            android:textAppearance="?attr/textAppearanceHeadline6"
-                            android:textColor="@color/colorAccent" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/delayLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="10dp"
-                        app:layout_constraintStart_toEndOf="@id/distanceLayout"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/priceLayout">
-
-                        <TextView
-                            android:id="@+id/delayLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/black"
-                            android:text="@string/delay"/>
-
-                        <TextView
-                            android:id="@+id/delayValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/colorAccent"
-                            android:text="@{duration}"
-                            android:textAppearance="?attr/textAppearanceHeadline6"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/priceLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="10dp"
-                        app:layout_constraintStart_toEndOf="@id/delayLayout"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:visibility="@{amount==null?View.GONE:View.VISIBLE}">
-
-                        <TextView
-                            android:id="@+id/priceLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/black"
-                            android:text="@string/total_price"/>
-
-                        <TextView
-                            android:id="@+id/priceValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:textColor="@color/colorAccent"
-                            android:text="@{amount}"
-                            android:textAppearance="?attr/textAppearanceHeadline6"/>
-
-                    </LinearLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorIcon"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/distanceValue"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp">
+                    android:layout_gravity="center"
+                    android:text="@{distance}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textColor="@color/colorAccent"
+                    android:visibility="@{isLoadingDirection||showErrorLoaderDirection?View.GONE:View.VISIBLE}"/>
 
-                    <Button
-                        android:id="@+id/button_refresh_car"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/refresh"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:visibility="@{showErrorLoaderCar?View.VISIBLE:View.GONE}"/>
-
-                    <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:visibility="@{isLoadingCar?View.VISIBLE:View.GONE}"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="@{isLoadingCar||showErrorLoaderCar?View.GONE:View.VISIBLE}"/>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorIcon"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/distanceError"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp">
+                    android:layout_gravity="center"
+                    android:textColor="@color/red"
+                    android:text="@string/error"
+                    android:visibility="@{showErrorLoaderDirection?View.VISIBLE:View.GONE}"/>
 
-                    <TextView
-                        android:id="@+id/placeCountTitleTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_place_count"
-                        android:layout_toStartOf="@id/placeCountTextView"
-                        android:textAppearance="?attr/textAppearanceBody1"/>
-
-                    <TextView
-                        android:id="@+id/placeCountTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/colorIcon"
-                        android:text="@{@string/person_count(place)}"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorIcon"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <ProgressBar
+                    style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp">
-
-                    <TextView
-                        android:id="@+id/privatizeTitleTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/question_privatize_car"
-                        android:layout_toStartOf="@id/privatizeSwitchView"
-                        android:textAppearance="?attr/textAppearanceBody1"/>
-
-                    <Switch
-                        android:id="@+id/privatizeSwitchView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/colorIcon"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp">
-
-                    <Button
-                        android:id="@+id/bookNowButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_toStartOf="@+id/bookLaterButton"
-                        android:text="@string/book_now" />
-
-                    <Button
-                        android:id="@+id/bookLaterButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/book_later"
-                        android:layout_alignParentEnd="true"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:textColor="@color/colorAccent"
-                        app:strokeColor="@color/colorAccent"/>
-
-                </RelativeLayout>
+                    android:layout_gravity="center"
+                    android:visibility="@{isLoadingDirection?View.VISIBLE:View.GONE}"/>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/delayLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/distanceLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/priceLayout">
+
+                <TextView
+                    android:id="@+id/delayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:text="@string/delay"/>
+
+                <TextView
+                    android:id="@+id/delayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:text="@{duration}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:visibility="@{isLoadingDirection||showErrorLoaderDirection?View.GONE:View.VISIBLE}"/>
+
+                <TextView
+                    android:id="@+id/delayError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/red"
+                    android:text="@string/error"
+                    android:visibility="@{showErrorLoaderDirection?View.VISIBLE:View.GONE}"/>
+
+
+                <ProgressBar
+                    style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="@{isLoadingDirection?View.VISIBLE:View.GONE}"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/priceLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/delayLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/priceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:text="@string/total_price"/>
+
+                <TextView
+                    android:id="@+id/priceValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorAccent"
+                    android:text="@{amount}"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:visibility="@{isLoadingCar||showErrorLoaderCart?View.GONE:View.VISIBLE}"/>
+
+                <TextView
+                    android:id="@+id/priceError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/red"
+                    android:text="@string/error"
+                    android:visibility="@{showErrorLoaderCart?View.VISIBLE:View.GONE}"/>
+
+                <ProgressBar
+                    style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="@{isLoadingCart?View.VISIBLE:View.GONE}" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorIcon"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <Button
+                android:id="@+id/button_refresh_car"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/refresh"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="@{showErrorLoaderCar?View.VISIBLE:View.GONE}"/>
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="@{isLoadingCar?View.VISIBLE:View.GONE}"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{isLoadingCar||showErrorLoaderCar?View.GONE:View.VISIBLE}"/>
+
+        </RelativeLayout>
+
+        <View
+            android:visibility="@{isPrivatized?View.GONE:View.VISIBLE}"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorIcon"/>
+
+        <RelativeLayout
+            android:visibility="@{isPrivatized?View.GONE:View.VISIBLE}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/placeCountTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_place_count"
+                android:layout_toStartOf="@id/placeCountTextView"
+                android:textAppearance="?attr/textAppearanceBody1"/>
+
+            <TextView
+                android:id="@+id/placeCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorIcon"
+                android:text="@{@string/person_count(place)}"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorIcon"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/privatizeTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/question_privatize_car"
+                android:layout_toStartOf="@id/privatizeSwitchView"
+                android:textAppearance="?attr/textAppearanceBody1"/>
+
+            <Switch
+                android:id="@+id/privatizeSwitchView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorIcon"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/bookNowButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/bookLaterButton"
+                android:text="@string/book_now" />
+
+            <Button
+                android:id="@+id/bookLaterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/book_later"
+                android:layout_alignParentEnd="true"
+                style="?attr/materialButtonOutlinedStyle"
+                android:textColor="@color/colorAccent"
+                app:strokeColor="@color/colorAccent"/>
 
         </RelativeLayout>
 

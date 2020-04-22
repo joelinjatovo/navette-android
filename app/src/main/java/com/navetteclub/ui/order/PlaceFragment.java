@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentPlaceBinding;
@@ -55,7 +56,7 @@ public class PlaceFragment extends BottomSheetDialogFragment {
                 FrameLayout.LayoutParams params = null;
                 if (constraintLayout != null) {
                     params = (FrameLayout.LayoutParams) constraintLayout.getLayoutParams();
-                    params.height = UiUtils.getScreenHeight();
+                    //params.height = UiUtils.getScreenHeight();
                     constraintLayout.setLayoutParams(params);
                 }
 
@@ -64,7 +65,6 @@ public class PlaceFragment extends BottomSheetDialogFragment {
                     BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(bottomSheet);
                     sheetBehavior.setSkipCollapsed(true);
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    //sheetBehavior.setPeekHeight(UiUtils.getScreenHeight(), true);
                 }
             }
         });
@@ -81,8 +81,8 @@ public class PlaceFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupUi();
         setupViewModel();
+        setupUi();
     }
 
     private void setupUi() {
@@ -113,6 +113,7 @@ public class PlaceFragment extends BottomSheetDialogFragment {
                     Order order = orderViewModel.getOrder();
                     order.setPlace(place);
                     orderViewModel.setOrderLiveData(order);
+                    orderViewModel.setPlaceLiveData(place);
                     NavHostFragment.findNavController(this).popBackStack();
                 });
     }
@@ -120,16 +121,11 @@ public class PlaceFragment extends BottomSheetDialogFragment {
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        orderViewModel.getCarLiveData().observe(getViewLifecycleOwner(),
-                car -> {
-                    if(car!=null) max = car.getPlace();
-                });
-        orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(),
-                order -> {
-                    if(order!=null){
-                        place = order.getPlace();
-                        mBinding.value.setText(String.valueOf(place));
-                    }
-                });
+        mBinding.value.setText(String.valueOf(orderViewModel.getPlace()));
+        this.place = orderViewModel.getPlace();
+        Car car = orderViewModel.getCar();
+        if(car!=null){
+            max = car.getPlace();
+        }
     }
 }
