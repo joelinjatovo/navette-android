@@ -38,7 +38,7 @@ public class PlaceFragment extends BottomSheetDialogFragment {
 
     private FragmentPlaceBinding mBinding;
 
-    private int place = 0;
+    private int place = 1;
 
     private int max = 10;
 
@@ -95,7 +95,7 @@ public class PlaceFragment extends BottomSheetDialogFragment {
                 });
         mBinding.minus.setOnClickListener(
                 v -> {
-                    if(place > 2){
+                    if(place > 1){
                         place--;
                         mBinding.value.setText(String.valueOf(place));
                     }

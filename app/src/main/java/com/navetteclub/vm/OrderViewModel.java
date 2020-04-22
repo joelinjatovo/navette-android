@@ -159,6 +159,17 @@ public class OrderViewModel extends ViewModel {
     public void placeOrder(String token) {
         Log.d(TAG, "OrderApiService.placeOrder()");
         OrderRequest orderRequest = new OrderRequest();
+
+        if(orderType!=null){
+            switch (orderType){
+                case CUSTOM:
+                case GO_BACK:
+                    item1.setRideAt(null);
+                    setItem1LiveData(item1);
+                break;
+            }
+        }
+
         orderRequest.setOrder(order).setItems(items).checkElement();
         Log.d(TAG, "placeOrder(" + orderRequest + ")");
 

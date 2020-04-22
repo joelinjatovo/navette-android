@@ -44,6 +44,9 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.api.models.google.Leg;
@@ -68,15 +71,21 @@ import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
 
+import static com.navetteclub.ui.order.OrderType.*;
 
-public class OrderFragment extends Fragment implements OnMapReadyCallback {
+
+public class OrderFragment extends Fragment implements OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = OrderFragment.class.getSimpleName();
 
@@ -115,6 +124,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
     private Call<RetrofitResponse<OrderWithDatas>> cartRetrofitRequest;
 
+    private Calendar calendar;
+
     private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
         @Override
         public void onClick(View v, int position, CarAndModel item) {
@@ -150,6 +161,54 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         setupUi();
         setupBottomSheet();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        DatePickerDialog dpd = (DatePickerDialog) getChildFragmentManager().findFragmentByTag("Datepickerdialog");
+        TimePickerDialog tpd = (TimePickerDialog) getChildFragmentManager().findFragmentByTag("TimepickerDialog");
+        if(tpd != null) tpd.setOnTimeSetListener(this);
+        if(dpd != null) dpd.setOnDateSetListener(this);
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        String time = "You picked the following time: "+hourOfDay+"h"+minute+"m"+second;
+        Log.d(TAG, time);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+        Item item = orderViewModel.getItem1();
+        if(item==null){
+            item = new Item();
+        }
+        item.setRideAt(calendar.getTime());
+        orderViewModel.setItem1LiveData(item);
+
+        NavHostFragment.findNavController(this).navigate(R.id.action_order_fragment_to_detail_fragment);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        Log.d(TAG, date);
+        calendar = Calendar.getInstance();
+        calendar.set(year, monthOfYear, dayOfMonth);
+
+        //dateTextView.setText(date);
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd =TimePickerDialog.newInstance(
+                OrderFragment.this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.dismissOnPause(true);
+        tpd.setVersion(TimePickerDialog.Version.VERSION_2);
+        tpd.show(getChildFragmentManager(), "Timepickerdialog");
+
+    }
+
 
     private void setupBottomSheet() {
         sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
@@ -356,6 +415,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     if(car!=null){
                         Order order = orderViewModel.getOrder();
                         if(order!=null && order.getPrivatized()){
+                            order.setPlace(car.getPlace());
+                            orderViewModel.setOrderLiveData(order);
                             orderViewModel.setPlaceLiveData(car.getPlace());
                         }
                     }
@@ -422,6 +483,23 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                         if(order!=null){
                             mBinding.bottomSheets.setAmount(order.getTotalStr());
                         }
+                    }
+                });
+        orderViewModel.getOrderTypeLiveData().observe(getViewLifecycleOwner(),
+                orderType -> {
+                    if(orderType!=null) {
+                        switch (orderType) {
+                            case GO_BACK:
+                            case CUSTOM:
+                                mBinding.bottomSheets.bookLaterButton.setVisibility(View.GONE);
+                                break;
+                            case BACK:
+                            case GO:
+                                mBinding.bottomSheets.bookLaterButton.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                    }else{
+                        mBinding.bottomSheets.bookLaterButton.setVisibility(View.VISIBLE);
                     }
                 });
     }
@@ -515,7 +593,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         mBinding.originText.setOnClickListener(
                 v -> {
                     OrderType orderType = orderViewModel.getOrderType();
-                    if (orderType == OrderType.BACK) {
+                    if (orderType == BACK) {
                         Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);
                     } else {
                         OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
@@ -526,7 +604,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
         mBinding.destinationText.setOnClickListener(
                 v -> {
                     OrderType orderType = orderViewModel.getOrderType();
-                    if (orderType == OrderType.BACK) {
+                    if (orderType == BACK) {
                         OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
                         action.setSearchType(SearchType.ORIGIN);
                         Navigation.findNavController(v).navigate(action);
@@ -542,17 +620,40 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                 });
         mBinding.clearRetours.setOnClickListener(
                 v -> {
-                    orderViewModel.setOrderTypeLiveData(OrderType.GO);
+                    orderViewModel.setOrderTypeLiveData(GO);
                     orderViewModel.setItem2LiveData((Item) null);
                     orderViewModel.setItem2PointLiveData(null);
                 });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
-                    if(orderViewModel.getOrderType()==OrderType.GO){
+                    Item item = orderViewModel.getItem1();
+                    if(item == null){
+                        item = new Item();
+                    }
+                    item.setRideAt(null);
+
+                    if(orderViewModel.getOrderType()== GO){
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_go_and_back_fragment);
                     }else{
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_detail_fragment);
                     }
+                });
+        mBinding.bottomSheets.bookLaterButton.setOnClickListener(
+                v -> {
+                    Calendar now = Calendar.getInstance();
+                    DatePickerDialog dpd = DatePickerDialog.newInstance(
+                            OrderFragment.this,
+                            now.get(Calendar.YEAR), // Initial year selection
+                            now.get(Calendar.MONTH), // Initial month selection
+                            now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                    );
+                    Calendar calendar = Calendar.getInstance();
+                    dpd.setMinDate(calendar);
+                    calendar.roll(Calendar.MONTH, 2);
+                    dpd.setMaxDate(calendar);
+                    dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+                    dpd.dismissOnPause(true);
+                    dpd.show(getChildFragmentManager(), "Datepickerdialog");
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
@@ -564,10 +665,12 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
 
                     Car car = orderViewModel.getCar();
                     if(car!=null){
-                        orderViewModel.setPlaceLiveData(car.getPlace());
                         order.setPlace(car.getPlace());
+                        orderViewModel.setOrderLiveData(order);
+                        orderViewModel.setPlaceLiveData(car.getPlace());
+                    }else{
+                        orderViewModel.setOrderLiveData(order);
                     }
-                    orderViewModel.setOrderLiveData(order);
                     mBinding.bottomSheets.setIsPrivatized(isChecked);
                 });
         mBinding.bottomSheets.priceError.setOnClickListener(
@@ -662,5 +765,4 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-
 }

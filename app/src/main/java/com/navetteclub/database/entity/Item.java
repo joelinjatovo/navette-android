@@ -62,9 +62,9 @@ public class Item {
     @ColumnInfo(name = "direction")
     private String direction;
 
-    @SerializedName("rided_at")
-    @ColumnInfo(name = "rided_at")
-    private Date ridedAt;
+    @SerializedName("ride_at")
+    @ColumnInfo(name = "ride_at")
+    private Date rideAt;
 
     @SerializedName("completed_at")
     @ColumnInfo(name = "completed_at")
@@ -214,12 +214,12 @@ public class Item {
         this.orderId = orderId;
     }
 
-    public Date getRidedAt() {
-        return ridedAt;
+    public Date getRideAt() {
+        return rideAt;
     }
 
-    public void setRidedAt(Date ridedAt) {
-        this.ridedAt = ridedAt;
+    public void setRideAt(Date rideAt) {
+        this.rideAt = rideAt;
     }
 
     @NonNull
@@ -232,7 +232,7 @@ public class Item {
                 + "; distanceValue=" + distanceValue
                 + "; duration=" + duration
                 + "; durationValue=" + durationValue
-                + "; ridedAt=" + ridedAt
+                + "; rideAt=" + rideAt
         + "]";
     }
 
