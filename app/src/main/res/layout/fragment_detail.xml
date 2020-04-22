@@ -143,7 +143,7 @@
                             android:paddingRight="10dp"
                             android:text="@{total}"
                             android:textAlignment="textEnd"
-                            android:textAppearance="?attr/textAppearanceSubtitle2"
+                            android:textAppearance="?attr/textAppearanceSubtitle1"
                             android:textColor="@color/colorText" />
 
                     </RelativeLayout>

@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
@@ -145,7 +146,9 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                     OrderWithDatas newItem = items.get(newItemPosition);
                     return oldItem.getOrder() != null &&
                             newItem.getOrder() != null &&
-                            oldItem.getOrder().getId() == newItem.getOrder().getId();
+                            oldItem.getOrder().getId() != null &&
+                            newItem.getOrder().getId() != null &&
+                            oldItem.getOrder().getId().equals(newItem.getOrder().getId());
                 }
 
                 @Override
@@ -182,13 +185,55 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 if(order!=null){
                     mBinding.setOrderId(order.getRid());
                     mBinding.setAmount(order.getAmountStr());
-                    mBinding.setStatus(order.getStatus());
                     mBinding.setPlace(order.getPlace());
+
+                    if(order.getStatus()!=null){
+                        switch (order.getStatus()) {
+                            case Order.STATUS_PING:
+                                mBinding.statusTextView.setText(R.string.status_ping);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                            case Order.STATUS_ON_HOLD:
+                                mBinding.statusTextView.setText(R.string.status_on_hold);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                            case Order.STATUS_PROCESSING:
+                                mBinding.statusTextView.setText(R.string.status_processing);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                            case Order.STATUS_OK:
+                                mBinding.statusTextView.setText(R.string.status_ok);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
+                                break;
+                            case Order.STATUS_COMPLETED:
+                                mBinding.statusTextView.setText(R.string.status_completed);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
+                                break;
+                            case Order.STATUS_CANCELED:
+                                mBinding.statusTextView.setText(R.string.status_canceled);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                            case Order.STATUS_ACTIVE:
+                                mBinding.statusTextView.setText(R.string.status_active);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
+                                break;
+                        }
+
+                    }
 
                     long now = System.currentTimeMillis();
                     Date lastUpdated = order.getCreatedAt();
-                    CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
-                    mBinding.setDate((String) date);
+                    if(lastUpdated!=null) {
+                        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+                        mBinding.setDate((String) date);
+                    }
                 }
 
                 // Club

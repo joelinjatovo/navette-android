@@ -5,6 +5,8 @@ import androidx.room.Embedded;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ItemWithDatas {
 
     @SerializedName("item")
@@ -22,6 +24,14 @@ public class ItemWithDatas {
     @SerializedName("ride")
     @Embedded
     private Ride ride;
+
+    @SerializedName("club")
+    @Embedded
+    private ClubAndPoint clubAndPoint;
+
+    @SerializedName("ridepoints")
+    @Embedded
+    private List<RidePoint> ridepoints;
 
     public Item getItem() {
         return this.item;
@@ -61,5 +71,21 @@ public class ItemWithDatas {
                 +  " \n \t item = " + item
                 +  " \n \t point = " + point
             + " \n ]";
+    }
+
+    public List<RidePoint> getRidepoints() {
+        return ridepoints;
+    }
+
+    public void setRidepoints(List<RidePoint> ridepoints) {
+        this.ridepoints = ridepoints;
+    }
+
+    public ClubAndPoint getClubAndPoint() {
+        return clubAndPoint;
+    }
+
+    public void setClubAndPoint(ClubAndPoint clubAndPoint) {
+        this.clubAndPoint = clubAndPoint;
     }
 }

@@ -53,11 +53,13 @@ import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.services.GoogleApiService;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
+import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.User;
@@ -234,50 +236,99 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
+        int color = R.color.colorAccent;
         Item item = itemWithData.getItem();
+        String pointLabel = null;
         if(item!=null){
+            if(item.getType()!=null){
+                switch (item.getType()) {
+                    case Item.TYPE_GO:
+                        pointLabel = getString(R.string.type_pickup);
+                        break;
+                    case Item.TYPE_BACK:
+                        pointLabel = getString(R.string.type_back);
+                        break;
+                }
+            }
             if(item.getStatus()!=null){
                 switch (item.getStatus()) {
                     case Item.STATUS_PING:
                         mBinding.statusTextView.setText(R.string.status_ping);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
+                        color = R.color.colorAlertError;
                         break;
                     case Item.STATUS_NEXT:
                         mBinding.statusTextView.setText(R.string.status_next);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        color = R.color.colorImportant;
                         break;
                     case Item.STATUS_COMPLETED:
                         mBinding.statusTextView.setText(R.string.status_completed);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        color = R.color.gray;
                         break;
                     case Item.STATUS_CANCELED:
                         mBinding.statusTextView.setText(R.string.status_canceled);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
+                        color = R.color.colorIcon;
                         break;
                     case Item.STATUS_ONLINE:
                         mBinding.statusTextView.setText(R.string.status_online);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        color = R.color.colorAccent;
                         break;
                 }
 
             }
-            String direction = item.getDirection();
+
+            String direction = null;
+
+            List<RidePoint> ridePoints = itemWithData.getRidepoints();
+            if(ridePoints!=null && ridePoints.size() > 0){
+                RidePoint ridePoint = ridePoints.get(0);
+                /* Draw ride point direction */
+                //direction = ridePoint.getDirection();
+            }
+
+            //if(direction==null){
+                /* Draw original direction */
+                direction = item.getDirection();
+            //}
+
             if(direction!=null){
                 drawLine(direction);
             }
         }
 
+        /* Draw ride direction */
+        Ride ride = itemWithData.getRide();
+        if(ride!=null){
+            String direction = ride.getDirection();
+            if(direction!=null){
+                //drawLine(direction);
+            }
+        }
+
         Point point = itemWithData.getPoint();
         if(point!=null){
-            drawPoint(point, String.valueOf(1));
+            if(pointLabel==null){
+                pointLabel = point.getName();
+            }
+            drawPoint(point, String.valueOf(1), pointLabel, color);
             if(mMap!=null){
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point.toLatLng(), 15));
             }
+        }
+
+        ClubAndPoint clubAndPoint = itemWithData.getClubAndPoint();
+        Log.e(TAG, "ClubANdPoint " + clubAndPoint);
+        if(clubAndPoint!=null){
+            drawClubMarker(clubAndPoint.getPoint());
         }
     }
 
@@ -390,110 +441,16 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
     }
 
-    private void updateUiWithOrder(OrderWithDatas orderWithDatas) {
-        if(orderWithDatas==null) return;
-        User user = orderWithDatas.getCarDriver();
-        if(user!=null) {
-            mBinding.setUser(user);
-            mBinding.nameTextView.setText(user.getName());
-            mBinding.roleTextView.setText(user.getRole());
-            if (user.getImageUrl() != null) {
-                Picasso.get()
-                        .load(Constants.getBaseUrl() + user.getImageUrl())
-                        .placeholder(R.drawable.user_placeholder)
-                        .error(R.drawable.user_placeholder)
-                        .into(mBinding.avatarImageView);
-            }
-        }
 
-        Order order = orderWithDatas.getOrder();
-        if(order!=null){
-            mBinding.statusTextView.setText(order.getStatus());
-        }
-
-        Club club = orderWithDatas.getClub();
-        Point clubPoint = orderWithDatas.getClubPoint();
-        if(club!=null && clubPoint!=null){
-            drawClubMarker(clubPoint, club);
-        }
-
-        if(clubPoint!=null){
-            drawPoint(clubPoint, "0");
-        }
-
-        List<ItemWithDatas> itemWithDatas = orderWithDatas.getItems();
-        if(itemWithDatas!=null){
-            int i = 1;
-            for(ItemWithDatas itemWithDatas1: itemWithDatas){
-                if(itemWithDatas1!=null && itemWithDatas1.getItem()!=null){
-                    Point point = itemWithDatas1.getPoint();
-                    if(point!=null){
-                        drawPoint(point, String.valueOf(i));
-                        if(mMap!=null){
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point.toLatLng(), 15));
-                        }
-                    }
-                    Item item = itemWithDatas1.getItem();
-                    if(item!=null){
-                        String direction = item.getDirection();
-                        if(direction!=null){
-                            drawLine(direction);
-                        }
-                    }
-                }
-            }
-        }
+    private Marker drawPoint(Point point, String step, String label, int color) {
+        //MapUiUtils.drawDotMarker(requireContext(), mMap, point, R.color.colorAccent);
+        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, step, label, color);
     }
 
-    private void drawClubMarker(Point point, Club club) {
-        if(mMap==null){
-            return;
-        }
-
-        if(club!=null){
-            Picasso.get()
-                    .load(Constants.getBaseUrl() + club.getImageUrl())
-                    .resize(64,64)
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            Log.d(TAG, "drawClubMarker.onBitmapLoaded ");
-                            if(mClubMarker!=null){
-                                //mClubMarker.remove();
-                            }
-                            mClubMarker = MapUiUtils.drawClubMarker(requireContext(), mMap, point, club.getName(), bitmap);
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                            Log.e(TAG, "drawClubMarker.onBitmapFailed ", e);
-                            if(mClubMarker!=null){
-                                //mClubMarker.remove();
-                            }
-                            LatLng latLng = point.toLatLng();
-                            MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
-                            options.position(latLng); // Setting the position of the marker
-                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                            mClubMarker = mMap.addMarker(options);
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                            Log.d(TAG, "drawClubMarker.onPrepareLoad ");
-                        }
-                    });
-        }else{
-            if(mClubMarker!=null){
-                //mClubMarker.remove();
-            }
-
-            LatLng latLng = point.toLatLng();
-            MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
-            options.position(latLng); // Setting the position of the marker
-            options.icon(UiUtils.getBitmapFromMarkerView(requireContext(), point.getName()));
-            mClubMarker = mMap.addMarker(options);
-        }
-
+    private void drawClubMarker(Point point) {
+        if(point==null) return;
+        mClubMarker = MapUiUtils.drawTextPoint(requireContext(), mMap, point, getString(R.string.club));
+        //MapUiUtils.drawDotMarker(requireContext(), mMap, point, R.color.red);
     }
 
     private void drawLine(String encodedString) {
@@ -513,10 +470,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 .color(R.color.colorAlert)
                 .geodesic(true)
         );
-    }
-
-    private Marker drawPoint(Point point, String step) {
-        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, step, point.getName());
     }
 
     private void setupUi() {

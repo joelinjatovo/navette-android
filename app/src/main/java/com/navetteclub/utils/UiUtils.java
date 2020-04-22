@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.views.MarkerStepView;
+import com.navetteclub.views.MarkerTextView;
 import com.navetteclub.views.MarkerView;
 import com.squareup.picasso.Picasso;
 
@@ -31,7 +32,7 @@ public class UiUtils {
     }
 
     public static BitmapDescriptor getBitmapFromMarkerView(@NonNull Context context, String label) {
-        MarkerView customMarkerView = new MarkerView(context);
+        MarkerTextView customMarkerView = new MarkerTextView(context);
 
         if(label!=null){
             customMarkerView.getTitleView().setText(label);
@@ -55,10 +56,15 @@ public class UiUtils {
     }
 
     public static BitmapDescriptor getBitmapFromMarkerStepView(@NonNull Context context, String step, String title) {
+        return getBitmapFromMarkerStepView(context, step, title, R.color.colorAccent);
+    }
+
+    public static BitmapDescriptor getBitmapFromMarkerStepView(@NonNull Context context, String step, String title, int color) {
         MarkerStepView customMarkerView = new MarkerStepView(context);
 
         if(step!=null){
             customMarkerView.getStepTextView().setText(step);
+            customMarkerView.getStepTextView().setBackgroundResource(color);
         }
 
         if(title!=null){
@@ -66,6 +72,12 @@ public class UiUtils {
         }
 
         return getBitmap(customMarkerView);
+    }
+
+    public static BitmapDescriptor getBitmapFromMarkerDotView(@NonNull Context context, int color) {
+        ImageView imageView = new ImageView(context);
+        imageView.setColorFilter(color);
+        return getBitmap(imageView);
     }
 
     private static BitmapDescriptor getBitmap(View view){

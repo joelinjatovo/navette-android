@@ -173,6 +173,7 @@
     <string name="empty_orders">Vous n\'avez pas encore des commandes effectuées.</string>
     <string name="empty_notifications">Vous n\'avez pas encore de notification.</string>
     <string name="details">Détails</string>
+    <string name="details2">Détails ></string>
     <string name="error">Erreur</string>
     <string name="empty_cars">Aucune voiture trouvée</string>
     <string name="title_choose_car">Selectionnez la voiture</string>
@@ -261,5 +262,11 @@
     <string name="status_canceled">annulé</string>
     <string name="status_online">en route</string>
     <string name="status_next">prochain</string>
+    <string name="status_ok">ok</string>
+    <string name="status_on_hold">en cours de paiement</string>
+    <string name="status_processing">en cours de traitement</string>
+    <string name="status_active">actif</string>
+    <string name="type_pickup">Pickup</string>
+    <string name="type_back">Drop</string>
 
 </resources>

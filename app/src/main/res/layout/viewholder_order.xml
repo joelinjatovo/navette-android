@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="@{status}"
+                    android:text="@string/status_active"
                     android:background="@drawable/bg_text_rounded"
                     android:textColor="@color/black"
                     android:paddingStart="5dp"

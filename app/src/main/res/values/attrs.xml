@@ -25,4 +25,7 @@
         <attr name="marker_title" format="string" />
         <attr name="marker_step" format="string" />
     </declare-styleable>
+    <declare-styleable name="MarkerTextView">
+        <attr name="mtv_title" format="string" />
+    </declare-styleable>
 </resources>

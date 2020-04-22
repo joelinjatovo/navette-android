@@ -21,6 +21,8 @@ public class Item {
     public static final String STATUS_NEXT = "next";
     public static final String STATUS_ONLINE = "online";
     public static final String STATUS_COMPLETED = "completed";
+    public static final String TYPE_GO = "go";
+    public static final String TYPE_BACK = "back";
     @PrimaryKey
     private Long id;
 
