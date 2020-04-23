@@ -23,6 +23,7 @@ import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
 import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Constants;
+import com.navetteclub.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,15 +45,11 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_TYPE_NORMAL:
-                ViewholderRideBinding itemBinding = ViewholderRideBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-                return new ViewHolder(itemBinding);
-            case VIEW_TYPE_LOADING:
-                return new ProgressHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_loader, parent, false));
-            default:
-                return null;
+        if (viewType == VIEW_TYPE_LOADING) {
+            return new ProgressHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_loader, parent, false));
         }
+        ViewholderRideBinding itemBinding = ViewholderRideBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(itemBinding);
     }
 
     @Override
@@ -170,6 +167,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
             mItem = item;
             if(mItem!=null){
                 Car car = mItem.getCar();
+                /*
                 if(car!=null && car.getImageUrl()!=null) {
                     Picasso.get()
                             .load(Constants.getBaseUrl() + car.getImageUrl())
@@ -178,10 +176,42 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
                             .resize(80,80)
                             .into(mBinding.carImageView);
                 }
+                */
                 Ride ride = mItem.getRide();
                 if(ride!=null) {
                     mBinding.setRideId(String.valueOf(ride.getId()));
+                    mBinding.setDate(Utils.formatDateToString(ride.getStartedAt()));
                     mBinding.setStatus(ride.getStatus());
+                    if(ride.getStatus()!=null){
+                        switch (ride.getStatus()) {
+                            case Ride.STATUS_PING:
+                                mBinding.statusTextView.setText(R.string.status_ping);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                            case Ride.STATUS_COMPLETED:
+                                mBinding.statusTextView.setText(R.string.status_completed);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
+                                break;
+                            case Ride.STATUS_CANCELED:
+                                mBinding.statusTextView.setText(R.string.status_canceled);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                            case Ride.STATUS_ACTIVE:
+                                mBinding.statusTextView.setText(R.string.status_active);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
+                                break;
+                            case Ride.STATUS_COMPLETABLE:
+                                mBinding.statusTextView.setText(R.string.status_completable);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
+                                mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
+                                break;
+                        }
+
+                    }
                 }
                 if(mItem.getPoints()!=null){
                     mBinding.setPointCount(mItem.getPoints().size());

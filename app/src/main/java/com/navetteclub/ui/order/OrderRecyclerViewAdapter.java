@@ -49,16 +49,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_TYPE_NORMAL:
-                ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-
-                return new ViewHolder(itemBinding);
-            case VIEW_TYPE_LOADING:
-                return new ProgressHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_loader, parent, false));
-            default:
-                return null;
+        if (viewType == VIEW_TYPE_LOADING) {
+            return new ProgressHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_loader, parent, false));
         }
+        ViewholderOrderBinding itemBinding = ViewholderOrderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(itemBinding);
     }
 
     @Override
@@ -109,7 +104,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         }
     }
 
-    OrderWithDatas getItem(int position) {
+    private OrderWithDatas getItem(int position) {
         if(mItems==null) return null;
         return mItems.get(position);
     }

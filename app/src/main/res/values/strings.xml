@@ -271,5 +271,6 @@
     <string name="ride_date">Date</string>
     <string name="now">Maintenant</string>
     <string name="edit2"><![CDATA[Modifier >]]></string>
+    <string name="status_completable">terminable</string>
 
 </resources>

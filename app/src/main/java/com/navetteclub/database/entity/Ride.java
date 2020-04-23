@@ -1,11 +1,14 @@
 package com.navetteclub.database.entity;
 
+import android.text.format.DateUtils;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.R;
 import com.navetteclub.api.models.google.Route;
 
 import java.util.Date;

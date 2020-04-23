@@ -9,10 +9,11 @@
         <variable name="isLoading" type="boolean" />
         <variable name="rideId" type="String" />
         <variable name="status" type="String" />
+        <variable name="date" type="String" />
         <variable name="pointCount" type="int" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
@@ -35,11 +36,10 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp">
 
-                <com.navetteclub.views.CircleImageView
+                <ImageView
                     android:id="@+id/carImageView"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_margin="5dp"
                     android:layout_alignParentStart="true"
                     android:contentDescription="@string/image"
                     android:src="@drawable/car_placeholder" />
@@ -47,6 +47,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:orientation="vertical"
                     android:layout_toEndOf="@id/carImageView">
 
@@ -97,7 +99,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?attr/textAppearanceBody2"
-                                android:text="20/05/2020" />
+                                android:text="@{date}" />
 
                             <TextView
                                 android:id="@+id/orderCountLabel"
@@ -128,5 +130,5 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

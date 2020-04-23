@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.text.format.DateUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.navetteclub.R;
@@ -18,6 +19,13 @@ import java.util.List;
 public class Utils {
 
     public static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates";
+
+    public static String formatDateToString(Date lastUpdated) {
+        if (lastUpdated == null) return null;
+        long now = System.currentTimeMillis();
+        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+        return (String) date;
+    }
 
     /**
      * Returns true if requesting location updates, otherwise returns false.
