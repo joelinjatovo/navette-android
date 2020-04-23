@@ -121,8 +121,8 @@ public class PlaceFragment extends BottomSheetDialogFragment {
     private void setupViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
-        mBinding.value.setText(String.valueOf(orderViewModel.getPlace()));
         this.place = orderViewModel.getPlace();
+        mBinding.setPlace(this.place);
         Car car = orderViewModel.getCar();
         if(car!=null){
             max = car.getPlace();
