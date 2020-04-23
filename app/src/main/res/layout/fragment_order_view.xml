@@ -16,6 +16,7 @@
         <variable name="point2Title" type="String" />
         <variable name="distance1" type="String" />
         <variable name="duration1" type="String" />
+        <variable name="date1" type="String" />
 
         <variable name="item2Id" type="String" />
         <variable name="point3" type="String" />
@@ -25,11 +26,11 @@
         <variable name="amount2" type="String" />
         <variable name="distance2" type="String" />
         <variable name="duration2" type="String" />
+        <variable name="date2" type="String" />
 
         <variable name="status" type="String" />
         <variable name="statusDesc" type="String" />
         <variable name="payment_type" type="String" />
-        <variable name="date" type="String" />
         <variable name="order_id" type="String" />
     </data>
 
@@ -211,56 +212,7 @@
 
                         </LinearLayout>
 
-                    </androidx.cardview.widget.CardView>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/background" />
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="1dp"
-                        app:cardCornerRadius="0dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp">
-
-                            <TextView
-                                android:id="@+id/dateLabelText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:text="@string/date"
-                                android:textAppearance="?attr/textAppearanceCaption"
-                                android:textColor="@color/gray" />
-
-                            <TextView
-                                android:id="@+id/dateText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_toEndOf="@+id/dateLabelText"
-                                android:paddingLeft="12dp"
-                                android:paddingRight="12dp"
-                                android:text="@{date}"
-                                android:textAlignment="textEnd"
-                                android:textAppearance="?attr/textAppearanceSubtitle1"
-                                android:textColor="@color/colorText" />
-
-                        </RelativeLayout>
-
-                    </androidx.cardview.widget.CardView>
+                    </androidx.cardview.widget.CardView>>
 
                     <View
                         android:layout_width="match_parent"
@@ -300,14 +252,26 @@
                                     android:id="@+id/point1Label"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
                                     android:layout_marginStart="5dp"
                                     android:layout_marginTop="5dp"
                                     android:layout_marginEnd="5dp"
+                                    android:layout_toStartOf="@+id/date1Text"
                                     android:layout_toEndOf="@id/point1Icon"
                                     android:text="@{point1Title}"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/gray" />
+
+                                <TextView
+                                    android:id="@+id/date1Text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:paddingLeft="12dp"
+                                    android:paddingRight="12dp"
+                                    android:text="@{date1}"
+                                    android:textAlignment="textEnd"
+                                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                                    android:textColor="@color/colorText" />
 
                                 <TextView
                                     android:id="@+id/point1Name"
@@ -492,6 +456,9 @@
                                 android:layout_toStartOf="@+id/point1MainDetail"
                                 android:layout_toEndOf="@id/point1MainIcon"
                                 android:text="@string/ride_pickup"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:textAppearance="?attr/textAppearanceCaption"
                                 android:textColor="@color/gray" />
 
@@ -549,14 +516,27 @@
                                     android:id="@+id/point3Label"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
                                     android:layout_marginStart="5dp"
                                     android:layout_marginTop="5dp"
                                     android:layout_marginEnd="5dp"
+                                    android:layout_toStartOf="@+id/date2Text"
                                     android:layout_toEndOf="@id/point3Icon"
                                     android:text="@{point3Title}"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/gray" />
+
+                                <TextView
+                                    android:id="@+id/date2Text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:paddingLeft="12dp"
+                                    android:paddingRight="12dp"
+                                    android:text="@{date2}"
+                                    android:textAlignment="textEnd"
+                                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                                    android:textColor="@color/colorText" />
+
 
                                 <TextView
                                     android:id="@+id/point3Name"
@@ -740,6 +720,9 @@
                                 android:layout_toStartOf="@+id/point2MainDetail"
                                 android:layout_toEndOf="@id/point2MainIcon"
                                 android:text="@string/ride_drop"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
                                 android:textAppearance="?attr/textAppearanceCaption"
                                 android:textColor="@color/gray" />
 

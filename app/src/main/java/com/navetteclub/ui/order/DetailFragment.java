@@ -42,13 +42,17 @@ import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.lang.reflect.Field;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class DetailFragment extends BottomSheetDialogFragment {
+public class DetailFragment extends BottomSheetDialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
 
@@ -59,6 +63,10 @@ public class DetailFragment extends BottomSheetDialogFragment {
     private AuthViewModel authViewModel;
 
     private ProgressDialog progressDialog;
+
+    private Calendar calendar;
+
+    private View dateTimeView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -123,6 +131,64 @@ public class DetailFragment extends BottomSheetDialogFragment {
         Log.d(TAG + "Cycle", "onDestroyView");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        DatePickerDialog dpd = (DatePickerDialog) getChildFragmentManager().findFragmentByTag("Datepickerdialog");
+        TimePickerDialog tpd = (TimePickerDialog) getChildFragmentManager().findFragmentByTag("TimepickerDialog");
+        if(tpd != null) tpd.setOnTimeSetListener(this);
+        if(dpd != null) dpd.setOnDateSetListener(this);
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        String time = "You picked the following time: "+hourOfDay+"h"+minute+"m"+second;
+        Log.d(TAG, time);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+
+        if(dateTimeView!=null) {
+            if (dateTimeView.getId() == R.id.date1Layout) {
+                Item item = orderViewModel.getItem1();
+                if(item==null){
+                    item = new Item();
+                }
+                item.setRideAt(calendar.getTime());
+                orderViewModel.setItem1LiveData(item);
+            } else if (dateTimeView.getId() == R.id.date2Layout) {
+                Item item = orderViewModel.getItem2();
+                if(item==null){
+                    item = new Item();
+                }
+                item.setRideAt(calendar.getTime());
+                orderViewModel.setItem2LiveData(item);
+            }
+        }
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        Log.d(TAG, date);
+        if(calendar==null){
+            calendar = Calendar.getInstance();
+        }
+        calendar.set(year, monthOfYear, dayOfMonth);
+
+        //dateTextView.setText(date);
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd =TimePickerDialog.newInstance(
+                this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.dismissOnPause(true);
+        tpd.setVersion(TimePickerDialog.Version.VERSION_2);
+        tpd.show(getChildFragmentManager(), "Timepickerdialog");
+    }
+
     private void setupAuthViewModel(MyViewModelFactory factory) {
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
@@ -170,16 +236,26 @@ public class DetailFragment extends BottomSheetDialogFragment {
                         Item item1 = orderViewModel.getItem1();
                         if(item1!=null){
                             if(Order.TYPE_BACK.equals(item1.getType())){
-                                mBinding.setPoint4Title("Drop");
                                 mBinding.setPoint4(point.getName());
-                                mBinding.setDuration2(item1.getDuration());
-                                mBinding.setDistance2(item1.getDistance());
                             }else{
-                                mBinding.setPoint1Title("Pickup");
                                 mBinding.setPoint1(point.getName());
-                                mBinding.setDuration1(item1.getDuration());
-                                mBinding.setDistance1(item1.getDistance());
                             }
+                        }
+                    }
+                });
+        orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
+                item1 -> {
+                    if(item1!=null){
+                        if(Order.TYPE_BACK.equals(item1.getType())){
+                            mBinding.setPoint4Title("Drop");
+                            mBinding.setDuration2(item1.getDuration());
+                            mBinding.setDistance2(item1.getDistance());
+                            mBinding.setDate2(getDateString(item1.getRideAt()));
+                        }else{
+                            mBinding.setPoint1Title("Pickup");
+                            mBinding.setDuration1(item1.getDuration());
+                            mBinding.setDistance1(item1.getDistance());
+                            mBinding.setDate1(getDateString(item1.getRideAt()));
                         }
                     }
                 });
@@ -188,11 +264,17 @@ public class DetailFragment extends BottomSheetDialogFragment {
                     if(point!=null){
                         Item item2 = orderViewModel.getItem2();
                         if(item2!=null){
-                            mBinding.setPoint4Title("Drop");
                             mBinding.setPoint4(point.getName());
-                            mBinding.setDuration2(item2.getDuration());
-                            mBinding.setDistance2(item2.getDistance());
                         }
+                    }
+                });
+        orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
+                item2 -> {
+                    if(item2!=null){
+                        mBinding.setPoint4Title("Drop");
+                        mBinding.setDuration2(item2.getDuration());
+                        mBinding.setDistance2(item2.getDistance());
+                        mBinding.setDate2(getDateString(item2.getRideAt()));
                     }
                 });
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
@@ -232,12 +314,20 @@ public class DetailFragment extends BottomSheetDialogFragment {
                 });
     }
 
+    private String getDateString(Date lastUpdated) {
+        if (lastUpdated == null) return getString(R.string.now);
+        long now = System.currentTimeMillis();
+        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+        return (String) date;
+    }
+
     private void updateUiWithOrderData(Order order) {
         if(order==null) return;
 
         mBinding.setOrderId(order.getRid());
         mBinding.setSubtotal(order.getSubtotalStr());
         mBinding.setTotal(order.getTotalStr());
+        mBinding.setPlace(order.getPlace());
 
         if(order.getPaymentType()!=null){
             switch (order.getPaymentType()){
@@ -340,6 +430,42 @@ public class DetailFragment extends BottomSheetDialogFragment {
         mBinding.closeButton.setOnClickListener(
                 v -> {
                     NavHostFragment.findNavController(this).popBackStack();
+                });
+        mBinding.date1Layout.setOnClickListener(
+                v -> {
+                    dateTimeView = v;
+                    Calendar now = Calendar.getInstance();
+                    DatePickerDialog dpd = DatePickerDialog.newInstance(
+                            this,
+                            now.get(Calendar.YEAR), // Initial year selection
+                            now.get(Calendar.MONTH), // Initial month selection
+                            now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                    );
+                    Calendar calendar = Calendar.getInstance();
+                    dpd.setMinDate(calendar);
+                    calendar.roll(Calendar.MONTH, 2);
+                    dpd.setMaxDate(calendar);
+                    dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+                    dpd.dismissOnPause(true);
+                    dpd.show(getChildFragmentManager(), "Datepickerdialog");
+                });
+        mBinding.date2Layout.setOnClickListener(
+                v -> {
+                    dateTimeView = v;
+                    Calendar now = Calendar.getInstance();
+                    DatePickerDialog dpd = DatePickerDialog.newInstance(
+                            this,
+                            now.get(Calendar.YEAR), // Initial year selection
+                            now.get(Calendar.MONTH), // Initial month selection
+                            now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                    );
+                    Calendar calendar = Calendar.getInstance();
+                    dpd.setMinDate(calendar);
+                    calendar.roll(Calendar.MONTH, 2);
+                    dpd.setMaxDate(calendar);
+                    dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+                    dpd.dismissOnPause(true);
+                    dpd.show(getChildFragmentManager(), "Datepickerdialog");
                 });
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {

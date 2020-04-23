@@ -158,11 +158,13 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                                 mBinding.setPoint4(point.getName());
                                 mBinding.setDuration2(item1.getDuration());
                                 mBinding.setDistance2(item1.getDistance());
+                                mBinding.setDate2(getDateString(item1.getRideAt()));
                             }else{
                                 mBinding.setPoint1Title("Pickup");
                                 mBinding.setPoint1(point.getName());
                                 mBinding.setDuration1(item1.getDuration());
                                 mBinding.setDistance1(item1.getDistance());
+                                mBinding.setDate1(getDateString(item1.getRideAt()));
                             }
                         }
                     }
@@ -177,6 +179,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                             mBinding.setPoint4(point.getName());
                             mBinding.setDuration2(item2.getDuration());
                             mBinding.setDistance2(item2.getDistance());
+                            mBinding.setDate2(getDateString(item2.getRideAt()));
                         }
                     }
                 });
@@ -201,6 +204,13 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                 });
     }
 
+    private String getDateString(Date lastUpdated){
+        if(lastUpdated==null) return null;
+        long now = System.currentTimeMillis();
+        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+        return (String) date;
+    }
+
     private void setOrder(Order order1) {
         this.order = order1;
         if(order==null) return;
@@ -208,13 +218,6 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         mBinding.setOrderId(order.getRid());
         mBinding.setSubtotal(order.getSubtotalStr());
         mBinding.setTotal(order.getTotalStr());
-
-        long now = System.currentTimeMillis();
-        Date lastUpdated = order.getCreatedAt();
-        if(lastUpdated!=null){
-            CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
-            mBinding.setDate((String) date);
-        }
 
         if(order.getPaymentType()!=null){
             switch (order.getPaymentType()){

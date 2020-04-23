@@ -41,7 +41,7 @@
             <View
                 android:layout_width="64dp"
                 android:layout_height="5dp"
-                android:background="@color/red"
+                android:background="@color/colorPrimaryDark"
                 android:layout_centerHorizontal="true"/>
 
             <TextView
@@ -320,20 +320,9 @@
                 android:id="@+id/bookNowButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/bookLaterButton"
-                android:text="@string/book_now" />
-
-            <Button
-                android:id="@+id/bookLaterButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/book_later"
                 android:layout_alignParentEnd="true"
-                style="?attr/materialButtonOutlinedStyle"
-                android:textColor="@color/colorAccent"
-                app:strokeColor="@color/colorAccent"/>
+                android:text="@string/book" />
 
         </RelativeLayout>
 

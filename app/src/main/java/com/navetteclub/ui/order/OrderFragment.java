@@ -85,7 +85,7 @@ import retrofit2.Call;
 import static com.navetteclub.ui.order.OrderType.*;
 
 
-public class OrderFragment extends Fragment implements OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class OrderFragment extends Fragment implements OnMapReadyCallback{
 
     private static final String TAG = OrderFragment.class.getSimpleName();
 
@@ -161,54 +161,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, TimeP
         setupUi();
         setupBottomSheet();
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        DatePickerDialog dpd = (DatePickerDialog) getChildFragmentManager().findFragmentByTag("Datepickerdialog");
-        TimePickerDialog tpd = (TimePickerDialog) getChildFragmentManager().findFragmentByTag("TimepickerDialog");
-        if(tpd != null) tpd.setOnTimeSetListener(this);
-        if(dpd != null) dpd.setOnDateSetListener(this);
-    }
-
-    @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        String time = "You picked the following time: "+hourOfDay+"h"+minute+"m"+second;
-        Log.d(TAG, time);
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, second);
-        Item item = orderViewModel.getItem1();
-        if(item==null){
-            item = new Item();
-        }
-        item.setRideAt(calendar.getTime());
-        orderViewModel.setItem1LiveData(item);
-
-        NavHostFragment.findNavController(this).navigate(R.id.action_order_fragment_to_detail_fragment);
-    }
-
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
-        Log.d(TAG, date);
-        calendar = Calendar.getInstance();
-        calendar.set(year, monthOfYear, dayOfMonth);
-
-        //dateTextView.setText(date);
-        Calendar now = Calendar.getInstance();
-        TimePickerDialog tpd =TimePickerDialog.newInstance(
-                OrderFragment.this,
-                now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
-                true
-        );
-        tpd.dismissOnPause(true);
-        tpd.setVersion(TimePickerDialog.Version.VERSION_2);
-        tpd.show(getChildFragmentManager(), "Timepickerdialog");
-
-    }
-
 
     private void setupBottomSheet() {
         sheetBehavior = BottomSheetBehavior.from(mBinding.bottomSheets.bottomSheet);
@@ -485,23 +437,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, TimeP
                         }
                     }
                 });
-        orderViewModel.getOrderTypeLiveData().observe(getViewLifecycleOwner(),
-                orderType -> {
-                    if(orderType!=null) {
-                        switch (orderType) {
-                            case GO_BACK:
-                            case CUSTOM:
-                                mBinding.bottomSheets.bookLaterButton.setVisibility(View.GONE);
-                                break;
-                            case BACK:
-                            case GO:
-                                mBinding.bottomSheets.bookLaterButton.setVisibility(View.VISIBLE);
-                                break;
-                        }
-                    }else{
-                        mBinding.bottomSheets.bookLaterButton.setVisibility(View.VISIBLE);
-                    }
-                });
     }
 
     private void loadCart() {
@@ -589,6 +524,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, TimeP
     }
 
     private void setupUi() {
+        mBinding.bottomSheets.setAmount("...");
+        mBinding.bottomSheets.setDuration("...");
+        mBinding.bottomSheets.setDistance("...");
         mBinding.swapPoints.setOnClickListener(v -> orderViewModel.swap());
         mBinding.originText.setOnClickListener(
                 v -> {
@@ -637,23 +575,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, TimeP
                     }else{
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_detail_fragment);
                     }
-                });
-        mBinding.bottomSheets.bookLaterButton.setOnClickListener(
-                v -> {
-                    Calendar now = Calendar.getInstance();
-                    DatePickerDialog dpd = DatePickerDialog.newInstance(
-                            OrderFragment.this,
-                            now.get(Calendar.YEAR), // Initial year selection
-                            now.get(Calendar.MONTH), // Initial month selection
-                            now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-                    );
-                    Calendar calendar = Calendar.getInstance();
-                    dpd.setMinDate(calendar);
-                    calendar.roll(Calendar.MONTH, 2);
-                    dpd.setMaxDate(calendar);
-                    dpd.setVersion(DatePickerDialog.Version.VERSION_2);
-                    dpd.dismissOnPause(true);
-                    dpd.show(getChildFragmentManager(), "Datepickerdialog");
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
