@@ -189,7 +189,7 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
                     if(order == null){
                         return;
                     }
-                    mBinding.setAmount(order.getAmountStr());
+                    mBinding.setAmount(order.getTotalStr());
 
                     if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())){
                         mBinding.payPerCashButton.setVisibility(View.GONE);
