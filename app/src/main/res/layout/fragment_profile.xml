@@ -143,7 +143,7 @@
                     android:id="@+id/menu_orders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/list_selector_background"
+                    android:background="@drawable/menu_item_selector"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     app:iconTint="@color/colorAccent"
@@ -160,6 +160,7 @@
                     android:id="@+id/menu_rides"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/menu_item_selector"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     app:iconTint="@color/colorAccent"
@@ -173,10 +174,10 @@
                     android:background="@color/colorIcon"/>
 
                 <com.navetteclub.views.MenuItemView
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                     android:id="@+id/menu_histories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/menu_item_selector"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     app:iconTint="@color/colorAccent"
