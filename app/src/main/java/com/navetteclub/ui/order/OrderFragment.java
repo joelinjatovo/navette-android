@@ -444,9 +444,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         if(club==null) return;
         Item item = orderViewModel.getItem1();
         if(item==null) return;
-        if(cartRetrofitRequest!=null){
-            cartRetrofitRequest.cancel();
-        }
+        //if(cartRetrofitRequest!=null){
+            //cartRetrofitRequest.cancel();
+        //}
         cartRetrofitRequest = orderViewModel.getCart();
         mBinding.bottomSheets.setIsLoadingCart(true);
         mBinding.bottomSheets.setShowErrorLoaderCart(false);
