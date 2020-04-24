@@ -84,7 +84,8 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     RidePointWithDatas oldItem = mItems.get(oldItemPosition);
                     RidePointWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRidePoint().getId() == newItem.getRidePoint().getId();
+                    return oldItem.getRidePoint()!=null &&
+                            oldItem.getRidePoint().getId().equals(newItem.getRidePoint().getId());
                 }
 
                 @Override
@@ -123,7 +124,7 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
                                 .load(Constants.getBaseUrl() + mItem.getUser().getImageUrl())
                                 .placeholder(R.drawable.user_placeholder)
                                 .error(R.drawable.user_placeholder)
-                                .resize(100, 100)
+                                .resize(500, 500)
                                 .into(mBinding.avatarImageView);
                     }
                 }

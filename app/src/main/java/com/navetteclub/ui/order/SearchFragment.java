@@ -122,7 +122,7 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnMapRe
 
         // Specify the types of place data to return.
         if (autocompleteFragment != null) {
-            Objects.requireNonNull(autocompleteFragment.getView()).setBackgroundColor(getResources().getColor(R.color.white));
+            autocompleteFragment.requireView().setBackgroundColor(getResources().getColor(R.color.white));
 
             List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
             autocompleteFragment.setPlaceFields(fields);

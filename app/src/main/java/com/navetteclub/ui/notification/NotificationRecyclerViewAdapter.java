@@ -162,6 +162,11 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                         mBinding.title.setText(R.string.notification_new_order);
                         mBinding.subtitle.setText(R.string.notification_new_order_desc);
                         break;
+                    case "App\\Notifications\\ItemStatus":
+                        mBinding.icon.setImageResource(R.drawable.outline_access_time_black_24);
+                        mBinding.title.setText(R.string.notification_item_changed);
+                        mBinding.subtitle.setText(R.string.notification_item_changed_desc);
+                        break;
                     case "AB":
                         break;
                 }

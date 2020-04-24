@@ -200,20 +200,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
         try {
             if (checkPermissions()) {
                 Task locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(requireActivity(), new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        Log.d(TAG, "locationResult.addOnCompleteListener");
-                        if (task.isSuccessful()) {
-                            mLastKnownLocation = (Location) task.getResult();
-                            if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), 15));
-                            }
-                        } else {
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                locationResult.addOnCompleteListener(requireActivity(), task -> {
+                    Log.d(TAG, "locationResult.addOnCompleteListener");
+                    if (task.isSuccessful()) {
+                        mLastKnownLocation = (Location) task.getResult();
+                        if (mLastKnownLocation != null && mMap != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(mLastKnownLocation.getLatitude(),
+                                            mLastKnownLocation.getLongitude()), 15));
                         }
+                    } else {
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 });
             }
