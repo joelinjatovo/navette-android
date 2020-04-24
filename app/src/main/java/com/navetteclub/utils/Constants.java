@@ -1,9 +1,14 @@
 package com.navetteclub.utils;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.navetteclub.BuildConfig;
 
 public final class Constants {
     public static final String AUTHORITY = "com.navetteclub";
+
+    public static final LatLng DEFAULT_LOCATION = new LatLng(-18.915685, 47.539389);
+
+    public static final float MAP_ZOOM = 15;
 
     private static final String API_KEY = "eyJpdiI6Imd2MTVZTC9QWXllaElDWlhta0JhVUE9PSIsInZhbHVlIjoiNlpzNG9KV1pTWktacUpzdmtPcTJUUT09IiwibWFjIjoiYmIwNTkzMTE2OTg3ODYyZmQ3YjE1MmE5YzE3ZjIzMTM0YTdjNTJhOTI4YmU1NWU2NDQxZTczNjNlNDdkYTY3MSJ9";
     private static final String API_KEY_DEV = "eyJpdiI6IkhlMTRnbnQzd0JFbXpMV0lTTkhxN3c9PSIsInZhbHVlIjoidHRzQ2dZTHdPcGQrQWtXSDhEZnRmdz09IiwibWFjIjoiODM2YTE0ZGNiOTMzMTVjZTZkMjg1MWMxNmVhZGQwYzU1MDk2ZGIxMWYzZDRkM2ZlNDdhMTY1OWY5MTZmZmJhOCJ9";

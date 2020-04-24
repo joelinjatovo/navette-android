@@ -39,6 +39,7 @@ import com.navetteclub.databinding.FragmentHomeBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrderFragmentDirections;
 import com.navetteclub.ui.order.SearchType;
+import com.navetteclub.utils.Constants;
 import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
@@ -204,13 +205,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
                     Log.d(TAG, "locationResult.addOnCompleteListener");
                     if (task.isSuccessful()) {
                         mLastKnownLocation = (Location) task.getResult();
-                        if (mLastKnownLocation != null && mMap != null) {
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), 15));
+                        if(mMap != null){
+                            if (mLastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(mLastKnownLocation.getLatitude(),
+                                                mLastKnownLocation.getLongitude()), Constants.MAP_ZOOM));
+                            }else{
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.DEFAULT_LOCATION, Constants.MAP_ZOOM));
+                            }
                         }
                     } else {
                         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.DEFAULT_LOCATION, Constants.MAP_ZOOM));
                     }
                 });
             }

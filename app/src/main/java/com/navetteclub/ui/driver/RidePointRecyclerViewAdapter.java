@@ -3,6 +3,7 @@ package com.navetteclub.ui.driver;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.databinding.ViewholderRidePointBinding;
@@ -44,6 +46,22 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setItem(mItems.get(position));
+        if(position==0){
+            holder.mBinding.top1ImageView.setVisibility(View.INVISIBLE);
+        }else{
+            holder.mBinding.top1ImageView.setVisibility(View.VISIBLE);
+        }
+
+        if(position==getItemCount()-1){
+            holder.mBinding.bottom1ImageView.setVisibility(View.INVISIBLE);
+            holder.mBinding.bottom2ImageView.setVisibility(View.INVISIBLE);
+            holder.mBinding.bottom3ImageView.setVisibility(View.INVISIBLE);
+        }else{
+            holder.mBinding.bottom1ImageView.setVisibility(View.VISIBLE);
+            holder.mBinding.bottom2ImageView.setVisibility(View.VISIBLE);
+            holder.mBinding.bottom3ImageView.setVisibility(View.VISIBLE);
+        }
+
         holder.mBinding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
@@ -51,7 +69,12 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
                 mListener.onClick(v, position, holder.mItem);
             }
         });
-        holder.mBinding.callButtom.setOnClickListener(v -> {
+        holder.mBinding.buttonCall.setOnClickListener(v -> {
+            if (null != mCallListener) {
+                mCallListener.onClick(v, position, holder.mItem);
+            }
+        });
+        holder.mBinding.buttonCancel.setOnClickListener(v -> {
             if (null != mCallListener) {
                 mCallListener.onClick(v, position, holder.mItem);
             }
@@ -85,6 +108,7 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
                     RidePointWithDatas oldItem = mItems.get(oldItemPosition);
                     RidePointWithDatas newItem = items.get(newItemPosition);
                     return oldItem.getRidePoint()!=null &&
+                            oldItem.getRidePoint().getId() != null &&
                             oldItem.getRidePoint().getId().equals(newItem.getRidePoint().getId());
                 }
 
@@ -116,17 +140,27 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
                 if(mItem.getRidePoint()!=null){
                     mBinding.setRideType(mItem.getRidePoint().getType());
                     mBinding.setRideStatus(mItem.getRidePoint().getStatus());
+                    mBinding.setDuration(mItem.getRidePoint().getDuration());
+
+                    if(mItem.getPoint()!=null){
+                        mBinding.setPoint(mItem.getPoint().getName());
+                    }
+
+                    if(mItem.getRidePoint().getStatus()!=null){
+                        mBinding.setIsActive(RidePoint.STATUS_ACTIVE.equals(mItem.getRidePoint().getStatus()));
+                        mBinding.setIsNext(RidePoint.STATUS_NEXT.equals(mItem.getRidePoint().getStatus()));
+                        mBinding.setIsOnline(RidePoint.STATUS_ONLINE.equals(mItem.getRidePoint().getStatus()));
+                        mBinding.setIsCompleted(RidePoint.STATUS_COMPLETED.equals(mItem.getRidePoint().getStatus()));
+                        mBinding.setIsCanceled(RidePoint.STATUS_CANCELED.equals(mItem.getRidePoint().getStatus()));
+                        if (RidePoint.STATUS_PING.equals(mItem.getRidePoint().getStatus())) {
+                            mBinding.orderTextView.setVisibility(View.GONE);
+                        } else {
+                            mBinding.orderTextView.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
                 if(mItem.getUser()!=null){
                     mBinding.setUser(mItem.getUser());
-                    if(mItem.getUser().getImageUrl()!=null){
-                        Picasso.get()
-                                .load(Constants.getBaseUrl() + mItem.getUser().getImageUrl())
-                                .placeholder(R.drawable.user_placeholder)
-                                .error(R.drawable.user_placeholder)
-                                .resize(500, 500)
-                                .into(mBinding.avatarImageView);
-                    }
                 }
             }
         }
@@ -134,7 +168,7 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
         @NonNull
         @Override
         public String toString() {
-            return super.toString() + " '" + mBinding.nameTextView.getText() + "'";
+            return super.toString() + " '" + mBinding.rideTitleTextView.getText() + "'";
         }
     }
 }

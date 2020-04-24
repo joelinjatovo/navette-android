@@ -440,10 +440,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        if(rideWithDatas.getPoints()!=null) {
-            mAdapter.setItems(rideWithDatas1.getPoints());
-            updateStepView(rideWithDatas1.getPoints());
-            scrollRecyclerView(rideWithDatas1.getPoints());
+        List<RidePointWithDatas> points = rideWithDatas1.getPoints();
+        if(points!=null) {
+            mAdapter.setItems(points);
             drawPoints(rideWithDatas1.getPoints());
         }
 
@@ -462,29 +461,47 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         }
+
+        updateStepView(ride, points);
+        scrollRecyclerView(ride, points);
     }
 
-    private void updateStepView(List<RidePointWithDatas> ridePointWithDatas) {
+    private void updateStepView(Ride ride, List<RidePointWithDatas> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
-        mBinding.bottomSheets.stepView.setStepsNumber(ridePointWithDatas.size() + 1);
-        int i = 0;
+        int count = ridePointWithDatas.size();
+        mBinding.bottomSheets.stepView.setStepsNumber(count);
+        if(ride!=null){
+            if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
+                mBinding.bottomSheets.stepView.go(count, true);
+                return;
+            }
+        }
+
         for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
             RidePoint ridePoint = ridePointWithData.getRidePoint();
             if(ridePoint!=null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
                 mBinding.bottomSheets.stepView.go(ridePoint.getOrder()>0?ridePoint.getOrder()-1:0, true);
                 break;
             }
-            i++;
         }
     }
 
-    private void scrollRecyclerView(List<RidePointWithDatas> ridePointWithDatas) {
+    private void scrollRecyclerView(Ride ride, List<RidePointWithDatas> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
+        int count = ridePointWithDatas.size();
+        if(ride!=null){
+            if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
+                if (mBinding.bottomSheets.recyclerView.getLayoutManager() != null) {
+                    mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(count - 1);
+                }
+                return;
+            }
+        }
         int i = 0;
-        for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
+        for (RidePointWithDatas ridePointWithData : ridePointWithDatas) {
             RidePoint ridePoint = ridePointWithData.getRidePoint();
-            if(ridePoint!=null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
-                if(mBinding.bottomSheets.recyclerView.getLayoutManager()!=null) {
+            if (ridePoint != null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
+                if (mBinding.bottomSheets.recyclerView.getLayoutManager() != null) {
                     mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(i);
                 }
                 break;
