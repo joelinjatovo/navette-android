@@ -272,6 +272,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         orderViewModel.getBackLiveData().observe(getViewLifecycleOwner(), value -> mBinding.setBack(value));
         orderViewModel.getItem1PointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
+                    validate();
                     Point origin = orderViewModel.getOriginPoint();
                     Point destination = orderViewModel.getDestinationPoint();
                     if(origin!=null && destination!=null){
@@ -283,6 +284,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                 });
         orderViewModel.getClubPointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
+                    validate();
                     expandOrderDetails();
                     Point origin = orderViewModel.getOriginPoint();
                     Point destination = orderViewModel.getDestinationPoint();
@@ -300,6 +302,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                 });
         orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
+                    validate();
                     Point destination = orderViewModel.getDestinationPoint();
                     Point back = orderViewModel.getBackPoint();
                     if(back!=null && destination!=null){
@@ -312,6 +315,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
                 item -> {
                     if(item!=null){
+                        validate();
                         loadCart();
                         expandOrderDetails();
                         mBinding.bottomSheets.setDuration(item.getDuration());
@@ -334,6 +338,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
                 item -> {
                     if(item!=null){
+                        validate();
                         loadCart();
                         String direction = item.getDirection();
                         if(direction!=null && mMap!=null) {
@@ -352,6 +357,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
                 club -> {
                     if(club!=null){
+                        validate();
                         loadCart();
                         mBinding.bottomSheets.setIsLoadingCar(true);
                         mBinding.bottomSheets.setShowErrorLoaderCar(false);
@@ -365,6 +371,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         orderViewModel.getCarLiveData().observe(getViewLifecycleOwner(),
                 car -> {
                     if(car!=null){
+                        validate();
                         Order order = orderViewModel.getOrder();
                         if(order!=null && order.getPrivatized()){
                             order.setPlace(car.getPlace());
@@ -374,6 +381,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                     }
                 });
         orderViewModel.getPlaceLiveData().observe(getViewLifecycleOwner(), place -> {
+            validate();
             mBinding.bottomSheets.setPlace(place);
             loadCart();
         });
@@ -437,6 +445,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                         }
                     }
                 });
+    }
+
+    private void validate() {
+        mBinding.bottomSheets.setIsOrderValid(orderViewModel.isValid());
     }
 
     private void loadCart() {

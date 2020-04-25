@@ -23,9 +23,9 @@ public class RetrofitClient {
     public static Retrofit getInstance() {
         if (retrofit == null) {
             Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'")
+                    //.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'")
                     .registerTypeAdapter(Date.class, new DateTypeDeserializer())
-                    //.registerTypeAdapter(Date.class, new DateTypeSerializer())
+                    .registerTypeAdapter(Date.class, new DateTypeSerializer())
                     .create();
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder()

@@ -4,10 +4,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.navetteclub.utils.Log;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -18,6 +21,8 @@ public class DateTypeDeserializer implements JsonDeserializer<Date> {
     private final String TAG = DateTypeDeserializer.class.getSimpleName();
 
     private static final String[] DATE_FORMATS = new String[]{
+            "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'",
+            "yyyy-MM-dd HH:mm:ss",
             "yyyy-MM-dd'T'HH:mm:ssZ",
             "yyyy-MM-dd'T'HH:mm:ss",
             "yyyy-MM-dd",
@@ -26,7 +31,6 @@ public class DateTypeDeserializer implements JsonDeserializer<Date> {
             "MM/dd/yyyy HH:mm:ss aaa",
             "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
             "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS",
-            "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'",
             "MMM d',' yyyy H:mm:ss a"
     };
 
@@ -35,8 +39,10 @@ public class DateTypeDeserializer implements JsonDeserializer<Date> {
         for (String format : DATE_FORMATS) {
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.FRANCE);
+                formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date date = formatter.parse(jsonElement.getAsString());
                 formatter.setTimeZone(TimeZone.getDefault());
-                return formatter.parse(jsonElement.getAsString());
+                return date;
             } catch (ParseException ignored) {
             }
         }

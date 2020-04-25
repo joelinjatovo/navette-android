@@ -125,6 +125,27 @@ public class OrderViewModel extends ViewModel {
         setOrderTypeLiveData(OrderType.GO);
     }
 
+    public boolean isValid(){
+        if(club==null) return false;
+        if(clubPoint==null) return false;
+        if(item1==null) return false;
+        if(item1Point==null) return false;
+        if(item1.getDistance()==null) return false;
+        if(item1.getDuration()==null) return false;
+        if(item1.getDirection()==null) return false;
+        if(car==null) return false;
+        if(order==null) return false;
+        if(place==0) return false;
+        if(OrderType.GO_BACK.equals(orderType)){
+            if(item2==null) return false;
+            if(item2Point==null) return false;
+            if(item2.getDistance()==null) return false;
+            if(item2.getDuration()==null) return false;
+            if(item2.getDirection()==null) return false;
+        }
+        return true;
+    }
+
     public void loadCars(){
         loadCars(club);
     }

@@ -68,7 +68,6 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
     private void setupUi() {
         mBinding.yesButton.setOnClickListener(
                 v -> {
-                    orderViewModel.setOrderTypeLiveData(OrderType.GO_BACK);
                     // go to search point
                     GoAndBackFragmentDirections.ActionGoAndBackFragmentToSearchFragment action = GoAndBackFragmentDirections.actionGoAndBackFragmentToSearchFragment();
                     action.setSearchType(SearchType.RETOURS);
@@ -95,6 +94,8 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
                     @Override
                     public void handleOnBackPressed() {
                         orderViewModel.setOrderTypeLiveData(OrderType.GO);
+                        orderViewModel.setItem2LiveData((Item) null);
+                        orderViewModel.setItem2PointLiveData(null);
                         NavHostFragment.findNavController(GoAndBackFragment.this).popBackStack();
                     }
                 });

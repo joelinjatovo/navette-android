@@ -202,6 +202,7 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnMapRe
                     if(searchType == SearchType.RETOURS){
                         Log.d(TAG, "RETOURS");
                         String name = mBinding.locationTitle.getText().toString();
+                        orderViewModel.setOrderTypeLiveData(OrderType.GO_BACK);
                         orderViewModel.setItem2LiveData(name, mLocation);
                     }
 

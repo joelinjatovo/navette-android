@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.navetteclub.utils.Log;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ public class DateTypeSerializer implements JsonSerializer<Date> {
     @Override
     public JsonElement serialize(Date date, Type type, JsonSerializationContext jsonSerializationContext) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.FRANCE);
-        formatter.setTimeZone(TimeZone.getDefault());
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         String dateFormatAsString = formatter.format(date);
         return new JsonPrimitive(dateFormatAsString);
     }
