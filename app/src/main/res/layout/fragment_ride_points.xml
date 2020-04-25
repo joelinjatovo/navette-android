@@ -9,6 +9,7 @@
         <variable name="isLoading" type="boolean" />
         <variable name="isUnauthenticated" type="boolean" />
         <variable name="showError" type="boolean" />
+        <variable name="rideId" type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,6 +30,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 app:title="@string/title_ride"
+                app:titleTextColor="@color/black"
+                app:subtitleTextColor="@color/colorAccent"
+                app:subtitle="@{@string/subtitle_ride(rideId)}"
                 app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
 

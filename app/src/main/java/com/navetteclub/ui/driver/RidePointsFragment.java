@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Ride;
+import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
@@ -34,6 +35,7 @@ import com.navetteclub.databinding.FragmentRidePointsBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
+import com.navetteclub.vm.RideViewModel;
 import com.navetteclub.vm.RidesViewModel;
 
 import java.util.List;
@@ -62,6 +64,8 @@ public class RidePointsFragment extends Fragment {
 
     private RideWithDatas rideWithDatas;
 
+    private RideViewModel rideViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +80,7 @@ public class RidePointsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ride_points, container, false);
 
-        mAdapter = new RidePointRecyclerViewAdapter(mListener, mCallListener);
+        mAdapter = new RidePointRecyclerViewAdapter(mListener);
         RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(mAdapter);
@@ -90,6 +94,7 @@ public class RidePointsFragment extends Fragment {
         setupUI();
         setupAuthViewModel();
         setupRidesViewModel();
+        setupRideViewModel();
     }
 
     @Override
@@ -232,6 +237,27 @@ public class RidePointsFragment extends Fragment {
                 });
     }
 
+    private void setupRideViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        rideViewModel = new ViewModelProvider(requireActivity(), factory).get(RideViewModel.class);
+        rideViewModel.getRideCancelResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }
+                    }
+                    if(result.getSuccess()!=null){
+                        setRide(result.getSuccess());
+                    }
+                    rideViewModel.setRideCancelResult(null);
+                });
+    }
+
     private void showSweetError(String string) {
         new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                 .setTitleText("Oops...")
@@ -286,6 +312,8 @@ public class RidePointsFragment extends Fragment {
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
+
+        mBinding.setRideId(String.valueOf(rideId));
 
         NavController navController = NavHostFragment.findNavController(this);
         mBinding.toolbar.setNavigationOnClickListener(
@@ -365,12 +393,24 @@ public class RidePointsFragment extends Fragment {
     }
 
     private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
-        //NavHostFragment.findNavController(RideFragment.this).navigate(R.id.action_rides_fragment_to_ride_fragment);
-    };
-
-    private OnClickItemListener<RidePointWithDatas> mCallListener = (v, pos, item) -> {
-        if (item.getUser() != null && item.getUser().getPhone() != null) {
-            onCallBtnClick(item.getUser().getPhone());
+        if(item==null){
+            return;
+        }
+        switch (v.getId()){
+            case R.id.button_call:
+                if (item.getUser() != null && item.getUser().getPhone() != null) {
+                    onCallBtnClick(item.getUser().getPhone());
+                }
+            break;
+            case R.id.button_cancel:
+                RidePoint ridePoint = item.getRidePoint();
+                if(ridePoint!=null) {
+                    if(!RidePoint.STATUS_CANCELED.equals(ridePoint.getStatus())) {
+                        progressDialog.show();
+                        rideViewModel.cancelRidePoint(token, ridePoint.getRid());
+                    }
+                }
+            break;
         }
     };
 

@@ -28,11 +28,9 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
     private List<RidePointWithDatas> mItems;
 
     private final OnClickItemListener<RidePointWithDatas> mListener;
-    private final OnClickItemListener<RidePointWithDatas> mCallListener;
 
-    public RidePointRecyclerViewAdapter(OnClickItemListener<RidePointWithDatas> listener, OnClickItemListener<RidePointWithDatas> callListener) {
+    public RidePointRecyclerViewAdapter(OnClickItemListener<RidePointWithDatas> listener) {
         mListener = listener;
-        mCallListener = callListener;
     }
 
     @NonNull
@@ -64,19 +62,17 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
 
         holder.mBinding.getRoot().setOnClickListener(v -> {
             if (null != mListener) {
-                // Notify the active callbacks interface (the activity, if the
-                // fragment is attached to one) that an item has been selected.
                 mListener.onClick(v, position, holder.mItem);
             }
         });
         holder.mBinding.buttonCall.setOnClickListener(v -> {
-            if (null != mCallListener) {
-                mCallListener.onClick(v, position, holder.mItem);
+            if (null != mListener) {
+                mListener.onClick(v, position, holder.mItem);
             }
         });
         holder.mBinding.buttonCancel.setOnClickListener(v -> {
-            if (null != mCallListener) {
-                mCallListener.onClick(v, position, holder.mItem);
+            if (null != mListener) {
+                mListener.onClick(v, position, holder.mItem);
             }
         });
     }

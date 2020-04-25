@@ -274,5 +274,6 @@
     <string name="status_completable">terminable</string>
     <string name="notification_item_changed">Modification d\'une course</string>
     <string name="notification_item_changed_desc">Une de vos courses a été mise à jour.</string>
+    <string name="subtitle_ride">ref: %s</string>
 
 </resources>

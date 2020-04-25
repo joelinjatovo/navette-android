@@ -184,6 +184,9 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             switch (destination.getId()){
+                case R.id.rides_fragment:
+                case R.id.ride_point_fragment:
+                case R.id.ride_map_fragment:
                 case R.id.login_fragment:
                 case R.id.register_fragment:
                 case R.id.forgot_fragment:
