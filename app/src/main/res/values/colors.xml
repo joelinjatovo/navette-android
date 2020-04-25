@@ -14,8 +14,10 @@
     <color name="black">#000000</color>
     <color name="gray">#333333</color>
     <color name="red">#fe0007</color>
-    <color name="transparent">#ffffff</color>
-    <color name="colorAlertPrimary">#662DBB54</color>
-    <color name="colorAlertError">#66fb0066</color>
-    <color name="colorAlertSuccess">#662DBB54</color>
+    <color name="transparent">#ffffffff</color>
+    <color name="colorAlertDefault">#999999</color>
+    <color name="colorAlertError">#fc7abb</color>
+    <color name="colorAlertSuccess">#99ff99</color>
+    <color name="colorAlertAccent">#6afd6a</color>
+    <color name="colorAlertPrimary">#66ff66</color>
 </resources>

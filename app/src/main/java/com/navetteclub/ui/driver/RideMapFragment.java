@@ -455,10 +455,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
             if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
                 mAdapter.addCompleting();
-                mBinding.bottomSheets.stepView.go(mBinding.bottomSheets.stepView.getStepCount(), true);
-                if(mBinding.bottomSheets.recyclerView.getLayoutManager()!=null) {
-                    mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(mAdapter.getItemCount());
-                }
             }
         }
 
@@ -469,19 +465,21 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     private void updateStepView(Ride ride, List<RidePointWithDatas> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
         int count = ridePointWithDatas.size();
-        mBinding.bottomSheets.stepView.setStepsNumber(count);
-        if(ride!=null){
-            if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
-                mBinding.bottomSheets.stepView.go(count, true);
-                return;
+        if(count>0) {
+            mBinding.bottomSheets.stepView.setStepsNumber(count);
+            if (ride != null) {
+                if (Ride.STATUS_COMPLETABLE.equals(ride.getStatus())) {
+                    mBinding.bottomSheets.stepView.go(count - 1, true);
+                    return;
+                }
             }
-        }
 
-        for(RidePointWithDatas ridePointWithData:  ridePointWithDatas){
-            RidePoint ridePoint = ridePointWithData.getRidePoint();
-            if(ridePoint!=null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
-                mBinding.bottomSheets.stepView.go(ridePoint.getOrder()>0?ridePoint.getOrder()-1:0, true);
-                break;
+            for (RidePointWithDatas ridePointWithData : ridePointWithDatas) {
+                RidePoint ridePoint = ridePointWithData.getRidePoint();
+                if (ridePoint != null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
+                    mBinding.bottomSheets.stepView.go(ridePoint.getOrder() > 0 ? ridePoint.getOrder() - 1 : 0, true);
+                    break;
+                }
             }
         }
     }
@@ -492,7 +490,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         if(ride!=null){
             if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
                 if (mBinding.bottomSheets.recyclerView.getLayoutManager() != null) {
-                    mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(count - 1);
+                    mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(count);
                 }
                 return;
             }
@@ -599,7 +597,17 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             return null;
         }
 
-        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, String.valueOf(ridePoint.getOrder()), customer.getName());
+        int color = R.color.colorAlertDefault;
+        if (RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
+            color = R.color.colorImportant;
+        }
+        if (RidePoint.STATUS_ACTIVE.equals(ridePoint.getStatus())) {
+            color = R.color.colorAlertAccent;
+        }
+        if (RidePoint.STATUS_ONLINE.equals(ridePoint.getStatus())) {
+            color = R.color.colorAlertSuccess;
+        }
+        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, String.valueOf(ridePoint.getOrder()), customer.getName(), color);
     }
 
 
