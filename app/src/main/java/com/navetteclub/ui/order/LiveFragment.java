@@ -55,6 +55,7 @@ import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.MapUiUtils;
+import com.navetteclub.utils.PusherOdk;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
@@ -336,7 +337,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         rideViewModel.loadItem(token, itemId);
-                        connectPusher();
+                        pusher = PusherOdk.getInstance(token).getPusher();
                         listenChannelItem(itemId);
                     }
                 });
@@ -654,27 +655,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }, "item.created", "item.updated");
 
         listenChannelItem = true;
-    }
-
-    private void connectPusher() {
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", token);
-        HttpAuthorizer authorizer = new HttpAuthorizer(Constants.getBaseUrl() + "broadcasting/auth");
-        authorizer.setHeaders(headers);
-        PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
-        options.setCluster(Constants.getPusherAppCluster());
-        pusher = new Pusher(Constants.getPusherAppKey(), options);
-        pusher.connect(new ConnectionEventListener() {
-            @Override
-            public void onConnectionStateChange(ConnectionStateChange change) {
-                Log.i(TAG + "Pusher", "Connection State Change: " + change.toString());
-            }
-
-            @Override
-            public void onError(String message, String code, Exception e) {
-                Log.i(TAG + "Pusher", String.format("Connection Error: [%s], exception was [%s]", message, e));
-            }
-        }, ConnectionState.ALL);
     }
 
 }

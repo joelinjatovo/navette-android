@@ -60,8 +60,6 @@ public class LocationUpdatesService extends Service {
 
     public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
 
-    public static final String ACTION_BROADCAST_PUSHER = PACKAGE_NAME + ".broadcast.pusher";
-
     public static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
 
     private static final String EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME + ".started_from_notification";
@@ -143,8 +141,7 @@ public class LocationUpdatesService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.app_name);
             // Create the channel for the notification
-            NotificationChannel mChannel =
-                    new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
             // Set the Notification Channel for the Notification Manager.
             mNotificationManager.createNotificationChannel(mChannel);
@@ -315,9 +312,6 @@ public class LocationUpdatesService extends Service {
 
     private void onNewLocation(Location location) {
         Log.i(TAG, "New location: " + location);
-        if(location!=null){
-            Log.i(TAG, "New location: " + location.getAccuracy());
-        }
 
         mLocation = location;
 
@@ -359,11 +353,13 @@ public class LocationUpdatesService extends Service {
      */
     public boolean serviceIsRunningInForeground(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(
-                Integer.MAX_VALUE)) {
-            if (getClass().getName().equals(service.service.getClassName())) {
-                if (service.foreground) {
-                    return true;
+        if (manager != null) {
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(
+                    Integer.MAX_VALUE)) {
+                if (getClass().getName().equals(service.service.getClassName())) {
+                    if (service.foreground) {
+                        return true;
+                    }
                 }
             }
         }

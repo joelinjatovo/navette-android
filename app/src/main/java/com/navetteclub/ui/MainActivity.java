@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final int NOTIFICATION_ID = 1;
+
     private AuthViewModel authViewModel;
 
     private ClubViewModel clubViewModel;
@@ -82,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         setupNotification();
         setupViewModel();
         initMapSdk();
-        connectPush();
         registerNetworkBroadcastReceiver();
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                 .bigText("Much longer text that cannot fit one line..."))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        mNotificationManagerCompat.notify(1, mBuilder.build());
+        mNotificationManagerCompat.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
     @Override
@@ -160,8 +161,6 @@ public class MainActivity extends AppCompatActivity {
                         case AUTHENTICATED:
                             Log.d(TAG, "'AUTHENTICATED'");
                             if(authViewModel.getUser() != null){
-                                connectPrivatePush(authViewModel.getUser());
-
                                 if(App.isServiceRunning(PusherService.class)){
                                     Log.d(TAG, "'stopPushService'");
                                     App.stopPushService();
@@ -240,8 +239,11 @@ public class MainActivity extends AppCompatActivity {
             alertView.setIcon(R.drawable.outline_wifi_off_black_18);
             alertView.setTitle(R.string.internet_error_title);
             alertView.setSubtitle(R.string.internet_error_subtitle);
+
+            showNotification();
         }else{
             alertView.setVisibility(View.GONE);
+            mNotificationManagerCompat.cancel(NOTIFICATION_ID);
         }
     }
 
@@ -255,81 +257,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-    }
-
-    private void connectPush() {
-        PusherOptions options = new PusherOptions();
-        options.setCluster(Constants.getPusherAppCluster());
-
-        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
-        pusher.connect();
-
-        Channel channel = pusher.subscribe("my-channel");
-        channel.bind("my-event", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d(TAG + "Pusher", "my-event " + event.getData());
-                showNotification();
-            }
-        });
-
-        channel.bind("user.point.created", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d(TAG + "Pusher", "user.point.created " + event.getData());
-
-                JsonObject convertedObject = new Gson().fromJson(event.getData(), JsonObject.class);
-                JsonObject point = convertedObject.get("point").getAsJsonObject();
-                double lat = point.get("lat").getAsDouble();
-                double lng = point.get("lng").getAsDouble();
-                LatLng location = new LatLng(lat,lng);
-
-                // Notify anyone listening for broadcasts about the new location.
-                Intent intent = new Intent(LocationUpdatesService.ACTION_BROADCAST_PUSHER);
-                intent.putExtra(LocationUpdatesService.EXTRA_LOCATION, location);
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-            }
-        });
-    }
-
-    private void connectPrivatePush(User user) {
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", user.getAuthorizationToken());
-        HttpAuthorizer authorizer = new HttpAuthorizer(Constants.getBaseUrl() + "broadcasting/auth");
-        authorizer.setHeaders(headers);
-        PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
-        options.setCluster(Constants.getPusherAppCluster());
-        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
-        pusher.connect(new ConnectionEventListener() {
-            @Override
-            public void onConnectionStateChange(ConnectionStateChange change) {
-                Log.i(TAG + "Pusher", "Connection State Change: " + change.toString());
-            }
-
-            @Override
-            public void onError(String message, String code, Exception e) {
-                Log.i(TAG + "Pusher", String.format("Connection Error: [%s], exception was [%s]", message, e));
-            }
-        }, ConnectionState.ALL);
-
-        pusher.subscribePrivate("private-App.User."+ user.getId(), new PrivateChannelEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d(TAG + "Pusher", "onEvent");
-                Log.d(TAG + "Pusher", event.getEventName());
-                Log.d(TAG + "Pusher", event.getData());
-            }
-
-            @Override
-            public void onSubscriptionSucceeded(String channelName) {
-                Log.d(TAG + "Pusher", "onSubscriptionSucceeded " + channelName);
-            }
-
-            @Override
-            public void onAuthenticationFailure(String message, Exception e) {
-                Log.d(TAG + "Pusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
-            }
-        }, "user.point.created");
     }
 
     /**
@@ -353,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mNetworkReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG + "Broadcast", "mNetworkReceiver.onReceive");
             updateConnectionUi(Utils.haveNetworkConnection(MainActivity.this));
         }
     };

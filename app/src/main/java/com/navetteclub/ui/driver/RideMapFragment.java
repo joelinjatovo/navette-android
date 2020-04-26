@@ -102,9 +102,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    // The BroadcastReceiver used to listen from broadcasts from the service.
-    private MyReceiver myReceiver;
-
     // A reference to the service used to get location updates.
     private LocationUpdatesService mService = null;
 
@@ -203,7 +200,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
         setupMap();
 
-        myReceiver = new MyReceiver();
         myLocationReceiver = new MyLocationReceiver();
 
         // Check that the user hasn't revoked permissions by going to Settings.
@@ -229,13 +225,11 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(myReceiver, new IntentFilter(LocationUpdatesService.ACTION_BROADCAST_PUSHER));
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(myLocationReceiver, new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(myReceiver);
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(myLocationReceiver);
         super.onPause();
     }
@@ -825,43 +819,37 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     /**
      * Receiver for broadcasts sent by {@link LocationUpdatesService}.
      */
-    private class MyReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            LatLng latLng = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
-            if (latLng != null) {
-                Toast.makeText(requireContext(), latLng.toString(),
-                        Toast.LENGTH_SHORT).show();
-
-                // Draw car line
-                drawLine(latLng);
-
-                if(myPositionMarker!=null){
-                    myPositionMarker.remove();
-                }
-
-                myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in my location"));
-
-                // Set the map's camera position to the current location of the device.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            }
-        }
-    }
-
-    /**
-     * Receiver for broadcasts sent by {@link LocationUpdatesService}.
-     */
     private class MyLocationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
             if (location != null) {
-                Toast.makeText(requireContext(), "Ito zao: " + Utils.getLocationText(location),
-                        Toast.LENGTH_SHORT).show();
+                if(location.getAccuracy()<=100){
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    Toast.makeText(requireContext(), latLng.toString(),
+                            Toast.LENGTH_SHORT).show();
 
-                User user = authViewModel.getUser();
-                if(user!=null){
-                    sendLocationToServer(user, location);
+                    // Draw car line
+                    drawLine(latLng);
+
+                    if(myPositionMarker!=null){
+                        myPositionMarker.remove();
+                    }
+
+                    myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in my location"));
+
+                    // Set the map's camera position to the current location of the device.
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+                    Toast.makeText(requireContext(), "Ito zao: " + Utils.getLocationText(location),
+                            Toast.LENGTH_SHORT).show();
+
+                    User user = authViewModel.getUser();
+                    if(user!=null){
+                        sendLocationToServer(user, location);
+                    }
+                }else{
+                    //Show notification
                 }
             }
         }
