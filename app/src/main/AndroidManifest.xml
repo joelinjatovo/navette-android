@@ -64,18 +64,27 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <receiver android:name=".receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.AuthentificationReceiver">
+            <intent-filter>
+                <action android:name="com.navetteclub.AUTHENTICATION" />
+            </intent-filter>
+        </receiver>
+
         <!-- Foreground services in Q+ require type. -->
         <service
             android:name=".services.LocationUpdatesService"
             android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location" />
+            android:foregroundServiceType="location"/>
 
-        <service android:name=".services.NotificationsMessagingService">
-            <intent-filter android:priority="1">
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+        <service android:name=".services.PusherService"
+            android:enabled="true"/>
 
     </application>
 

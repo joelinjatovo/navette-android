@@ -25,9 +25,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.navetteclub.App;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.services.LocationUpdatesService;
+import com.navetteclub.services.PusherService;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.views.AlertView;
 import com.navetteclub.vm.AuthViewModel;
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                android.util.Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
 
@@ -158,6 +161,12 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "'AUTHENTICATED'");
                             if(authViewModel.getUser() != null){
                                 connectPrivatePush(authViewModel.getUser());
+
+                                if(App.isServiceRunning(PusherService.class)){
+                                    Log.d(TAG, "'stopPushService'");
+                                    App.stopPushService();
+                                }
+                                App.startPusherService(authViewModel.getUser().getAuthorizationToken(), authViewModel.getUser().getId());
                             }
                             break;
                         case INVALID_AUTHENTICATION:

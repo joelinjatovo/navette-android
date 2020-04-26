@@ -315,6 +315,9 @@ public class LocationUpdatesService extends Service {
 
     private void onNewLocation(Location location) {
         Log.i(TAG, "New location: " + location);
+        if(location!=null){
+            Log.i(TAG, "New location: " + location.getAccuracy());
+        }
 
         mLocation = location;
 

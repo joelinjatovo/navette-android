@@ -23,6 +23,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+
+        buildConfigField 'String', 'PUSHER_SERVICE_NAME', "\"pusher_notification\""
     }
 
     buildTypes {
@@ -117,6 +119,9 @@ dependencies {
 
     // DateTime Picker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-messaging:20.1.6'
 
     // Test
     testImplementation 'junit:junit:4.12'

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.facebook.login.LoginManager;
+import com.navetteclub.App;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.Register;
 import com.navetteclub.api.responses.RetrofitResponse;
@@ -72,8 +73,10 @@ public class AuthViewModel extends ViewModel implements FindCallback<User> {
     }
 
     public void logout(Context context) {
-        LoginManager.getInstance().logOut();
-        Preferences.Auth.setCurrentUser(context, 0L);
+        Preferences.Auth.setCurrentUser(context, 0L); // app
+        Preferences.Auth.setCurrentToken(context, null); // app
+        App.stopPushService(); // pusher
+        LoginManager.getInstance().logOut(); // facebook
         authenticate(null);
     }
 
