@@ -37,7 +37,6 @@ public class RideViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<RideWithDatas>> rideCancelResult = new MutableLiveData<>();
 
-
     public void loadItem(String token, String itemId) {
         ItemApiService service = RetrofitClient.getInstance().create(ItemApiService.class);
         Call<RetrofitResponse<ItemWithDatas>> call = service.getItem(token, itemId);
@@ -66,6 +65,7 @@ public class RideViewModel extends ViewModel {
             }
         });
     }
+
     public void finishRidePoint(String token, String ridePoindId){
         RidePointApiService service = RetrofitClient.getInstance().create(RidePointApiService.class);
         Call<RetrofitResponse<RideWithDatas>> call = service.finish(token, new RidePointParam(ridePoindId));

@@ -843,7 +843,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 myPositionMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in my location"));
 
                 // Set the map's camera position to the current location of the device.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             }
         }
     }

@@ -26,6 +26,8 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
 
     private Application application;
 
+    private static LiveViewModel liveViewModel;
+
     private static NotificationViewModel notificationViewModel;
 
     private static ClubViewModel clubViewModel;
@@ -60,7 +62,9 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(GoogleViewModel.class)) {
+        if (modelClass.isAssignableFrom(LiveViewModel.class)) {
+            return (T) new LiveViewModel();
+        } else if (modelClass.isAssignableFrom(GoogleViewModel.class)) {
             Log.d("MyViewModelFactory", "GoogleViewModel.class");
             return (T) new GoogleViewModel();
         } else if (modelClass.isAssignableFrom(UserViewModel.class)) {

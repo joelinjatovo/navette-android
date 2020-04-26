@@ -1,7 +1,6 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,8 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +16,6 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,45 +32,34 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
-import com.navetteclub.api.models.google.GoogleDirectionResponse;
-import com.navetteclub.api.models.google.Leg;
-import com.navetteclub.api.models.google.Route;
-import com.navetteclub.api.services.GoogleApiService;
-import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.ItemWithDatas;
-import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
-import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.User;
+import com.navetteclub.database.entity.UserAndPoint;
 import com.navetteclub.databinding.FragmentLiveBinding;
-import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.MapUiUtils;
-import com.navetteclub.utils.UiUtils;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
+import com.navetteclub.vm.LiveViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.RideViewModel;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -85,17 +70,10 @@ import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
@@ -148,6 +126,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private AuthViewModel authViewModel;
 
+    private LiveViewModel liveViewModel;
+
     private Marker myPositionMarker;
 
     private String token;
@@ -157,6 +137,14 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private Polyline line1;
 
     private Marker mClubMarker;
+
+    private Pusher pusher;
+
+    private boolean listenChannelItem = false;
+
+    private boolean listenChannelDriverPosition = false;
+
+    private Marker driverMarker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -200,6 +188,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         setupUi();
         setupRideViewModel();
         setupGoogleViewModel();
+        setupLiveViewModel();
         setupAuthViewModel();
     }
 
@@ -216,6 +205,14 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
                     if(result.getSuccess()!=null){
                         updateUi(result.getSuccess());
+
+                        // Listen ride
+                        ItemWithDatas itemWithData = result.getSuccess();
+                        if(itemWithData==null) return;
+                        Ride ride = itemWithData.getRide();
+                        if(ride!=null){
+                            listenChannelDriverPosition(String.valueOf(ride.getId()));
+                        }
                     }
                 });
     }
@@ -339,8 +336,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         rideViewModel.loadItem(token, itemId);
-                        User user = authViewModel.getUser();
-                        connectPrivatePush();
+                        connectPusher();
+                        listenChannelItem(itemId);
                     }
                 });
     }
@@ -441,6 +438,23 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
     }
 
+    private void setupLiveViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        liveViewModel = new ViewModelProvider(requireActivity(), factory).get(LiveViewModel.class);
+        liveViewModel.getDriverPositionLiveData().observe(getViewLifecycleOwner(),
+                position -> {
+                    if(position==null) return;
+                        User driver = position.getUser();
+                        if(driver==null) return;
+                        Point point = position.getPoint();
+                        if(point==null) return;
+                        if(driverMarker!=null){
+                            driverMarker.remove();
+                        }
+                        driverMarker = drawDriverPoint(point, driver);
+                });
+    }
+
 
     private Marker drawPoint(Point point, String step, String label, int color) {
         //MapUiUtils.drawDotMarker(requireContext(), mMap, point, R.color.colorAccent);
@@ -450,7 +464,12 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private void drawClubMarker(Point point) {
         if(point==null) return;
         mClubMarker = MapUiUtils.drawTextPoint(requireContext(), mMap, point, getString(R.string.club));
-        //MapUiUtils.drawDotMarker(requireContext(), mMap, point, R.color.red);
+    }
+
+
+    private Marker drawDriverPoint(Point point, User driver) {
+        return MapUiUtils.drawCarMarker(requireContext(), mMap, point, R.color.colorIcon);
+
     }
 
     private void drawLine(String encodedString) {
@@ -581,14 +600,70 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void connectPrivatePush() {
+    private void listenChannelDriverPosition(String rideId) {
+        if(pusher==null) return;
+        if(listenChannelDriverPosition){
+            return;
+        }
+        pusher.subscribePrivate("private-App.Ride."+ rideId, new PrivateChannelEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG + "RidePusher", "onEvent");
+                Log.d(TAG + "RidePusher", event.getEventName());
+                Log.d(TAG + "RidePusher", event.getData());
+                Gson gson = new Gson();
+                UserAndPoint response = gson.fromJson(event.getData(), UserAndPoint.class);
+                requireActivity().runOnUiThread(() -> liveViewModel.setDriverPositionLiveData(response));
+            }
+
+            @Override
+            public void onSubscriptionSucceeded(String channelName) {
+                Log.d(TAG + "RidePusher", "onSubscriptionSucceeded " + channelName);
+            }
+
+            @Override
+            public void onAuthenticationFailure(String message, Exception e) {
+                Log.e(TAG + "RidePusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
+            }
+        }, "user.point.created");
+        listenChannelDriverPosition = false;
+    }
+
+    private void listenChannelItem(String itemId) {
+        if(pusher==null) return;
+        if(listenChannelItem){
+           return;
+        }
+        pusher.subscribePrivate("private-App.Item."+ itemId, new PrivateChannelEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.d(TAG + "ItemPusher", "onEvent");
+                Log.d(TAG + "ItemPusher", event.getEventName());
+                Log.d(TAG + "ItemPusher", event.getData());
+            }
+
+            @Override
+            public void onSubscriptionSucceeded(String channelName) {
+                Log.d(TAG + "ItemPusher", "onSubscriptionSucceeded " + channelName);
+            }
+
+            @Override
+            public void onAuthenticationFailure(String message, Exception e) {
+                Log.e(TAG + "ItemPusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
+            }
+        }, "item.created", "item.updated");
+
+        listenChannelItem = true;
+    }
+
+    private void connectPusher() {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", token);
         HttpAuthorizer authorizer = new HttpAuthorizer(Constants.getBaseUrl() + "broadcasting/auth");
         authorizer.setHeaders(headers);
         PusherOptions options = new PusherOptions().setAuthorizer(authorizer);
         options.setCluster(Constants.getPusherAppCluster());
-        Pusher pusher = new Pusher(Constants.getPusherAppKey(), options);
+        pusher = new Pusher(Constants.getPusherAppKey(), options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
@@ -600,25 +675,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 Log.i(TAG + "Pusher", String.format("Connection Error: [%s], exception was [%s]", message, e));
             }
         }, ConnectionState.ALL);
-
-        pusher.subscribePrivate("private-App.Item."+ itemId, new PrivateChannelEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d(TAG + "Pusher", "onEvent");
-                Log.d(TAG + "Pusher", event.getEventName());
-                Log.d(TAG + "Pusher", event.getData());
-            }
-
-            @Override
-            public void onSubscriptionSucceeded(String channelName) {
-                Log.d(TAG + "Pusher", "onSubscriptionSucceeded " + channelName);
-            }
-
-            @Override
-            public void onAuthenticationFailure(String message, Exception e) {
-                Log.d(TAG + "Pusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
-            }
-        }, "item.created", "item.updated");
     }
 
 }

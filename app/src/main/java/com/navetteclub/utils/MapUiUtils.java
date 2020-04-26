@@ -67,4 +67,13 @@ public class MapUiUtils {
         //options.anchor(0.5f, 1);
         return map.addMarker(options);
     }
+
+    public static Marker drawCarMarker(Context context, GoogleMap map, Point point, int color){
+        LatLng latLng = point.toLatLng();
+        MarkerOptions options = new MarkerOptions(); // Creating MarkerOptions
+        options.position(latLng); // Setting the position of the marker
+        options.icon(UiUtils.getBitmapFromMarkerCarView(context, color));
+        //options.anchor(0.5f, 1);
+        return map.addMarker(options);
+    }
 }

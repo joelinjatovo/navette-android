@@ -76,6 +76,14 @@ public class UiUtils {
 
     public static BitmapDescriptor getBitmapFromMarkerDotView(@NonNull Context context, int color) {
         ImageView imageView = new ImageView(context);
+        imageView.setImageResource(R.drawable.round_lens_black_18);
+        imageView.setColorFilter(color);
+        return getBitmap(imageView);
+    }
+
+    public static BitmapDescriptor getBitmapFromMarkerCarView(@NonNull Context context, int color) {
+        ImageView imageView = new ImageView(context);
+        imageView.setImageResource(R.drawable.outline_directions_car_black_18);
         imageView.setColorFilter(color);
         return getBitmap(imageView);
     }
