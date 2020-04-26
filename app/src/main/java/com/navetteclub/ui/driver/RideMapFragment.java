@@ -465,11 +465,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     private void updateStepView(Ride ride, List<RidePointWithDatas> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
         int count = ridePointWithDatas.size();
+        Log.d(TAG, "updateStepView ridePointWithDatas.size()=" + count);
         if(count>0) {
             mBinding.bottomSheets.stepView.setStepsNumber(count);
             if (ride != null) {
                 if (Ride.STATUS_COMPLETABLE.equals(ride.getStatus())) {
-                    mBinding.bottomSheets.stepView.go(count - 1, true);
+                    mBinding.bottomSheets.stepView.go(count, true);
                     return;
                 }
             }

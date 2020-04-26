@@ -141,7 +141,7 @@ public class RidesFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mBinding.authErrorView.getButton().setOnClickListener(
                 v -> {
-                    NavHostFragment.findNavController(this).navigate(R.id.action_orders_fragment_to_navigation_auth);
+                    NavHostFragment.findNavController(this).navigate(R.id.action_rides_fragment_to_navigation_auth);
                 });
 
         mBinding.swipeRefresh.setOnRefreshListener(this);
