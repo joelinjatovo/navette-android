@@ -6,10 +6,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
@@ -187,26 +189,6 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
         void setItem(RidePointWithDatas item){
             mItem = item;
             if(mItem!=null){
-                RidePoint ridePoint = mItem.getRidePoint();
-                if(ridePoint!=null){
-                    mBinding.setRideType(ridePoint.getType());
-                    mBinding.setRideStatus(ridePoint.getStatus());
-                    if(RidePoint.STATUS_PING.equals(ridePoint.getStatus())){
-                        mBinding.actionButton.setText(R.string.button_next);
-                        mBinding.actionButton.setVisibility(View.GONE);
-                    }
-                    if(RidePoint.STATUS_ACTIVE.equals(ridePoint.getStatus())){
-                        mBinding.actionButton.setText(R.string.button_go);
-                        mBinding.actionButton.setVisibility(View.GONE);
-                    }
-                    if(RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())){
-                        mBinding.actionButton.setText(R.string.button_active);
-                        mBinding.actionButton.setVisibility(View.VISIBLE);
-                    }
-                    if(RidePoint.STATUS_ONLINE.equals(ridePoint.getStatus())){
-                        mBinding.actionButton.setVisibility(View.GONE);
-                    }
-                }
                 if(mItem.getUser()!=null){
                     mBinding.setUser(mItem.getUser());
                     if(mItem.getUser().getImageUrl()!=null){
@@ -214,8 +196,49 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
                                 .load(Constants.getBaseUrl() + mItem.getUser().getImageUrl())
                                 .placeholder(R.drawable.user_placeholder)
                                 .error(R.drawable.user_placeholder)
-                                .resize(100, 100)
+                                .resize(300, 300)
                                 .into(mBinding.avatarImageView);
+                    }
+                }
+
+                Point point = mItem.getPoint();
+                if(point!=null){
+                    mBinding.setPoint(point.getName());
+                }
+
+                RidePoint ridePoint = mItem.getRidePoint();
+                if(ridePoint!=null){
+                    mBinding.setRideType(ridePoint.getType());
+                    if(ridePoint.getStatus()!=null){
+                        switch(ridePoint.getStatus()){
+                            case RidePoint.STATUS_PING:
+                                mBinding.setRideStatus(getString(R.string.status_ping));
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                                mBinding.buttonAction.setText(R.string.button_next);
+                                mBinding.buttonAction.setVisibility(View.GONE);
+                            break;
+                            case RidePoint.STATUS_ACTIVE:
+                                mBinding.setRideStatus(getString(R.string.status_active));
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
+                                mBinding.buttonAction.setText(R.string.button_go);
+                                mBinding.buttonAction.setVisibility(View.GONE);
+                            break;
+                            case RidePoint.STATUS_NEXT:
+                                mBinding.setRideStatus(getString(R.string.status_next));
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
+                                if(RidePoint.TYPE_PICKUP.equals(ridePoint.getType())){
+                                    mBinding.buttonAction.setText(R.string.button_pickup);
+                                }else{
+                                    mBinding.buttonAction.setText(R.string.button_drop_off);
+                                }
+                                mBinding.buttonAction.setVisibility(View.VISIBLE);
+                            break;
+                            case RidePoint.STATUS_ONLINE:
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.setRideStatus(getString(R.string.status_online));
+                                mBinding.buttonAction.setVisibility(View.GONE);
+                            break;
+                        }
                     }
                 }
 
@@ -224,23 +247,27 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
                         mListener.onClick(v, getCurrentPosition(), mItem);
                     }
                 });
-                mBinding.cancelButton.setOnClickListener(v -> {
+                mBinding.buttonCancel.setOnClickListener(v -> {
                     if (null != mListener) {
                         mListener.onClick(v, getCurrentPosition(), mItem);
                     }
                 });
-                mBinding.callButtom.setOnClickListener(v -> {
+                mBinding.buttonCall.setOnClickListener(v -> {
                     if (null != mListener) {
                         mListener.onClick(v, getCurrentPosition(), mItem);
                     }
                 });
-                mBinding.actionButton.setOnClickListener(v -> {
+                mBinding.buttonAction.setOnClickListener(v -> {
                     if (null != mListener) {
                         mListener.onClick(v, getCurrentPosition(), mItem);
                     }
                 });
             }
 
+        }
+
+        private String getString(@StringRes int res) {
+            return mBinding.getRoot().getResources().getString(res);
         }
 
         @NonNull

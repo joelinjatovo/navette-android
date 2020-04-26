@@ -10,6 +10,7 @@
         <variable name="user" type="com.navetteclub.database.entity.User" />
         <variable name="rideType" type="String" />
         <variable name="rideStatus" type="String" />
+        <variable name="point" type="String" />
     </data>
 
     <RelativeLayout
@@ -39,54 +40,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/bg_text_rounded"
-                android:text="@{rideStatus}"
-                android:textColor="@color/gray"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
+                android:text="@{point}"
+                android:lines="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"/>
 
-            <TextView
-                android:id="@+id/typeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@{rideType}"
-                android:background="@drawable/bg_text_rounded"
-                android:textColor="@color/gray"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/buttons"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
 
-                <Button
-                    android:id="@+id/cancelButton"
+                <TextView
+                    android:id="@+id/status_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/button_cancel"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/actionButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:textColor="@color/colorAccent"
-                    app:strokeColor="@color/colorAccent"  />
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_text_rounded"
+                    android:text="@{rideStatus}"
+                    android:textColor="@color/gray"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_alignParentStart="true"/>
 
-                <Button
-                    android:id="@+id/actionButton"
+                <TextView
+                    android:id="@+id/typeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/button_active"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/cancelButton"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    android:layout_gravity="center"
+                    android:text="@{rideType}"
+                    android:background="@drawable/bg_text_rounded"
+                    android:textColor="@color/gray"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/button_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                android:text="@string/button_active"/>
 
         </LinearLayout>
 
@@ -108,19 +101,33 @@
                 android:contentDescription="@string/image"
                 android:src="@drawable/user_placeholder"/>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/callButtom"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/outline_call_black_24"
-                android:tint="@color/colorAccent"
-                app:fabSize="mini"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/avatarImageView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/outline_call_black_24"
+                    app:fabSize="mini" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/outline_clear_black_18"
+                    app:fabSize="mini" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

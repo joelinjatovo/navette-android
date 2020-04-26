@@ -495,6 +495,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 return;
             }
         }
+
         int i = 0;
         for (RidePointWithDatas ridePointWithData : ridePointWithDatas) {
             RidePoint ridePoint = ridePointWithData.getRidePoint();
@@ -892,12 +893,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         if(ridePointWithDatas==null) return;
         RidePoint ridePoint = ridePointWithDatas.getRidePoint();
         switch (v.getId()){
-            case R.id.callButtom:
+            case R.id.button_call:
                 if (ridePointWithDatas.getUser() != null && ridePointWithDatas.getUser().getPhone() != null) {
                     onCallBtnClick(ridePointWithDatas.getUser().getPhone());
                 }
             break;
-            case R.id.actionButton:
+            case R.id.button_action:
                 if(ridePoint!=null) {
                     if (RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
                         progressDialog.show();
@@ -905,7 +906,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
                 break;
-            case R.id.cancelButton:
+            case R.id.button_cancel:
                 if(ridePoint!=null) {
                     if(!RidePoint.STATUS_CANCELED.equals(ridePoint.getStatus())) {
                         progressDialog.show();

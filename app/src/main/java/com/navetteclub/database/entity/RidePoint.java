@@ -22,6 +22,8 @@ public class RidePoint {
     public static final String STATUS_CANCELED = "canceled";
 
     public static final String STATUS_COMPLETED = "completed";
+    public static final String TYPE_PICKUP = "pickup";
+    public static final String TYPE_DROP = "drop";
 
     @PrimaryKey
     private Long id;
