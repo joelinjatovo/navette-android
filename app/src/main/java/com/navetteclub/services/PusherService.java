@@ -36,6 +36,14 @@ public class PusherService extends Service {
 
     private static final String TAG = PusherService.class.getSimpleName();
 
+    public static final String CHANNEL_ID = "channel_pusher";
+
+    public static final String ACTION_BROADCAST = Constants.AUTHORITY + ".broadcast.pusher";
+
+    public static final String EXTRA_EVENT_NAME = Constants.AUTHORITY + ".event_name";
+
+    public static final String EXTRA_PAYLOAD = Constants.AUTHORITY + ".payload";
+
     private Handler handler = new Handler(Looper.getMainLooper());
 
     Thread readThread;
@@ -48,10 +56,10 @@ public class PusherService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG + "Pusher", "onCreate() ");
+        Log.d(TAG, "onCreate() ");
         String token = Preferences.Auth.getCurrentToken(this);
         Long userId = Preferences.Auth.getCurrentUser(this);
-        Log.d(TAG + "Pusher", "onCreate() " + token + " / " + userId);
+        Log.d(TAG, "onCreate() " + token + " / " + userId);
         if(token!=null && userId>0){
             Pusher pusher = PusherOdk.getInstance(token).getPusher();
             pusher.connect();
@@ -66,23 +74,25 @@ public class PusherService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG + "Pusher", "onBind() ");
+        Log.d(TAG, "onBind() ");
         return null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG + "Pusher", "onStartCommand(" + startId + ") ");
+        Log.d(TAG , "onStartCommand(" + startId + ") ");
         super.onStartCommand(intent, flags, startId);
 
-        String token = intent.getStringExtra("token");
-        long userId = intent.getLongExtra("user_id", 0);
-        if(token!=null && userId>0){
-            Pusher pusher = PusherOdk.getInstance(token).getPusher();
-            pusher.connect();
+        if(intent!=null) {
+            String token = intent.getStringExtra("token");
+            long userId = intent.getLongExtra("user_id", 0);
+            if (token != null && userId > 0) {
+                Pusher pusher = PusherOdk.getInstance(token).getPusher();
+                pusher.connect();
 
-            if (pusher.getPrivateChannel("private-App.User."+userId) == null) {
-                subscribeUser(pusher,"private-App.User."+userId, "user.point.created");
+                if (pusher.getPrivateChannel("private-App.User." + userId) == null) {
+                    subscribeUser(pusher, "private-App.User." + userId, "user.point.created");
+                }
             }
         }
 
@@ -94,14 +104,14 @@ public class PusherService extends Service {
                 new PrivateChannelEventListener() {
                     @Override
                     public void onEvent(PusherEvent event) {
-                        Log.d(TAG + "Pusher", "onEvent");
-                        Log.d(TAG + "Pusher", event.getEventName());
-                        Log.d(TAG + "Pusher", event.getData());
+                        Log.d(TAG, "onEvent");
+                        Log.d(TAG, event.getEventName());
+                        Log.d(TAG, event.getData());
                         readThread = new Thread(() -> {
                             Intent broadcastIntent = new Intent();
-                            broadcastIntent.setAction(BuildConfig.PUSHER_SERVICE_NAME);
-                            broadcastIntent.putExtra("event_name", event.getEventName());
-                            broadcastIntent.putExtra("json_payload", event.getData());
+                            broadcastIntent.setAction(ACTION_BROADCAST);
+                            broadcastIntent.putExtra(EXTRA_EVENT_NAME, event.getEventName());
+                            broadcastIntent.putExtra(EXTRA_PAYLOAD, event.getData());
                             sendBroadcast(broadcastIntent);
                         });
                         readThread.start();
@@ -109,20 +119,20 @@ public class PusherService extends Service {
 
                     @Override
                     public void onSubscriptionSucceeded(String channelName) {
-                        Log.d(TAG + "Pusher", "onSubscriptionSucceeded(" + channelName + ")");
+                        Log.d(TAG, "onSubscriptionSucceeded(" + channelName + ")");
 
                     }
 
                     @Override
                     public void onAuthenticationFailure(String message, Exception e) {
-                        Log.e(TAG + "Pusher", "onAuthenticationFailure(" + message + ")", e);
+                        Log.e(TAG, "onAuthenticationFailure(" + message + ")", e);
 
                     }
                 }, events);
     }
 
     private void check() {
-        Log.d(TAG + "Pusher", "check() ");
+        Log.d(TAG, "check() ");
         handler.removeCallbacks(checkRunnable);
         handler.postDelayed(checkRunnable, 1500);
     }

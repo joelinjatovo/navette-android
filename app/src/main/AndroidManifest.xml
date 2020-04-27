@@ -64,16 +64,20 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <receiver android:name=".receiver.BootReceiver">
+        <receiver android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.AuthentificationReceiver">
+        <receiver android:name=".receiver.PusherReceiver"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.navetteclub.AUTHENTICATION" />
+                <action android:name="com.navetteclub.broadcast.pusher" />
             </intent-filter>
         </receiver>
 

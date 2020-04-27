@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.multidex.MultiDexApplication;
 
 import com.navetteclub.receiver.PusherReceiver;
@@ -17,7 +21,7 @@ import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.stripe.android.PaymentConfiguration;
 
-public class App extends MultiDexApplication {
+public class App extends MultiDexApplication implements LifecycleObserver {
 
     private static final String TAG = App.class.getSimpleName();
 
@@ -28,6 +32,8 @@ public class App extends MultiDexApplication {
     public static Context applicationContext;
 
     public static volatile Handler applicationHandler;
+
+    private static boolean isBackgrounded = true;
 
     public static App getInstance() {
         return instance;
@@ -54,6 +60,24 @@ public class App extends MultiDexApplication {
                 getApplicationContext(),
                 Constants.getStripeApiKey()
         );
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded() {
+        isBackgrounded = true;
+        Log.d("MyApp", "App in background");
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded() {
+        isBackgrounded = false;
+        Log.d("MyApp", "App in foreground");
+    }
+
+    public static boolean isAppOnBackground() {
+        return isBackgrounded;
     }
 
     public static boolean isServiceRunning(Class<?> serviceClass) {
@@ -73,7 +97,7 @@ public class App extends MultiDexApplication {
 
         mReceiver = new PusherReceiver();
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(BuildConfig.PUSHER_SERVICE_NAME);
+        filter.addAction(PusherService.ACTION_BROADCAST);
         mReceiver.register(applicationContext, filter);
 
         Intent serviceIntent = new Intent(applicationContext, PusherService.class);

@@ -31,12 +31,14 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.UserApiService;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.ui.MainActivity;
+import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
@@ -49,20 +51,18 @@ import retrofit2.Response;
 
 public class LocationUpdatesService extends Service {
 
-    private static final String PACKAGE_NAME = "com.navetteclub";
-
     private static final String TAG = LocationUpdatesService.class.getSimpleName();
 
     /**
      * The name of the channel for notifications.
      */
-    private static final String CHANNEL_ID = "channel_01";
+    private static final String CHANNEL_ID = "channel_location";
 
-    public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
+    public static final String ACTION_BROADCAST = Constants.AUTHORITY + ".broadcast";
 
-    public static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
+    public static final String EXTRA_LOCATION = Constants.AUTHORITY + ".location";
 
-    private static final String EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME + ".started_from_notification";
+    private static final String EXTRA_STARTED_FROM_NOTIFICATION = Constants.AUTHORITY + ".started_from_notification";
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -271,7 +271,7 @@ public class LocationUpdatesService extends Service {
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .addAction(R.drawable.ic_arrow_left, getString(R.string.launch_activity),
                         activityPendingIntent)
                 .addAction(R.drawable.ic_arrow_right, getString(R.string.remove_location_updates),
