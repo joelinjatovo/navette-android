@@ -41,6 +41,7 @@ import com.navetteclub.databinding.FragmentNotificationBinding;
 import com.navetteclub.ui.MainActivity;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.PaginationListener;
+import com.navetteclub.ui.order.LiveFragment;
 import com.navetteclub.ui.order.OrderViewFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
@@ -212,20 +213,32 @@ public class NotificationFragment extends Fragment implements OnClickItemListene
         if(item!=null && item.getType()!=null) {
             switch (item.getType()) {
                 case "App\\Notifications\\OrderStatus":
-                    Object data = item.getData();
-                    if(data!=null){
+                    Object orderData = item.getData();
+                    if(orderData!=null){
                         try {
-                            String payload = ObjectConverter.fromObject(data);
-                            Log.e(TAG, "Payload = " + payload);
+                            String payload = ObjectConverter.fromObject(orderData);
+                            Log.e(TAG+"Json", "Payload = " + payload);
                             JSONObject jsonData = new JSONObject(payload);
                             String orderId = jsonData.getString("order_id");
                             NavHostFragment.findNavController(this).navigate(OrderViewFragment.getUri(orderId));
                         } catch (JSONException e) {
-                            Log.d("ERROR DECODE", e.getMessage());
+                            Log.d(TAG+"Json", e.getMessage());
                         }
                     }
                     break;
                 case "App\\Notifications\\ItemStatus":
+                    Object itemData = item.getData();
+                    if(itemData!=null){
+                        try {
+                            String payload = ObjectConverter.fromObject(itemData);
+                            Log.e(TAG+"Json", "Payload = " + payload);
+                            JSONObject jsonData = new JSONObject(payload);
+                            String itemId = jsonData.getString("item_id");
+                            NavHostFragment.findNavController(this).navigate(LiveFragment.getUri(itemId));
+                        } catch (JSONException e) {
+                            Log.d(TAG+"Json", e.getMessage());
+                        }
+                    }
                     break;
                 case "AB":
                     break;

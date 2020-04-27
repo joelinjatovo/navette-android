@@ -60,6 +60,9 @@
         <argument
             android:name="item_id"
             app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="http://navetteclub.com/item/{item_id}" />
     </fragment>
 
     <fragment

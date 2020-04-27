@@ -68,8 +68,7 @@ public class PusherReceiver extends BroadcastReceiver {
                     JSONObject object = null;
                     try {
                         object = new JSONObject(payload);
-                        JSONObject order = object.getJSONObject("order");
-                        String orderId = order.getString("id");
+                        String orderId = object.getString("order_id");
 
                         Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
                         intent1.setData(OrderViewFragment.getUri(orderId));

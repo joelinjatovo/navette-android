@@ -647,4 +647,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
+    public static Uri getUri(String itemId){
+        return Uri.parse("http://navetteclub.com/item/" + itemId);
+    }
+
 }
