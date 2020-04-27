@@ -70,7 +70,6 @@ public class RidePointsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            token = RidePointsFragmentArgs.fromBundle(getArguments()).getToken();
             rideId = RidePointsFragmentArgs.fromBundle(getArguments()).getRideId();
         }
     }
@@ -116,6 +115,7 @@ public class RidePointsFragment extends Fragment {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        token = authViewModel.getUser().getAuthorizationToken();
                         loadRide();
                         mBinding.setIsLoading(true);
                         mBinding.setShowError(false);
@@ -332,7 +332,6 @@ public class RidePointsFragment extends Fragment {
                     if(rideWithDatas!=null) {
                         RidePointsFragmentDirections.ActionRidePointFragmentToRideMapFragment action = RidePointsFragmentDirections
                                 .actionRidePointFragmentToRideMapFragment(
-                                        authViewModel.getUser().getAuthorizationToken(),
                                         rideWithDatas.getRide().getId());
                         NavHostFragment.findNavController(RidePointsFragment.this).navigate(action);
                     }
@@ -413,5 +412,9 @@ public class RidePointsFragment extends Fragment {
             break;
         }
     };
+
+    public static Uri getUri(Long rideId){
+        return Uri.parse("http://navetteclub.com/ride/" + rideId );
+    }
 
 }

@@ -157,8 +157,6 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private ArrayList<Point> mPoints;
 
-    private String token;
-
     private Long rideId;
 
     private RideWithDatas rideWithDatas;
@@ -167,11 +165,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private ProgressDialog progressDialog;
 
+    private String token;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            token = RideMapFragmentArgs.fromBundle(getArguments()).getToken();
             rideId = RideMapFragmentArgs.fromBundle(getArguments()).getRideId();
         }
     }
@@ -402,14 +401,15 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        loadRide();
+                        token = authViewModel.getUser().getAuthorizationToken();
+                        loadRide(token);
                     }else{
                         mBinding.setIsLoading(false);
                     }
                 });
     }
 
-    private void loadRide() {
+    private void loadRide(String token) {
         ridesViewModel.loadRide(token, rideId);
         mBinding.setIsLoading(true);
     }
@@ -909,5 +909,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             break;
         }
     };
+
+    public static Uri getUri(Long rideId){
+        return Uri.parse("http://navetteclub.com/ride/" + rideId + "/map");
+    }
 
 }
