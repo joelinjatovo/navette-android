@@ -10,12 +10,15 @@
         android:name="com.navetteclub.ui.driver.RidesFragment"
         android:label="@string/title_rides"
         tools:layout="@layout/fragment_rides" >
+
         <action
             android:id="@+id/action_rides_fragment_to_ride_point_fragment"
             app:destination="@id/ride_point_fragment" />
+
         <action
             android:id="@+id/action_rides_fragment_to_navigation_auth"
             app:destination="@id/navigation_auth" />
+
     </fragment>
 
     <fragment
@@ -48,7 +51,5 @@
             app:argType="long" />
 
     </fragment>
-
-    <include app:graph="@navigation/auth_navigation" />
 
 </navigation>

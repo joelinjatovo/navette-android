@@ -10,23 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.Club;
@@ -35,8 +30,7 @@ import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentDetailBinding;
-import com.navetteclub.ui.pay.StripeFragment;
+import com.navetteclub.databinding.FragmentCartBinding;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
@@ -45,18 +39,17 @@ import com.navetteclub.vm.OrderViewModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class DetailFragment extends BottomSheetDialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CartFragment extends BottomSheetDialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String TAG = DetailFragment.class.getSimpleName();
+    private static final String TAG = CartFragment.class.getSimpleName();
 
-    private FragmentDetailBinding mBinding;
+    private FragmentCartBinding mBinding;
 
     private OrderViewModel orderViewModel;
 
@@ -73,7 +66,7 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         Log.d(TAG + "Cycle", "onCreateView");
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_cart, container, false);
 
         return mBinding.getRoot();
     }
@@ -123,6 +116,7 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
         setupOrderViewModel(factory);
         setupAuthViewModel(factory);
         setupUi();
+        loadCart();
     }
 
     @Override
@@ -189,6 +183,19 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
         tpd.show(getChildFragmentManager(), "Timepickerdialog");
     }
 
+    private void loadCart() {
+        Club club = orderViewModel.getClub();
+        if(club==null) return;
+        Item item = orderViewModel.getItem1();
+        if(item==null) return;
+        Order order = orderViewModel.getOrder();
+        if(order==null || order.getRid()==null){
+            mBinding.setIsLoading(true);
+            mBinding.setShowErrorLoader(false);
+            orderViewModel.getCart();
+        }
+    }
+
     private void setupAuthViewModel(MyViewModelFactory factory) {
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
@@ -218,15 +225,42 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
 
     private void setupOrderViewModel(MyViewModelFactory factory) {
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getCartResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null) return;
+
+                    mBinding.setIsLoading(false);
+
+                    if(result.getError()!=null){
+                        mBinding.setShowErrorLoader(true);
+                        mBinding.loaderErrorView.getSubtitleView().setText(result.getError());
+                    }
+
+                    if(result.getSuccess()!=null){
+                        OrderWithDatas data = result.getSuccess();
+                        if(data!=null){
+                            Order order = data.getOrder();
+                            if(order!=null) {
+                                Order orderLive = orderViewModel.getOrder();
+                                if(orderLive!=null) {
+                                    orderLive.setSubtotal(order.getSubtotal());
+                                    orderLive.setTotal(order.getTotal());
+                                    orderLive.setAmount(order.getAmount());
+                                }
+                                orderViewModel.setOrderLiveData(orderLive);
+                            }
+                        }
+                    }
+                });
         orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
                 club -> {
                     if(club!=null){
                         // Aller
-                        mBinding.setPoint2Title("Club");
+                        mBinding.setPoint2Title(getString(R.string.club));
                         mBinding.setPoint2(club.getName());
 
                         // Retours
-                        mBinding.setPoint3Title("Club");
+                        mBinding.setPoint3Title(getString(R.string.club));
                         mBinding.setPoint3(club.getName());
                     }
                 });
@@ -271,7 +305,7 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
         orderViewModel.getItem2LiveData().observe(getViewLifecycleOwner(),
                 item2 -> {
                     if(item2!=null){
-                        mBinding.setPoint4Title("Drop");
+                        mBinding.setPoint4Title(getString(R.string.ride_drop));
                         mBinding.setDuration2(item2.getDuration());
                         mBinding.setDistance2(item2.getDistance());
                         mBinding.setDate2(getDateString(item2.getRideAt()));
@@ -282,7 +316,7 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
                     if(result==null) return;
                     progressDialog.hide();
                     if(result.getError()!=null){
-                        showError(result.getError());
+                        showOrderError(result.getError());
                     }
 
                     if(result.getSuccess()!=null){
@@ -302,7 +336,7 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
                             }
                             List<ItemWithDatas> items = data.getItems();
                             orderViewModel.setItemsLiveData(items);
-                            NavHostFragment.findNavController(this).navigate(R.id.action_detail_fragment_to_navigation_checkout);
+                            NavHostFragment.findNavController(this).navigate(R.id.action_cart_fragment_to_navigation_checkout);
                         }
                     }
                     orderViewModel.setOrderResult(null);
@@ -386,6 +420,7 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
+
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
                     Order order = orderViewModel.getOrder();
@@ -397,13 +432,13 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
                             case Order.STATUS_PROCESSING:
                                 // GO to checkout
                                 NavHostFragment.findNavController(this)
-                                        .navigate(R.id.action_detail_fragment_to_navigation_checkout);
+                                        .navigate(R.id.action_cart_fragment_to_navigation_checkout);
                                 break;
                             case Order.STATUS_OK:
                                 if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
                                     // GO to checkout
                                     NavHostFragment.findNavController(this)
-                                            .navigate(R.id.action_detail_fragment_to_navigation_checkout);
+                                            .navigate(R.id.action_cart_fragment_to_navigation_checkout);
                                 }else{
                                     // GO back
                                     NavHostFragment.findNavController(this)
@@ -481,6 +516,10 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
                         }
                     }
                 });
+        mBinding.loaderErrorView.getButton().setOnClickListener(
+                v -> {
+                    loadCart();
+                });
     }
 
     private void placeOrder() {
@@ -491,18 +530,34 @@ public class DetailFragment extends BottomSheetDialogFragment implements DatePic
         }
     }
 
-    private void showError(@StringRes Integer error) {
+    private void showCartError(@StringRes Integer error) {
         new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("Oops...")
+                .setTitleText(getString(R.string.oops))
                 .setContentText(getString(error))
-                .setConfirmText("Yes, retry!")
+                .setConfirmText(getString(R.string.button_retry))
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    loadCart();
+                })
+                .setCancelButton(getString(R.string.button_cancel), sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    NavHostFragment.findNavController(CartFragment.this).popBackStack();
+                })
+                .show();
+    }
+
+    private void showOrderError(@StringRes Integer error) {
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.oops))
+                .setContentText(getString(error))
+                .setConfirmText(getString(R.string.button_retry))
                 .setConfirmClickListener(sDialog -> {
                     sDialog.dismissWithAnimation();
                     placeOrder();
                 })
-                .setCancelButton("Cancel", sDialog -> {
+                .setCancelButton(getString(R.string.button_cancel), sDialog -> {
                     sDialog.dismissWithAnimation();
-                    NavHostFragment.findNavController(DetailFragment.this).popBackStack();
+                    NavHostFragment.findNavController(CartFragment.this).popBackStack();
                 })
                 .show();
     }

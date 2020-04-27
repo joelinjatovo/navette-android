@@ -30,8 +30,8 @@
             android:id="@+id/action_order_fragment_to_go_and_back_fragment"
             app:destination="@id/go_and_back_fragment" />
         <action
-            android:id="@+id/action_order_fragment_to_detail_fragment"
-            app:destination="@id/detail_fragment" />
+            android:id="@+id/action_order_fragment_to_cart_fragment"
+            app:destination="@id/cart_fragment" />
 
     </fragment>
 
@@ -113,20 +113,20 @@
             app:destination="@id/search_fragment" />
 
         <action
-            android:id="@+id/action_go_and_back_fragment_to_detail_fragment"
-            app:destination="@id/detail_fragment" />
+            android:id="@+id/action_go_and_back_fragment_to_cart_fragment"
+            app:destination="@id/cart_fragment" />
 
     </dialog>
 
     <dialog
-        android:id="@+id/detail_fragment"
-        android:name="com.navetteclub.ui.order.DetailFragment"
-        tools:layout="@layout/fragment_detail">
+        android:id="@+id/cart_fragment"
+        android:name="com.navetteclub.ui.order.CartFragment"
+        tools:layout="@layout/fragment_cart">
         <action
-            android:id="@+id/action_detail_fragment_to_navigation_checkout"
+            android:id="@+id/action_cart_fragment_to_navigation_checkout"
             app:destination="@id/navigation_checkout" />
         <action
-            android:id="@+id/action_detail_fragment_to_thanks_fragment"
+            android:id="@+id/action_cart_fragment_to_thanks_fragment"
             app:destination="@id/thanks_fragment" />
     </dialog>
 
@@ -134,7 +134,5 @@
         android:id="@+id/thanks_fragment"
         android:name="com.navetteclub.ui.pay.ThanksFragment"
         tools:layout="@layout/fragment_thanks"/>
-
-    <include app:graph="@navigation/checkout_navigation" />
 
 </navigation>

@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -39,6 +40,8 @@ import com.navetteclub.ui.pay.StripeFragment;
 import com.navetteclub.ui.pay.StripeFragmentArgs;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
+import com.navetteclub.vm.AuthViewModel;
+import com.navetteclub.vm.MyViewModelFactory;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
@@ -51,18 +54,16 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
 
     private FragmentOrderCancelBinding mBinding;
 
-    private String token;
-
-    private String orderRid;
+    private String orderId;
 
     private ProgressDialog progressDialog;
+    private AuthViewModel authViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            token = OrderCancelFragmentArgs.fromBundle(getArguments()).getToken();
-            orderRid = OrderCancelFragmentArgs.fromBundle(getArguments()).getOrder();
+            orderId = OrderCancelFragmentArgs.fromBundle(getArguments()).getOrderId();
         }
     }
 
@@ -108,9 +109,12 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setupAuthViewModel();
+
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.signing));
+
         NavController navController = NavHostFragment.findNavController(this);
         mBinding.backButton.setOnClickListener(
                 v -> {
@@ -122,8 +126,16 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
                 });
         mBinding.buttonConfirm.setOnClickListener(
                 v -> {
-                    cancelOrder(token, orderRid);
+                    User user = authViewModel.getUser();
+                    if(user!=null){
+                        cancelOrder(user.getAuthorizationToken(), orderId);
+                    }
                 });
+    }
+
+    private void setupAuthViewModel() {
+        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
+        authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
     }
 
     private void cancelOrder(String token, String orderRid) {
@@ -162,7 +174,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
         new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
                 .setTitleText("Oops...")
                 .setContentText(content)
-                .setConfirmText("Yes, retry!")
+                .setConfirmText("Retry")
                 .setConfirmClickListener(sDialog -> {
                     sDialog.dismissWithAnimation();
                     cancelOrder(token, orderRid);

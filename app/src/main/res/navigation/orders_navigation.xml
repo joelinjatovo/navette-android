@@ -5,11 +5,15 @@
     android:id="@+id/navigation_orders"
     app:startDestination="@id/orders_fragment">
 
+    <action
+        android:id="@+id/action_global_order_view_fragment"
+        app:destination="@id/order_view_fragment" />
+
     <fragment
         android:id="@+id/orders_fragment"
         android:name="com.navetteclub.ui.order.OrdersFragment"
         android:label="@string/title_maps"
-        tools:layout="@layout/fragment_orders" >
+        tools:layout="@layout/fragment_orders">
         <action
             android:id="@+id/action_orders_fragment_to_order_view_fragment"
             app:destination="@id/order_view_fragment" />
@@ -23,9 +27,13 @@
         android:name="com.navetteclub.ui.order.OrderViewFragment"
         tools:layout="@layout/fragment_order_view">
 
-        <action
-            android:id="@+id/action_order_view_fragment_to_order_map_fragment"
-            app:destination="@id/order_map_fragment" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="http://navetteclub.com/order/{order_id}" />
+
+        <argument
+            android:name="order_id"
+            app:argType="string" />
 
         <action
             android:id="@+id/action_order_view_fragment_to_navigation_checkout"
@@ -34,9 +42,11 @@
         <action
             android:id="@+id/action_order_view_fragment_to_live_fragment"
             app:destination="@id/live_fragment" />
+
         <action
             android:id="@+id/action_order_view_fragment_to_steps_fragment"
             app:destination="@id/steps_fragment" />
+
         <action
             android:id="@+id/action_order_view_fragment_to_order_cancel_fragment"
             app:destination="@id/order_cancel_fragment" />
@@ -44,33 +54,18 @@
     </dialog>
 
     <fragment
-        android:id="@+id/order_map_fragment"
-        android:name="com.navetteclub.ui.order.OrderMapFragment"
-        tools:layout="@layout/fragment_order_map">
-        <argument
-            android:name="token"
-            app:argType="string" />
-        <argument
-            android:name="orderId"
-            app:argType="long" />
-    </fragment>
-
-    <fragment
         android:id="@+id/live_fragment"
         android:name="com.navetteclub.ui.order.LiveFragment"
         tools:layout="@layout/fragment_live">
         <argument
-            android:name="token"
+            android:name="item_id"
             app:argType="string" />
-        <argument
-            android:name="itemId"
-            app:argType="string"/>
     </fragment>
 
     <fragment
         android:id="@+id/steps_fragment"
         android:name="com.navetteclub.ui.order.StepsFragment"
-        tools:layout="@layout/fragment_steps"/>
+        tools:layout="@layout/fragment_steps" />
 
     <fragment
         android:id="@+id/order_cancel_fragment"
@@ -78,21 +73,14 @@
         tools:layout="@layout/fragment_order_cancel">
 
         <argument
-            android:name="token"
-            app:argType="string" />
-
-        <argument
-            android:name="order"
+            android:name="order_id"
             app:argType="string" />
 
         <action
             android:id="@+id/action_order_cancel_fragment_to_orders_fragment"
             app:popUpTo="@id/orders_fragment"
-            app:popUpToInclusive="false"/>
+            app:popUpToInclusive="false" />
+
     </fragment>
-
-    <include app:graph="@navigation/checkout_navigation" />
-
-    <include app:graph="@navigation/auth_navigation" />
 
 </navigation>

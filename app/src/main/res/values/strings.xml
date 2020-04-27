@@ -277,5 +277,9 @@
     <string name="subtitle_ride">ref: %s</string>
     <string name="button_pickup">Pickup</string>
     <string name="button_drop_off">Drop Off</string>
+    <string name="button_retry">Retry</string>
+    <string name="oops">Oops…</string>
+    <string name="updating_cart">Mise à jour de votre panier…</string>
+    <string name="error_updating_cart">Erreur de mise à jour de votre panier!</string>
 
 </resources>

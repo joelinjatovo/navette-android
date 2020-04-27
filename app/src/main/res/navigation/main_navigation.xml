@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_global_navigation_auth"
             app:destination="@id/navigation_auth" />
+        <action
+            android:id="@+id/action_navigation_notification_to_navigation_orders"
+            app:destination="@id/navigation_orders" />
     </fragment>
 
     <navigation
@@ -62,12 +65,14 @@
 
     </navigation>
 
-    <include app:graph="@navigation/rides_navigation" />
-
     <include app:graph="@navigation/auth_navigation" />
+
+    <include app:graph="@navigation/checkout_navigation" />
 
     <include app:graph="@navigation/order_navigation" />
 
     <include app:graph="@navigation/orders_navigation" />
+
+    <include app:graph="@navigation/rides_navigation" />
 
 </navigation>

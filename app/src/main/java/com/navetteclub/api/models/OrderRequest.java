@@ -23,7 +23,8 @@ public class OrderRequest {
     }
 
     public OrderRequest setItems(List<ItemWithDatas> items) {
-        this.items = new ArrayList<>(items);
+        this.items = new ArrayList<>();
+        if (items!=null) this.items.addAll(items);
         return this;
     }
 

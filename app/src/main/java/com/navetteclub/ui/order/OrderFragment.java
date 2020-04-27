@@ -585,7 +585,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                     if(orderViewModel.getOrderType()== GO){
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_go_and_back_fragment);
                     }else{
-                        Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_detail_fragment);
+                        Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_cart_fragment);
                     }
                 });
         mBinding.bottomSheets.privatizeSwitchView.setOnCheckedChangeListener(

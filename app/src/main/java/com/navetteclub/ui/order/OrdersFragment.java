@@ -204,8 +204,10 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
     @Override
     public void onClick(View view, int position, OrderWithDatas item) {
         orderViewModel.refresh();
-        orderViewModel.attach(item);
-        NavHostFragment.findNavController(OrdersFragment.this).navigate(R.id.action_orders_fragment_to_order_view_fragment);
+        OrdersFragmentDirections.ActionOrdersFragmentToOrderViewFragment action = OrdersFragmentDirections
+                .actionOrdersFragmentToOrderViewFragment(item.getOrder().getRid());
+
+        NavHostFragment.findNavController(OrdersFragment.this).navigate(action);
     }
 
     @Override

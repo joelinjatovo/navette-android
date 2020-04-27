@@ -60,7 +60,7 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
         orderViewModel.getItem2PointLiveData().observe(getViewLifecycleOwner(),
                 point -> {
                     if(point!=null){
-                        NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
+                        NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_cart_fragment);
                     }
                 });
     }
@@ -79,7 +79,7 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
                     orderViewModel.setOrderTypeLiveData(OrderType.GO);
                     orderViewModel.setItem2LiveData((Item) null);
                     orderViewModel.setItem2PointLiveData(null);
-                    NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_detail_fragment);
+                    NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_cart_fragment);
                 });
         mBinding.closeButton.setOnClickListener(
                 v -> {

@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this, "a")
-                        .setSmallIcon(R.drawable.outline_add_24)
+                        .setSmallIcon(R.drawable.ic_logo_notification_32)
                         .setContentTitle("My notification")
                         .setContentText("Hello World!")
                         .setStyle(new NotificationCompat.BigTextStyle()

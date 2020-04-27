@@ -84,6 +84,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+
     private static final float MAP_ZOOM = 25;
 
 
@@ -95,23 +96,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     // Tracks the bound state of the service.
     private boolean mBound = false;
-
-    // Monitors the state of the connection to the service.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-            mBound = false;
-        }
-    };
 
     private GoogleMap mMap;
 
@@ -131,8 +115,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private Marker myPositionMarker;
 
-    private String token;
-
     private String itemId;
 
     private Polyline line1;
@@ -141,17 +123,12 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private Pusher pusher;
 
-    private boolean listenChannelItem = false;
-
-    private boolean listenChannelDriverPosition = false;
-
     private Marker driverMarker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            token = LiveFragmentArgs.fromBundle(getArguments()).getToken();
             itemId = LiveFragmentArgs.fromBundle(getArguments()).getItemId();
         }
     }
@@ -336,6 +313,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        String token = authViewModel.getUser().getAuthorizationToken();
                         rideViewModel.loadItem(token, itemId);
                         pusher = PusherOdk.getInstance(token).getPusher();
                         listenChannelItem(itemId);
@@ -603,58 +581,70 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private void listenChannelDriverPosition(String rideId) {
         if(pusher==null) return;
-        if(listenChannelDriverPosition){
-            return;
+        if(pusher.getPrivateChannel("private-App.Ride."+ rideId)==null) {
+            pusher.subscribePrivate("private-App.Ride." + rideId, new PrivateChannelEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    Log.d(TAG + "RidePusher", "onEvent");
+                    Log.d(TAG + "RidePusher", event.getEventName());
+                    Log.d(TAG + "RidePusher", event.getData());
+                    Gson gson = new Gson();
+                    UserAndPoint response = gson.fromJson(event.getData(), UserAndPoint.class);
+                    requireActivity().runOnUiThread(() -> liveViewModel.setDriverPositionLiveData(response));
+                }
+
+                @Override
+                public void onSubscriptionSucceeded(String channelName) {
+                    Log.d(TAG + "RidePusher", "onSubscriptionSucceeded " + channelName);
+                }
+
+                @Override
+                public void onAuthenticationFailure(String message, Exception e) {
+                    Log.e(TAG + "RidePusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
+                }
+            }, "user.point.created");
         }
-        pusher.subscribePrivate("private-App.Ride."+ rideId, new PrivateChannelEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d(TAG + "RidePusher", "onEvent");
-                Log.d(TAG + "RidePusher", event.getEventName());
-                Log.d(TAG + "RidePusher", event.getData());
-                Gson gson = new Gson();
-                UserAndPoint response = gson.fromJson(event.getData(), UserAndPoint.class);
-                requireActivity().runOnUiThread(() -> liveViewModel.setDriverPositionLiveData(response));
-            }
-
-            @Override
-            public void onSubscriptionSucceeded(String channelName) {
-                Log.d(TAG + "RidePusher", "onSubscriptionSucceeded " + channelName);
-            }
-
-            @Override
-            public void onAuthenticationFailure(String message, Exception e) {
-                Log.e(TAG + "RidePusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
-            }
-        }, "user.point.created");
-        listenChannelDriverPosition = false;
     }
 
     private void listenChannelItem(String itemId) {
         if(pusher==null) return;
-        if(listenChannelItem){
-           return;
+        if(pusher.getPrivateChannel("private-App.Item."+ itemId)==null) {
+            pusher.subscribePrivate("private-App.Item." + itemId, new PrivateChannelEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    Log.d(TAG + "ItemPusher", "onEvent");
+                    Log.d(TAG + "ItemPusher", event.getEventName());
+                    Log.d(TAG + "ItemPusher", event.getData());
+                }
+
+                @Override
+                public void onSubscriptionSucceeded(String channelName) {
+                    Log.d(TAG + "ItemPusher", "onSubscriptionSucceeded " + channelName);
+                }
+
+                @Override
+                public void onAuthenticationFailure(String message, Exception e) {
+                    Log.e(TAG + "ItemPusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
+                }
+            }, "item.created", "item.updated");
         }
-        pusher.subscribePrivate("private-App.Item."+ itemId, new PrivateChannelEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.d(TAG + "ItemPusher", "onEvent");
-                Log.d(TAG + "ItemPusher", event.getEventName());
-                Log.d(TAG + "ItemPusher", event.getData());
-            }
-
-            @Override
-            public void onSubscriptionSucceeded(String channelName) {
-                Log.d(TAG + "ItemPusher", "onSubscriptionSucceeded " + channelName);
-            }
-
-            @Override
-            public void onAuthenticationFailure(String message, Exception e) {
-                Log.e(TAG + "ItemPusher", String.format("Authentication failure due to [%s], exception was [%s]", message, e));
-            }
-        }, "item.created", "item.updated");
-
-        listenChannelItem = true;
     }
+
+    // Monitors the state of the connection to the service.
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+            mBound = false;
+        }
+    };
 
 }

@@ -3,12 +3,14 @@ package com.navetteclub.ui.order;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,9 +36,9 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentDetailBinding;
 import com.navetteclub.databinding.FragmentOrderViewBinding;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.PusherOdk;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
@@ -62,6 +64,17 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
     private ProgressDialog progressDialog;
 
     private Order order;
+
+    private String orderId;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(getArguments() != null) {
+            orderId = OrderViewFragmentArgs.fromBundle(getArguments()).getOrderId();
+        }
+    }
 
     @NonNull
     @Override
@@ -129,11 +142,34 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
     private void setupAuthViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         authViewModel = new ViewModelProvider(this, factory).get(AuthViewModel.class);
+        authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
+                authenticationState -> {
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        String token = authViewModel.getUser().getAuthorizationToken();
+                        progressDialog.show();
+                        orderViewModel.getOrder(token, orderId);
+                    }
+                });
     }
 
     private void setupOrderViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         orderViewModel = new ViewModelProvider(this, factory).get(OrderViewModel.class);
+        orderViewModel.getViewResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){return;}
+                    progressDialog.hide();
+                    if(result.getError()!=null){
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(result.getSuccess()!=null){
+                        orderViewModel.attach(result.getSuccess());
+                    }
+
+                    orderViewModel.setViewResult(null);
+                });
+
         orderViewModel.getOrderLiveData().observe(getViewLifecycleOwner(), this::setOrder);
         orderViewModel.getClubLiveData().observe(getViewLifecycleOwner(),
                 club -> {
@@ -267,7 +303,6 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(authViewModel.getUser()!=null && order != null && order.getRid() != null){
                         OrderViewFragmentDirections.ActionOrderViewFragmentToOrderCancelFragment action =
                                 OrderViewFragmentDirections.actionOrderViewFragmentToOrderCancelFragment(
-                                        authViewModel.getUser().getAuthorizationToken(),
                                         order.getRid()
                                 );
                         navController.navigate(action);
@@ -279,7 +314,6 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(user!=null && user.getAuthorizationToken() != null && mBinding.getItem1Id()!=null){
                         OrderViewFragmentDirections.ActionOrderViewFragmentToLiveFragment action =
                                 OrderViewFragmentDirections.actionOrderViewFragmentToLiveFragment(
-                                        user.getAuthorizationToken(),
                                         mBinding.getItem1Id()
                                 );
                         navController.navigate(action);
@@ -291,7 +325,6 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(user!=null && user.getAuthorizationToken() != null && mBinding.getItem2Id()!=null){
                         OrderViewFragmentDirections.ActionOrderViewFragmentToLiveFragment action =
                                 OrderViewFragmentDirections.actionOrderViewFragmentToLiveFragment(
-                                        user.getAuthorizationToken(),
                                         mBinding.getItem2Id()
                                 );
                         navController.navigate(action);
@@ -355,6 +388,10 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         if(user!=null && order != null && order.getRid() != null) {
             orderViewModel.placeOrder(user.getAuthorizationToken());
         }
+    }
+
+    public static Uri getUri(String orderId){
+        return Uri.parse("http://navetteclub.com/order/" + orderId);
     }
 
 }

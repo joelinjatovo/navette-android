@@ -16,8 +16,8 @@ public class ObjectConverter {
     }
 
     @TypeConverter
-    public static String fromObject(Object list) {
+    public static String fromObject(Object object) {
         Gson gson = new Gson();
-        return gson.toJson(list);
+        return gson.toJson(object);
     }
 }

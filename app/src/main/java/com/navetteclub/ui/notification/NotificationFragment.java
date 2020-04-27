@@ -4,14 +4,18 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,18 +29,26 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.navetteclub.App;
+import com.navetteclub.NavigationOrdersDirections;
 import com.navetteclub.R;
 import com.navetteclub.api.models.Pagination;
 import com.navetteclub.api.models.google.Step;
+import com.navetteclub.database.converter.ObjectConverter;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentNotificationBinding;
+import com.navetteclub.ui.MainActivity;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.PaginationListener;
+import com.navetteclub.ui.order.OrderViewFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.NotificationViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -197,7 +209,28 @@ public class NotificationFragment extends Fragment implements OnClickItemListene
 
     @Override
     public void onClick(View v, int position, Notification item) {
-
+        if(item!=null && item.getType()!=null) {
+            switch (item.getType()) {
+                case "App\\Notifications\\OrderStatus":
+                    Object data = item.getData();
+                    if(data!=null){
+                        try {
+                            String payload = ObjectConverter.fromObject(data);
+                            Log.e(TAG, "Payload = " + payload);
+                            JSONObject jsonData = new JSONObject(payload);
+                            String orderId = jsonData.getString("order_id");
+                            NavHostFragment.findNavController(this).navigate(OrderViewFragment.getUri(orderId));
+                        } catch (JSONException e) {
+                            Log.d("ERROR DECODE", e.getMessage());
+                        }
+                    }
+                    break;
+                case "App\\Notifications\\ItemStatus":
+                    break;
+                case "AB":
+                    break;
+            }
+        }
     }
 
     @Override

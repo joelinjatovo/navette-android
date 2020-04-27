@@ -110,7 +110,9 @@ public class App extends MultiDexApplication implements LifecycleObserver {
      * Stop Services
      */
     public static void stopPushService() {
-        mReceiver.unregister(applicationContext);
+        if(mReceiver!=null) {
+            mReceiver.unregister(applicationContext);
+        }
         applicationContext.stopService(new Intent(applicationContext, PusherService.class));
 
         if (android.os.Build.VERSION.SDK_INT >= 19) {

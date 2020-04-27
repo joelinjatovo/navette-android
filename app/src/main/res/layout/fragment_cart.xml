@@ -6,7 +6,9 @@
 
     <data>
         <import type="android.view.View"/>
+        <variable name="isLoading" type="boolean" />
         <variable name="isUnauthenticated" type="boolean" />
+        <variable name="showErrorLoader" type="boolean" />
         <variable name="total" type="String" />
         <variable name="subtotal" type="String" />
 
@@ -62,12 +64,27 @@
                 android:layout_below="@id/close_button"
                 android:visibility="@{isUnauthenticated?View.VISIBLE:View.GONE}"/>
 
+            <com.navetteclub.views.LoadingView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/close_button"
+                app:mTitle="@string/updating_cart"
+                android:visibility="@{isLoading?View.VISIBLE:View.GONE}"/>
+
+            <com.navetteclub.views.LoaderErrorView
+                android:id="@+id/loaderErrorView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/close_button"
+                app:mSubtitle="@string/error_updating_cart"
+                android:visibility="@{showErrorLoader?View.VISIBLE:View.GONE}"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/close_button"
                 android:background="@color/background"
-                android:visibility="@{isUnauthenticated?View.GONE:View.VISIBLE}">
+                android:visibility="@{isUnauthenticated|isLoading|showErrorLoader?View.GONE:View.VISIBLE}">
 
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/scrollView"

@@ -2,20 +2,14 @@ package com.navetteclub.ui.pay;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.NavHostController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -26,43 +20,15 @@ import android.widget.FrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.Car;
-import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentCheckoutBinding;
-import com.navetteclub.ui.order.DetailFragment;
-import com.navetteclub.ui.order.OrderFragmentDirections;
-import com.navetteclub.ui.order.SearchType;
-import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
-import com.stripe.android.ApiResultCallback;
-import com.stripe.android.PaymentConfiguration;
-import com.stripe.android.PaymentIntentResult;
-import com.stripe.android.Stripe;
-import com.stripe.android.model.ConfirmPaymentIntentParams;
-import com.stripe.android.model.PaymentIntent;
-import com.stripe.android.model.PaymentMethodCreateParams;
-
-import org.bouncycastle.pqc.math.linearalgebra.GF2nONBElement;
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Type;
-import java.text.NumberFormat;
-import java.util.Currency;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
