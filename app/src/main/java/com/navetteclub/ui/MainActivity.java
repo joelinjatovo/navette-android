@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void registerNetworkBroadcastReceiver() {
+    protected void registerNetworkBroadcastReceiver() {
         registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
