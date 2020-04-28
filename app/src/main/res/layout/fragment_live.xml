@@ -48,25 +48,8 @@
                     android:padding="10dp"
                     android:text="@string/live_order"
                     android:layout_toEndOf="@id/backButton"
-                    android:layout_toStartOf="@id/liveTitleView"
-                    android:textAppearance="?attr/textAppearanceBody1"/>
-
-                <TextView
-                    android:id="@+id/liveTitleView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/live"
-                    android:textAlignment="textEnd"
-                    android:layout_toStartOf="@id/switchView"
-                    android:textAppearance="?attr/textAppearanceBody1"/>
-
-                <Switch
-                    android:id="@+id/switchView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"/>
+                    android:textAppearance="?attr/textAppearanceBody1"/>
 
             </RelativeLayout>
 

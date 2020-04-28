@@ -21,6 +21,10 @@ public interface ItemApiService {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/item/finish")
-    Call<RetrofitResponse<RideWithDatas>> finish(@Header("Authorization") String token, @Body ItemParam param);
+    Call<RetrofitResponse<ItemWithDatas>> finish(@Header("Authorization") String token, @Body ItemParam param);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/item/cancel")
+    Call<RetrofitResponse<ItemWithDatas>> cancel(@Header("Authorization") String token, @Body ItemParam param);
 
 }

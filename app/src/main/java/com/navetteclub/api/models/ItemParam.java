@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class ItemParam {
     @SerializedName("item_id")
-    public long itemId;
+    public String itemId;
 
-    public ItemParam(long id) {
+    public ItemParam(String id) {
         this.itemId = id;
     }
 }

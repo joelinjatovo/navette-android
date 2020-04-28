@@ -1,6 +1,7 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -59,6 +61,7 @@ import com.navetteclub.utils.PusherOdk;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
+import com.navetteclub.vm.ItemViewModel;
 import com.navetteclub.vm.LiveViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.RideViewModel;
@@ -105,17 +108,13 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private FragmentLiveBinding mBinding;
 
-    private RideViewModel rideViewModel;
-
-    private GoogleViewModel googleViewModel;
+    private ItemViewModel itemViewModel;
 
     private AuthViewModel authViewModel;
 
     private LiveViewModel liveViewModel;
 
     private Marker myPositionMarker;
-
-    private String itemId;
 
     private Polyline line1;
 
@@ -124,6 +123,11 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private Pusher pusher;
 
     private Marker driverMarker;
+
+    private String token;
+
+    private String itemId;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -163,17 +167,32 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupUi();
-        setupRideViewModel();
-        setupGoogleViewModel();
+        setupUI();
+        setupItemViewModel();
         setupLiveViewModel();
         setupAuthViewModel();
     }
 
-    private void setupRideViewModel() {
+    private void setupUI() {
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.signing));
+
+        mBinding.buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(itemId!=null && token!=null){
+                    progressDialog.show();
+                    itemViewModel.cancelItem(token, itemId);
+                }
+            }
+        });
+    }
+
+    private void setupItemViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        rideViewModel = new ViewModelProvider(requireActivity(), factory).get(RideViewModel.class);
-        rideViewModel.getItemViewResult().observe(getViewLifecycleOwner(),
+        itemViewModel = new ViewModelProvider(requireActivity(), factory).get(ItemViewModel.class);
+        itemViewModel.getItemViewResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
 
@@ -193,6 +212,51 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
+        itemViewModel.getItemCancelResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null) return;
+
+                    progressDialog.hide();
+
+                    if(result.getError()!=null){
+                        Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(result.getSuccess()!=null){
+                        updateUi(result.getSuccess());
+
+                        // Listen ride
+                        ItemWithDatas itemWithData = result.getSuccess();
+                        if(itemWithData==null) return;
+                        Ride ride = itemWithData.getRide();
+                        if(ride!=null){
+                            listenChannelDriverPosition(String.valueOf(ride.getId()));
+                        }
+                    }
+                });
+    }
+
+
+    private void phoneCall(String phone) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+        startActivity(intent);
+    }
+
+    private void onCallBtnClick(String phone){
+        if (Build.VERSION.SDK_INT < 23) {
+            phoneCall(phone);
+        }else {
+
+            if (ActivityCompat.checkSelfPermission(requireActivity(),
+                    Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+
+                phoneCall(phone);
+            }else {
+                final String[] PERMISSIONS_STORAGE = {Manifest.permission.CALL_PHONE};
+                //Asking request Permissions
+                ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS_STORAGE, 9);
+            }
+        }
     }
 
     private void updateUi(ItemWithDatas itemWithData) {
@@ -209,6 +273,13 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         .error(R.drawable.user_placeholder)
                         .into(mBinding.avatarImageView);
             }
+
+            mBinding.buttonCall.setOnClickListener(
+                    v -> {
+                        if(driver.getPhone()!=null){
+                            onCallBtnClick(driver.getPhone());
+                        }
+                    });
         }
 
         int color = R.color.colorAccent;
@@ -226,12 +297,19 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
             if(item.getStatus()!=null){
+                mBinding.buttonCancel.setVisibility(View.VISIBLE);
                 switch (item.getStatus()) {
                     case Item.STATUS_PING:
                         mBinding.statusTextView.setText(R.string.status_ping);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
                         color = R.color.colorAlertError;
+                        break;
+                    case Item.STATUS_ACTIVE:
+                        mBinding.statusTextView.setText(R.string.status_active);
+                        mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                        mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
+                        color = R.color.colorImportant;
                         break;
                     case Item.STATUS_NEXT:
                         mBinding.statusTextView.setText(R.string.status_next);
@@ -240,12 +318,14 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         color = R.color.colorImportant;
                         break;
                     case Item.STATUS_COMPLETED:
+                        mBinding.buttonCancel.setVisibility(View.GONE);
                         mBinding.statusTextView.setText(R.string.status_completed);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
                         color = R.color.gray;
                         break;
                     case Item.STATUS_CANCELED:
+                        mBinding.buttonCancel.setVisibility(View.GONE);
                         mBinding.statusTextView.setText(R.string.status_canceled);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
@@ -296,7 +376,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
             }
             drawPoint(point, String.valueOf(1), pointLabel, color);
             if(mMap!=null){
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point.toLatLng(), 15));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point.toLatLng(), Constants.MAP_ZOOM));
             }
         }
 
@@ -313,8 +393,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
-                        String token = authViewModel.getUser().getAuthorizationToken();
-                        rideViewModel.loadItem(token, itemId);
+                        token = authViewModel.getUser().getAuthorizationToken();
+                        itemViewModel.loadItem(token, itemId);
                         pusher = PusherOdk.getInstance(token).getPusher();
                         listenChannelItem(itemId);
                     }
@@ -322,35 +402,9 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        requireActivity().bindService(new Intent(requireContext(), LocationUpdatesService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(myReceiver, new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
-    }
-
-    @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(myReceiver);
         super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        if (mBound) {
-            requireActivity().unbindService(mServiceConnection);
-            mBound = false;
-        }
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 
     @Override
@@ -412,11 +466,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 
-    private void setupGoogleViewModel() {
-        MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        googleViewModel = new ViewModelProvider(requireActivity(), factory).get(GoogleViewModel.class);
-    }
-
     private void setupLiveViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         liveViewModel = new ViewModelProvider(requireActivity(), factory).get(LiveViewModel.class);
@@ -435,9 +484,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    private Marker drawPoint(Point point, String step, String label, int color) {
-        //MapUiUtils.drawDotMarker(requireContext(), mMap, point, R.color.colorAccent);
-        return MapUiUtils.drawStepPoint(requireContext(), mMap, point, step, label, color);
+    private void drawPoint(Point point, String step, String label, int color) {
+        MapUiUtils.drawStepPoint(requireContext(), mMap, point, step, label, color);
     }
 
     private void drawClubMarker(Point point) {
@@ -468,24 +516,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 .color(R.color.colorAlert)
                 .geodesic(true)
         );
-    }
-
-    private void setupUi() {
-        // Nothing
-        mBinding.switchView.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> {
-                    if(isChecked){
-                        // Live update location
-                        if (!checkPermissions()) {
-                            requestPermissions();
-                        } else {
-                            mService.requestLocationUpdates();
-                        }
-                    }else{
-                        // Remove live location update
-                        mService.removeLocationUpdates();
-                    }
-                });
     }
 
     private void getDeviceLocation() {
@@ -629,23 +659,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
             }, "item.created", "item.updated");
         }
     }
-
-    // Monitors the state of the connection to the service.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-            mBound = false;
-        }
-    };
 
     public static Uri getUri(String itemId){
         return Uri.parse("http://navetteclub.com/item/" + itemId);

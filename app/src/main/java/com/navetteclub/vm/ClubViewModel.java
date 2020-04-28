@@ -62,7 +62,9 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
             if(clubAndPoints!=null){
                 ClubAndPoint[] items = new ClubAndPoint[clubAndPoints.size()];
                 for(int i = 0 ; i < clubAndPoints.size(); i++){
-                    items[i] = response.body().getData().get(i);
+                    if(response.body().getData().get(i).getClub()!=null && response.body().getData().get(i).getPoint()!=null){
+                        items[i] = response.body().getData().get(i);
+                    }
                 }
                 clubRepository.upsert(this, items);
             }else{
