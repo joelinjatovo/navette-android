@@ -88,9 +88,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    private static final float MAP_ZOOM = 25;
-
-
     // The BroadcastReceiver used to listen from broadcasts from the service.
     private MyReceiver myReceiver;
 
@@ -224,14 +221,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
                     if(result.getSuccess()!=null){
                         updateUi(result.getSuccess());
-
-                        // Listen ride
-                        ItemWithDatas itemWithData = result.getSuccess();
-                        if(itemWithData==null) return;
-                        Ride ride = itemWithData.getRide();
-                        if(ride!=null){
-                            listenChannelDriverPosition(String.valueOf(ride.getId()));
-                        }
                     }
                 });
     }
@@ -297,6 +286,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
             if(item.getStatus()!=null){
+                mBinding.setIsNext(false);
                 mBinding.buttonCancel.setVisibility(View.VISIBLE);
                 switch (item.getStatus()) {
                     case Item.STATUS_PING:
@@ -312,6 +302,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         color = R.color.colorImportant;
                         break;
                     case Item.STATUS_NEXT:
+                        mBinding.setIsNext(true);
+                        mBinding.setDate(Utils.formatDateToString(item.getRideAt()));
                         mBinding.statusTextView.setText(R.string.status_next);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));

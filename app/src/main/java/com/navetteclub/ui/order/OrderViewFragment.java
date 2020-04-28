@@ -190,12 +190,14 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         if(item1!=null){
                             mBinding.setItem1Id(item1.getRid());
                             if(Order.TYPE_BACK.equals(item1.getType())){
+                                mBinding.setStatus2(item1.getStatus());
                                 mBinding.setPoint4Title("Drop");
                                 mBinding.setPoint4(point.getName());
                                 mBinding.setDuration2(item1.getDuration());
                                 mBinding.setDistance2(item1.getDistance());
                                 mBinding.setDate2(getDateString(item1.getRideAt()));
                             }else{
+                                mBinding.setStatus1(item1.getStatus());
                                 mBinding.setPoint1Title("Pickup");
                                 mBinding.setPoint1(point.getName());
                                 mBinding.setDuration1(item1.getDuration());
@@ -210,6 +212,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(point!=null){
                         Item item2 = orderViewModel.getItem2();
                         if(item2!=null){
+                            mBinding.setStatus2(item2.getStatus());
                             mBinding.setItem2Id(item2.getRid());
                             mBinding.setPoint4Title("Drop");
                             mBinding.setPoint4(point.getName());
@@ -280,10 +283,40 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
             mBinding.paymentMethods.setVisibility(View.GONE);
         }
 
-        mBinding.cancelButton.setVisibility(Order.STATUS_OK.equals(order.getStatus())?View.VISIBLE:View.GONE);
+        mBinding.cancelButton.setVisibility(View.GONE);
+        mBinding.actionButton.setVisibility(View.GONE);
         if(order.getStatus()!=null){
-            mBinding.setStatus(order.getStatus());
-            mBinding.actionButton.setVisibility(Order.STATUS_PING.equals(order.getStatus())||Order.STATUS_ON_HOLD.equals(order.getStatus())?View.VISIBLE:View.GONE);
+            switch (order.getStatus()){
+                case Order.STATUS_PING:
+                    mBinding.setStatus(getString(R.string.status_ping));
+                    mBinding.toolbar.setSubtitleTextColor(getResources().getColor(R.color.gray));
+                    mBinding.actionButton.setVisibility(View.VISIBLE);
+                    break;
+                case Order.STATUS_ON_HOLD:
+                    mBinding.setStatus(getString(R.string.status_on_hold));
+                    mBinding.toolbar.setSubtitleTextColor(getResources().getColor(R.color.gray));
+                    mBinding.actionButton.setVisibility(View.VISIBLE);
+                    break;
+                case Order.STATUS_OK:
+                    mBinding.setStatus(getString(R.string.status_ok));
+                    mBinding.cancelButton.setVisibility(View.VISIBLE);
+                    mBinding.toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorAccent));
+                break;
+                case Order.STATUS_ACTIVE:
+                    mBinding.setStatus(getString(R.string.status_active));
+                    mBinding.toolbar.setSubtitleTextColor(getResources().getColor(R.color.colorAlert));
+                break;
+                case Order.STATUS_CANCELED:
+                    mBinding.setStatus(getString(R.string.status_canceled));
+                    mBinding.editChip.setVisibility(View.GONE);
+                    mBinding.toolbar.setSubtitleTextColor(getResources().getColor(R.color.gray));
+                    break;
+                case Order.STATUS_COMPLETED:
+                    mBinding.setStatus(getString(R.string.status_completed));
+                    mBinding.editChip.setVisibility(View.GONE);
+                    mBinding.toolbar.setSubtitleTextColor(getResources().getColor(R.color.gray));
+                    break;
+            }
             mBinding.actionButton.setText(R.string.button_pay);
         }else{
             mBinding.actionButton.setVisibility(View.VISIBLE);
@@ -369,14 +402,14 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
 
     private void showError(@StringRes Integer error) {
         new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("Oops...")
+                .setTitleText(getString(R.string.oops))
                 .setContentText(getString(error))
-                .setConfirmText("Yes, retry!")
+                .setConfirmText(getString(R.string.button_retry))
                 .setConfirmClickListener(sDialog -> {
                     sDialog.dismissWithAnimation();
                     placeOrder();
                 })
-                .setCancelButton("Cancel", sDialog -> {
+                .setCancelButton(getString(R.string.button_cancel), sDialog -> {
                     sDialog.dismissWithAnimation();
                     NavHostFragment.findNavController(OrderViewFragment.this).popBackStack();
                 })

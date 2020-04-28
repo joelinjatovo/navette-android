@@ -200,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.search_fragment:
                 case R.id.order_fragment:
                 case R.id.navigation_order:
-                case R.id.thanks_fragment:
                     navView.setVisibility(View.GONE);
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -208,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //requestWindowFeature( Window.FEATURE_NO_TITLE );
                     break;
+                case R.id.thanks_fragment:
                 case R.id.rides_fragment:
                 case R.id.ride_point_fragment:
                 case R.id.ride_map_fragment:

@@ -9,6 +9,7 @@
         <variable name="total" type="String" />
         <variable name="subtotal" type="String" />
 
+        <variable name="status1" type="String" />
         <variable name="item1Id" type="String" />
         <variable name="point1" type="String" />
         <variable name="point1Title" type="String" />
@@ -18,6 +19,7 @@
         <variable name="duration1" type="String" />
         <variable name="date1" type="String" />
 
+        <variable name="status2" type="String" />
         <variable name="item2Id" type="String" />
         <variable name="point3" type="String" />
         <variable name="point3Title" type="String" />
@@ -51,7 +53,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
-                app:title="@{@string/title_view_order(order_id)}"
+                app:title="@string/title_view_order"
+                app:subtitleTextColor="@color/colorAccent"
+                app:subtitle="@{@string/subtitle_view_order(order_id)}"
                 app:navigationIcon="@drawable/outline_arrow_back_ios_black_24"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dialog" />
 
@@ -453,13 +457,25 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_toStartOf="@+id/point1MainDetail"
                                 android:layout_toEndOf="@id/point1MainIcon"
                                 android:text="@string/ride_pickup"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:layout_marginEnd="5dp"
                                 android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/gray" />
+
+                            <TextView
+                                android:id="@+id/status1TextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@id/point1MainLabel"
+                                android:text="@{status1}"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/bg_text_alert_default"
                                 android:textColor="@color/gray" />
 
                             <TextView
@@ -717,13 +733,25 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_toStartOf="@+id/point2MainDetail"
                                 android:layout_toEndOf="@id/point2MainIcon"
                                 android:text="@string/ride_drop"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginTop="5dp"
                                 android:layout_marginEnd="5dp"
                                 android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/gray" />
+
+                            <TextView
+                                android:id="@+id/status2TextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toEndOf="@id/point2MainLabel"
+                                android:text="@{status2}"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/bg_text_alert_default"
                                 android:textColor="@color/gray" />
 
                             <TextView

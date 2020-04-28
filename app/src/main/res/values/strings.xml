@@ -143,8 +143,8 @@
     <string name="button_confirm">Confirmer</string>
     <string name="card_number">Card number</string>
     <string name="save_card_number_for_future_payment">Sauvegarder la carte pour un paiement futur</string>
-    <string name="thanks_you_for_purchasing">Votre paiement a été bien réussi.\nMerci d\'utiliser notre service.</string>
-    <string name="thanks">Thanks</string>
+    <string name="thanks_you_for_purchasing">Votre paiement a été bien réussi.\nMerci d\'avoir utilisé notre service.</string>
+    <string name="thanks">Merci</string>
     <string name="title_checkout">Checkout</string>
     <string name="error_invalid_access_token">Invalid Access Token</string>
     <string name="loading_clubs">Chargement des clubs</string>
@@ -161,7 +161,9 @@
     <string name="menu_settings_desc">Gerer les preferences de l\'application</string>
     <string name="menu_histories_desc">Voir vos hostoriques de trajet</string>
     <string name="title_orders">Commandes</string>
-    <string name="title_view_order">Commande N#%s</string>
+    <string name="title_view_order">Ma commande</string>
+    <string name="title_item_order">Commande n°%s</string>
+    <string name="subtitle_view_order">Commande n°%s</string>
     <string name="title_view_ride">Course N#%s</string>
     <string name="point_count">%d points</string>
     <string name="loading_orders">Chargement des commandes</string>

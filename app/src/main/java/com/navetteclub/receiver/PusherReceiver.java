@@ -99,7 +99,7 @@ public class PusherReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(App.applicationContext, PusherService.CHANNEL_ID)
                 .setAutoCancel(true)
-                .setColor(App.applicationContext.getResources().getColor(R.color.white))
+                .setColor(App.applicationContext.getResources().getColor(R.color.colorAccent))
                 .setSmallIcon(R.drawable.ic_logo_notification_32) // Small Icon required or notification doesn't display
                 .setContentTitle(App.applicationContext.getString(R.string.app_name))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(messagesNotif))

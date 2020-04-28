@@ -26,6 +26,7 @@ import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.notification.NotificationFragment;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -181,6 +182,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                     mBinding.setOrderId(order.getRid());
                     mBinding.setAmount(order.getAmountStr());
                     mBinding.setPlace(order.getPlace());
+                    mBinding.setDate(Utils.formatDateToString(order.getCreatedAt()));
 
                     if(order.getStatus()!=null){
                         switch (order.getStatus()) {
@@ -206,7 +208,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                                 break;
                             case Order.STATUS_COMPLETED:
                                 mBinding.statusTextView.setText(R.string.status_completed);
-                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
                                 mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
                                 break;
                             case Order.STATUS_CANCELED:
@@ -221,13 +223,6 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                                 break;
                         }
 
-                    }
-
-                    long now = System.currentTimeMillis();
-                    Date lastUpdated = order.getCreatedAt();
-                    if(lastUpdated!=null) {
-                        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
-                        mBinding.setDate((String) date);
                     }
                 }
 
