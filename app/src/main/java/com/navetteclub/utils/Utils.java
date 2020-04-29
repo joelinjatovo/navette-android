@@ -20,11 +20,15 @@ public class Utils {
 
     public static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates";
 
-    public static String formatDateToString(Date lastUpdated) {
+    public static String formatDateToString(Date lastUpdated, long minResolution) {
         if (lastUpdated == null) return null;
         long now = System.currentTimeMillis();
-        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+        CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, minResolution);
         return (String) date;
+    }
+
+    public static String formatDateToString(Date lastUpdated) {
+        return formatDateToString(lastUpdated, DateUtils.MINUTE_IN_MILLIS);
     }
 
     /**

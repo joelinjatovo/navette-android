@@ -283,5 +283,28 @@
     <string name="oops">Oops…</string>
     <string name="updating_cart">Mise à jour de votre panier…</string>
     <string name="error_updating_cart">Erreur de mise à jour de votre panier!</string>
+    <string name="notification_order_status">Votre commande n°%s est reçue</string>
+    <string name="notification_order_completable">Votre commande n°%s peuvent être clôturée</string>
+    <string name="notification_order_ping">Votre commande n°%s est créée avec succès</string>
+    <string name="notification_order_ok">Votre commande n°%s a été bien reçue</string>
+    <string name="notification_order_active">Votre commande n°%s a été activée</string>
+    <string name="notification_order_completed">Votre commande n°%s a été clôturée</string>
+    <string name="notification_order_canceled">Votre commande n°%s a été annulée</string>
+
+    <string name="notification_item_status">Votre course n°%s est reçu</string>
+    <string name="notification_item_ping">Votre course n°%s est créé avec succès</string>
+    <string name="notification_item_active">Votre course n°%s a été activé</string>
+    <string name="notification_item_next">Votre course n°%s est le suivant</string>
+    <string name="notification_item_online">Votre course n°%s est en route</string>
+    <string name="notification_item_completed">Votre course n°%s a été clôturé</string>
+    <string name="notification_item_completable">Votre course n°%s peuvent être clôturé</string>
+    <string name="notification_item_canceled">Votre course n°%s a été annulé</string>
+
+    <string name="notification_ride_status">Votre course n°%s est reçu</string>
+    <string name="notification_ride_ping">Votre course n°%s est créé avec succès</string>
+    <string name="notification_ride_active">Votre course n°%s a été activé</string>
+    <string name="notification_ride_completed">Votre course n°%s a été clôturé</string>
+    <string name="notification_ride_completable">Votre course n°%s peuvent être clôturé</string>
+    <string name="notification_ride_canceled">Votre course n°%s a été annulé</string>
 
 </resources>

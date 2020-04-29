@@ -28,6 +28,8 @@ public class Order {
 
     public static final String STATUS_CANCELED = "canceled";
 
+    public static final String STATUS_COMPLETABLE = "completable";
+
     public static final String STATUS_COMPLETED = "completed";
 
     public static final String PAYMENT_TYPE_CASH = "cash";
