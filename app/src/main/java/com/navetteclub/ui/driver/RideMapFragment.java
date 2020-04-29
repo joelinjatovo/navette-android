@@ -464,7 +464,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             mBinding.bottomSheets.stepView.setStepsNumber(count);
             if (ride != null) {
                 if (Ride.STATUS_COMPLETABLE.equals(ride.getStatus())) {
-                    mBinding.bottomSheets.stepView.go(count - 1, true);
+                    mBinding.bottomSheets.stepView.go(count - 1, false);
                     return;
                 }
             }

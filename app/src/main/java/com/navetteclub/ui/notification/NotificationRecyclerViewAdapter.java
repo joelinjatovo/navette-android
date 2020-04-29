@@ -133,8 +133,8 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                 output.add(date);
 
                 for(int i = 1; i < list.size(); i++){
-                    Date date0 = items.get(i-1).getCreatedAt();
-                    Date date1 = items.get(i).getCreatedAt();
+                    Date date0 = list.get(i-1).getCreatedAt();
+                    Date date1 = list.get(i).getCreatedAt();
                     if(date0!=null && date1!=null){
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
                         String formatDate0 = format.format(date0);
@@ -146,7 +146,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                             output.add(date);
                         }
                     }
-                    output.add(items.get(i));
+                    output.add(list.get(i));
                 }
             }
         }
