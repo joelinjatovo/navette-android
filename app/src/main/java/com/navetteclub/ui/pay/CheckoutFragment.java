@@ -92,6 +92,15 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
         setupUi();
     }
 
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (progressDialog!=null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
+
     private void setupUi() {
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);

@@ -109,6 +109,15 @@ public class RidePointsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (progressDialog!=null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
+
     private void setupAuthViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);

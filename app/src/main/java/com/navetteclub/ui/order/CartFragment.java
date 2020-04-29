@@ -135,6 +135,15 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
     }
 
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (progressDialog!=null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
         String time = "You picked the following time: "+hourOfDay+"h"+minute+"m"+second;
         Log.d(TAG, time);
