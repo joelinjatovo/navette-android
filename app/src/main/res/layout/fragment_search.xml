@@ -160,12 +160,15 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_marginBottom="70dp"
             android:contentDescription="@string/image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/outline_not_listed_location_black_48"/>
+            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_location_picker_32px"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
