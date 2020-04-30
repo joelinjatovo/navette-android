@@ -73,7 +73,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBinding.editButton.setOnClickListener(this);
         mBinding.menuOrders.setOnClickListener(this);
         mBinding.menuRides.setOnClickListener(this);
-        mBinding.menuSettings.setOnClickListener(this);
         mBinding.menuLogout.setOnClickListener(this);
         mBinding.verifyButton.setOnClickListener(v -> NavHostFragment.findNavController(ProfileFragment.this).navigate(R.id.action_global_navigation_auth));
     }

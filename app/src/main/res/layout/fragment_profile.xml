@@ -174,44 +174,12 @@
                     android:background="@color/colorIcon"/>
 
                 <com.navetteclub.views.MenuItemView
-                    android:id="@+id/menu_histories"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/menu_item_selector"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    app:iconTint="@color/colorAccent"
-                    app:titleText="@string/histories"
-                    app:subtitleText="@string/menu_histories_desc"
-                    app:iconImage="@drawable/outline_history_black_24"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorIcon"/>
-
-                <com.navetteclub.views.MenuItemView
-                    android:id="@+id/menu_settings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    app:iconTint="@color/colorAccent"
-                    app:titleText="@string/settings"
-                    app:subtitleText="@string/menu_settings_desc"
-                    app:iconImage="@drawable/outline_settings_black_24"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorIcon"/>
-
-                <com.navetteclub.views.MenuItemView
                     android:id="@+id/menu_logout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
+                    app:iconTint="@color/colorAccent"
                     app:titleText="@string/logout"
                     app:iconImage="@drawable/outline_power_settings_new_24"/>
 

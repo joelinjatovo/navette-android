@@ -12,6 +12,7 @@ import com.navetteclub.api.repositories.LoginRepository;
 import com.navetteclub.api.repositories.RegisterRepository;
 import com.navetteclub.database.repositories.CarRepository;
 import com.navetteclub.database.repositories.ClubRepository;
+import com.navetteclub.database.repositories.LocationRepository;
 import com.navetteclub.database.repositories.NotificationRepository;
 import com.navetteclub.database.repositories.UserRepository;
 import com.navetteclub.utils.Log;
@@ -74,6 +75,8 @@ public class MyViewModelFactory implements ViewModelProvider.Factory {
             return (T) new RegisterViewModel(RegisterRepository.getInstance(new RegisterDataSource()));
         } else if (modelClass.isAssignableFrom(LoginViewModel.class)) {
             return (T) new LoginViewModel(LoginRepository.getInstance(new LoginDataSource()));
+        }  else if (modelClass.isAssignableFrom(SearchViewModel.class)) {
+            return (T) new SearchViewModel(LocationRepository.getInstance(application));
         } else if (modelClass.isAssignableFrom(NotificationViewModel.class)) {
             if(notificationViewModel == null){
                 notificationViewModel = new NotificationViewModel(NotificationRepository.getInstance(application));

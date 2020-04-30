@@ -306,5 +306,8 @@
     <string name="notification_ride_completed">Votre course n°%s a été clôturé</string>
     <string name="notification_ride_completable">Votre course n°%s peuvent être clôturé</string>
     <string name="notification_ride_canceled">Votre course n°%s a été annulé</string>
+    <string name="saved_location">Localisation enregistrée</string>
+    <string name="recent_location">Localisation recente</string>
+    <string name="button_add_place">Ajouter une place</string>
 
 </resources>
