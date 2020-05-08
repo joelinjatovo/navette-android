@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -181,31 +182,30 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
                 if(ride!=null) {
                     mBinding.setRideId(String.valueOf(ride.getId()));
                     mBinding.setDate(Utils.formatDateToString(ride.getStartedAt()));
-                    mBinding.setStatus(ride.getStatus());
                     if(ride.getStatus()!=null){
                         switch (ride.getStatus()) {
                             case Ride.STATUS_PING:
-                                mBinding.statusTextView.setText(R.string.status_ping);
+                                mBinding.setStatus(getString(R.string.status_ping));
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
                                 mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
                                 break;
                             case Ride.STATUS_COMPLETED:
-                                mBinding.statusTextView.setText(R.string.status_completed);
+                                mBinding.setStatus(getString(R.string.status_completed));
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                                 mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
                                 break;
                             case Ride.STATUS_CANCELED:
-                                mBinding.statusTextView.setText(R.string.status_canceled);
+                                mBinding.setStatus(getString(R.string.status_canceled));
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
                                 mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
                                 break;
                             case Ride.STATUS_ACTIVE:
-                                mBinding.statusTextView.setText(R.string.status_active);
+                                mBinding.setStatus(getString(R.string.status_active));
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                                 mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.colorText));
                                 break;
                             case Ride.STATUS_COMPLETABLE:
-                                mBinding.statusTextView.setText(R.string.status_completable);
+                                mBinding.setStatus(getString(R.string.status_completable));
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
                                 mBinding.statusTextView.setTextColor(mBinding.getRoot().getContext().getResources().getColor(R.color.white));
                                 break;
@@ -230,6 +230,10 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
                             mListener.onClick(v, getCurrentPosition(), mItem);
                         }
                     });
+        }
+
+        private String getString(@StringRes int res) {
+            return mBinding.getRoot().getResources().getString(res);
         }
     }
 
