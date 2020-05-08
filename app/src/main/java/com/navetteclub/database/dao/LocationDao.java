@@ -32,7 +32,7 @@ public abstract class LocationDao extends BaseDao<Location> {
     @Query("SELECT * FROM locations WHERE id IN (:ids)")
     public abstract LiveData<List<Location>> load(String[] ids);
 
-    @Query("SELECT * FROM locations WHERE type IN (:types)")
+    @Query("SELECT * FROM locations WHERE type IN (:types) ORDER BY created_at DESC")
     public abstract LiveData<List<Location>> loadByType(String... types);
 
     @Query("SELECT COUNT(locations.id) FROM locations")

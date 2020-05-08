@@ -1,6 +1,7 @@
 package com.navetteclub.ui.order;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,14 @@ public class LocationRecentRecyclerViewAdapter extends RecyclerView.Adapter<Loca
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setItem(mItems.get(position));
+        holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.onClick(v, position, mItems.get(position));
+                }
+            }
+        });
     }
 
     @Override

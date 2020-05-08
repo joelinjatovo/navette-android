@@ -99,7 +99,6 @@ public class LocationRecyclerViewAdapter extends RecyclerView.Adapter<LocationRe
         return this.mItems;
     }
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         Location mItem;
         ViewholderLocationBinding mBinding;
