@@ -27,6 +27,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
+import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.Location;
 import com.navetteclub.databinding.FragmentSearchBinding;
 import com.navetteclub.ui.LocationPickerActivity;
@@ -41,7 +42,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class SearchFragment extends BottomSheetDialogFragment implements OnClickItemListener<Location> {
+public class SearchFragment extends BottomSheetDialogFragment implements OnClickItemListener<Location>, UpsertCallback<Location> {
     private static final String TAG = SearchFragment.class.getSimpleName();
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final int LOCATION_PICKER_REQUEST_CODE = 2;
@@ -53,8 +54,6 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
     private SearchViewModel searchViewModel;
 
     private OrderViewModel orderViewModel;
-
-    private LocationRecyclerViewAdapter mAdapterSaved;
 
     private LocationRecentRecyclerViewAdapter mAdapterRecent;
 
@@ -71,12 +70,6 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
-
-        // Set the adapter
-        mAdapterSaved = new LocationRecyclerViewAdapter(this);
-        RecyclerView recyclerView = mBinding.recyclerView1;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(mAdapterSaved);
 
         // Set the adapter
         mAdapterRecent = new LocationRecentRecyclerViewAdapter(this);
@@ -110,7 +103,7 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
                         location.setLat(place.getLatLng().latitude);
                         location.setLng(place.getLatLng().longitude);
                     }
-                    searchViewModel.upsert(location);
+                    searchViewModel.upsert(this, location);
                 } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                     // TODO: Handle the error.
                     Status status = Autocomplete.getStatusFromIntent(data);
@@ -130,7 +123,7 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
                     location.setName(name);
                     location.setLat(lat);
                     location.setLng(lng);
-                    searchViewModel.upsert(location);
+                    searchViewModel.upsert(this, location);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // The user canceled the operation.
                 }
@@ -144,8 +137,6 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
         searchViewModel = new ViewModelProvider(this, factory).get(SearchViewModel.class);
 
         searchViewModel.getList(Location.TYPE_RECENT).observe(getViewLifecycleOwner(), list -> mAdapterRecent.setItems(list));
-
-        searchViewModel.getList(Location.TYPE_HOME, Location.TYPE_WORK).observe(getViewLifecycleOwner(), list -> mAdapterSaved.setItems(list));
     }
 
     private void setupUi() {
@@ -159,7 +150,6 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
                     return false;
                 });
 
-        NavController navController = NavHostFragment.findNavController(SearchFragment.this);
         if(searchType == SearchType.ORIGIN){
             mBinding.toolbar.setTitle(R.string.title_origin);
         }
@@ -168,30 +158,47 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
             mBinding.toolbar.setTitle(R.string.title_retours);
         }
 
+        mBinding.buttonClearRecent.setOnClickListener(
+                v -> {
+                    searchViewModel.clearLocationRecent(Location.TYPE_RECENT);
+                });
+
         mBinding.buttonSelectLocation.setOnClickListener(
                 v -> {
                     Intent intent = new Intent(requireActivity(), LocationPickerActivity.class);
                     startActivityForResult(intent, LOCATION_PICKER_REQUEST_CODE);
                 });
-
-        mBinding.buttonAddPlace.setOnClickListener(
-                v -> {
-                    navController.navigate(R.id.action_search_fragment_to_picker_location_fragment);
-                });
     }
 
     @Override
     public void onClick(View v, int position, Location item) {
-        if(searchType == SearchType.ORIGIN){
+        if(v.getId() == R.id.clear){
+            searchViewModel.delete(item);
+        }else{
+            if(searchType == SearchType.ORIGIN){
+                orderViewModel.setItem1LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
+                NavHostFragment.findNavController(this).popBackStack();
+                return;
+            }
+
+            if(searchType == SearchType.RETOURS){
+                orderViewModel.setItem2LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
+                NavHostFragment.findNavController(this).popBackStack();
+            }
+        }
+    }
+
+    @Override
+    public void onUpsertError() {
+        // Error when inserting current location
+    }
+
+    @Override
+    public void onUpsertSuccess(List<Location> items) {
+        if(items!=null && items.size()>0){
+            Location item = items.get(0);
             orderViewModel.setItem1LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
             NavHostFragment.findNavController(this).popBackStack();
-            return;
-        }
-
-        if(searchType == SearchType.RETOURS){
-            orderViewModel.setItem2LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
-            NavHostFragment.findNavController(this).popBackStack();
-            return;
         }
     }
 }

@@ -77,6 +77,7 @@ public class GoogleViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<GoogleDirectionResponse> call,
                                    @NonNull Response<GoogleDirectionResponse> response) {
+                Log.e(TAG, "Rs = " + response.body());
                 if(response.isSuccessful()){
                     if(isMain)
                         direction1Result.setValue(response);

@@ -124,7 +124,10 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private String token;
 
     private String itemId;
+
     private ProgressDialog progressDialog;
+
+    private Long rideId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -205,7 +208,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         if(itemWithData==null) return;
                         Ride ride = itemWithData.getRide();
                         if(ride!=null){
-                            listenChannelDriverPosition(String.valueOf(ride.getId()));
+                            rideId = ride.getId();
+                            listenChannelDriverPosition(String.valueOf(rideId));
                         }
                     }
                 });

@@ -11,6 +11,7 @@
         <variable name="showErrorLoaderDirection" type="boolean" />
         <variable name="isLoadingCart" type="boolean" />
         <variable name="showErrorLoaderCart" type="boolean" />
+        <variable name="errorLoaderCart" type="String" />
         <variable name="isLoadingCar" type="boolean" />
         <variable name="showErrorLoaderCar" type="boolean" />
         <variable name="distance" type="String" />
@@ -310,6 +311,33 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="@color/colorIcon"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:visibility="@{showErrorLoaderCart?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{errorLoaderCart}"
+                android:textColor="@color/colorAlert"
+                android:layout_toStartOf="@id/refreshCart"/>
+
+            <ImageView
+                android:id="@+id/refreshCart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/image"
+                android:tint="@color/colorAlert"
+                android:src="@drawable/outline_refresh_black_24"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

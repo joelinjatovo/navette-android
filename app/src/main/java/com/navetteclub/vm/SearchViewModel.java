@@ -39,8 +39,16 @@ public class SearchViewModel extends ViewModel {
         return locationRepository.getList(types);
     }
 
-    public void upsert(Location... locations) {
-        locationRepository.upsert(null, locations);
+    public void delete(Location location) {
+        new Thread(() -> locationRepository.delete(location)).start();
+    }
+
+    public void clearLocationRecent(String... types) {
+        new Thread(() -> locationRepository.deleteByType(types)).start();
+    }
+
+    public void upsert(UpsertCallback<Location> callback, Location... locations) {
+        locationRepository.upsert(callback, locations);
     }
 
     public MutableLiveData<SearchType> getSearchType() {

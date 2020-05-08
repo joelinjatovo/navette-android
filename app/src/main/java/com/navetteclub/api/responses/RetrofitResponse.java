@@ -100,6 +100,7 @@ public class RetrofitResponse<T> {
     @StringRes
     public Integer getErrorResString() {
         switch (getCode()){
+            case 106: return R.string.error_ride_no_route;
             case 114: return R.string.error_ride_empty_points;
             case 115: return R.string.error_ride_no_route;
         }

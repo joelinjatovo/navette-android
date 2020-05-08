@@ -2,6 +2,7 @@ package com.navetteclub.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -34,6 +35,9 @@ public abstract class LocationDao extends BaseDao<Location> {
 
     @Query("SELECT * FROM locations WHERE type IN (:types) ORDER BY created_at DESC")
     public abstract LiveData<List<Location>> loadByType(String... types);
+
+    @Query("DELETE FROM locations WHERE type IN (:types)")
+    public abstract void deleteByType(String... types);
 
     @Query("SELECT COUNT(locations.id) FROM locations")
     public abstract int count();

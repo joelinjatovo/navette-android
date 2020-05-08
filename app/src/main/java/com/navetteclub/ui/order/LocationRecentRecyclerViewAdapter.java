@@ -37,15 +37,7 @@ public class LocationRecentRecyclerViewAdapter extends RecyclerView.Adapter<Loca
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.setItem(mItems.get(position));
-        holder.mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.onClick(v, position, mItems.get(position));
-                }
-            }
-        });
+        holder.setItem(mItems.get(position), position, mListener);
     }
 
     @Override
@@ -111,11 +103,25 @@ public class LocationRecentRecyclerViewAdapter extends RecyclerView.Adapter<Loca
             mBinding = binding;
         }
 
-        void setItem(Location item){
+        void setItem(Location item, int position, OnClickItemListener<Location> mListener){
             mItem = item;
             if(mItem!=null){
                 mBinding.title.setText(mItem.getName());
                 mBinding.date.setText(Utils.formatDateToString(mItem.getCreatedAt()));
+
+                View.OnClickListener itemListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(mListener!=null){
+                            mListener.onClick(v, position, mItem);
+                        }
+                    }
+                };
+
+                mBinding.clear.setOnClickListener(itemListener);
+                mBinding.date.setOnClickListener(itemListener);
+                mBinding.title.setOnClickListener(itemListener);
+                mBinding.icon.setOnClickListener(itemListener);
             }
         }
     }

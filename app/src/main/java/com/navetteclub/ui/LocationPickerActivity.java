@@ -25,11 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.databinding.ActivityLocationPickerBinding;
-import com.navetteclub.ui.order.PickerLocationFragment;
-import com.navetteclub.ui.order.SearchType;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
-import com.navetteclub.utils.MapUiUtils;
 import com.navetteclub.utils.Utils;
 
 import java.io.IOException;
@@ -38,6 +35,7 @@ import java.util.List;
 public class LocationPickerActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = LocationPickerActivity.class.getSimpleName();;
+
     // Used in checking for runtime permissions.
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
@@ -46,8 +44,6 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
     public static final String INTENT_EXTRA_LNG = "location_lng";
 
     private static final float MAP_ZOOM = 15;
-
-    private SearchType searchType;
 
     private GoogleMap mMap;
 

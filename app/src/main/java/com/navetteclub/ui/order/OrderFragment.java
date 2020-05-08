@@ -390,6 +390,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                     if(cart!=null) {
                         mBinding.bottomSheets.setIsLoadingCart(false);
                         if(cart.getError()!=null){
+                            mBinding.bottomSheets.setErrorLoaderCart(getString(cart.getError()));
                             mBinding.bottomSheets.setShowErrorLoaderCart(true);
                         }
                         if(cart.getSuccess()!=null){
@@ -628,6 +629,8 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                 v -> {
                     NavHostFragment.findNavController(this).navigate(R.id.action_order_fragment_to_place_fragment);
                 });
+        mBinding.bottomSheets.refreshCart.setOnClickListener(v -> loadCart());
+
     }
 
     private void expandOrderDetails() {

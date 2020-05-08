@@ -41,6 +41,14 @@ public class LocationRepository {
         return locationDao.loadByType(types);
     }
 
+    public void delete(Location location){
+        locationDao.delete(location);
+    }
+
+    public void deleteByType(String... types){
+        locationDao.deleteByType(types);
+    }
+
     public void upsert(UpsertCallback<Location> callback, Location... items){
         (new UpsertAsyncTask<Location>(locationDao, callback)).execute(items);
     }
