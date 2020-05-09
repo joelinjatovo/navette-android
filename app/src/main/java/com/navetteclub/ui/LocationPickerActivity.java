@@ -114,9 +114,9 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("name", mName);
-        outState.putDouble("latitude", mLocation.latitude);
-        outState.putDouble("longitude", mLocation.longitude);
+        outState.putString(INTENT_EXTRA_NAME, mName);
+        outState.putDouble(INTENT_EXTRA_LAT, mLocation.latitude);
+        outState.putDouble(INTENT_EXTRA_LNG, mLocation.longitude);
     }
 
     private void setupUi() {

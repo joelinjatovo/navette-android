@@ -21,10 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:visibility="gone" />
 
         <fragment
@@ -35,9 +33,7 @@
             android:layout_above="@id/nav_view"
             android:layout_below="@id/alertView"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             app:defaultNavHost="true"
             app:navGraph="@navigation/main_navigation" />
 
@@ -46,9 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"

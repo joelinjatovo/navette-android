@@ -613,11 +613,11 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                 });
         mBinding.bottomSheets.delayError.setOnClickListener(
                 v -> {
-                    //loadDirection();
+                    reloadDirection();
                 });
         mBinding.bottomSheets.distanceError.setOnClickListener(
                 v -> {
-                    //loadDirection();
+                    reloadDirection();
                 });
         mBinding.bottomSheets.buttonRefreshCar.setOnClickListener(
                 v -> {
@@ -629,8 +629,22 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                 v -> {
                     NavHostFragment.findNavController(this).navigate(R.id.action_order_fragment_to_place_fragment);
                 });
-        mBinding.bottomSheets.refreshCart.setOnClickListener(v -> loadCart());
+        mBinding.bottomSheets.refreshCart.setOnClickListener(v -> {
+            reloadDirection();
+        });
 
+    }
+
+    private void reloadDirection() {
+        Point origin = orderViewModel.getOriginPoint();
+        Point destination = orderViewModel.getDestinationPoint();
+        Point back = orderViewModel.getBackPoint();
+        if(origin!=null && destination!=null){
+            loadDirection(googleViewModel, origin.toLatLng(), destination.toLatLng(), true);
+        }
+        if(back!=null && destination!=null){
+            loadDirection(googleViewModel, destination.toLatLng(), back.toLatLng(), false);
+        }
     }
 
     private void expandOrderDetails() {

@@ -115,7 +115,7 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
             case LOCATION_PICKER_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     String name = data.getStringExtra(LocationPickerActivity.INTENT_EXTRA_NAME);
-                    Double lat = data.getDoubleExtra(LocationPickerActivity.INTENT_EXTRA_LNG, 0.0);
+                    Double lat = data.getDoubleExtra(LocationPickerActivity.INTENT_EXTRA_LAT, 0.0);
                     Double lng = data.getDoubleExtra(LocationPickerActivity.INTENT_EXTRA_LNG, 0.0);
                     Location location = new Location();
                     location.setType(Location.TYPE_RECENT);
