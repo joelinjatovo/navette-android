@@ -59,7 +59,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     switch (authenticationState) {
                         case AUTHENTICATED:
                             Log.d(TAG, "'AUTHENTICATED'");
-                            showWelcomeMessage();
+                            updateUI();
                             break;
                         case INVALID_AUTHENTICATION:
                         case UNAUTHENTICATED:
@@ -93,7 +93,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void showWelcomeMessage() {
+    private void updateUI() {
         User user = authViewModel.getUser();
         Log.d(TAG, "showWelcomeMessage()" + user);
         if(user==null){
@@ -111,10 +111,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if(user.getRoles()!=null && !user.getRoles().isEmpty()){
             if(user.getRoles().contains(User.ROLE_ADMIN)){
                 mBinding.setRole(getString(R.string.admin));
+                mBinding.menuRides.setVisibility(View.VISIBLE);
             }else if(user.getRoles().contains(User.ROLE_DRIVER)){
                 mBinding.setRole(getString(R.string.driver));
+                mBinding.menuRides.setVisibility(View.VISIBLE);
             }else if(user.getRoles().contains(User.ROLE_CUSTOMER)){
                 mBinding.setRole(getString(R.string.customer));
+                mBinding.menuRides.setVisibility(View.GONE);
             }else{
                 mBinding.setRole(getString(R.string.unknown_role));
             }

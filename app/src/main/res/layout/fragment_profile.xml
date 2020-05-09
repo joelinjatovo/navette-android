@@ -57,6 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
+                        android:visibility="gone"
                         android:text="@string/description_activity"/>
 
                     <RelativeLayout
@@ -121,7 +122,8 @@
                         android:text="@string/edit"
                         style="?attr/materialButtonOutlinedStyle"
                         android:textColor="@color/colorAccent"
-                        app:strokeColor="@color/colorAccent"/>
+                        app:strokeColor="@color/colorAccent"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
