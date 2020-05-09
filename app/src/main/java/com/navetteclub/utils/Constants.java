@@ -11,7 +11,7 @@ public final class Constants {
 
     public static final float MAP_ZOOM = 15;
 
-    private static final String API_KEY = "eyJpdiI6Imd2MTVZTC9QWXllaElDWlhta0JhVUE9PSIsInZhbHVlIjoiNlpzNG9KV1pTWktacUpzdmtPcTJUUT09IiwibWFjIjoiYmIwNTkzMTE2OTg3ODYyZmQ3YjE1MmE5YzE3ZjIzMTM0YTdjNTJhOTI4YmU1NWU2NDQxZTczNjNlNDdkYTY3MSJ9";
+    private static final String API_KEY = "eyJpdiI6ImplendNbmphZEdnZElRV3MxZjlkM3c9PSIsInZhbHVlIjoidzJKZnpBWmJSdGNqa012U3FZRkVIZz09IiwibWFjIjoiZDg5ZGZjYWE5ZThjMGI3YTA0ZjE0YTI1N2Y5NTY5MTFhZmViZmQ2NjFiNzE1ZGJlMjMzOGNlODliN2IxYzhmYiJ9";
     private static final String API_KEY_DEV = "eyJpdiI6IkhlMTRnbnQzd0JFbXpMV0lTTkhxN3c9PSIsInZhbHVlIjoidHRzQ2dZTHdPcGQrQWtXSDhEZnRmdz09IiwibWFjIjoiODM2YTE0ZGNiOTMzMTVjZTZkMjg1MWMxNmVhZGQwYzU1MDk2ZGIxMWYzZDRkM2ZlNDdhMTY1OWY5MTZmZmJhOCJ9";
     public static String getApiKey(){
         if (BuildConfig.DEBUG) {
@@ -21,7 +21,7 @@ public final class Constants {
     };
 
     //public static final String BASE_URL = "http://10.11.12.100:8000/"; // Work
-    private static final String BASE_URL = "https://navetteclub.com/"; // Home
+    private static final String BASE_URL = "https://my-app-demo.com/"; // Production
     private static final String BASE_URL_DEV = "http://192.168.43.6:8000/";
     public static String getBaseUrl(){
         if (BuildConfig.DEBUG) {
@@ -39,10 +39,8 @@ public final class Constants {
         return STRIPE_API_KEY;
     };
 
-    private static final String PUSHER_APP_ID = "959413";
     private static final String PUSHER_APP_CLUSTER = "eu";
     private static final String PUSHER_APP_KEY = "005a1b44bf7e4f2cef2d";
-    private static final String PUSHER_APP_SECRET = "5929988339674bf54152";
     public static String getPusherAppCluster(){
         return PUSHER_APP_CLUSTER;
     };
