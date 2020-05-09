@@ -36,10 +36,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
-                def date = new Date()
-                def formattedDate = date.format('yyyyMMdd')
                 variant.outputs.all {
-                    outputFileName = "${variant.applicationId}-${variant.versionName}-${variant.name}-${formattedDate}.apk"
+                    def versionName = variant.versionName.replace(" ", "").replace("(", "-").replace(")", "");
+                    outputFileName = "${variant.applicationId}-${versionName}-${variant.name}.apk"
                 }
             }
         }
