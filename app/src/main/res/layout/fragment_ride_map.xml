@@ -50,7 +50,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:text="@string/live_order"
+                        android:text="@string/live_ride"
                         android:layout_toEndOf="@id/backButton"
                         android:layout_toStartOf="@id/liveTitleView"
                         android:textAppearance="?attr/textAppearanceBody1"/>

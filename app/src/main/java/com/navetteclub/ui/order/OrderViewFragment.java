@@ -158,7 +158,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         orderViewModel.getViewResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){return;}
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     if(result.getError()!=null){
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
@@ -225,7 +225,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     if(result.getError()!=null){
                         showError(result.getError());
                     }

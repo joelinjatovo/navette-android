@@ -174,7 +174,7 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
         orderViewModel.getPaymentResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     if(result.getError()!=null){
                         showError(result.getError());
                     }

@@ -16,11 +16,18 @@ import androidx.core.app.NotificationCompat;
 import androidx.legacy.content.WakefulBroadcastReceiver;
 import androidx.navigation.NavDeepLinkBuilder;
 
+import com.google.gson.Gson;
 import com.navetteclub.App;
 import com.navetteclub.R;
+import com.navetteclub.api.models.ItemParam;
+import com.navetteclub.models.ItemPayload;
+import com.navetteclub.models.OrderPayload;
+import com.navetteclub.models.RidePayload;
 import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.services.PusherService;
 import com.navetteclub.ui.MainActivity;
+import com.navetteclub.ui.driver.RideMapFragment;
+import com.navetteclub.ui.order.LiveFragment;
 import com.navetteclub.ui.order.OrderFragmentDirections;
 import com.navetteclub.ui.order.OrderViewFragment;
 import com.navetteclub.ui.order.OrderViewFragmentDirections;
@@ -62,30 +69,48 @@ public class PusherReceiver extends BroadcastReceiver {
         Log.d(TAG, "Payload "  + payload);
 
         if(event!=null && payload!=null){
+            Gson gson = new Gson();
             switch (event){
                 case "order.created":
                 case "order.updated":
-                    JSONObject object = null;
-                    try {
-                        object = new JSONObject(payload);
-                        String orderId = object.getString("order_id");
-
+                    OrderPayload orderPayload = gson.fromJson(payload, OrderPayload.class);
+                    if(orderPayload!=null){
                         Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
-                        intent1.setData(OrderViewFragment.getUri(orderId));
+                        intent1.setData(OrderViewFragment.getUri(orderPayload.getOrderId()));
                         PendingIntent contentIntent = PendingIntent.getActivity(
                                 App.applicationContext,
                                 0,
                                 intent1,
                                 PendingIntent.FLAG_ONE_SHOT);
-
-                        if(event.equals("order.created")){
-                            buildNotification(contentIntent, "Une nouvelle commande a été créée.");
-                        }else{
-                            buildNotification(contentIntent, "Votre commande a été mise à jour.");
-                        }
-
-                    } catch (JSONException e) {
-                        Log.d("ERROR DECODE", e.getMessage());
+                        buildNotification(contentIntent, App.applicationContext.getString(orderPayload.getNewStatusStringDesc()));
+                    }
+                    break;
+                case "item.created":
+                case "item.updated":
+                    ItemPayload itemPayload = gson.fromJson(payload, ItemPayload.class);
+                    if(itemPayload!=null){
+                        Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
+                        intent1.setData(LiveFragment.getUri(itemPayload.getItemId()));
+                        PendingIntent contentIntent = PendingIntent.getActivity(
+                                App.applicationContext,
+                                0,
+                                intent1,
+                                PendingIntent.FLAG_ONE_SHOT);
+                        buildNotification(contentIntent, App.applicationContext.getString(itemPayload.getNewStatusStringDesc()));
+                    }
+                    break;
+                case "ride.created":
+                case "ride.updated":
+                    RidePayload ridePayload = gson.fromJson(payload, RidePayload.class);
+                    if(ridePayload!=null){
+                        Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
+                        intent1.setData(RideMapFragment.getUri(ridePayload.getRideId()));
+                        PendingIntent contentIntent = PendingIntent.getActivity(
+                                App.applicationContext,
+                                0,
+                                intent1,
+                                PendingIntent.FLAG_ONE_SHOT);
+                        buildNotification(contentIntent, App.applicationContext.getString(ridePayload.getNewStatusStringDesc()));
                     }
                     break;
 

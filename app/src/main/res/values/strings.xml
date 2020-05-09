@@ -259,6 +259,23 @@
     <string name="ride_drop">Drop</string>
     <string name="ride_complete">Complete</string>
     <string name="ride_complete_desc">Vous avez passer sur tous les points.\nCliquer sur le bouton suivant\ndès que vous arrivez au club</string>
+    <string name="desc_ride_status_ping">Une nouvelle course est créée.</string>
+    <string name="desc_ride_status_active">Votre course est activée.</string>
+    <string name="desc_ride_status_canceled">Votre course est annulée.</string>
+    <string name="desc_ride_status_completable">Votre course peut être clôturée.</string>
+    <string name="desc_ride_status_completed">Votre course est terminée.</string>
+    <string name="desc_order_status_ping">Votre commande est créée.</string>
+    <string name="desc_order_status_ok">Votre commande est prête.</string>
+    <string name="desc_order_status_active">Votre commande est activée.</string>
+    <string name="desc_order_status_canceled">Votre commande est annulée.</string>
+    <string name="desc_order_status_completable">Votre commande peut être clôturée.</string>
+    <string name="desc_order_status_completed">Votre commande est terminée.</string>
+    <string name="desc_order_item_status_ping">Cette course a été mise en attente</string>
+    <string name="desc_order_item_status_active">Cette course a été activée.</string>
+    <string name="desc_order_item_status_next">Vous êtes le suivant.</string>
+    <string name="desc_order_item_status_online">Vous êtes maintenant à bord.</string>
+    <string name="desc_order_item_status_canceled">Cette course a été annulée.</string>
+    <string name="desc_order_item_status_completed">Cette course a été terminée.</string>
     <string name="status_ping">en attente</string>
     <string name="status_completed">términé</string>
     <string name="status_canceled">annulé</string>
@@ -309,5 +326,8 @@
     <string name="saved_location">Localisation enregistrée</string>
     <string name="recent_location">Localisation recente</string>
     <string name="button_add_place">Ajouter une place</string>
+    <string name="unknown_status">Status Inconnu</string>
+    <string name="live_ride">Ramassage en live</string>
+    <string name="info">Info</string>
 
 </resources>

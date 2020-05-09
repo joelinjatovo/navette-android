@@ -95,7 +95,7 @@ public class LoginFragment extends Fragment implements TextWatcher {
                         return;
                     }
 
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if (registerResult.getError() != null) {
                         Log.d(TAG, "'registerResult.getError()'");

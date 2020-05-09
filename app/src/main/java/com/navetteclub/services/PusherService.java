@@ -65,7 +65,7 @@ public class PusherService extends Service {
             pusher.connect();
 
             if (pusher.getPrivateChannel("private-App.User."+userId) == null) {
-                subscribeUser(pusher,"private-App.User."+userId, "user.point.created", "order.created", "order.updated", "item.updated", "item.created", "ride.created", "eide.updated");
+                subscribeUser(pusher,"private-App.User."+userId, "user.point.created", "order.created", "order.updated", "item.updated", "item.created", "ride.created", "ride.updated");
             }
         }
         check();

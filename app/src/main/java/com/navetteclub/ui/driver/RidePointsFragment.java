@@ -162,7 +162,7 @@ public class RidePointsFragment extends Fragment {
                     if(result==null){
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if(result.getError()!=null){
                         showSweetError(getString(result.getError()));
@@ -184,7 +184,7 @@ public class RidePointsFragment extends Fragment {
                     if(result==null){
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if(result.getError()!=null){
                         showSweetError(getString(result.getError()));
@@ -206,7 +206,7 @@ public class RidePointsFragment extends Fragment {
                     if(result==null){
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if(result.getError()!=null){
                         showSweetError(getString(result.getError()));

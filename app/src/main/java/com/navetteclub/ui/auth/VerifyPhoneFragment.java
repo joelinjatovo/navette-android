@@ -79,7 +79,7 @@ public class VerifyPhoneFragment extends Fragment implements TextWatcher {
                         return;
                     }
 
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if (result.getError() != null) {
                         Log.d(TAG, "'result.getError()'");
@@ -103,7 +103,7 @@ public class VerifyPhoneFragment extends Fragment implements TextWatcher {
                         return;
                     }
 
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if (result.getError() != null) {
                         Log.d(TAG, "'result.getError()'");

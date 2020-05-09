@@ -111,7 +111,7 @@ public class RegisterFragment  extends Fragment {
                         return;
                     }
 
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if (registerResult.getError() != null) {
                         Log.d(TAG, "'registerResult.getError()'");

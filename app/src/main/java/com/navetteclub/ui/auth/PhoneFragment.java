@@ -109,7 +109,7 @@ public class PhoneFragment extends BottomSheetDialogFragment implements TextWatc
                     if (result == null) {
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if (result.getError() != null) {
                         Log.d(TAG, "'result.getError()'");

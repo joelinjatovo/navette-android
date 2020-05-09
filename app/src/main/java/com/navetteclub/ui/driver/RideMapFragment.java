@@ -304,7 +304,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     if(result==null){
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     if(result.getError()!=null){
                         if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
                             authViewModel.logout(requireContext());
@@ -320,7 +320,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     if(result==null){
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     if(result.getError()!=null){
                         if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
                             authViewModel.logout(requireContext());
@@ -357,7 +357,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     if(result==null){
                         return;
                     }
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if(result.getError()!=null){
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
@@ -461,6 +461,12 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         int count = ridePointWithDatas.size();
         Log.d(TAG, "updateStepView ridePointWithDatas.size()=" + count);
         if(count>0) {
+            if(count==1){
+                mBinding.bottomSheets.stepView.setVisibility(View.GONE);
+            }else{
+                mBinding.bottomSheets.stepView.setVisibility(View.VISIBLE);
+            }
+
             mBinding.bottomSheets.stepView.setStepsNumber(count);
             if (ride != null) {
                 if (Ride.STATUS_COMPLETABLE.equals(ride.getStatus())) {
@@ -910,6 +916,10 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             break;
         }
     };
+
+    public static Uri getUri(String rideId) {
+        return Uri.parse("http://navetteclub.com/ride/" + rideId + "/map");
+    }
 
     public static Uri getUri(Long rideId){
         return Uri.parse("http://navetteclub.com/ride/" + rideId + "/map");

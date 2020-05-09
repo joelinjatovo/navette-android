@@ -1,6 +1,7 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.navetteclub.App;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
@@ -54,6 +57,7 @@ import com.navetteclub.database.entity.User;
 import com.navetteclub.database.entity.UserAndPoint;
 import com.navetteclub.databinding.FragmentLiveBinding;
 import com.navetteclub.services.LocationUpdatesService;
+import com.navetteclub.ui.MainActivity;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.MapUiUtils;
@@ -75,9 +79,13 @@ import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
@@ -173,6 +181,20 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         setupAuthViewModel();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(pusher==null) return;
+        if(pusher.getPrivateChannel("private-App.Item."+ itemId)!=null) {
+            pusher.unsubscribe("private-App.Item."+ itemId);
+        }
+
+        if(rideId!=null && pusher.getPrivateChannel("private-App.Ride."+ rideId)!=null) {
+            pusher.unsubscribe("private-App.Ride."+ rideId);
+
+        }
+    }
+
     private void setupUI() {
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setCancelable(false);
@@ -212,12 +234,14 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                             listenChannelDriverPosition(String.valueOf(rideId));
                         }
                     }
+
+                    itemViewModel.setItemViewResult(null);
                 });
         itemViewModel.getItemCancelResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
 
-                    progressDialog.hide();
+                    progressDialog.dismiss();
 
                     if(result.getError()!=null){
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
@@ -226,6 +250,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                     if(result.getSuccess()!=null){
                         updateUi(result.getSuccess());
                     }
+
+                    itemViewModel.setItemCancelResult(null);
                 });
     }
 
@@ -641,6 +667,33 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                     Log.d(TAG + "ItemPusher", "onEvent");
                     Log.d(TAG + "ItemPusher", event.getEventName());
                     Log.d(TAG + "ItemPusher", event.getData());
+                    requireActivity().runOnUiThread(() -> {
+                        try{
+                            JSONObject jsonData = new JSONObject(event.getData());
+                            String newStatus = jsonData.getString("newStatus");
+                            switch (newStatus){
+                                case Item.STATUS_PING:
+                                    showSweetInfo(R.string.desc_order_item_status_ping);
+                                    break;
+                                case Item.STATUS_ACTIVE:
+                                    showSweetInfo(R.string.desc_order_item_status_active);
+                                    break;
+                                case Item.STATUS_NEXT:
+                                    showSweetInfo(R.string.desc_order_item_status_next);
+                                    break;
+                                case Item.STATUS_ONLINE:
+                                    showSweetInfo(R.string.desc_order_item_status_online);
+                                    break;
+                                case Item.STATUS_CANCELED:
+                                    showSweetInfo(R.string.desc_order_item_status_canceled);
+                                    break;
+                                case Item.STATUS_COMPLETED:
+                                    showSweetInfo(R.string.desc_order_item_status_completed);
+                                    break;
+                            }
+                        }catch (Exception ignored){}
+                        itemViewModel.loadItem(token, itemId);
+                    });
                 }
 
                 @Override
@@ -654,6 +707,13 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 }
             }, "item.created", "item.updated");
         }
+    }
+
+    public void showSweetInfo(@StringRes int res){
+        new SweetAlertDialog(requireContext(), SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText(getString(R.string.info))
+                .setContentText(getString(res))
+                .show();
     }
 
     public static Uri getUri(String itemId){

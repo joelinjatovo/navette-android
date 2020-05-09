@@ -323,7 +323,7 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null) return;
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     if(result.getError()!=null){
                         showOrderError(result.getError());
                     }

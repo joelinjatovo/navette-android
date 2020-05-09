@@ -263,7 +263,7 @@ public class StripeFragment extends BottomSheetDialogFragment {
 
         @Override
         public void onSuccess(@NonNull PaymentIntentResult result) {
-            progressDialog.hide();
+            progressDialog.dismiss();
 
             PaymentIntent paymentIntent = result.getIntent();
             PaymentIntent.Status status = paymentIntent.getStatus();

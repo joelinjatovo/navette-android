@@ -148,7 +148,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
             public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
                                    @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
                 Log.e(TAG, response.toString());
-                progressDialog.hide();
+                progressDialog.dismiss();
                 if (response.body() != null){
                     Log.e(TAG, response.body().toString());
                     if(response.body().isSuccess()) {
@@ -164,7 +164,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
                                   @NonNull Throwable throwable) {
-                progressDialog.hide();
+                progressDialog.dismiss();
                 Log.e(TAG, throwable.getMessage(), throwable);
             }
         });
