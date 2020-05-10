@@ -9,12 +9,18 @@ import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.navetteclub.R;
+import com.navetteclub.api.deserializer.DateTypeDeserializer;
+import com.navetteclub.api.serializer.DateTypeSerializer;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Retrofit;
 
 public class Utils {
 
@@ -29,6 +35,14 @@ public class Utils {
 
     public static String formatDateToString(Date lastUpdated) {
         return formatDateToString(lastUpdated, DateUtils.MINUTE_IN_MILLIS);
+    }
+
+    public static Gson getGson() {
+        return new GsonBuilder()
+                //.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'")
+                .registerTypeAdapter(Date.class, new DateTypeDeserializer())
+                .registerTypeAdapter(Date.class, new DateTypeSerializer())
+                .create();
     }
 
     /**

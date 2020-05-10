@@ -1,6 +1,7 @@
 package com.navetteclub.ui;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -36,6 +37,7 @@ import com.navetteclub.services.PusherService;
 import com.navetteclub.ui.driver.RideMapFragment;
 import com.navetteclub.ui.order.LiveFragment;
 import com.navetteclub.ui.order.OrderViewFragment;
+import com.navetteclub.utils.GlobalNotificationBuilder;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.views.AlertView;
 import com.navetteclub.vm.AuthViewModel;
@@ -72,11 +74,11 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.navetteclub.services.PusherService.CHANNEL_ID;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private static final int NOTIFICATION_ID = 1;
 
     private AuthViewModel authViewModel;
 
@@ -136,16 +138,43 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        Intent intent = new Intent();
+        intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+        intent.putExtra("app_package", getPackageName());
+        intent.putExtra("app_uid", getApplicationInfo().uid);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this, "a")
+                new NotificationCompat.Builder(this, GlobalNotificationBuilder.NETWORK_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_logo_notification_32)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!")
+                        .setContentTitle(getString(R.string.internet_error_title))
+                        .setContentText(getString(R.string.internet_error_subtitle))
                         .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText("Much longer text that cannot fit one line..."))
+                                .bigText(getString(R.string.internet_error_description)))
+                        .setContentIntent(pendingIntent) // will fire when the user taps the notification
+                        .setAutoCancel(true) // automatically removes the notification when the user taps it.
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        mNotificationManagerCompat.notify(NOTIFICATION_ID, mBuilder.build());
+        GlobalNotificationBuilder.setNotificationCompatBuilderInstance(mBuilder);
+
+        // notificationId is a unique int for each notification that you must define
+        mNotificationManagerCompat.notify(GlobalNotificationBuilder.NETWORK_NOTIFICATION_ID, mBuilder.build());
     }
 
     @Override
@@ -221,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.thanks_fragment:
                 case R.id.rides_fragment:
                 case R.id.ride_point_fragment:
+                case R.id.ride_points_fragment:
                 case R.id.ride_map_fragment:
                 case R.id.orders_fragment:
                 case R.id.order_view_fragment:
@@ -256,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
             showNotification();
         }else{
             alertView.setVisibility(View.GONE);
-            mNotificationManagerCompat.cancel(NOTIFICATION_ID);
+            mNotificationManagerCompat.cancel(GlobalNotificationBuilder.NETWORK_NOTIFICATION_ID);
         }
     }
 

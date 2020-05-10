@@ -7,11 +7,13 @@ import com.navetteclub.api.deserializer.DateTypeDeserializer;
 import com.navetteclub.api.serializer.DateTypeSerializer;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.api.interceptors.UserAgentAndApiKeyInterceptor;
+import com.navetteclub.utils.Utils;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.internal.Util;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -22,12 +24,7 @@ public class RetrofitClient {
 
     public static Retrofit getInstance() {
         if (retrofit == null) {
-            Gson gson = new GsonBuilder()
-                    //.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'")
-                    .registerTypeAdapter(Date.class, new DateTypeDeserializer())
-                    .registerTypeAdapter(Date.class, new DateTypeSerializer())
-                    .create();
-
+            Gson gson = Utils.getGson();
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
                     .connectTimeout(1, TimeUnit.MINUTES)
                     .readTimeout(60, TimeUnit.SECONDS)

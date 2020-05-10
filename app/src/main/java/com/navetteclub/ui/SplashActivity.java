@@ -34,8 +34,8 @@ public class SplashActivity extends AppCompatActivity {
             int secondsDelayed = 2;
             handler = new Handler();
             handler.postDelayed(() -> {
-                runOnUiThread(() -> progressBar.setVisibility(View.GONE));
                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                runOnUiThread(() -> progressBar.setVisibility(View.GONE));
                 finish();
             }, secondsDelayed * 1000);
             loaded = true;

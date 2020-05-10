@@ -457,9 +457,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         if(club==null) return;
         Item item = orderViewModel.getItem1();
         if(item==null) return;
-        //if(cartRetrofitRequest!=null){
-            //cartRetrofitRequest.cancel();
-        //}
         cartRetrofitRequest = orderViewModel.getCart();
         mBinding.bottomSheets.setIsLoadingCart(true);
         mBinding.bottomSheets.setShowErrorLoaderCart(false);
@@ -666,15 +663,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                                 mLastKnownLocation = (Location) task.getResult();
                                 if (mLastKnownLocation != null) {
                                     LatLng latLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                                    if(searchType == SearchType.ORIGIN){
-                                        //orderViewModel.setOrigin(getString(R.string.my_location), latLng, true);
-                                    }else{
-                                        //orderViewModel.setReturn(getString(R.string.my_location), latLng, true);
-                                    }
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, Constants.MAP_ZOOM));
+                                }else{
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.DEFAULT_LOCATION, Constants.MAP_ZOOM));
                                 }
                             } else {
                                 Log.e(TAG, "Exception: %s", task.getException());
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.DEFAULT_LOCATION, Constants.MAP_ZOOM));
                             }
                         });
             }

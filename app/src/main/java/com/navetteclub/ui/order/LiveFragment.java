@@ -14,7 +14,9 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,6 +138,10 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
     private ProgressDialog progressDialog;
 
     private Long rideId;
+
+    private Handler handler = new Handler(Looper.getMainLooper());;
+
+    private Runnable checkRunnable = this::check;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -416,7 +422,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                 authenticationState -> {
                     if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         token = authViewModel.getUser().getAuthorizationToken();
-                        itemViewModel.loadItem(token, itemId);
+                        check();
                         pusher = PusherOdk.getInstance(token).getPusher();
                         listenChannelItem(itemId);
                     }
@@ -494,14 +500,15 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         liveViewModel.getDriverPositionLiveData().observe(getViewLifecycleOwner(),
                 position -> {
                     if(position==null) return;
-                        User driver = position.getUser();
-                        if(driver==null) return;
-                        Point point = position.getPoint();
-                        if(point==null) return;
-                        if(driverMarker!=null){
-                            driverMarker.remove();
-                        }
-                        driverMarker = drawDriverPoint(point, driver);
+                    User driver = position.getUser();
+                    if(driver==null) return;
+                    Point point = position.getPoint();
+                    if(point==null) return;
+                    if(driverMarker!=null){
+                        driverMarker.remove();
+                    }
+                    driverMarker = drawDriverPoint(point, driver);
+                    liveViewModel.setDriverPositionLiveData(null);
                 });
     }
 
@@ -512,11 +519,14 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
     private void drawClubMarker(Point point) {
         if(point==null) return;
+        if(mMap==null) return;
         mClubMarker = MapUiUtils.drawTextPoint(requireContext(), mMap, point, getString(R.string.club));
     }
 
 
     private Marker drawDriverPoint(Point point, User driver) {
+        if(point==null) return null;
+        if(mMap==null) return null;
         return MapUiUtils.drawCarMarker(requireContext(), mMap, point, R.color.colorIcon);
 
     }
@@ -667,6 +677,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                     Log.d(TAG + "ItemPusher", "onEvent");
                     Log.d(TAG + "ItemPusher", event.getEventName());
                     Log.d(TAG + "ItemPusher", event.getData());
+                    check();
                     requireActivity().runOnUiThread(() -> {
                         try{
                             JSONObject jsonData = new JSONObject(event.getData());
@@ -692,7 +703,6 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                                     break;
                             }
                         }catch (Exception ignored){}
-                        itemViewModel.loadItem(token, itemId);
                     });
                 }
 
@@ -709,11 +719,17 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void showSweetInfo(@StringRes int res){
+    private void showSweetInfo(@StringRes int res){
         new SweetAlertDialog(requireContext(), SweetAlertDialog.NORMAL_TYPE)
                 .setTitleText(getString(R.string.info))
                 .setContentText(getString(res))
                 .show();
+    }
+
+    private void check() {
+        handler.removeCallbacks(checkRunnable);
+        handler.postDelayed(checkRunnable, 60*1000);
+        itemViewModel.loadItem(token, itemId);
     }
 
     public static Uri getUri(String itemId){

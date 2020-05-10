@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -95,6 +94,7 @@
                     android:id="@+id/distanceError"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/image"
                     android:layout_gravity="center"
                     android:tint="@color/red"
                     android:src="@drawable/outline_refresh_black_18"
@@ -141,6 +141,7 @@
                     android:id="@+id/delayError"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/image"
                     android:layout_gravity="center"
                     android:tint="@color/red"
                     android:src="@drawable/outline_refresh_black_18"
@@ -182,12 +183,13 @@
                     android:textColor="@color/colorAccent"
                     android:text="@{amount}"
                     android:textAppearance="?attr/textAppearanceHeadline6"
-                    android:visibility="@{isLoadingCar||showErrorLoaderCart?View.GONE:View.VISIBLE}"/>
+                    android:visibility="@{isLoadingCart||showErrorLoaderCart?View.GONE:View.VISIBLE}"/>
 
                 <ImageView
                     android:id="@+id/priceError"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/image"
                     android:layout_gravity="center"
                     android:tint="@color/red"
                     android:src="@drawable/outline_refresh_black_18"
@@ -317,7 +319,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:visibility="@{showErrorLoaderCart?View.VISIBLE:View.GONE}">
+            android:visibility="@{isLoadingCart||showErrorLoaderCart?View.VISIBLE:View.GONE}">
 
             <TextView
                 android:id="@+id/errorText"

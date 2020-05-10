@@ -32,6 +32,7 @@ import com.navetteclub.ui.order.OrderFragmentDirections;
 import com.navetteclub.ui.order.OrderViewFragment;
 import com.navetteclub.ui.order.OrderViewFragmentDirections;
 import com.navetteclub.utils.Log;
+import com.navetteclub.utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,7 +70,7 @@ public class PusherReceiver extends BroadcastReceiver {
         Log.d(TAG, "Payload "  + payload);
 
         if(event!=null && payload!=null){
-            Gson gson = new Gson();
+            Gson gson = Utils.getGson();;
             switch (event){
                 case "order.created":
                 case "order.updated":

@@ -241,7 +241,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/date"
                     android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/colorIcon"
+                    android:textColor="@color/colorText"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"/>
 
@@ -292,7 +292,7 @@
                         android:id="@+id/placeLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{@string/person_count(place)}"/>
+                        android:text="@{place>1?@string/persons_count(place):@string/person_count(place)}"/>
 
                 </LinearLayout>
 

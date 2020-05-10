@@ -33,7 +33,7 @@ android {
         debug {
             applicationIdSuffix ".dev"
             versionNameSuffix ' DEBUG'
-            addManifestPlaceholders([APP_NAME: "Navette Beta"])
+            addManifestPlaceholders([APP_NAME: "Navette Debug"])
         }
         release {
             minifyEnabled false

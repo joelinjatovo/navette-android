@@ -460,13 +460,11 @@ public class RidePointsFragment extends Fragment {
                 }
             break;
             default:
-                /*
                 if(ridePoint!=null) {
                     RidePointsFragmentDirections.ActionRidePointsFragmentToRidePointFragment action = RidePointsFragmentDirections
                             .actionRidePointsFragmentToRidePointFragment(ridePoint.getRid());
                     NavHostFragment.findNavController(RidePointsFragment.this).navigate(action);
                 }
-                 */
             break;
         }
     };
