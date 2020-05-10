@@ -91,11 +91,11 @@
             android:visibility="@{isLoading||isUnauthenticated?View.GONE:View.VISIBLE}">
 
             <Button
-                android:id="@+id/actualize_button"
+                android:id="@+id/button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/button_actualize"
-                app:layout_constraintEnd_toStartOf="@id/action_button"
+                app:layout_constraintEnd_toStartOf="@id/button2"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -104,27 +104,14 @@
                 app:strokeColor="@color/colorAccent" />
 
             <Button
-                android:id="@+id/action_button"
+                android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/start_ride"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/actualize_button"
-                app:layout_constraintEnd_toStartOf="@id/live_button"/>
-
-            <Button
-                android:id="@+id/live_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_live"
-                app:layout_constraintStart_toEndOf="@id/action_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                style="?attr/materialButtonOutlinedStyle"
-                android:textColor="@color/colorAccent"
-                app:strokeColor="@color/colorAccent" />
+                app:layout_constraintStart_toEndOf="@id/button1"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -12,8 +12,8 @@
         tools:layout="@layout/fragment_rides" >
 
         <action
-            android:id="@+id/action_rides_fragment_to_ride_point_fragment"
-            app:destination="@id/ride_point_fragment" />
+            android:id="@+id/action_rides_fragment_to_ride_points_fragment"
+            app:destination="@id/ride_points_fragment" />
 
         <action
             android:id="@+id/action_rides_fragment_to_navigation_auth"
@@ -22,12 +22,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/ride_point_fragment"
+        android:id="@+id/ride_points_fragment"
         android:name="com.navetteclub.ui.driver.RidePointsFragment"
         android:label="@string/title_ride"
         tools:layout="@layout/fragment_ride_points">
         <action
-            android:id="@+id/action_ride_point_fragment_to_ride_map_fragment"
+            android:id="@+id/action_ride_points_fragment_to_ride_map_fragment"
             app:destination="@id/ride_map_fragment" />
         <argument
             android:name="ride_id"
@@ -35,6 +35,9 @@
         <deepLink
             android:id="@+id/deepLink3"
             app:uri="http://navetteclub.com/ride/{ride_id}" />
+        <action
+            android:id="@+id/action_ride_points_fragment_to_ride_point_fragment"
+            app:destination="@id/ride_point_fragment" />
     </fragment>
 
     <fragment
@@ -49,6 +52,17 @@
         <deepLink
             android:id="@+id/deepLink4"
             app:uri="http://navetteclub.com/ride/{ride_id}/map" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/ride_point_fragment"
+        android:name="com.navetteclub.ui.driver.RidePointFragment"
+        tools:layout="@layout/fragment_ride_point">
+
+        <argument
+            android:name="ride_point_id"
+            app:argType="string" />
 
     </fragment>
 

@@ -13,6 +13,10 @@ public class RidePointWithDatas {
     @Embedded
     private RidePoint ridePoint;
 
+    @SerializedName("item")
+    @Embedded
+    private Item item;
+
     @SerializedName("point")
     @Embedded
     private Point point;
@@ -43,5 +47,13 @@ public class RidePointWithDatas {
 
     public void setPoint(Point point) {
         this.point = point;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

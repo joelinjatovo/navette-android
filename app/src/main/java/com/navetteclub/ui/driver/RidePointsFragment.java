@@ -66,6 +66,12 @@ public class RidePointsFragment extends Fragment {
 
     private RideViewModel rideViewModel;
 
+    private View.OnClickListener mActualiseListener;
+    private View.OnClickListener mCancelListener;
+    private View.OnClickListener mStartListener;
+    private View.OnClickListener mCompleteListener;
+    private View.OnClickListener mLiveListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,7 +222,7 @@ public class RidePointsFragment extends Fragment {
                         this.setRide(result.getSuccess());
                         new SweetAlertDialog(requireContext(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Success")
-                                .setContentText("Votre course a bien annulé!")
+                                .setContentText("Votre course a été bien annulé!")
                                 .show();
                     }
 
@@ -279,36 +285,59 @@ public class RidePointsFragment extends Fragment {
     }
 
     private void setRide(RideWithDatas rideWithDatas) {
-        mBinding.liveButton.setVisibility(View.GONE);
         this.rideWithDatas = rideWithDatas;
         if(rideWithDatas==null) return;
 
         // Ride
         Ride ride = rideWithDatas.getRide();
         if(ride!=null){
-            if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
-                mBinding.actionButton.setText(R.string.button_complete);
-                mBinding.actionButton.setVisibility(View.VISIBLE);
-                mBinding.liveButton.setVisibility(View.VISIBLE); // <-- here
-                mBinding.actualizeButton.setVisibility(View.GONE);
+            if(Ride.STATUS_CANCELABLE.equals(ride.getStatus())){
+                // Cancel and live button
+                mBinding.button1.setVisibility(View.VISIBLE);
+                mBinding.button1.setOnClickListener(mCancelListener);
+                mBinding.button1.setText(R.string.button_cancel);
+                mBinding.button2.setVisibility(View.VISIBLE);
+                mBinding.button2.setOnClickListener(mLiveListener);
+                mBinding.button2.setText(R.string.button_live);
+            }else if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
+                // Complete and live button
+                mBinding.button1.setVisibility(View.VISIBLE);
+                mBinding.button1.setOnClickListener(mCompleteListener);
+                mBinding.button1.setText(R.string.button_complete);
+                mBinding.button2.setVisibility(View.VISIBLE);
+                mBinding.button2.setOnClickListener(mLiveListener);
+                mBinding.button2.setText(R.string.button_live);
             }else if(Ride.STATUS_PING.equals(ride.getStatus())){
-                mBinding.actionButton.setText(R.string.button_start_ride);
-                mBinding.actionButton.setVisibility(View.VISIBLE);
-                mBinding.liveButton.setVisibility(View.GONE);
-                mBinding.actualizeButton.setVisibility(View.GONE);
+                // Cancel and Start button
+                mBinding.button1.setVisibility(View.VISIBLE);
+                mBinding.button1.setOnClickListener(mCancelListener);
+                mBinding.button1.setText(R.string.button_cancel_ride);
+                mBinding.button2.setVisibility(View.VISIBLE);
+                mBinding.button2.setOnClickListener(mStartListener);
+                mBinding.button2.setText(R.string.button_start_ride);
             }else if(Ride.STATUS_ACTIVE.equals(ride.getStatus())){
-                mBinding.actionButton.setText(R.string.button_cancel_ride);
-                mBinding.actionButton.setVisibility(View.VISIBLE);
-                mBinding.liveButton.setVisibility(View.VISIBLE);
+                // Refresh and Cancel button
                 if(ride.getDirection()!=null){
-                    mBinding.actualizeButton.setVisibility(View.GONE);
+                    mBinding.button1.setVisibility(View.VISIBLE);
+                    mBinding.button1.setOnClickListener(mCancelListener);
+                    mBinding.button1.setText(R.string.button_cancel_ride);
+                    mBinding.button2.setVisibility(View.VISIBLE);
+                    mBinding.button2.setOnClickListener(mLiveListener);
+                    mBinding.button2.setText(R.string.button_live);
                 }else{
-                    mBinding.actualizeButton.setVisibility(View.VISIBLE);
+                    mBinding.button1.setVisibility(View.VISIBLE);
+                    mBinding.button1.setOnClickListener(mActualiseListener);
+                    mBinding.button1.setText(R.string.button_actualize);
+                    mBinding.button2.setVisibility(View.VISIBLE);
+                    mBinding.button2.setOnClickListener(mCancelListener);
+                    mBinding.button2.setText(R.string.button_cancel_ride);
                 }
             }else{
-                mBinding.actionButton.setVisibility(View.GONE);
-                mBinding.liveButton.setVisibility(View.GONE);
-                mBinding.actualizeButton.setVisibility(View.GONE);
+                // Refresh and Cancel button
+                mBinding.button1.setVisibility(View.GONE);
+                mBinding.button1.setOnClickListener(null);
+                mBinding.button2.setVisibility(View.GONE);
+                mBinding.button2.setOnClickListener(null);
             }
         }
 
@@ -329,41 +358,52 @@ public class RidePointsFragment extends Fragment {
                 v -> {
                     navController.popBackStack();
                 });
-        mBinding.actualizeButton.setOnClickListener(
-                v -> {
-                    if(token!=null && rideId!=null) {
-                        progressDialog.show();
-                        ridesViewModel.direction(token, rideId);
-                    }
-                });
-        mBinding.liveButton.setOnClickListener(
-                v -> {
-                    if(rideWithDatas!=null) {
-                        RidePointsFragmentDirections.ActionRidePointFragmentToRideMapFragment action = RidePointsFragmentDirections
-                                .actionRidePointFragmentToRideMapFragment(
-                                        rideWithDatas.getRide().getId());
-                        NavHostFragment.findNavController(RidePointsFragment.this).navigate(action);
-                    }
-                });
-        mBinding.actionButton.setOnClickListener(v->{
-            if(token!=null && rideId!=null){
-                if(rideWithDatas==null) return;
-                Ride ride = rideWithDatas.getRide();
-                if(ride!=null){
-                    if(Ride.STATUS_COMPLETABLE.equals(ride.getStatus())){
-                        progressDialog.show();
-                        ridesViewModel.complete(token, rideId);
-                    }
-                    if(Ride.STATUS_PING.equals(ride.getStatus())){
-                        progressDialog.show();
-                        ridesViewModel.start(token, rideId);
-                    }else if(Ride.STATUS_ACTIVE.equals(ride.getStatus())){
-                        progressDialog.show();
-                        ridesViewModel.cancel(token, rideId);
-                    }
+        mActualiseListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(token!=null && rideId!=null) {
+                    progressDialog.show();
+                    ridesViewModel.direction(token, rideId);
                 }
             }
-        });
+        };
+        mStartListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(token!=null && rideId!=null) {
+                    progressDialog.show();
+                    ridesViewModel.start(token, rideId);
+                }
+            }
+        };
+        mCancelListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(token!=null && rideId!=null) {
+                    progressDialog.show();
+                    ridesViewModel.cancel(token, rideId);
+                }
+            }
+        };
+        mCompleteListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(token!=null && rideId!=null) {
+                    progressDialog.show();
+                    ridesViewModel.complete(token, rideId);
+                }
+            }
+        };
+        mLiveListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(rideId!=null) {
+                    RidePointsFragmentDirections.ActionRidePointsFragmentToRideMapFragment action = RidePointsFragmentDirections
+                            .actionRidePointsFragmentToRideMapFragment(rideId);
+                    NavHostFragment.findNavController(RidePointsFragment.this).navigate(action);
+                }
+            }
+        };
 
         mBinding.loaderErrorView.getButton().setOnClickListener(
                 v -> {
@@ -388,9 +428,9 @@ public class RidePointsFragment extends Fragment {
 
                 phoneCall(phone);
             }else {
-                final String[] PERMISSIONS_STORAGE = {Manifest.permission.CALL_PHONE};
+                final String[] PERMISSIONS = {Manifest.permission.CALL_PHONE};
                 //Asking request Permissions
-                ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS_STORAGE, 9);
+                ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, 9);
             }
         }
     }
@@ -404,6 +444,7 @@ public class RidePointsFragment extends Fragment {
         if(item==null){
             return;
         }
+        RidePoint ridePoint = item.getRidePoint();
         switch (v.getId()){
             case R.id.button_call:
                 if (item.getUser() != null && item.getUser().getPhone() != null) {
@@ -411,13 +452,21 @@ public class RidePointsFragment extends Fragment {
                 }
             break;
             case R.id.button_cancel:
-                RidePoint ridePoint = item.getRidePoint();
                 if(ridePoint!=null) {
                     if(!RidePoint.STATUS_CANCELED.equals(ridePoint.getStatus())) {
                         progressDialog.show();
                         rideViewModel.cancelRidePoint(token, ridePoint.getRid());
                     }
                 }
+            break;
+            default:
+                /*
+                if(ridePoint!=null) {
+                    RidePointsFragmentDirections.ActionRidePointsFragmentToRidePointFragment action = RidePointsFragmentDirections
+                            .actionRidePointsFragmentToRidePointFragment(ridePoint.getRid());
+                    NavHostFragment.findNavController(RidePointsFragment.this).navigate(action);
+                }
+                 */
             break;
         }
     };

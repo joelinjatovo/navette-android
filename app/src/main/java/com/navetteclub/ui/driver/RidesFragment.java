@@ -65,8 +65,8 @@ public class RidesFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
         if(authViewModel.getUser()!=null && item!=null && item.getRide()!=null){
-            RidesFragmentDirections.ActionRidesFragmentToRidePointFragment action = RidesFragmentDirections
-                    .actionRidesFragmentToRidePointFragment(item.getRide().getId());
+            RidesFragmentDirections.ActionRidesFragmentToRidePointsFragment action = RidesFragmentDirections
+                    .actionRidesFragmentToRidePointsFragment(item.getRide().getId());
             NavHostFragment.findNavController(RidesFragment.this).navigate(action);
         }
     };

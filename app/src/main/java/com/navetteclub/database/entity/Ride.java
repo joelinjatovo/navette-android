@@ -23,6 +23,7 @@ public class Ride {
     public static final String STATUS_ACTIVE = "active";
     public static final String STATUS_COMPLETABLE = "completable";
     public static final String STATUS_COMPLETED = "completed";
+    public static final String STATUS_CANCELABLE = "cancelable";
     public static final String STATUS_CANCELED = "canceled";
     @PrimaryKey
     private Long id;
