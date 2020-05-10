@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -24,15 +28,16 @@ public class SplashActivity extends AppCompatActivity {
 
         if (!loaded) {
             setContentView(R.layout.activity_splash);
-            int secondsDelayed = 10;
+            ProgressBar progressBar = findViewById(R.id.progress_bar);
+            TextView textView = findViewById(R.id.version_text_view);
+            textView.setText(BuildConfig.VERSION_NAME);
+            int secondsDelayed = 2;
             handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
-                }
-            }, secondsDelayed * 500);
-
+            handler.postDelayed(() -> {
+                runOnUiThread(() -> progressBar.setVisibility(View.GONE));
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                finish();
+            }, secondsDelayed * 1000);
             loaded = true;
         } else {
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);

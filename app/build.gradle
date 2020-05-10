@@ -15,6 +15,8 @@ android {
     defaultConfig {
         def date = new Date()
         def formattedDate = date.format('yyyy-MM-dd')
+
+        addManifestPlaceholders([APP_NAME: "@string/app_name"])
         applicationId "com.navetteclub"
         minSdkVersion 19
         targetSdkVersion 29
@@ -30,6 +32,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".dev"
+            versionNameSuffix ' DEBUG'
+            addManifestPlaceholders([APP_NAME: "Navette Beta"])
         }
         release {
             minifyEnabled false
@@ -37,8 +41,8 @@ android {
             signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
-                    def versionName = variant.versionName.replace(" ", "").replace("(", "-").replace(")", "");
-                    outputFileName = "${variant.applicationId}-${versionName}-${variant.name}.apk"
+                    def versionName = variant.versionName.replace(" ", "").replace("(", "-").replace(")", "").replace("DEBUG", "");
+                    outputFileName = "${variant.applicationId}-${versionName}.apk"
                 }
             }
         }
