@@ -7,9 +7,14 @@ import com.navetteclub.R;
 import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Ride;
 
+import java.util.Date;
+
 public class ItemPayload {
     @SerializedName("item_id")
     private String itemId;
+
+    @SerializedName("ride_at")
+    private Date rideAt;
 
     @SerializedName("oldStatus")
     private String oldStatus;
@@ -58,5 +63,13 @@ public class ItemPayload {
             case Item.STATUS_COMPLETED: return R.string.desc_order_item_status_completed;
         }
         return R.string.unknown_status;
+    }
+
+    public Date getRideAt() {
+        return rideAt;
+    }
+
+    public void setRideAt(Date rideAt) {
+        this.rideAt = rideAt;
     }
 }

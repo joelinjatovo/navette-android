@@ -28,8 +28,14 @@ import com.google.gson.JsonObject;
 import com.navetteclub.App;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
+import com.navetteclub.models.ItemPayload;
+import com.navetteclub.models.OrderPayload;
+import com.navetteclub.models.RidePayload;
 import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.services.PusherService;
+import com.navetteclub.ui.driver.RideMapFragment;
+import com.navetteclub.ui.order.LiveFragment;
+import com.navetteclub.ui.order.OrderViewFragment;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.views.AlertView;
 import com.navetteclub.vm.AuthViewModel;
@@ -63,6 +69,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -171,6 +179,10 @@ public class MainActivity extends AppCompatActivity {
                         case INVALID_AUTHENTICATION:
                         case UNAUTHENTICATED:
                             Log.d(TAG, "'UNAUTHENTICATED'");
+                            if(App.isServiceRunning(PusherService.class)){
+                                Log.d(TAG, "'stopPushService'");
+                                App.stopPushService();
+                            }
                             break;
                     }
                 });
@@ -250,11 +262,13 @@ public class MainActivity extends AppCompatActivity {
 
     protected void registerNetworkBroadcastReceiver() {
         registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(mPusherReceiver, new IntentFilter(PusherService.ACTION_BROADCAST));
     }
 
     protected void unregisterNetworkBroadcastReceiver() {
         try {
             unregisterReceiver(mNetworkReceiver);
+            unregisterReceiver(mPusherReceiver);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -282,6 +296,33 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateConnectionUi(Utils.haveNetworkConnection(MainActivity.this));
+        }
+    };
+
+    private BroadcastReceiver mPusherReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle == null) { return; }
+            String event = bundle.getString(PusherService.EXTRA_EVENT_NAME);
+            String payload = bundle.getString(PusherService.EXTRA_PAYLOAD);
+            Log.d(TAG, "Event "  + event);
+            Log.d(TAG, "Payload "  + payload);
+
+            if(event!=null && payload!=null){
+                Gson gson = new Gson();
+                if ("item.date.changed".equals(event)) {
+                    ItemPayload itemPayload = gson.fromJson(payload, ItemPayload.class);
+                    if (itemPayload != null) {
+                        if(itemPayload.getRideAt()!=null){
+                            new SweetAlertDialog(MainActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                                    .setTitleText(getString(R.string.info))
+                                    .setContentText(Utils.formatDateToString(itemPayload.getRideAt()))
+                                    .show();
+                        }
+                    }
+                }
+            }
         }
     };
 }
