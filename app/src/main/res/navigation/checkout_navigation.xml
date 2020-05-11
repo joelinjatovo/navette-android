@@ -32,6 +32,9 @@
         <argument
             android:name="order"
             app:argType="string" />
+        <action
+            android:id="@+id/action_stripe_fragment_to_thanks_fragment"
+            app:destination="@id/thanks_fragment" />
 
     </dialog>
 

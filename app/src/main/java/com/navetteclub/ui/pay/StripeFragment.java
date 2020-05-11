@@ -272,18 +272,19 @@ public class StripeFragment extends BottomSheetDialogFragment {
                 Log.d(TAG, "Payment completed successfully");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 Log.d(TAG, gson.toJson(paymentIntent));
+                NavHostFragment.findNavController(StripeFragment.this).navigate(R.id.action_stripe_fragment_to_thanks_fragment);
             } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
                 // Payment failed
                 Log.d(TAG, "Payment failed");
-
-                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Oops...")
-                        .setContentText("Payment failed")
-                        .show();
-
+                String message = "Payment failed";
                 if(paymentIntent.getLastPaymentError()!=null) {
                     Log.e(TAG, paymentIntent.getLastPaymentError().getMessage());
+                    message =  paymentIntent.getLastPaymentError().getMessage();
                 }
+                new SweetAlertDialog(requireContext(), SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Oops...")
+                        .setContentText(message)
+                        .show();
             }
         }
 
