@@ -11,7 +11,7 @@ public final class Constants {
 
     public static final float MAP_ZOOM = 15;
 
-    private static final String API_KEY = "eyJpdiI6ImplendNbmphZEdnZElRV3MxZjlkM3c9PSIsInZhbHVlIjoidzJKZnpBWmJSdGNqa012U3FZRkVIZz09IiwibWFjIjoiZDg5ZGZjYWE5ZThjMGI3YTA0ZjE0YTI1N2Y5NTY5MTFhZmViZmQ2NjFiNzE1ZGJlMjMzOGNlODliN2IxYzhmYiJ9";
+    private static final String API_KEY = "eyJpdiI6Ii81YVhKRW5YVWdtdzBPRWlTSHhXaVE9PSIsInZhbHVlIjoiOWJ5Nk1UZUZxTUNYckltRnprTkpPdz09IiwibWFjIjoiNDdmNzVkNDdmNmQzYjcxZDk2MjZmMWJiNDY1OTYyN2Q4MGFmZjEzZWZjYmM0NWRhMDczZDNlOTRjODkzYTVmYyJ9";
     private static final String API_KEY_DEV = "eyJpdiI6IkhlMTRnbnQzd0JFbXpMV0lTTkhxN3c9PSIsInZhbHVlIjoidHRzQ2dZTHdPcGQrQWtXSDhEZnRmdz09IiwibWFjIjoiODM2YTE0ZGNiOTMzMTVjZTZkMjg1MWMxNmVhZGQwYzU1MDk2ZGIxMWYzZDRkM2ZlNDdhMTY1OWY5MTZmZmJhOCJ9";
     public static String getApiKey(){
         if (BuildConfig.DEBUG) {
