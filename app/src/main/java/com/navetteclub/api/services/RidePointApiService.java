@@ -19,6 +19,10 @@ import retrofit2.http.Path;
 
 public interface RidePointApiService {
     @Headers({"Content-Type: application/json", "Accept: application/json"})
+    @POST("api/v1/ridepoint/arrive")
+    Call<RetrofitResponse<RideWithDatas>> arrive(@Header("Authorization") String token, @Body RidePointParam param);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/ridepoint/finish")
     Call<RetrofitResponse<RideWithDatas>> finish(@Header("Authorization") String token, @Body RidePointParam param);
 

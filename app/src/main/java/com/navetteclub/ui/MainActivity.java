@@ -270,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.orders_fragment:
                 case R.id.order_view_fragment:
                 case R.id.live_fragment:
+                case R.id.about_fragment:
+                case R.id.edit_profile_fragment:
                     navView.setVisibility(View.GONE);
                     break;
                 default:

@@ -59,6 +59,11 @@
                     android:textColor="@color/colorAccent"
                     app:strokeColor="@color/colorAccent"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorIcon"/>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,11 +175,6 @@
                         android:text="@{user.email}" />
 
                 </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorIcon"/>
 
             </LinearLayout>
 

@@ -99,7 +99,7 @@ public class RideViewModel extends ViewModel {
 
     public void arriveRidePoint(String token, String ridePoindId){
         RidePointApiService service = RetrofitClient.getInstance().create(RidePointApiService.class);
-        Call<RetrofitResponse<RideWithDatas>> call = service.cancel(token, new RidePointParam(ridePoindId));
+        Call<RetrofitResponse<RideWithDatas>> call = service.arrive(token, new RidePointParam(ridePoindId));
         call.enqueue(new Callback<RetrofitResponse<RideWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<RideWithDatas>> call,

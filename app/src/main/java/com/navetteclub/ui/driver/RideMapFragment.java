@@ -914,7 +914,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             case R.id.button_action:
                 if(ridePoint!=null) {
                     if (RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
-                        if (RidePoint.TYPE_PICKUP.equals(ridePoint.getStatus())) {
+                        if (RidePoint.TYPE_PICKUP.equals(ridePoint.getType())) {
                             progressDialog.show();
                             rideViewModel.arriveRidePoint(token, ridePoint.getRid());
                         }else{
