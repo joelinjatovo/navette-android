@@ -20,6 +20,7 @@ public class Item {
     public static final String STATUS_ACTIVE = "active";
     public static final String STATUS_CANCELED = "canceled";
     public static final String STATUS_NEXT = "next";
+    public static final String STATUS_ARRIVED = "arrived";
     public static final String STATUS_ONLINE = "online";
     public static final String STATUS_COMPLETED = "completed";
     public static final String TYPE_GO = "go";

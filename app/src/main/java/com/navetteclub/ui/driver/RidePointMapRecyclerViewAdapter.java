@@ -227,6 +227,16 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
                                 mBinding.setRideStatus(getString(R.string.status_next));
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
                                 if(RidePoint.TYPE_PICKUP.equals(ridePoint.getType())){
+                                    mBinding.buttonAction.setText(R.string.button_arrive);
+                                }else{
+                                    mBinding.buttonAction.setText(R.string.button_drop_off);
+                                }
+                                mBinding.buttonAction.setVisibility(View.VISIBLE);
+                            break;
+                            case RidePoint.STATUS_ARRIVED:
+                                mBinding.setRideStatus(getString(R.string.status_arrived));
+                                mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_error);
+                                if(RidePoint.TYPE_PICKUP.equals(ridePoint.getType())){
                                     mBinding.buttonAction.setText(R.string.button_pickup);
                                 }else{
                                     mBinding.buttonAction.setText(R.string.button_drop_off);

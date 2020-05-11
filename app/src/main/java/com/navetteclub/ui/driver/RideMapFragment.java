@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -314,6 +315,22 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                         setRide(result.getSuccess());
                     }
                     rideViewModel.setRideFinishResult(null);
+                });
+        rideViewModel.getRideArrivedResult().observe(getViewLifecycleOwner(),
+                result -> {
+                    if(result==null){
+                        return;
+                    }
+                    progressDialog.dismiss();
+                    if(result.getError()!=null){
+                        if(result.getError() == R.string.error_401) { // Error 401: Unauthorized
+                            authViewModel.logout(requireContext());
+                        }
+                    }
+                    if(result.getSuccess()!=null){
+                        setRide(result.getSuccess());
+                    }
+                    rideViewModel.setRideArrivedResult(null);
                 });
         rideViewModel.getRideCancelResult().observe(getViewLifecycleOwner(),
                 result -> {
@@ -897,6 +914,14 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             case R.id.button_action:
                 if(ridePoint!=null) {
                     if (RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
+                        if (RidePoint.TYPE_PICKUP.equals(ridePoint.getStatus())) {
+                            progressDialog.show();
+                            rideViewModel.arriveRidePoint(token, ridePoint.getRid());
+                        }else{
+                            progressDialog.show();
+                            rideViewModel.finishRidePoint(token, ridePoint.getRid());
+                        }
+                    }else if (RidePoint.STATUS_ARRIVED.equals(ridePoint.getStatus())) {
                         progressDialog.show();
                         rideViewModel.finishRidePoint(token, ridePoint.getRid());
                     }

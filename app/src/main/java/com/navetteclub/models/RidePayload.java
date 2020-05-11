@@ -55,6 +55,7 @@ public class RidePayload {
         switch (newStatus){
             case Ride.STATUS_PING: return R.string.desc_ride_status_ping;
             case Ride.STATUS_ACTIVE: return R.string.desc_ride_status_active;
+            case Ride.STATUS_CANCELABLE: return R.string.desc_ride_status_cancelable;
             case Ride.STATUS_CANCELED: return R.string.desc_ride_status_canceled;
             case Ride.STATUS_COMPLETABLE: return R.string.desc_ride_status_completable;
             case Ride.STATUS_COMPLETED: return R.string.desc_ride_status_completed;

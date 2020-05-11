@@ -13,16 +13,20 @@ public class RidePoint {
 
     public static final String STATUS_PING = "ping";
 
+    public static final String STATUS_ACTIVE = "active";
+
     public static final String STATUS_NEXT = "next";
 
-    public static final String STATUS_ACTIVE = "active";
+    public static final String STATUS_ARRIVED = "arrived";
 
     public static final String STATUS_ONLINE = "online";
 
     public static final String STATUS_CANCELED = "canceled";
 
     public static final String STATUS_COMPLETED = "completed";
+
     public static final String TYPE_PICKUP = "pickup";
+
     public static final String TYPE_DROP = "drop";
 
     @PrimaryKey

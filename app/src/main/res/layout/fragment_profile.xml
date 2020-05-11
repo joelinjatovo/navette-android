@@ -142,6 +142,22 @@
                 android:orientation="vertical">
 
                 <com.navetteclub.views.MenuItemView
+                    android:id="@+id/menu_edit_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    app:iconTint="@color/colorAccent"
+                    app:titleText="@string/edit_profile"
+                    app:subtitleText="@string/menu_edit_profile_desc"
+                    app:iconImage="@drawable/outline_account_circle_black_24"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorIcon"/>
+
+                <com.navetteclub.views.MenuItemView
                     android:id="@+id/menu_orders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -169,6 +185,23 @@
                     app:titleText="@string/rides"
                     app:subtitleText="@string/menu_rides_desc"
                     app:iconImage="@drawable/outline_directions_car_black_24"/>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorIcon"/>
+
+                <com.navetteclub.views.MenuItemView
+                    android:id="@+id/menu_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    app:iconTint="@color/colorAccent"
+                    app:titleText="@string/about"
+                    app:subtitleText="@string/menu_about_desc"
+                    app:iconImage="@drawable/outline_info_black_24"/>
 
                 <View
                     android:layout_width="match_parent"

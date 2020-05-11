@@ -123,13 +123,15 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
         mBinding.myLocation.setOnClickListener(v -> getDeviceLocation());
         mBinding.okButton.setOnClickListener(
                 v -> {
-                    String name = mBinding.locationTitle.getText().toString();
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra(INTENT_EXTRA_LAT, mLocation.latitude);
-                    returnIntent.putExtra(INTENT_EXTRA_LNG, mLocation.longitude);
-                    returnIntent.putExtra(INTENT_EXTRA_NAME, name);
-                    setResult(RESULT_OK,returnIntent);
-                    finish();
+                    if(mLocation!=null){
+                        String name = mBinding.locationTitle.getText().toString();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra(INTENT_EXTRA_LAT, mLocation.latitude);
+                        returnIntent.putExtra(INTENT_EXTRA_LNG, mLocation.longitude);
+                        returnIntent.putExtra(INTENT_EXTRA_NAME, name);
+                        setResult(RESULT_OK,returnIntent);
+                        finish();
+                    }
                 });
     }
 

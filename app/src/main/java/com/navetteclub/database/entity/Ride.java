@@ -8,23 +8,27 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
-import com.navetteclub.R;
 import com.navetteclub.api.models.google.Route;
 
 import java.util.Date;
 
-
 @Entity(
-        tableName = "rides"
+    tableName = "rides"
 )
 public class Ride {
 
     public static final String STATUS_PING = "ping";
+
     public static final String STATUS_ACTIVE = "active";
+
     public static final String STATUS_COMPLETABLE = "completable";
+
     public static final String STATUS_COMPLETED = "completed";
+
     public static final String STATUS_CANCELABLE = "cancelable";
+
     public static final String STATUS_CANCELED = "canceled";
+
     @PrimaryKey
     private Long id;
 

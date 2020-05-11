@@ -18,7 +18,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="login">Se connecter</string>
     <string name="password">Mot de passe</string>
+    <string name="hint_password">Mot de passe</string>
     <string name="e_mail">Email</string>
+    <string name="email">Email</string>
+    <string name="hint_email">Adresse Email</string>
     <string name="register">S\'inscrire</string>
     <string name="re_type_password">Re-type Password</string>
     <string name="your_name">Nom complet</string>
@@ -77,7 +80,7 @@
     <string name="title_profile">Profile</string>
     <string name="error_loading_clubs">Erreur de chargement des clubs</string>
     <string name="my_location">Mq localisation</string>
-    <string name="logout">Se deconnectee</string>
+    <string name="logout">Se déconnecter</string>
     <string name="histories">Historiques</string>
     <string name="image">Image</string>
     <string name="close" tools:override="true">Close</string>
@@ -187,6 +190,7 @@
     <string name="empty_rides">Aucun trajet trouvé</string>
     <string name="rides">Courses</string>
     <string name="menu_rides_desc">Lister tous vos courses</string>
+    <string name="menu_about_desc">Voir les informations sur l\'application</string>
     <string name="start_ride">Commencer cet course</string>
     <string name="select_location">Choisissez votre localisation</string>
     <string name="favorites">Favoris</string>
@@ -211,6 +215,7 @@
     <string name="button_login">Ayant déjà un compte?</string>
     <string name="or_use_personal_info">Ou utilisez vos infos</string>
     <string name="title_phone_number">Contactez moi\nau numéro suivant</string>
+    <string name="phone">Téléphone</string>
     <string name="hint_phone">Téléphone</string>
     <string name="title_verify_phone_number">Vérifier\nmon téléphone</string>
     <string name="title_forgot">Envoyez moi\nmon nouveau mot de passe</string>
@@ -259,6 +264,7 @@
     <string name="desc_ride_status_ping">Une nouvelle course est créée.</string>
     <string name="desc_ride_status_active">Votre course est activée.</string>
     <string name="desc_ride_status_canceled">Votre course est annulée.</string>
+    <string name="desc_ride_status_cancelable">Votre course peut être annulée.</string>
     <string name="desc_ride_status_completable">Votre course peut être clôturée.</string>
     <string name="desc_ride_status_completed">Votre course est terminée.</string>
     <string name="desc_order_status_ping">Votre commande est créée.</string>
@@ -270,6 +276,7 @@
     <string name="desc_order_item_status_ping">Cette course a été mise en attente</string>
     <string name="desc_order_item_status_active">Cette course a été activée.</string>
     <string name="desc_order_item_status_next">Vous êtes le suivant.</string>
+    <string name="desc_order_item_status_arrived">Vous chauffeur est arrivé.</string>
     <string name="desc_order_item_status_online">Vous êtes maintenant à bord.</string>
     <string name="desc_order_item_status_canceled">Cette course a été annulée.</string>
     <string name="desc_order_item_status_completed">Cette course a été terminée.</string>
@@ -277,6 +284,7 @@
     <string name="status_completed">términé</string>
     <string name="status_canceled">annulé</string>
     <string name="status_online">en route</string>
+    <string name="status_arrived">arrivé</string>
     <string name="status_next">prochain</string>
     <string name="status_ok">ok</string>
     <string name="status_on_hold">en cours de paiement</string>
@@ -291,6 +299,7 @@
     <string name="notification_item_changed">Modification d\'une course</string>
     <string name="notification_item_changed_desc">Une de vos courses a été mise à jour.</string>
     <string name="subtitle_ride">ref: %s</string>
+    <string name="button_arrive">Arrivé?</string>
     <string name="button_pickup">Pickup</string>
     <string name="button_drop_off">Drop Off</string>
     <string name="button_retry">Retry</string>
@@ -309,6 +318,7 @@
     <string name="notification_item_ping">Votre course n°%s est créé avec succès</string>
     <string name="notification_item_active">Votre course n°%s a été activé</string>
     <string name="notification_item_next">Votre course n°%s est le suivant</string>
+    <string name="notification_item_arrived">Le chauffeur du course n°%s est arrivé sur place</string>
     <string name="notification_item_online">Votre course n°%s est en route</string>
     <string name="notification_item_completed">Votre course n°%s a été clôturé</string>
     <string name="notification_item_completable">Votre course n°%s peuvent être clôturé</string>
@@ -329,5 +339,14 @@
     <string name="info">Info</string>
     <string name="channel_name">Internet</string>
     <string name="channel_description">Problème de connexion internet</string>
+    <string name="hint_name">Votre nom</string>
+    <string name="about">A-propos</string>
+    <string name="edit_profile">Modifier mon profil</string>
+    <string name="menu_edit_profile_desc">Modification des informations sur votre compte</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_save">Enregistrer</string>
+    <string name="button_change">Changer</string>
 
 </resources>

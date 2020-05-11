@@ -312,6 +312,9 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                     case Item.STATUS_NEXT:
                         mBinding.title.setText(String.format(getString(R.string.notification_item_next), itemId));
                         break;
+                    case Item.STATUS_ARRIVED:
+                        mBinding.title.setText(String.format(getString(R.string.notification_item_arrived), itemId));
+                        break;
                     case Item.STATUS_ONLINE:
                         mBinding.title.setText(String.format(getString(R.string.notification_item_online), itemId));
                         break;

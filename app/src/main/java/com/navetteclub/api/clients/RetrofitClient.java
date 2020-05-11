@@ -39,7 +39,6 @@ public class RetrofitClient {
                     .baseUrl(Constants.getBaseUrl())
                     .client(okHttpClient)
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    //.addConverterFactory(GsonConverterFactory.create()) //Add the converter//
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build(); //Build the Retrofit instance
         }
