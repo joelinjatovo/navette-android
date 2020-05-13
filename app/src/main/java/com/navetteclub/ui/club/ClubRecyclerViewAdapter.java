@@ -12,6 +12,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.ui.OnClickItemListener;
@@ -46,7 +47,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         holder.mNameTextView.setText(mItems.get(position).getClub().getName());
         new Picasso.Builder(holder.mClubImageView.getContext())
                 .build()
-                .load(Constants.getBaseUrl() + mItems.get(position).getClub().getImageUrl())
+                .load(BuildConfig.BASE_URL + mItems.get(position).getClub().getImageUrl())
                 .resize(200,200).into(holder.mClubImageView);
 
         holder.mView.setOnClickListener(v -> {

@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.navigation.NavigationView;
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentProfileBinding;
@@ -111,7 +112,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mBinding.setUser(user);
         if(user.getImageUrl()!=null){
             Picasso.get()
-                    .load(Constants.getBaseUrl() + user.getImageUrl())
+                    .load(BuildConfig.BASE_URL + user.getImageUrl())
                     .placeholder(R.drawable.user_placeholder)
                     .error(R.drawable.user_placeholder)
                     .into(mBinding.avatarImageView);

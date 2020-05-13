@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.databinding.FragmentClubBinding;
@@ -103,7 +104,7 @@ public class ClubFragment extends BottomSheetDialogFragment {
                         mBinding.setClub(clubAndPoint.getClub());
 
                         Picasso.get()
-                                .load(Constants.getBaseUrl() + clubAndPoint.getClub().getImageUrl())
+                                .load(BuildConfig.BASE_URL + clubAndPoint.getClub().getImageUrl())
                                 .into(mBinding.imageView);
                     }
                 });

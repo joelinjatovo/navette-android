@@ -36,7 +36,7 @@ public class RetrofitClient {
             }
             OkHttpClient okHttpClient = builder.build();
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.getBaseUrl())
+                    .baseUrl(BuildConfig.BASE_URL)
                     .client(okHttpClient)
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))

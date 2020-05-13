@@ -48,6 +48,7 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
@@ -503,7 +504,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         options.position(latLng); // Setting the position of the marker
         if(club!=null){
             Picasso.get()
-                    .load(Constants.getBaseUrl() + club.getImageUrl())
+                    .load(BuildConfig.BASE_URL + club.getImageUrl())
                     .resize(64,64)
                     .into(new Target() {
                         @Override

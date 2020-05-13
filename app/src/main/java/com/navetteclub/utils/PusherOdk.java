@@ -1,5 +1,6 @@
 package com.navetteclub.utils;
 
+import com.navetteclub.BuildConfig;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.util.HttpAuthorizer;
@@ -18,14 +19,14 @@ public class PusherOdk {
     private PusherOdk(String token) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", token);
-        final HttpAuthorizer authorizer = new HttpAuthorizer(Constants.getBaseUrl() + "broadcasting/auth");
+        final HttpAuthorizer authorizer = new HttpAuthorizer(BuildConfig.BASE_URL + "broadcasting/auth");
         authorizer.setHeaders(headers);
 
         PusherOptions pusherOptions = new PusherOptions();
         pusherOptions.setAuthorizer(authorizer);
-        pusherOptions.setCluster(Constants.getPusherAppCluster());
+        pusherOptions.setCluster(BuildConfig.PUSHER_APP_CLUSTER);
         pusherOptions.setEncrypted(true);
-        pusherPrivate = new Pusher(Constants.getPusherAppKey(), pusherOptions);
+        pusherPrivate = new Pusher(BuildConfig.PUSHER_APP_KEY, pusherOptions);
     }
 
     public Pusher getPusher(){

@@ -535,7 +535,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
         if(club!=null){
             Picasso.get()
-                    .load(Constants.getBaseUrl() + club.getImageUrl())
+                    .load(BuildConfig.BASE_URL + club.getImageUrl())
                     .resize(64,64)
                     .into(new Target() {
                         @Override

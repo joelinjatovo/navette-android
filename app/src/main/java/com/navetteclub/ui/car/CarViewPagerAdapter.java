@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.ui.OnClickItemListener;
@@ -47,7 +48,7 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
         holder.mTextView.setText(mItems.get(position).getCar().getName());
         new Picasso.Builder(holder.mImageView.getContext())
                 .build()
-                .load(Constants.getBaseUrl() + mItems.get(position).getCar().getImageUrl())
+                .load(BuildConfig.BASE_URL + mItems.get(position).getCar().getImageUrl())
                 .resize(360,180).into(holder.mImageView);
 
         holder.mView.setOnClickListener(v -> {

@@ -293,7 +293,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
             mBinding.roleTextView.setText(driver.getRole());
             if (driver.getImageUrl() != null) {
                 Picasso.get()
-                        .load(Constants.getBaseUrl() + driver.getImageUrl())
+                        .load(BuildConfig.BASE_URL+ driver.getImageUrl())
                         .placeholder(R.drawable.user_placeholder)
                         .error(R.drawable.user_placeholder)
                         .into(mBinding.avatarImageView);

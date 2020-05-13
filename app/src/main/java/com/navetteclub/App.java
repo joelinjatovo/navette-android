@@ -58,7 +58,7 @@ public class App extends MultiDexApplication implements LifecycleObserver {
         // Stripe
         PaymentConfiguration.init(
                 getApplicationContext(),
-                Constants.getStripeApiKey()
+                BuildConfig.STRIPE_API_KEY
         );
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);

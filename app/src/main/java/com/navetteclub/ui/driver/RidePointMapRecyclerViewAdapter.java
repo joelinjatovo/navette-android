@@ -10,6 +10,7 @@ import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.RidePoint;
@@ -193,7 +194,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
                     mBinding.setUser(mItem.getUser());
                     if(mItem.getUser().getImageUrl()!=null){
                         Picasso.get()
-                                .load(Constants.getBaseUrl() + mItem.getUser().getImageUrl())
+                                .load(BuildConfig.BASE_URL + mItem.getUser().getImageUrl())
                                 .placeholder(R.drawable.user_placeholder)
                                 .error(R.drawable.user_placeholder)
                                 .resize(300, 300)

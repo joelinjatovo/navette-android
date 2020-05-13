@@ -26,7 +26,12 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
 
+        buildConfigField "String", "API_KEY", '"eyJpdiI6Ii81YVhKRW5YVWdtdzBPRWlTSHhXaVE9PSIsInZhbHVlIjoiOWJ5Nk1UZUZxTUNYckltRnprTkpPdz09IiwibWFjIjoiNDdmNzVkNDdmNmQzYjcxZDk2MjZmMWJiNDY1OTYyN2Q4MGFmZjEzZWZjYmM0NWRhMDczZDNlOTRjODkzYTVmYyJ9"'
+        buildConfigField "String", "BASE_URL", '"https://my-app-demo.com/"'
         buildConfigField 'String', 'PUSHER_SERVICE_NAME', "\"pusher_notification\""
+        buildConfigField 'String', 'PUSHER_APP_CLUSTER', '"eu"'
+        buildConfigField 'String', 'PUSHER_APP_KEY', '"005a1b44bf7e4f2cef2d"'
+        buildConfigField 'String', 'STRIPE_API_KEY', '"pk_test_TYooMQauvdEDq54NiTphI7jx"'
     }
 
     buildTypes {
@@ -34,6 +39,16 @@ android {
             applicationIdSuffix ".dev"
             versionNameSuffix ' DEBUG'
             addManifestPlaceholders([APP_NAME: "Navette Debug"])
+            buildConfigField "String", "API_KEY", '"eyJpdiI6IkhlMTRnbnQzd0JFbXpMV0lTTkhxN3c9PSIsInZhbHVlIjoidHRzQ2dZTHdPcGQrQWtXSDhEZnRmdz09IiwibWFjIjoiODM2YTE0ZGNiOTMzMTVjZTZkMjg1MWMxNmVhZGQwYzU1MDk2ZGIxMWYzZDRkM2ZlNDdhMTY1OWY5MTZmZmJhOCJ9"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.43.6:8000/"'
+        }
+        staging {
+            initWith debug
+            applicationIdSuffix ". beta"
+            versionNameSuffix ' BETA'
+            addManifestPlaceholders([APP_NAME: "Navette Beta"])
+            buildConfigField "String", "API_KEY", '"eyJpdiI6Ii81YVhKRW5YVWdtdzBPRWlTSHhXaVE9PSIsInZhbHVlIjoiOWJ5Nk1UZUZxTUNYckltRnprTkpPdz09IiwibWFjIjoiNDdmNzVkNDdmNmQzYjcxZDk2MjZmMWJiNDY1OTYyN2Q4MGFmZjEzZWZjYmM0NWRhMDczZDNlOTRjODkzYTVmYyJ9"'
+            buildConfigField "String", "BASE_URL", '"https://beta.my-app-demo.com/"'
         }
         release {
             minifyEnabled false
@@ -124,7 +139,7 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
 
     // Test
     testImplementation 'junit:junit:4.12'
