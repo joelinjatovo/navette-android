@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName;
 import com.navetteclub.database.entity.Order;
 
 public class OrderParam {
-    @SerializedName("order_id")
-    public String order;
+    @SerializedName("id")
+    public String orderId;
 
     public OrderParam(String orderRid) {
-        this.order = orderRid;
+        this.orderId = orderRid;
     }
 
     public OrderParam(Order order) {
-        this.order = order.getRid();
+        this.orderId = order.getRid();
     }
 }

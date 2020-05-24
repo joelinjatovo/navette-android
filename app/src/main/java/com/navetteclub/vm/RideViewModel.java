@@ -33,7 +33,7 @@ public class RideViewModel extends ViewModel {
 
     private MutableLiveData<RemoteLoaderResult<ItemWithDatas>> itemViewResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<RideWithDatas>> rideFinishResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<RideWithDatas>> ridePickOrDropResult = new MutableLiveData<>();
 
     private MutableLiveData<RemoteLoaderResult<RideWithDatas>> rideArrivedResult = new MutableLiveData<>();
 
@@ -68,9 +68,9 @@ public class RideViewModel extends ViewModel {
         });
     }
 
-    public void finishRidePoint(String token, String ridePointId){
+    public void pickOrDrop(String token, String ridePointId){
         RidePointApiService service = RetrofitClient.getInstance().create(RidePointApiService.class);
-        Call<RetrofitResponse<RideWithDatas>> call = service.finish(token, new RidePointParam(ridePointId));
+        Call<RetrofitResponse<RideWithDatas>> call = service.pickOrDrop(token, new RidePointParam(ridePointId));
         call.enqueue(new Callback<RetrofitResponse<RideWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
@@ -79,12 +79,12 @@ public class RideViewModel extends ViewModel {
                 if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
                     if(response.body().isSuccess()) {
-                        rideFinishResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
+                        ridePickOrDropResult.setValue(new RemoteLoaderResult<>(response.body().getData()));
                     }else{
-                        rideFinishResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
+                        ridePickOrDropResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
                 }else{
-                    rideFinishResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
+                    ridePickOrDropResult.setValue(new RemoteLoaderResult<>(R.string.error_unkown));
                 }
             }
 
@@ -92,7 +92,7 @@ public class RideViewModel extends ViewModel {
             public void onFailure(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.toString(), throwable);
-                rideFinishResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
+                ridePickOrDropResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
             }
         });
     }
@@ -155,12 +155,12 @@ public class RideViewModel extends ViewModel {
         });
     }
 
-    public LiveData<RemoteLoaderResult<RideWithDatas>> getRideFinishResult() {
-        return rideFinishResult;
+    public LiveData<RemoteLoaderResult<RideWithDatas>> getRidePickOrDropResult() {
+        return ridePickOrDropResult;
     }
 
-    public void setRideFinishResult(RemoteLoaderResult<RideWithDatas> rideResult) {
-        this.rideFinishResult.setValue(rideResult);
+    public void setRidePickOrDropResult(RemoteLoaderResult<RideWithDatas> rideResult) {
+        this.ridePickOrDropResult.setValue(rideResult);
     }
 
     public LiveData<RemoteLoaderResult<RideWithDatas>> getRideCancelResult() {

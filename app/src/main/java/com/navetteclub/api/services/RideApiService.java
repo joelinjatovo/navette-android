@@ -1,10 +1,8 @@
 package com.navetteclub.api.services;
 
-import com.navetteclub.api.models.OrderRequest;
 import com.navetteclub.api.models.RideParam;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.database.entity.ItemWithDatas;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.RidePointWithDatas;
 import com.navetteclub.database.entity.RideWithDatas;
 
@@ -42,8 +40,8 @@ public interface RideApiService {
     Call<RetrofitResponse<RideWithDatas>> direction(@Header("Authorization") String token, @Body RideParam rideParam);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("api/v1/ride/start")
-    Call<RetrofitResponse<RideWithDatas>> start(@Header("Authorization") String token, @Body RideParam rideParam);
+    @POST("api/v1/ride/active")
+    Call<RetrofitResponse<RideWithDatas>> active(@Header("Authorization") String token, @Body RideParam rideParam);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/ride/cancel")

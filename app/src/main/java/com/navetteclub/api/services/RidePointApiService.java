@@ -23,8 +23,8 @@ public interface RidePointApiService {
     Call<RetrofitResponse<RideWithDatas>> arrive(@Header("Authorization") String token, @Body RidePointParam param);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("api/v1/ridepoint/finish")
-    Call<RetrofitResponse<RideWithDatas>> finish(@Header("Authorization") String token, @Body RidePointParam param);
+    @POST("api/v1/ridepoint/pick-or-drop")
+    Call<RetrofitResponse<RideWithDatas>> pickOrDrop(@Header("Authorization") String token, @Body RidePointParam param);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/ridepoint/cancel")

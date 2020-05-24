@@ -300,7 +300,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
     private void setupRideViewModel() {
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         rideViewModel = new ViewModelProvider(requireActivity(), factory).get(RideViewModel.class);
-        rideViewModel.getRideFinishResult().observe(getViewLifecycleOwner(),
+        rideViewModel.getRidePickOrDropResult().observe(getViewLifecycleOwner(),
                 result -> {
                     if(result==null){
                         return;
@@ -314,7 +314,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                     if(result.getSuccess()!=null){
                         setRide(result.getSuccess());
                     }
-                    rideViewModel.setRideFinishResult(null);
+                    rideViewModel.setRidePickOrDropResult(null);
                 });
         rideViewModel.getRideArrivedResult().observe(getViewLifecycleOwner(),
                 result -> {
@@ -919,11 +919,11 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                             rideViewModel.arriveRidePoint(token, ridePoint.getRid());
                         }else{
                             progressDialog.show();
-                            rideViewModel.finishRidePoint(token, ridePoint.getRid());
+                            rideViewModel.pickOrDrop(token, ridePoint.getRid());
                         }
                     }else if (RidePoint.STATUS_ARRIVED.equals(ridePoint.getStatus())) {
                         progressDialog.show();
-                        rideViewModel.finishRidePoint(token, ridePoint.getRid());
+                        rideViewModel.pickOrDrop(token, ridePoint.getRid());
                     }
                 }
                 break;

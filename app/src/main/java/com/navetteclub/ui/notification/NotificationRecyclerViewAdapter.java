@@ -382,7 +382,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
         public void setItem(Notification item) {
             this.mItem = item;
-            mBinding.setDate(Utils.formatDateToString(item.getCreatedAt(), DateUtils.DAY_IN_MILLIS));
+            mBinding.setDateStr(Utils.formatDateToString(item.getCreatedAt(), DateUtils.DAY_IN_MILLIS));
         }
 
         @Override

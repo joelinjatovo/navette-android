@@ -20,10 +20,6 @@ public interface ItemApiService {
     Call<RetrofitResponse<ItemWithDatas>> getItem(@Header("Authorization") String token, @Path("item") String itemId);
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST("api/v1/item/finish")
-    Call<RetrofitResponse<ItemWithDatas>> finish(@Header("Authorization") String token, @Body ItemParam param);
-
-    @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("api/v1/item/cancel")
     Call<RetrofitResponse<ItemWithDatas>> cancel(@Header("Authorization") String token, @Body ItemParam param);
 

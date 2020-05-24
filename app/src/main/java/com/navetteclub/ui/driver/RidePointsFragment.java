@@ -68,7 +68,7 @@ public class RidePointsFragment extends Fragment {
 
     private View.OnClickListener mActualiseListener;
     private View.OnClickListener mCancelListener;
-    private View.OnClickListener mStartListener;
+    private View.OnClickListener mActiveListener;
     private View.OnClickListener mCompleteListener;
     private View.OnClickListener mLiveListener;
 
@@ -313,7 +313,7 @@ public class RidePointsFragment extends Fragment {
                 mBinding.button1.setOnClickListener(mCancelListener);
                 mBinding.button1.setText(R.string.button_cancel_ride);
                 mBinding.button2.setVisibility(View.VISIBLE);
-                mBinding.button2.setOnClickListener(mStartListener);
+                mBinding.button2.setOnClickListener(mActiveListener);
                 mBinding.button2.setText(R.string.button_start_ride);
             }else if(Ride.STATUS_ACTIVE.equals(ride.getStatus())){
                 // Refresh and Cancel button
@@ -367,12 +367,12 @@ public class RidePointsFragment extends Fragment {
                 }
             }
         };
-        mStartListener = new View.OnClickListener() {
+        mActiveListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(token!=null && rideId!=null) {
                     progressDialog.show();
-                    ridesViewModel.start(token, rideId);
+                    ridesViewModel.active(token, rideId);
                 }
             }
         };

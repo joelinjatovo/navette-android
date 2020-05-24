@@ -114,9 +114,9 @@ public class RidesViewModel extends ViewModel {
         });
     }
 
-    public void start(String token, Long rideId){
+    public void active(String token, Long rideId){
         RideApiService service = RetrofitClient.getInstance().create(RideApiService.class);
-        Call<RetrofitResponse<RideWithDatas>> call = service.start(token, new RideParam(rideId));
+        Call<RetrofitResponse<RideWithDatas>> call = service.active(token, new RideParam(rideId));
         call.enqueue(new Callback<RetrofitResponse<RideWithDatas>>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse<RideWithDatas>> call,
