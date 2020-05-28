@@ -125,21 +125,6 @@
                 android:layout_height="1dp"
                 android:background="@color/colorIcon"/>
 
-            <com.navetteclub.views.MenuItemView
-                android:id="@+id/pay_per_paypal_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                app:titleText="@string/paypal"
-                app:subtitleText="@string/paypal_desc"
-                app:iconImage="@drawable/paypal_32px"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorIcon"/>
-
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

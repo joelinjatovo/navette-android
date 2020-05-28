@@ -291,7 +291,6 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
         orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
                 item1 -> {
                     if(item1!=null){
-                        Toast.makeText(requireContext(), getDateString(item1.getRideAt()), Toast.LENGTH_SHORT).show();
                         if(Order.TYPE_BACK.equals(item1.getType())){
                             mBinding.setPoint4Title(getString(R.string.ride_drop));
                             mBinding.setDuration2(item1.getDuration());
