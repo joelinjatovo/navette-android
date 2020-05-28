@@ -16,6 +16,7 @@
         <variable name="distance" type="String" />
         <variable name="duration" type="String" />
         <variable name="amount" type="String" />
+        <variable name="orderDate" type="String" />
         <variable name="place" type="int" />
         <variable name="isOrderValid" type="boolean" />
     </data>
@@ -244,40 +245,6 @@
         </RelativeLayout>
 
         <View
-            android:visibility="@{isPrivatized?View.GONE:View.VISIBLE}"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/colorIcon"/>
-
-        <RelativeLayout
-            android:visibility="@{isPrivatized?View.GONE:View.VISIBLE}"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
-
-            <TextView
-                android:id="@+id/placeCountTitleTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/label_place_count"
-                android:layout_toStartOf="@id/placeCountTextView"
-                android:textAppearance="?attr/textAppearanceBody1"/>
-
-            <TextView
-                android:id="@+id/placeCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorIcon"
-                android:text="@{@string/person_count(place)}"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"/>
-
-        </RelativeLayout>
-
-        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
@@ -308,6 +275,40 @@
         </RelativeLayout>
 
         <View
+            android:visibility="@{isPrivatized?View.GONE:View.VISIBLE}"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorIcon"/>
+
+        <RelativeLayout
+            android:visibility="@{isPrivatized?View.GONE:View.VISIBLE}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/placeCountTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_place_count"
+                android:layout_toStartOf="@id/placeCountTextView"
+                android:textAppearance="?attr/textAppearanceBody1"/>
+
+            <TextView
+                android:id="@+id/placeCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray"
+                android:text="@{@string/person_count(place)}"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
@@ -318,28 +319,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:visibility="@{isLoadingCart||showErrorLoaderCart?View.VISIBLE:View.GONE}">
+            android:layout_marginBottom="5dp">
 
             <TextView
-                android:id="@+id/errorText"
+                android:id="@+id/dateTitleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{errorLoaderCart}"
-                android:textColor="@color/colorAlert"
-                android:layout_toStartOf="@id/refreshCart"/>
+                android:text="@string/question_preorder"
+                android:layout_toStartOf="@id/dateTextView"
+                android:textAppearance="?attr/textAppearanceBody1"/>
+
+            <TextView
+                android:id="@+id/dateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray"
+                android:text="@{ orderDate==null ? @string/now : orderDate }"
+                android:layout_toStartOf="@id/dateImageView"
+                android:layout_centerVertical="true"/>
 
             <ImageView
-                android:id="@+id/refreshCart"
+                android:id="@+id/dateImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/image"
-                android:tint="@color/colorAlert"
-                android:src="@drawable/outline_refresh_black_24"
+                android:tint="@color/colorAccent"
+                android:src="@{ orderDate==null ? @drawable/outline_edit_black_24 : @drawable/outline_clear_black_24 }"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"/>
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorIcon"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -86,7 +88,7 @@ import retrofit2.Call;
 import static com.navetteclub.ui.order.OrderType.*;
 
 
-public class OrderFragment extends Fragment implements OnMapReadyCallback{
+public class OrderFragment extends Fragment implements OnMapReadyCallback, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = OrderFragment.class.getSimpleName();
 
@@ -161,6 +163,60 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
         super.onViewCreated(view, savedInstanceState);
         setupUi();
         setupBottomSheet();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        DatePickerDialog dpd = (DatePickerDialog) getChildFragmentManager().findFragmentByTag("Datepickerdialog");
+        TimePickerDialog tpd = (TimePickerDialog) getChildFragmentManager().findFragmentByTag("TimepickerDialog");
+        if(tpd != null) tpd.setOnTimeSetListener(this);
+        if(dpd != null) dpd.setOnDateSetListener(this);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        Log.d(TAG, date);
+        if(calendar==null){
+            calendar = Calendar.getInstance();
+        }
+        calendar.set(year, monthOfYear, dayOfMonth);
+
+        //dateTextView.setText(date);
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd =TimePickerDialog.newInstance(
+                this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.dismissOnPause(true);
+        tpd.setVersion(TimePickerDialog.Version.VERSION_2);
+        tpd.show(getChildFragmentManager(), "Timepickerdialog");
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        String time = "You picked the following time: "+hourOfDay+"h"+minute+"m"+second;
+        Log.d(TAG, time);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+
+        Item item = orderViewModel.getItem1();
+        if(item==null){
+            item = new Item();
+        }
+        item.setRideAt(calendar.getTime());
+        orderViewModel.setItem1LiveData(item);
+    }
+
+    private String getDateString(Date date) {
+        if (date == null) return getString(R.string.now);
+        long now = System.currentTimeMillis();
+        CharSequence dateStr = DateUtils.getRelativeTimeSpanString(date.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+        return (String) dateStr;
     }
 
     private void setupBottomSheet() {
@@ -321,6 +377,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                         expandOrderDetails();
                         mBinding.bottomSheets.setDuration(item.getDuration());
                         mBinding.bottomSheets.setDistance(item.getDistance());
+                        mBinding.bottomSheets.setOrderDate(getDateString(item.getRideAt()));
                         String direction = item.getDirection();
                         if(direction!=null && mMap!=null) {
                             List<LatLng> points = Utils.decodePoly(direction);
@@ -627,10 +684,37 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback{
                 v -> {
                     NavHostFragment.findNavController(this).navigate(R.id.action_order_fragment_to_place_fragment);
                 });
-        mBinding.bottomSheets.refreshCart.setOnClickListener(v -> {
-            reloadDirection();
-        });
 
+        mBinding.bottomSheets.dateTextView.setOnClickListener(v -> openDateTimePicker());
+
+        mBinding.bottomSheets.dateImageView.setOnClickListener(
+                v -> {
+                    Item item = orderViewModel.getItem1();
+                    if(item!=null && item.getRideAt()!=null){
+                        item.setRideAt(null);
+                        orderViewModel.setItem1LiveData(item);
+                    }else if(item!=null){
+                        openDateTimePicker();
+                    }
+                });
+
+    }
+
+    private void openDateTimePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                OrderFragment.this,
+                now.get(Calendar.YEAR), // Initial year selection
+                now.get(Calendar.MONTH), // Initial month selection
+                now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+        );
+        Calendar calendar = Calendar.getInstance();
+        dpd.setMinDate(calendar);
+        calendar.roll(Calendar.MONTH, 2);
+        dpd.setMaxDate(calendar);
+        dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+        dpd.dismissOnPause(true);
+        dpd.show(getChildFragmentManager(), "Datepickerdialog");
     }
 
     private void reloadDirection() {

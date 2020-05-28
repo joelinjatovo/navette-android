@@ -42,26 +42,44 @@
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="64dp"
+                android:layout_marginRight="64dp"
+                android:contentDescription="@string/image"
                 android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
-                android:src="@drawable/outline_person_outline_black_48" />
+                android:src="@drawable/ic_chair" />
 
             <TextView
                 android:id="@+id/label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/imageView"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="@string/label_place_count" />
 
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/description_place_count" />
+
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/label"
+                android:layout_below="@id/description"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:gravity="center"
@@ -108,7 +126,7 @@
             android:id="@+id/confirm_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ok_and_next"
+            android:text="@string/button_confirm"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

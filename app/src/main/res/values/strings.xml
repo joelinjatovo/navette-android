@@ -348,5 +348,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="button_save">Enregistrer</string>
     <string name="button_change">Changer</string>
+    <string name="question_preorder">Réserver plus tard?</string>
+    <string name="label_order_date">Date de réservation</string>
+    <string name="description_go_and_back">Voulez-vous qu\'on vous dépose au club puis on vous ramènera à un endroit de votre choix?</string>
+    <string name="description_place_count">"Vous pouvez modifier ici le nombre de place que vous voulez résérver pendant la course. "</string>
 
 </resources>
