@@ -205,7 +205,7 @@
                                         android:layout_centerVertical="true"
                                         android:layout_marginStart="5dp"
                                         android:layout_marginEnd="5dp"
-                                        android:text="Total à payer"
+                                        android:text="@string/total_to_pay"
                                         android:textAppearance="?attr/textAppearanceCaption"
                                         android:textColor="@color/gray" />
 
@@ -283,7 +283,6 @@
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
-
 
                         <View
                             android:layout_width="match_parent"

@@ -1,11 +1,13 @@
 package com.navetteclub.database.entity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+import com.navetteclub.R;
 
 import java.text.NumberFormat;
 import java.util.Currency;
@@ -238,4 +240,19 @@ public class Item {
         + "]";
     }
 
+    @StringRes
+    public int getStatusRes() {
+        if(status==null){
+            return R.string.status_ping;
+        }
+        switch (status){
+            case STATUS_ACTIVE: return R.string.status_active;
+            case STATUS_ARRIVED: return R.string.status_arrived;
+            case STATUS_NEXT: return R.string.status_next;
+            case STATUS_ONLINE: return R.string.status_online;
+            case STATUS_CANCELED: return R.string.status_canceled;
+            case STATUS_COMPLETED: return R.string.status_completed;
+            case STATUS_PING: default: return R.string.status_ping;
+        }
+    }
 }

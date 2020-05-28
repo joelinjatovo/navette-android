@@ -355,5 +355,6 @@
     <string name="cart">Panier</string>
     <string name="place_reserved">Place résérvée</string>
     <string name="coefficient">Coefficient</string>
+    <string name="total_to_pay">Total à payer</string>
 
 </resources>

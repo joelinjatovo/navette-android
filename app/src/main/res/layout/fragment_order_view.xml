@@ -8,6 +8,8 @@
         <import type="android.view.View"/>
         <variable name="total" type="String" />
         <variable name="subtotal" type="String" />
+        <variable name="amount" type="String" />
+        <variable name="coefficient" type="String" />
 
         <variable name="status1" type="String" />
         <variable name="item1Id" type="String" />
@@ -34,6 +36,7 @@
         <variable name="statusDesc" type="String" />
         <variable name="payment_type" type="String" />
         <variable name="order_id" type="String" />
+        <variable name="place" type="int" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -99,27 +102,61 @@
                                 android:layout_marginBottom="5dp">
 
                                 <TextView
-                                    android:id="@+id/faireLabel"
+                                    android:id="@+id/coefficientLabel"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
                                     android:layout_marginStart="5dp"
                                     android:layout_marginEnd="5dp"
-                                    android:text="Faire"
+                                    android:text="@string/coefficient"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/gray" />
 
                                 <TextView
-                                    android:id="@+id/faireValue"
+                                    android:id="@+id/coefficientValue"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:layout_centerVertical="true"
-                                    android:layout_toEndOf="@+id/faireLabel"
+                                    android:layout_toEndOf="@id/coefficientLabel"
                                     android:maxLines="1"
                                     android:paddingLeft="10dp"
                                     android:paddingRight="10dp"
-                                    android:text="@{subtotal}"
+                                    android:text="@{coefficient}"
+                                    android:textAlignment="textEnd"
+                                    android:textAppearance="?attr/textAppearanceSubtitle2"
+                                    android:textColor="@color/colorText" />
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp">
+
+                                <TextView
+                                    android:id="@+id/amountLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:text="@string/amount"
+                                    android:textAppearance="?attr/textAppearanceCaption"
+                                    android:textColor="@color/gray" />
+
+                                <TextView
+                                    android:id="@+id/amountValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_toEndOf="@id/amountLabel"
+                                    android:maxLines="1"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp"
+                                    android:text="@{amount}"
                                     android:textAlignment="textEnd"
                                     android:textAppearance="?attr/textAppearanceSubtitle2"
                                     android:textColor="@color/colorText" />
@@ -139,7 +176,7 @@
                                     android:layout_centerVertical="true"
                                     android:layout_marginStart="5dp"
                                     android:layout_marginEnd="5dp"
-                                    android:text="Total à payer"
+                                    android:text="@string/total_to_pay"
                                     android:textAppearance="?attr/textAppearanceCaption"
                                     android:textColor="@color/gray" />
 
@@ -161,6 +198,66 @@
                             </RelativeLayout>
 
                         </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="@color/background" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/placeCardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="1dp"
+                        android:visibility="@{(point1==null)||(point2==null)?View.GONE:View.VISIBLE}"
+                        app:cardCornerRadius="0dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp">
+
+                            <ImageView
+                                android:id="@+id/placeMainIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:contentDescription="@string/image"
+                                android:src="@drawable/outline_person_outline_black_18"
+                                android:tint="@color/colorAlertPrimary" />
+
+                            <TextView
+                                android:id="@+id/placeMainLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@+id/placeMainDetail"
+                                android:layout_toEndOf="@id/placeMainIcon"
+                                android:text="@string/label_place_count"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/gray" />
+
+                            <TextView
+                                android:id="@+id/placeMainDetail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_alignParentEnd="true"
+                                android:text="@{@string/person_count(place)}"
+                                android:textColor="@color/colorImportant" />
+
+                        </RelativeLayout>
 
                     </androidx.cardview.widget.CardView>
 
@@ -216,7 +313,7 @@
 
                         </LinearLayout>
 
-                    </androidx.cardview.widget.CardView>>
+                    </androidx.cardview.widget.CardView>
 
                     <View
                         android:layout_width="match_parent"
@@ -235,6 +332,53 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:id="@+id/date1Layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:visibility="@{date1==null?View.GONE:View.VISIBLE}">
+
+                                <ImageView
+                                    android:id="@+id/date1MainIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_centerVertical="true"
+                                    android:contentDescription="@string/image"
+                                    app:srcCompat="@drawable/outline_history_black_18"
+                                    android:tint="@color/red" />
+
+                                <TextView
+                                    android:id="@+id/date1MainLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_toStartOf="@id/date1MainDetail"
+                                    android:layout_toEndOf="@id/date1MainIcon"
+                                    android:text="@{date1}"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:textAppearance="?attr/textAppearanceCaption"
+                                    android:textColor="@color/gray" />
+
+                                <TextView
+                                    android:visibility="gone"
+                                    android:id="@+id/date1MainDetail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:text="@string/edit2"
+                                    android:textAppearance="?attr/textAppearanceCaption"
+                                    android:textColor="@color/colorImportant" />
+
+                            </RelativeLayout>
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -511,6 +655,53 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:id="@+id/date2Layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:visibility="@{date2==null?View.GONE:View.VISIBLE}">
+
+                                <ImageView
+                                    android:id="@+id/date2MainIcon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_centerVertical="true"
+                                    android:contentDescription="@string/image"
+                                    app:srcCompat="@drawable/outline_history_black_18"
+                                    android:tint="@color/red" />
+
+                                <TextView
+                                    android:id="@+id/date2MainLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_toStartOf="@id/date2MainDetail"
+                                    android:layout_toEndOf="@id/date2MainIcon"
+                                    android:text="@{date2}"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:textAppearance="?attr/textAppearanceCaption"
+                                    android:textColor="@color/gray" />
+
+                                <TextView
+                                    android:visibility="gone"
+                                    android:id="@+id/date2MainDetail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:text="@string/edit2"
+                                    android:textAppearance="?attr/textAppearanceCaption"
+                                    android:textColor="@color/colorImportant" />
+
+                            </RelativeLayout>
 
                             <RelativeLayout
                                 android:layout_width="match_parent"

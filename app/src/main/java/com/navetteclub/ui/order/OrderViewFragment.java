@@ -86,6 +86,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
+                /*
                 CoordinatorLayout coordinatorLayout = d.findViewById(R.id.coordinatorLayout);
                 FrameLayout.LayoutParams params = null;
                 if (coordinatorLayout != null) {
@@ -93,6 +94,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     params.height = UiUtils.getScreenHeight();
                     coordinatorLayout.setLayoutParams(params);
                 }
+                */
 
                 FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
@@ -175,11 +177,11 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                 club -> {
                     if(club!=null){
                         // Aller
-                        mBinding.setPoint2Title("Club");
+                        mBinding.setPoint2Title(getString(R.string.club));
                         mBinding.setPoint2(club.getName());
 
                         // Retours
-                        mBinding.setPoint3Title("Club");
+                        mBinding.setPoint3Title(getString(R.string.club));
                         mBinding.setPoint3(club.getName());
                     }
                 });
@@ -190,15 +192,15 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         if(item1!=null){
                             mBinding.setItem1Id(item1.getRid());
                             if(Order.TYPE_BACK.equals(item1.getType())){
-                                mBinding.setStatus2(item1.getStatus());
-                                mBinding.setPoint4Title("Drop");
+                                mBinding.setStatus2(getString(item1.getStatusRes()));
+                                mBinding.setPoint4Title(getString(R.string.ride_drop));
                                 mBinding.setPoint4(point.getName());
                                 mBinding.setDuration2(item1.getDuration());
                                 mBinding.setDistance2(item1.getDistance());
                                 mBinding.setDate2(getDateString(item1.getRideAt()));
                             }else{
-                                mBinding.setStatus1(item1.getStatus());
-                                mBinding.setPoint1Title("Pickup");
+                                mBinding.setStatus1(getString(item1.getStatusRes()));
+                                mBinding.setPoint1Title(getString(R.string.ride_pickup));
                                 mBinding.setPoint1(point.getName());
                                 mBinding.setDuration1(item1.getDuration());
                                 mBinding.setDistance1(item1.getDistance());
@@ -212,9 +214,9 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     if(point!=null){
                         Item item2 = orderViewModel.getItem2();
                         if(item2!=null){
-                            mBinding.setStatus2(item2.getStatus());
+                            mBinding.setStatus2(getString(item2.getStatusRes()));
                             mBinding.setItem2Id(item2.getRid());
-                            mBinding.setPoint4Title("Drop");
+                            mBinding.setPoint4Title(getString(R.string.ride_drop));
                             mBinding.setPoint4(point.getName());
                             mBinding.setDuration2(item2.getDuration());
                             mBinding.setDistance2(item2.getDistance());
@@ -235,7 +237,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                         if(data!=null){
                             Order orderOnline = data.getOrder();
                             if(orderOnline!=null){
-                                setOrder(order);
+                                setOrder(orderOnline);
                             }
                         }
                     }
@@ -257,6 +259,9 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
         mBinding.setOrderId(order.getRid());
         mBinding.setSubtotal(order.getSubtotalStr());
         mBinding.setTotal(order.getTotalStr());
+        mBinding.setAmount(order.getAmountStr());
+        mBinding.setPlace(order.getPlace());
+        mBinding.setCoefficient(String.valueOf(order.getCoefficient()));
 
         if(order.getPaymentType()!=null){
             switch (order.getPaymentType()){
