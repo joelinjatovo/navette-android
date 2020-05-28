@@ -42,9 +42,9 @@ android {
             buildConfigField "String", "API_KEY", '"eyJpdiI6IkhlMTRnbnQzd0JFbXpMV0lTTkhxN3c9PSIsInZhbHVlIjoidHRzQ2dZTHdPcGQrQWtXSDhEZnRmdz09IiwibWFjIjoiODM2YTE0ZGNiOTMzMTVjZTZkMjg1MWMxNmVhZGQwYzU1MDk2ZGIxMWYzZDRkM2ZlNDdhMTY1OWY5MTZmZmJhOCJ9"'
             buildConfigField "String", "BASE_URL", '"http://192.168.43.6:8000/"'
         }
-        staging {
+        beta {
             initWith debug
-            applicationIdSuffix ". beta"
+            applicationIdSuffix ".beta"
             versionNameSuffix ' BETA'
             addManifestPlaceholders([APP_NAME: "Navette Beta"])
             buildConfigField "String", "API_KEY", '"eyJpdiI6Ii81YVhKRW5YVWdtdzBPRWlTSHhXaVE9PSIsInZhbHVlIjoiOWJ5Nk1UZUZxTUNYckltRnprTkpPdz09IiwibWFjIjoiNDdmNzVkNDdmNmQzYjcxZDk2MjZmMWJiNDY1OTYyN2Q4MGFmZjEzZWZjYmM0NWRhMDczZDNlOTRjODkzYTVmYyJ9"'
@@ -118,7 +118,7 @@ dependencies {
     //Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.libraries.places:places:2.2.0'
+    implementation 'com.google.android.libraries.places:places:2.3.0'
 
     // Push Notification
     implementation 'com.pusher:pusher-java-client:2.0.2'
@@ -139,7 +139,7 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-messaging:20.1.7'
+    implementation 'com.google.firebase:firebase-messaging:20.2.0'
 
     // Test
     testImplementation 'junit:junit:4.12'
