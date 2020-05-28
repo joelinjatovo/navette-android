@@ -73,6 +73,10 @@ public class Order {
     @ColumnInfo(name = "payment_type")
     private String paymentType;
 
+    @SerializedName("coefficient")
+    @ColumnInfo(name = "coefficient")
+    private Double coefficient;
+
     @SerializedName("amount")
     @ColumnInfo(name = "amount")
     private Double amount;
@@ -324,5 +328,13 @@ public class Order {
                 + " ,carId=" + carId
                 + ", createdAt= " + createdAt
                 + " \n ]";
+    }
+
+    public Double getCoefficient() {
+        return coefficient;
+    }
+
+    public void setCoefficient(Double coefficient) {
+        this.coefficient = coefficient;
     }
 }

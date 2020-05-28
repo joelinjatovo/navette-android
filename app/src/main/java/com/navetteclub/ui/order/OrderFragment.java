@@ -457,6 +457,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                                 Order order = data.getOrder();
                                 if(order!=null) {
                                     Order orderLive = orderViewModel.getOrder();
+                                    orderLive.setCoefficient(order.getCoefficient());
                                     orderLive.setSubtotal(order.getSubtotal());
                                     orderLive.setTotal(order.getTotal());
                                     orderLive.setAmount(order.getAmount());
@@ -632,13 +633,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                 });
         mBinding.bottomSheets.bookNowButton.setOnClickListener(
                 v -> {
-                    Item item = orderViewModel.getItem1();
-                    if(item == null){
-                        item = new Item();
-                    }
-                    item.setRideAt(null);
-
-                    if(orderViewModel.getOrderType()== GO){
+                    if(orderViewModel.getOrderType() == GO){
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_go_and_back_fragment);
                     }else{
                         Navigation.findNavController(v).navigate(R.id.action_order_fragment_to_cart_fragment);

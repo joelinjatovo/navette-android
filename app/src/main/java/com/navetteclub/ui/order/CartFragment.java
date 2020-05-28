@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -252,6 +253,7 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                             if(order!=null) {
                                 Order orderLive = orderViewModel.getOrder();
                                 if(orderLive!=null) {
+                                    orderLive.setCoefficient(order.getCoefficient());
                                     orderLive.setSubtotal(order.getSubtotal());
                                     orderLive.setTotal(order.getTotal());
                                     orderLive.setAmount(order.getAmount());
@@ -289,13 +291,14 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
         orderViewModel.getItem1LiveData().observe(getViewLifecycleOwner(),
                 item1 -> {
                     if(item1!=null){
+                        Toast.makeText(requireContext(), getDateString(item1.getRideAt()), Toast.LENGTH_SHORT).show();
                         if(Order.TYPE_BACK.equals(item1.getType())){
-                            mBinding.setPoint4Title("Drop");
+                            mBinding.setPoint4Title(getString(R.string.ride_drop));
                             mBinding.setDuration2(item1.getDuration());
                             mBinding.setDistance2(item1.getDistance());
                             mBinding.setDate2(getDateString(item1.getRideAt()));
                         }else{
-                            mBinding.setPoint1Title("Pickup");
+                            mBinding.setPoint1Title(getString(R.string.ride_pickup));
                             mBinding.setDuration1(item1.getDuration());
                             mBinding.setDistance1(item1.getDistance());
                             mBinding.setDate1(getDateString(item1.getRideAt()));
@@ -371,6 +374,8 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
         mBinding.setSubtotal(order.getSubtotalStr());
         mBinding.setTotal(order.getTotalStr());
         mBinding.setPlace(order.getPlace());
+        mBinding.setAmount(order.getAmountStr());
+        mBinding.setCoefficient(String.valueOf(order.getCoefficient()));
 
         if(order.getPaymentType()!=null){
             switch (order.getPaymentType()){
