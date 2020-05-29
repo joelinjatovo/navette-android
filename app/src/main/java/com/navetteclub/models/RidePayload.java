@@ -8,6 +8,9 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.Ride;
 
 public class RidePayload {
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("ride_id")
     private String rideId;
 
@@ -69,5 +72,13 @@ public class RidePayload {
 
     public void setDriverId(Long driverId) {
         this.driverId = driverId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

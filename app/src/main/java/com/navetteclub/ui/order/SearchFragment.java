@@ -4,18 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,7 +30,6 @@ import com.navetteclub.database.entity.Location;
 import com.navetteclub.databinding.FragmentSearchBinding;
 import com.navetteclub.ui.LocationPickerActivity;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
@@ -169,6 +166,23 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
                 v -> {
                     Intent intent = new Intent(requireActivity(), LocationPickerActivity.class);
                     startActivityForResult(intent, LOCATION_PICKER_REQUEST_CODE);
+                });
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        OrderType orderType = orderViewModel.getOrderType();
+                        if(OrderType.GO_BACK.equals(orderType) && (
+                                        (orderViewModel.getItem2() == null)
+                                        || (orderViewModel.getItem2().getDistance() == null)
+                                        || (orderViewModel.getItem2().getDirection() == null)
+                                        || (orderViewModel.getItem2().getDuration() == null)
+                                        || (orderViewModel.getItem2Point() == null))
+                        ){
+                            orderViewModel.setOrderTypeLiveData(OrderType.GO);
+                        }
+                        NavHostFragment.findNavController(SearchFragment.this).popBackStack();
+                    }
                 });
     }
 

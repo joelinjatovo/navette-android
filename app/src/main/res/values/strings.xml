@@ -34,9 +34,7 @@
 
     <string-array name="phoneCountryCodes">
         <item>+261</item>
-        <item>+93</item>
-        <item>+504</item>>
-        <item>+263</item>
+        <item>+33</item>
     </string-array>
 
     <string-array name="order_steps">

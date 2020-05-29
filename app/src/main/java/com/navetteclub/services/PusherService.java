@@ -63,14 +63,7 @@ public class PusherService extends Service {
             pusher.connect();
 
             if (pusher.getPrivateChannel("private-App.User."+userId) == null) {
-                subscribeUser(
-                        pusher,
-                        "private-App.User."+userId,
-                        "user.point.created",
-                        "order.created", "order.updated",
-                        "item.updated", "item.created", "item.date.changed",
-                        "ride.created", "ride.updated"
-                );
+                subscribeUser(pusher, "private-App.User."+userId,"Illuminate\\Notifications\\Events\\BroadcastNotificationCreated");
             }
         }
         check();
@@ -107,6 +100,8 @@ public class PusherService extends Service {
                     @Override
                     public void onEvent(PusherEvent event) {
                         readThread = new Thread(() -> {
+                            Log.d(TAG + "subscribeUser", event.getEventName());
+                            Log.d(TAG + "subscribeUser", event.getData());
                             Intent broadcastIntent = new Intent();
                             broadcastIntent.setAction(ACTION_BROADCAST);
                             broadcastIntent.putExtra(EXTRA_EVENT_NAME, event.getEventName());

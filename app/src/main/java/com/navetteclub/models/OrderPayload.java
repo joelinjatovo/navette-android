@@ -8,6 +8,9 @@ import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.Ride;
 
 public class OrderPayload {
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("order_id")
     private String orderId;
 
@@ -58,5 +61,13 @@ public class OrderPayload {
             case Order.STATUS_COMPLETED: return R.string.desc_order_status_completed;
         }
         return R.string.unknown_status;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

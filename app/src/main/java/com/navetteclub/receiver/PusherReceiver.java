@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.navetteclub.App;
 import com.navetteclub.R;
 import com.navetteclub.api.models.ItemParam;
+import com.navetteclub.models.DriverArrivedPayload;
 import com.navetteclub.models.ItemPayload;
 import com.navetteclub.models.OrderPayload;
 import com.navetteclub.models.RidePayload;
@@ -68,12 +69,12 @@ public class PusherReceiver extends BroadcastReceiver {
         String payload = bundle.getString(PusherService.EXTRA_PAYLOAD);
         Log.d(TAG, "Event "  + event);
         Log.d(TAG, "Payload "  + payload);
+        String type = getNotificationType(payload);
 
-        if(event!=null && payload!=null){
+        if(type!=null && payload!=null){
             Gson gson = Utils.getGson();;
-            switch (event){
-                case "order.created":
-                case "order.updated":
+            switch (type){
+                case "App\\Notifications\\OrderStatus":
                     OrderPayload orderPayload = gson.fromJson(payload, OrderPayload.class);
                     if(orderPayload!=null){
                         Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
@@ -86,8 +87,7 @@ public class PusherReceiver extends BroadcastReceiver {
                         buildNotification(contentIntent, App.applicationContext.getString(orderPayload.getNewStatusStringDesc()));
                     }
                     break;
-                case "item.created":
-                case "item.updated":
+                case "App\\Notifications\\ItemStatus":
                     ItemPayload itemPayload = gson.fromJson(payload, ItemPayload.class);
                     if(itemPayload!=null){
                         Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
@@ -100,8 +100,7 @@ public class PusherReceiver extends BroadcastReceiver {
                         buildNotification(contentIntent, App.applicationContext.getString(itemPayload.getNewStatusStringDesc()));
                     }
                     break;
-                case "ride.created":
-                case "ride.updated":
+                case "App\\Notifications\\RideStatus":
                     RidePayload ridePayload = gson.fromJson(payload, RidePayload.class);
                     if(ridePayload!=null){
                         Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
@@ -114,8 +113,30 @@ public class PusherReceiver extends BroadcastReceiver {
                         buildNotification(contentIntent, App.applicationContext.getString(ridePayload.getNewStatusStringDesc()));
                     }
                     break;
+                case "App\\Notifications\\DriverArrived":
+                    DriverArrivedPayload driverArrivedPayload = gson.fromJson(payload, DriverArrivedPayload.class);
+                    if(driverArrivedPayload!=null){
+                        Intent intent1 = new Intent(App.applicationContext, MainActivity.class);
+                        intent1.setData(LiveFragment.getUri(driverArrivedPayload.getItemId()));
+                        PendingIntent contentIntent = PendingIntent.getActivity(
+                                App.applicationContext,
+                                0,
+                                intent1,
+                                PendingIntent.FLAG_ONE_SHOT);
+                        buildNotification(contentIntent, driverArrivedPayload.getMessage());
+                    }
+                    break;
 
             }
+        }
+    }
+
+    private String getNotificationType(String payload) {
+        try {
+            JSONObject jsonObject = new JSONObject(payload);
+            return jsonObject.getString("type");
+        } catch (Throwable t) {
+            return null;
         }
     }
 

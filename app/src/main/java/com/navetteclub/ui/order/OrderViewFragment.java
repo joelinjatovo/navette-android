@@ -246,7 +246,7 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
     }
 
     private String getDateString(Date lastUpdated){
-        if(lastUpdated==null) return null;
+        if(lastUpdated==null) return getString(R.string.now);
         long now = System.currentTimeMillis();
         CharSequence date = DateUtils.getRelativeTimeSpanString(lastUpdated.getTime(), now, DateUtils.MINUTE_IN_MILLIS);
         return (String) date;

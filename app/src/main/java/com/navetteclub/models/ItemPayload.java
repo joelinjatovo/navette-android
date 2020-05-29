@@ -10,6 +10,9 @@ import com.navetteclub.database.entity.Ride;
 import java.util.Date;
 
 public class ItemPayload {
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("item_id")
     private String itemId;
 
@@ -72,5 +75,13 @@ public class ItemPayload {
 
     public void setRideAt(Date rideAt) {
         this.rideAt = rideAt;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
