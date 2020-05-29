@@ -125,8 +125,6 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
 
     private CarRecyclerViewAdapter mAdapter;
 
-    private Call<RetrofitResponse<OrderWithDatas>> cartRetrofitRequest;
-
     private Calendar calendar;
 
     private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
@@ -297,6 +295,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                     if(result.body()!=null){
                         for (int i = 0; i < result.body().getRoutes().size(); i++) {
                             Route route = result.body().getRoutes().get(i);
+                            String direction = route.getOverviewPolyline().getPoints();
                             for(Leg leg: route.getLegs()){
                                 Item item = orderViewModel.getItem2();
                                 if(item==null){
@@ -306,6 +305,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                                 item.setDurationValue(leg.getDuration().getValue());
                                 item.setDistance(leg.getDistance().getText());
                                 item.setDistanceValue(leg.getDistance().getValue());
+                                item.setDirection(direction);
                                 orderViewModel.setItem2LiveData(item);
                             }
                         }
@@ -516,7 +516,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
         if(club==null) return;
         Item item = orderViewModel.getItem1();
         if(item==null) return;
-        cartRetrofitRequest = orderViewModel.getCart();
+        Call<RetrofitResponse<OrderWithDatas>> cartRetrofitRequest = orderViewModel.getCart();
         mBinding.bottomSheets.setIsLoadingCart(true);
         mBinding.bottomSheets.setShowErrorLoaderCart(false);
     }
@@ -613,7 +613,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                     OrderType orderType = orderViewModel.getOrderType();
                     if (orderType == BACK) {
                         OrderFragmentDirections.ActionOrderToSearch action = OrderFragmentDirections.actionOrderToSearch();
-                        action.setSearchType(SearchType.ORIGIN);
+                        action.setSearchType(SearchType.RETOURS);
                         Navigation.findNavController(v).navigate(action);
                     }else{
                         Navigation.findNavController(v).navigate(R.id.action_order_to_clubs);

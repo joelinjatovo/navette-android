@@ -69,6 +69,7 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
         mBinding.yesButton.setOnClickListener(
                 v -> {
                     // go to search point
+                    orderViewModel.setOrderTypeLiveData(OrderType.GO_BACK);
                     GoAndBackFragmentDirections.ActionGoAndBackFragmentToSearchFragment action = GoAndBackFragmentDirections.actionGoAndBackFragmentToSearchFragment();
                     action.setSearchType(SearchType.RETOURS);
                     NavHostFragment.findNavController(this).navigate(action);
@@ -81,6 +82,7 @@ public class GoAndBackFragment extends BottomSheetDialogFragment {
                     orderViewModel.setItem2PointLiveData(null);
                     NavHostFragment.findNavController(this).navigate(R.id.action_go_and_back_fragment_to_cart_fragment);
                 });
+
         mBinding.closeButton.setOnClickListener(
                 v -> {
                     orderViewModel.setOrderTypeLiveData(OrderType.GO);

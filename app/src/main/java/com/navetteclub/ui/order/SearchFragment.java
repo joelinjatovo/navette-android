@@ -150,6 +150,8 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
                     return false;
                 });
 
+        Log.d(TAG, "orderType" + searchType);
+
         if(searchType == SearchType.ORIGIN){
             mBinding.toolbar.setTitle(R.string.title_origin);
         }
@@ -175,16 +177,8 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
         if(v.getId() == R.id.clear){
             searchViewModel.delete(item);
         }else{
-            if(searchType == SearchType.ORIGIN){
-                orderViewModel.setItem1LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
-                NavHostFragment.findNavController(this).popBackStack();
-                return;
-            }
+            handleLocationSearched(item);
 
-            if(searchType == SearchType.RETOURS){
-                orderViewModel.setItem2LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
-                NavHostFragment.findNavController(this).popBackStack();
-            }
         }
     }
 
@@ -197,8 +191,29 @@ public class SearchFragment extends BottomSheetDialogFragment implements OnClick
     public void onUpsertSuccess(List<Location> items) {
         if(items!=null && items.size()>0){
             Location item = items.get(0);
-            orderViewModel.setItem1LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
-            NavHostFragment.findNavController(this).popBackStack();
+            handleLocationSearched(item);
+        }
+    }
+
+    private void handleLocationSearched(Location item) {
+        OrderType orderType = orderViewModel.getOrderType();
+        if(orderType!=null){
+            switch (orderType){
+                case GO:
+                case BACK:
+                    orderViewModel.setItem1LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
+                    NavHostFragment.findNavController(this).popBackStack();
+                    break;
+                default:
+                    if(searchType == SearchType.ORIGIN){
+                        orderViewModel.setItem1LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
+                        NavHostFragment.findNavController(this).popBackStack();
+                    }else{
+                        orderViewModel.setItem2LiveData(item.getName(), new LatLng(item.getLat(), item.getLng()));
+                        NavHostFragment.findNavController(this).popBackStack();
+                    }
+                    break;
+            }
         }
     }
 }

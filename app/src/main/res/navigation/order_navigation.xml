@@ -71,9 +71,11 @@
         <action
             android:id="@+id/action_search_fragment_to_order_fragment"
             app:destination="@id/order_fragment" />
+
         <action
             android:id="@+id/action_search_fragment_to_picker_location_fragment"
             app:destination="@id/picker_location_fragment" />
+
     </fragment>
 
     <fragment
