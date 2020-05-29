@@ -833,7 +833,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_gravity="center"
-                    android:text="@string/book_now"
+                    android:text="@string/validate_now"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"/>
 

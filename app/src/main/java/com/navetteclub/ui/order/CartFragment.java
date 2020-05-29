@@ -167,6 +167,14 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                 }
                 item.setRideAt(calendar.getTime());
                 orderViewModel.setItem2LiveData(item);
+            } else if (dateTimeView.getId() == R.id.bookNowButton) {
+                Item item = orderViewModel.getItem2();
+                if(item==null){
+                    item = new Item();
+                }
+                item.setRideAt(calendar.getTime());
+                orderViewModel.setItem2LiveData(item);
+                confirmClicked(dateTimeView);
             }
         }
     }
@@ -421,11 +429,11 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                     mBinding.bookNowButton.setText(R.string.button_close);
                     break;
                 default:
-                    mBinding.bookNowButton.setText(R.string.book_now);
+                    mBinding.bookNowButton.setText(R.string.validate_now);
                     break;
             }
         }else{
-            mBinding.bookNowButton.setText(R.string.book_now);
+            mBinding.bookNowButton.setText(R.string.validate_now);
         }
     }
 
@@ -436,44 +444,7 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
 
         mBinding.bookNowButton.setOnClickListener(
                 v -> {
-                    Order order = orderViewModel.getOrder();
-                    if(order==null) return;
-                    if(order.getStatus()!=null){
-                        switch (order.getStatus()){
-                            case Order.STATUS_PING:
-                            case Order.STATUS_ON_HOLD:
-                            case Order.STATUS_PROCESSING:
-                                // GO to checkout
-                                NavHostFragment.findNavController(this)
-                                        .navigate(R.id.action_cart_fragment_to_navigation_checkout);
-                                break;
-                            case Order.STATUS_OK:
-                                if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
-                                    // GO to checkout
-                                    NavHostFragment.findNavController(this)
-                                            .navigate(R.id.action_cart_fragment_to_navigation_checkout);
-                                }else{
-                                    // GO back
-                                    NavHostFragment.findNavController(this)
-                                            .popBackStack();
-                                }
-                                break;
-                            case Order.STATUS_ACTIVE:
-                            case Order.STATUS_COMPLETED:
-                            case Order.STATUS_CANCELED:
-                                // GO back
-                                NavHostFragment.findNavController(this)
-                                        .popBackStack();
-                                break;
-                            default:
-                                // Create order
-                                placeOrder();
-                                break;
-                        }
-                    }else{
-                        // Create order
-                        placeOrder();
-                    }
+                    confirmClicked(v);
                 });
         mBinding.closeButton.setOnClickListener(
                 v -> {
@@ -533,6 +504,74 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                 v -> {
                     loadCart();
                 });
+    }
+
+    private void confirmClicked(View v) {
+        Order order = orderViewModel.getOrder();
+        if(order==null) return;
+        if (Order.TYPE_GO_BACK.equals(order.getType()) && (orderViewModel.getItem2()!=null) && (orderViewModel.getItem2().getRideAt()==null)) {
+            new SweetAlertDialog(requireContext(), SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText(getString(R.string.info))
+                    .setContentText(getString(R.string.ride_back_date_explaination))
+                    .setConfirmText(getString(R.string.ok))
+                    .setConfirmClickListener(sDialog -> {
+                        sDialog.dismissWithAnimation();
+                        dateTimeView = v;
+                        Calendar now = Calendar.getInstance();
+                        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                                this,
+                                now.get(Calendar.YEAR), // Initial year selection
+                                now.get(Calendar.MONTH), // Initial month selection
+                                now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                        );
+                        Calendar calendar = Calendar.getInstance();
+                        dpd.setMinDate(calendar);
+                        calendar.roll(Calendar.MONTH, 2);
+                        dpd.setMaxDate(calendar);
+                        dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+                        dpd.dismissOnPause(true);
+                        dpd.show(getChildFragmentManager(), "Datepickerdialog");
+                    })
+                    .show();
+            return;
+        }
+
+        if(order.getStatus()!=null){
+            switch (order.getStatus()){
+                case Order.STATUS_PING:
+                case Order.STATUS_ON_HOLD:
+                case Order.STATUS_PROCESSING:
+                    // GO to checkout
+                    NavHostFragment.findNavController(this)
+                            .navigate(R.id.action_cart_fragment_to_navigation_checkout);
+                    break;
+                case Order.STATUS_OK:
+                    if(Order.PAYMENT_TYPE_CASH.equals(order.getPaymentType())) {
+                        // GO to checkout
+                        NavHostFragment.findNavController(this)
+                                .navigate(R.id.action_cart_fragment_to_navigation_checkout);
+                    }else{
+                        // GO back
+                        NavHostFragment.findNavController(this)
+                                .popBackStack();
+                    }
+                    break;
+                case Order.STATUS_ACTIVE:
+                case Order.STATUS_COMPLETED:
+                case Order.STATUS_CANCELED:
+                    // GO back
+                    NavHostFragment.findNavController(this)
+                            .popBackStack();
+                    break;
+                default:
+                    // Create order
+                    placeOrder();
+                    break;
+            }
+        }else{
+            // Create order
+            placeOrder();
+        }
     }
 
     private void placeOrder() {

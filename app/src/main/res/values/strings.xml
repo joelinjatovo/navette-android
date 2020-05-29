@@ -127,6 +127,7 @@
     <string name="no">Non</string>
     <string name="yes">Oui</string>
     <string name="pay_now">Payer maintenant</string>
+    <string name="validate_now">Valider maintenant</string>
     <string name="question_go_and_back">Aller et retours?</string>
     <string name="book">Réservez</string>
     <string name="book_now">Réservez maintenant</string>
@@ -356,5 +357,6 @@
     <string name="place_reserved">Place résérvée</string>
     <string name="coefficient">Coefficient</string>
     <string name="total_to_pay">Total à payer</string>
+    <string name="ride_back_date_explaination">Vous devez choisir la date du retours avant de passer à l\'étape suivante</string>
 
 </resources>
