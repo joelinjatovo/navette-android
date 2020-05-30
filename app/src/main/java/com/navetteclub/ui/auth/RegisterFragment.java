@@ -73,12 +73,14 @@ public class RegisterFragment  extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         final NavController navController = Navigation.findNavController(view);
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        setupAuthViewModel(factory, navController);
-        setupUserViewModel(factory);
-        setupRegisterViewModel(factory);
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
+        registerViewModel = new ViewModelProvider(this, factory).get(RegisterViewModel.class);
         setupUi();
         setupBackAction(navController);
         setupFacebookConnect();
+        setupAuthViewModel(navController);
+        setupRegisterViewModel();
     }
 
     @Override
@@ -94,7 +96,6 @@ public class RegisterFragment  extends Fragment {
         mBinding.registerButton.setOnClickListener(
                 v -> {
                     progressDialog.show();
-
                     registerViewModel.register(mBinding.nameEditText.getText().toString(),
                             mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(),
                             mBinding.passwordEditText.getText().toString());
@@ -103,8 +104,7 @@ public class RegisterFragment  extends Fragment {
         mBinding.facebookLogin.setOnClickListener(v -> mBinding.facebookConnect.performClick());
     }
 
-    private void setupRegisterViewModel(MyViewModelFactory factory) {
-        registerViewModel = new ViewModelProvider(this, factory).get(RegisterViewModel.class);
+    private void setupRegisterViewModel() {
         registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(),
                 registerResult -> {
                     if (registerResult == null) {
@@ -128,39 +128,27 @@ public class RegisterFragment  extends Fragment {
                 });
     }
 
-    private void setupUserViewModel(MyViewModelFactory factory) {
-        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
-    }
-
-    private void setupAuthViewModel(MyViewModelFactory factory, NavController navController) {
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+    private void setupAuthViewModel(NavController navController) {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
-                    switch (authenticationState){
-                        case AUTHENTICATED:
-                            Log.d(TAG, "'AUTHENTICATED'");
-                            User user = authViewModel.getUser();
-                            if(user!=null){
-                                if(user.getPhone()==null){
-                                    navController.navigate(R.id.action_register_fragment_to_phone_fragment);
-                                }else if(!user.getVerified()){
-                                    navController.navigate(R.id.action_register_fragment_to_verify_phone_fragment);
-                                }else{
-                                    navController.popBackStack();
-                                }
+                    if (AuthViewModel.AuthenticationState.AUTHENTICATED.equals(authenticationState)) {
+                        Log.d(TAG, "'AUTHENTICATED'");
+                        User user = authViewModel.getUser();
+                        if (user != null) {
+                            if (user.getPhone() == null) {
+                                navController.navigate(R.id.action_register_fragment_to_phone_fragment);
+                            } else if (!user.getVerified()) {
+                                navController.navigate(R.id.action_register_fragment_to_verify_phone_fragment);
+                            } else {
+                                navController.popBackStack();
                             }
-                            break;
-                        default:
-                            // Nothing
-                            break;
+                        }
                     }
                 });
     }
 
     private void setupBackAction(NavController navController) {
-
         mBinding.backButton.setOnClickListener( v-> Navigation.findNavController(v).popBackStack());
-
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
