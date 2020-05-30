@@ -191,6 +191,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_toEndOf="@+id/phoneCountryCodeSpinner"
                             android:hint="@string/hint_phone"
+                            android:inputType="phone"
                             android:background="@android:color/transparent"
                             android:padding="15dp"
                             android:paddingLeft="5dp"
