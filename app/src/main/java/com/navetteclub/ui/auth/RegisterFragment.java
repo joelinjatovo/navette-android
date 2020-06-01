@@ -11,15 +11,13 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -71,7 +69,7 @@ public class RegisterFragment  extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final NavController navController = Navigation.findNavController(view);
+        final NavController navController = NavHostFragment.findNavController(this);
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
         authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
         userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
@@ -85,7 +83,9 @@ public class RegisterFragment  extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(callbackManager!=null){
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -100,7 +100,7 @@ public class RegisterFragment  extends Fragment {
                             mBinding.phoneCountryCodeSpinner.getSelectedItem().toString() + mBinding.phoneEditText.getText().toString(),
                             mBinding.passwordEditText.getText().toString());
                 });
-        mBinding.loginButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
+        mBinding.loginButton.setOnClickListener(v -> NavHostFragment.findNavController(this).popBackStack());
         mBinding.facebookLogin.setOnClickListener(v -> mBinding.facebookConnect.performClick());
     }
 
@@ -114,12 +114,10 @@ public class RegisterFragment  extends Fragment {
                     progressDialog.dismiss();
 
                     if (registerResult.getError() != null) {
-                        Log.d(TAG, "'registerResult.getError()'");
                         Snackbar.make(mBinding.getRoot(), registerResult.getError(), Snackbar.LENGTH_SHORT).show();
                     }
 
                     if (registerResult.getSuccess() != null) {
-                        Log.d(TAG, "'registerResult.getSuccess()'");
                         userViewModel.upsert(upsertCallback, registerResult.getSuccess());
                     }
 
@@ -131,8 +129,7 @@ public class RegisterFragment  extends Fragment {
     private void setupAuthViewModel(NavController navController) {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
-                    if (AuthViewModel.AuthenticationState.AUTHENTICATED.equals(authenticationState)) {
-                        Log.d(TAG, "'AUTHENTICATED'");
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
                         User user = authViewModel.getUser();
                         if (user != null) {
                             if (user.getPhone() == null) {
@@ -148,7 +145,7 @@ public class RegisterFragment  extends Fragment {
     }
 
     private void setupBackAction(NavController navController) {
-        mBinding.backButton.setOnClickListener( v-> Navigation.findNavController(v).popBackStack());
+        mBinding.backButton.setOnClickListener( v-> navController.popBackStack());
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
@@ -184,34 +181,26 @@ public class RegisterFragment  extends Fragment {
             @Override
             public void onError(FacebookException exception) {
                 // App code
-                Log.d(TAG, "FacebookCallback.onError(exception)");
-                Log.e(TAG, exception.getMessage(), exception);
+                Log.e(TAG, "FacebookCallback.onError(exception)", exception);
             }
         });
     }
 
     private void useLoginInformation(AccessToken accessToken) {
-        Log.d(TAG, "useLoginInformation(accessToken)");
         progressDialog.show();
-        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-            //OnCompleted is invoked once the GraphRequest is successful
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                try {
-                    Log.d(TAG, "JSONObject="  + object);
-                    if(object!=null) {
-                        Register registrationData = new Register();
-                        registrationData.facebookId = object.getString("id");
-                        registrationData.name = object.getString("name");
-                        registrationData.email = object.getString("email");
-                        registrationData.pictureUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
-
-                        Log.d(TAG, "registrationData="  + registrationData);
-                        registerViewModel.registerViaFacebook(registrationData);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        //OnCompleted is invoked once the GraphRequest is successful
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
+            try {
+                if(object!=null) {
+                    Register registrationData = new Register();
+                    registrationData.facebookId = object.getString("id");
+                    registrationData.name = object.getString("name");
+                    registrationData.email = object.getString("email");
+                    registrationData.pictureUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                    registerViewModel.registerViaFacebook(registrationData);
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
         // We set parameters to the GraphRequest using a Bundle.
@@ -230,16 +219,11 @@ public class RegisterFragment  extends Fragment {
 
         @Override
         public void onUpsertSuccess(List<User> users) {
-            Log.d(TAG, "UpsertCallback.onUpsertSuccess(users)");
-            User user = users.get(0);
-            Preferences.Auth.setCurrentUser(requireContext(), user);
-            authViewModel.authenticate(user);
-            updateUiWithUser(user);
-        }
-
-        private void updateUiWithUser(User user) {
-            String welcome = getString(R.string.welcome) + user.getName();
-            Toast.makeText(getContext(), welcome, Toast.LENGTH_LONG).show();
+            if((users!=null) && (users.size() > 0)){
+                User user = users.get(0);
+                Preferences.Auth.setCurrentUser(requireContext(), user);
+                authViewModel.authenticate(user);
+            }
         }
     };
 }

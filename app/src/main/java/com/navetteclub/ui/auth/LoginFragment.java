@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -76,11 +77,13 @@ public class LoginFragment extends Fragment implements TextWatcher {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final NavController navController = Navigation.findNavController(view);
+        final NavController navController = NavHostFragment.findNavController(this);
         MyViewModelFactory factory = MyViewModelFactory.getInstance(requireActivity().getApplication());
-        setupLoginViewModel(factory);
-        setupUserViewModel(factory);
-        setupAuthViewModel(factory, navController);
+        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
+        loginViewModel = new ViewModelProvider(requireActivity(), factory).get(LoginViewModel.class);
+        setupLoginViewModel();
+        setupAuthViewModel(navController);
         setupRegisterViewModel(factory);
         setupBackAction(navController);
         setupUi();
@@ -112,50 +115,36 @@ public class LoginFragment extends Fragment implements TextWatcher {
                 });
     }
 
-    private void setupAuthViewModel(MyViewModelFactory factory, NavController navController) {
-        authViewModel = new ViewModelProvider(requireActivity(), factory).get(AuthViewModel.class);
+    private void setupAuthViewModel(NavController navController) {
         authViewModel.getAuthenticationState().observe(getViewLifecycleOwner(),
                 authenticationState -> {
-                    switch (authenticationState){
-                        case AUTHENTICATED:
-                            Log.d(TAG, "'AUTHENTICATED'");
-                            User user = authViewModel.getUser();
-                            if(user!=null){
-                                if(user.getPhone()==null){
-                                    navController.navigate(R.id.action_login_fragment_to_phone_fragment);
-                                }else if(!user.getVerified()){
-                                    navController.navigate(R.id.action_login_fragment_to_verify_phone_fragment);
-                                }else{
-                                    navController.popBackStack();
-                                }
+                    // Nothing
+                    if (authenticationState == AuthViewModel.AuthenticationState.AUTHENTICATED) {
+                        Log.d(TAG, "'AUTHENTICATED'");
+                        User user = authViewModel.getUser();
+                        if (user != null) {
+                            if (user.getPhone() == null) {
+                                navController.navigate(R.id.action_login_fragment_to_phone_fragment);
+                            } else if (!user.getVerified()) {
+                                navController.navigate(R.id.action_login_fragment_to_verify_phone_fragment);
+                            } else {
+                                navController.popBackStack();
                             }
-                            break;
-                        default:
-                            // Nothing
-                            break;
+                        }
                     }
                 });
     }
 
-    private void setupUserViewModel(MyViewModelFactory factory) {
-        userViewModel = new ViewModelProvider(requireActivity(), factory).get(UserViewModel.class);
-    }
-
-    private void setupLoginViewModel(MyViewModelFactory factory) {
-        loginViewModel = new ViewModelProvider(requireActivity(), factory).get(LoginViewModel.class);
-
+    private void setupLoginViewModel() {
         loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(),
                 loginFormState -> {
                     if (loginFormState == null) {
                         return;
                     }
-
                     mBinding.loginButton.setEnabled(loginFormState.isDataValid());
-
                     if (loginFormState.getPhoneError() != null) {
                         mBinding.phoneEditText.setError(getString(loginFormState.getPhoneError()));
                     }
-
                     if (loginFormState.getPasswordError() != null) {
                         mBinding.passwordEditText.setError(getString(loginFormState.getPasswordError()));
                     }
@@ -166,19 +155,13 @@ public class LoginFragment extends Fragment implements TextWatcher {
                     if (loginResult == null) {
                         return;
                     }
-
                     progressDialog.hide();
-
                     if (loginResult.getError() != null) {
-                        Log.d(TAG, "'loginResult.getError()'");
                         Snackbar.make(mBinding.getRoot(), loginResult.getError(), Snackbar.LENGTH_SHORT).show();
                     }
-
                     if (loginResult.getSuccess() != null) {
-                        Log.d(TAG, "'loginResult.getSuccess()'");
                         userViewModel.upsert(upsertCallback, loginResult.getSuccess());
                     }
-
                     // Reset remote result
                     loginViewModel.setLoginResult(null);
                 });
@@ -224,13 +207,11 @@ public class LoginFragment extends Fragment implements TextWatcher {
     }
 
     private void setupBackAction(NavController navController) {
-        mBinding.backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack(R.id.navigation_home, false));
-
+        mBinding.backButton.setOnClickListener(v -> navController.popBackStack(R.id.navigation_home, false));
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        //authViewModel.logout(requireContext());
                         navController.popBackStack(R.id.navigation_home, false);
                     }
                 });

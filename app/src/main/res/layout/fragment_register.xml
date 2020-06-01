@@ -15,23 +15,15 @@
         tools:context="com.navetteclub.ui.MainActivity">
 
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/image"
-            android:adjustViewBounds="true"
-            android:src="@drawable/bg" />
-
-        <ImageView
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/image"
             android:src="@drawable/outline_arrow_back_ios_black_36"
-            android:tint="@color/white"
+            android:tint="@color/colorAccent"
             android:layout_margin="20dp"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintTop_toTopOf="@id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -40,13 +32,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="@string/title_register"
-            android:textColor="@color/white"
+            android:textColor="@color/colorAccent"
             android:textSize="24sp"
             android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backButton" />
+            app:layout_constraintTop_toBottomOf="@id/backButton" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,15 +66,6 @@
                     android:layout_margin="5dp"
                     android:contentDescription="@string/image"
                     android:src="@drawable/facebook_32px"/>
-
-                <ImageView
-                    android:id="@+id/google_login"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:contentDescription="@string/image"
-                    android:src="@drawable/google_plus_32px"
-                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -130,7 +113,7 @@
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="3dp">
 
@@ -165,7 +148,7 @@
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="3dp">
 
@@ -192,7 +175,7 @@
                             android:layout_toEndOf="@+id/phoneCountryCodeSpinner"
                             android:hint="@string/hint_phone"
                             android:inputType="phone"
-                            android:background="@android:color/transparent"
+                            android:background="@color/transparent"
                             android:padding="15dp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -227,7 +210,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_password"
-                        android:background="@android:color/transparent"
+                        android:background="@color/transparent"
                         android:inputType="textPassword"
                         android:padding="15dp"
                         android:textColor="#292929"
@@ -251,9 +234,8 @@
                     android:id="@+id/registerButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:text="@string/register"
-                    android:background="@drawable/btn_rounded" />
+                    android:textColor="@color/white"
+                    android:text="@string/register"/>
 
             </RelativeLayout>
 

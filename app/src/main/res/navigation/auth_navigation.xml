@@ -46,7 +46,6 @@
         <action
             android:id="@+id/action_register_fragment_to_verify_phone_fragment"
             app:destination="@id/verify_phone_fragment" />
-
     </fragment>
 
     <fragment
