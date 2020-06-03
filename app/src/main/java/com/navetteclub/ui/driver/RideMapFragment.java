@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -35,7 +33,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,29 +48,22 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
-import com.navetteclub.api.models.google.Leg;
 import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.UserApiService;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.ClubAndPoint;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
-import com.navetteclub.database.entity.RidePointWithDatas;
-import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentOrderMapBinding;
 import com.navetteclub.databinding.FragmentRideMapBinding;
 import com.navetteclub.services.LocationUpdatesService;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.MapUiUtils;
 import com.navetteclub.utils.UiUtils;
@@ -81,7 +71,6 @@ import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.RideViewModel;
 import com.navetteclub.vm.RidesViewModel;
 import com.squareup.picasso.Picasso;
@@ -160,7 +149,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     private Long rideId;
 
-    private RideWithDatas rideWithDatas;
+    private Ride rideWithDatas;
 
     private RidePointMapRecyclerViewAdapter mAdapter;
 
@@ -431,13 +420,13 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         mBinding.setIsLoading(true);
     }
 
-    private void setRide(RideWithDatas rideWithDatas1) {
+    private void setRide(Ride rideWithDatas1) {
         this.rideWithDatas = rideWithDatas1;
         if(rideWithDatas==null){
             return;
         }
 
-        ClubAndPoint clubAndPoint = rideWithDatas.getClubAndPoint();
+        ClubAndPoint clubAndPoint = new ClubAndPoint(rideWithDatas.getClub(), rideWithDatas.getClub().getPoint());
         if(clubAndPoint!=null){
             Point point = clubAndPoint.getPoint();
             Club club = clubAndPoint.getClub();
@@ -451,13 +440,13 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        List<RidePointWithDatas> points = rideWithDatas1.getPoints();
+        List<RidePoint> points = rideWithDatas1.getRidepoints();
         if(points!=null) {
             mAdapter.setItems(points);
-            drawPoints(rideWithDatas1.getPoints());
+            drawPoints(rideWithDatas1.getRidepoints());
         }
 
-        Ride ride = rideWithDatas.getRide();
+        Ride ride = rideWithDatas;
         if(ride!=null){
             String direction = ride.getDirection();
             if(direction!=null){
@@ -473,7 +462,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         scrollRecyclerView(ride, points);
     }
 
-    private void updateStepView(Ride ride, List<RidePointWithDatas> ridePointWithDatas) {
+    private void updateStepView(Ride ride, List<RidePoint> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
         int count = ridePointWithDatas.size();
         Log.d(TAG, "updateStepView ridePointWithDatas.size()=" + count);
@@ -492,8 +481,8 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
 
-            for (RidePointWithDatas ridePointWithData : ridePointWithDatas) {
-                RidePoint ridePoint = ridePointWithData.getRidePoint();
+            for (RidePoint ridePointWithData : ridePointWithDatas) {
+                RidePoint ridePoint = ridePointWithData;
                 if (ridePoint != null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
                     int order = ridePoint.getOrder();
                     mBinding.bottomSheets.stepView.go(order > 0 ? order - 1 : 0, true);
@@ -503,7 +492,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void scrollRecyclerView(Ride ride, List<RidePointWithDatas> ridePointWithDatas) {
+    private void scrollRecyclerView(Ride ride, List<RidePoint> ridePointWithDatas) {
         if(ridePointWithDatas==null) return;
         int count = ridePointWithDatas.size();
         if(ride!=null){
@@ -516,8 +505,8 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         int i = 0;
-        for (RidePointWithDatas ridePointWithData : ridePointWithDatas) {
-            RidePoint ridePoint = ridePointWithData.getRidePoint();
+        for (RidePoint ridePointWithData : ridePointWithDatas) {
+            RidePoint ridePoint = ridePointWithData;
             if (ridePoint != null && RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
                 if (mBinding.bottomSheets.recyclerView.getLayoutManager() != null) {
                     mBinding.bottomSheets.recyclerView.getLayoutManager().scrollToPosition(i);
@@ -579,7 +568,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private void drawPoints(List<RidePointWithDatas> points) {
+    private void drawPoints(List<RidePoint> points) {
         if(mMarkers==null){
             mMarkers = new ArrayList<>();
         }
@@ -589,7 +578,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
         mMarkers.clear();
 
-        for(RidePointWithDatas ridePointWithDatas: points){
+        for(RidePoint ridePointWithDatas: points){
             Marker marker = drawPoint(ridePointWithDatas);
             if(marker!=null){
                 mMarkers.add(marker);
@@ -597,7 +586,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private Marker drawPoint(RidePointWithDatas ridePointWithDatas) {
+    private Marker drawPoint(RidePoint ridePointWithDatas) {
         if(mMap==null){
             return null;
         }
@@ -607,7 +596,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             return null;
         }
 
-        RidePoint ridePoint = ridePointWithDatas.getRidePoint();
+        RidePoint ridePoint = ridePointWithDatas;
         if(ridePoint==null){
             return null;
         }
@@ -624,7 +613,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         if (RidePoint.STATUS_ACTIVE.equals(ridePoint.getStatus())) {
             color = R.color.colorAlertAccent;
         }
-        if (RidePoint.STATUS_ONLINE.equals(ridePoint.getStatus())) {
+        if (RidePoint.STATUS_STARTED.equals(ridePoint.getStatus())) {
             color = R.color.colorAlertSuccess;
         }
         return MapUiUtils.drawStepPoint(requireContext(), mMap, point, String.valueOf(ridePoint.getOrder()), customer.getName(), color);
@@ -902,9 +891,9 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, ridePointWithDatas) -> {
+    private OnClickItemListener<RidePoint> mListener = (v, pos, ridePointWithDatas) -> {
         if(ridePointWithDatas==null) return;
-        RidePoint ridePoint = ridePointWithDatas.getRidePoint();
+        RidePoint ridePoint = ridePointWithDatas;
         switch (v.getId()){
             case R.id.button_call:
                 if (ridePointWithDatas.getUser() != null && ridePointWithDatas.getUser().getPhone() != null) {

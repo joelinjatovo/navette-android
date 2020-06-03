@@ -8,11 +8,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,15 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.databinding.FragmentClubsBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrdersFragment;
@@ -38,10 +32,6 @@ import com.navetteclub.utils.Log;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.models.RemoteLoaderResult;
-import com.navetteclub.vm.OrderViewModel;
-
-import java.util.List;
 
 public class ClubsFragment extends BottomSheetDialogFragment implements OnClickItemListener<ClubAndPoint> {
 

@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import com.navetteclub.api.models.google.Route;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity(
     tableName = "rides"
@@ -36,13 +37,21 @@ public class Ride {
     @ColumnInfo(name = "status")
     private String status;
 
+    @SerializedName("distance_value")
+    @ColumnInfo(name = "distance_value")
+    private Long distanceValue;
+
     @SerializedName("distance")
     @ColumnInfo(name = "distance")
-    private Long distance;
+    private String distance;
+
+    @SerializedName("duration_value")
+    @ColumnInfo(name = "duration_value")
+    private Long durationValue;
 
     @SerializedName("duration")
     @ColumnInfo(name = "duration")
-    private Long duration;
+    private String duration;
 
     @SerializedName("direction")
     @ColumnInfo(name = "direction")
@@ -53,6 +62,10 @@ public class Ride {
 
     @ColumnInfo(name = "car_id")
     private Long carId;
+
+    @SerializedName("start_at")
+    @ColumnInfo(name = "start_at")
+    private Date startAt;
 
     @SerializedName("started_at")
     @ColumnInfo(name = "started_at")
@@ -73,6 +86,26 @@ public class Ride {
     @SerializedName("route")
     @Ignore
     private Route route;
+
+    @SerializedName("club")
+    @Ignore
+    private Club club;
+
+    @SerializedName("driver")
+    @Ignore
+    private User driver;
+
+    @SerializedName("car")
+    @Ignore
+    private Car car;
+
+    @SerializedName("ridepoints")
+    @Ignore
+    private List<RidePoint> ridepoints;
+
+    @SerializedName("items")
+    @Ignore
+    private List<Item> items;
 
     public Long getId() {
         return id;
@@ -138,22 +171,6 @@ public class Ride {
         this.canceledAt = canceledAt;
     }
 
-    public Long getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Long distance) {
-        this.distance = distance;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
-
     public String getDirection() {
         return direction;
     }
@@ -168,5 +185,85 @@ public class Ride {
 
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    public Date getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(Date startAt) {
+        this.startAt = startAt;
+    }
+
+    public Club getClub() {
+        return club;
+    }
+
+    public void setClub(Club club) {
+        this.club = club;
+    }
+
+    public User getDriver() {
+        return driver;
+    }
+
+    public void setDriver(User driver) {
+        this.driver = driver;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public List<RidePoint> getRidepoints() {
+        return ridepoints;
+    }
+
+    public void setRidepoints(List<RidePoint> ridepoints) {
+        this.ridepoints = ridepoints;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public Long getDistanceValue() {
+        return distanceValue;
+    }
+
+    public void setDistanceValue(Long distanceValue) {
+        this.distanceValue = distanceValue;
+    }
+
+    public Long getDurationValue() {
+        return durationValue;
+    }
+
+    public void setDurationValue(Long durationValue) {
+        this.durationValue = durationValue;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

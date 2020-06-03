@@ -10,7 +10,9 @@ import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.database.callback.UpsertCallback;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.repositories.ClubRepository;
 import com.navetteclub.utils.Log;
 import com.navetteclub.models.RemoteLoaderResult;
@@ -21,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ClubViewModel extends ViewModel implements Callback<RetrofitResponse<List<ClubAndPoint>>>, UpsertCallback<ClubAndPoint> {
+public class ClubViewModel extends ViewModel implements Callback<RetrofitResponse<List<Club>>>, UpsertCallback<ClubAndPoint> {
 
     private static final String TAG = ClubViewModel.class.getSimpleName();
 
@@ -49,21 +51,23 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
     public void load(){
         Log.d(TAG, "service.getClubs()");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
-        Call<RetrofitResponse<List<ClubAndPoint>>> call = service.getClubs();
+        Call<RetrofitResponse<List<Club>>> call = service.getClubs();
         call.enqueue(this);
     }
 
     @Override
-    public void onResponse(@NonNull Call<RetrofitResponse<List<ClubAndPoint>>> call, @NonNull Response<RetrofitResponse<List<ClubAndPoint>>> response) {
+    public void onResponse(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Response<RetrofitResponse<List<Club>>> response) {
         Log.d(TAG, response.toString());
         if (response.body() != null) {
             Log.d(TAG, response.body().toString());
-            List<ClubAndPoint> clubAndPoints = response.body().getData();
+            List<Club> clubAndPoints = response.body().getData();
             if(clubAndPoints!=null){
                 ClubAndPoint[] items = new ClubAndPoint[clubAndPoints.size()];
                 for(int i = 0 ; i < clubAndPoints.size(); i++){
-                    if(response.body().getData().get(i).getClub()!=null && response.body().getData().get(i).getPoint()!=null){
-                        items[i] = response.body().getData().get(i);
+                    Club club = response.body().getData().get(i);
+                    if(club != null && club.getPoint() != null){
+                        Point point = club.getPoint();
+                        items[i] = new ClubAndPoint(club, point);
                     }
                 }
                 clubRepository.upsert(this, items);
@@ -76,7 +80,7 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
     }
 
     @Override
-    public void onFailure(@NonNull Call<RetrofitResponse<List<ClubAndPoint>>> call, @NonNull Throwable t) {
+    public void onFailure(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Throwable t) {
         Log.e(TAG, t.toString());
         clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
     }

@@ -2,6 +2,7 @@ package com.navetteclub.database.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -19,7 +20,7 @@ public class RidePoint {
 
     public static final String STATUS_ARRIVED = "arrived";
 
-    public static final String STATUS_ONLINE = "online";
+    public static final String STATUS_STARTED = "started";
 
     public static final String STATUS_CANCELED = "canceled";
 
@@ -75,6 +76,14 @@ public class RidePoint {
     @SerializedName("point_id")
     @ColumnInfo(name = "point_id")
     private String pointId;
+
+    @SerializedName("user")
+    @Ignore
+    private User user;
+
+    @SerializedName("point")
+    @Ignore
+    private Point point;
 
     public Long getId() {
         return id;
@@ -170,5 +179,21 @@ public class RidePoint {
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
     }
 }

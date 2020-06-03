@@ -1,22 +1,12 @@
 package com.navetteclub.vm;
 
-import android.content.Context;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.login.LoginManager;
-import com.navetteclub.database.callback.FindCallback;
 import com.navetteclub.database.callback.UpsertCallback;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Location;
-import com.navetteclub.database.entity.User;
-import com.navetteclub.database.repositories.ClubRepository;
 import com.navetteclub.database.repositories.LocationRepository;
-import com.navetteclub.database.repositories.UserRepository;
-import com.navetteclub.utils.Log;
-import com.navetteclub.utils.Preferences;
 
 import java.util.List;
 

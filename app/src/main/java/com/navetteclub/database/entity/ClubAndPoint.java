@@ -1,23 +1,24 @@
 package com.navetteclub.database.entity;
 
 import androidx.annotation.NonNull;
-import androidx.room.Embedded;
-import androidx.room.Relation;
+import androidx.room.Ignore;
 
 import com.google.gson.annotations.SerializedName;
 
 public class ClubAndPoint {
 
     @SerializedName("point")
-    @Embedded
+    @Ignore
     private Point point;
 
     @SerializedName("club")
-    @Relation(
-            parentColumn = "id",
-            entityColumn =  "point_id"
-    )
+    @Ignore
     private Club club;
+
+    public ClubAndPoint(Club club, Point point) {
+        this.club = club;
+        this.point = point;
+    }
 
     public Point getPoint() {
         return point;
@@ -27,16 +28,16 @@ public class ClubAndPoint {
         this.point = point;
     }
 
+    @NonNull
+    public String toString(){
+        return "ClubAndPoint[club=" + club + "; point=" + point + "]";
+    }
+
     public Club getClub() {
         return club;
     }
 
     public void setClub(Club club) {
         this.club = club;
-    }
-
-    @NonNull
-    public String toString(){
-        return "ClubAndPoint[club=" + club + "; point=" + point + "]";
     }
 }

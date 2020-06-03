@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.navetteclub.utils.Log;
-import com.navetteclub.utils.Utils;
 
 public class BootReceiver extends BroadcastReceiver {
 

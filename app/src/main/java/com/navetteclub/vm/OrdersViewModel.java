@@ -9,12 +9,9 @@ import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.Pagination;
 import com.navetteclub.api.responses.RetrofitResponse;
-import com.navetteclub.api.services.NotificationApiService;
 import com.navetteclub.api.services.OrderApiService;
-import com.navetteclub.database.entity.Notification;
-import com.navetteclub.database.entity.OrderWithDatas;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.repositories.NotificationRepository;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.utils.Log;
 
@@ -28,18 +25,18 @@ public class OrdersViewModel extends ViewModel {
 
     private static final String TAG = OrdersViewModel.class.getSimpleName();
 
-    private MutableLiveData<RemoteLoaderResult<List<OrderWithDatas>>> ordersResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<Order>>> ordersResult = new MutableLiveData<>();
 
     private MutableLiveData<Pagination> paginationResult = new MutableLiveData<>();
 
     public void load(User user, int page){
         Log.d(TAG, "OrderApiService.getAll( " +  user.getAuthorizationToken() + ")");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<List<OrderWithDatas>>> call = service.getAll(user.getAuthorizationToken(), page);
-        call.enqueue(new Callback<RetrofitResponse<List<OrderWithDatas>>>() {
+        Call<RetrofitResponse<List<Order>>> call = service.index(user.getAuthorizationToken(), page);
+        call.enqueue(new Callback<RetrofitResponse<List<Order>>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<List<OrderWithDatas>>> call,
-                                   @NonNull Response<RetrofitResponse<List<OrderWithDatas>>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<List<Order>>> call,
+                                   @NonNull Response<RetrofitResponse<List<Order>>> response) {
                 Log.d(TAG, response.toString());
                 if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
@@ -55,7 +52,7 @@ public class OrdersViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<List<OrderWithDatas>>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<List<Order>>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.toString(), throwable);
                 ordersResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -63,11 +60,11 @@ public class OrdersViewModel extends ViewModel {
         });
     }
 
-    public LiveData<RemoteLoaderResult<List<OrderWithDatas>>> getOrdersResult() {
+    public LiveData<RemoteLoaderResult<List<Order>>> getOrdersResult() {
         return ordersResult;
     }
 
-    public void setOrdersResult(RemoteLoaderResult<List<OrderWithDatas>> result) {
+    public void setOrdersResult(RemoteLoaderResult<List<Order>> result) {
         ordersResult.setValue(result);
     }
 

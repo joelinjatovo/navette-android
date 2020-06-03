@@ -1,24 +1,15 @@
 package com.navetteclub.ui.order;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
-import com.navetteclub.R;
-import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Location;
-import com.navetteclub.database.entity.Notification;
-import com.navetteclub.databinding.ViewholderDateBinding;
 import com.navetteclub.databinding.ViewholderLocationBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
 
 import java.util.List;
 

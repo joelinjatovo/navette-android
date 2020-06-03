@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
 
 import java.util.ArrayList;
@@ -15,14 +14,14 @@ public class OrderRequest {
     public Order order;
 
     @SerializedName("items")
-    public List<ItemWithDatas> items;
+    public List<Item> items;
 
     public OrderRequest setOrder(Order order) {
         this.order = order;
         return this;
     }
 
-    public OrderRequest setItems(List<ItemWithDatas> items) {
+    public OrderRequest setItems(List<Item> items) {
         this.items = new ArrayList<>();
         if (items!=null) this.items.addAll(items);
         return this;

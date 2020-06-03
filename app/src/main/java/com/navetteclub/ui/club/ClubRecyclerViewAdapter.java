@@ -16,7 +16,6 @@ import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

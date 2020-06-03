@@ -16,13 +16,10 @@ import com.navetteclub.api.services.CashApiService;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.api.services.OrderApiService;
 import com.navetteclub.database.entity.Car;
-import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Point;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.ui.order.OrderType;
 import com.navetteclub.utils.Log;
@@ -78,21 +75,21 @@ public class OrderViewModel extends ViewModel {
 
     private MutableLiveData<Point> item2PointLiveData = new MutableLiveData<>();
 
-    private List<ItemWithDatas> items;
+    private List<Item> items;
 
-    private MutableLiveData<List<ItemWithDatas>> itemsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Item>> itemsLiveData = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<List<CarAndModel>>> carsResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<Car>>> carsResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> orderResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Order>> orderResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> paymentResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Order>> paymentResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> cartResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Order>> cartResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> cancelResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Order>> cancelResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<OrderWithDatas>> viewResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Order>> viewResult = new MutableLiveData<>();
 
     public String origin;
 
@@ -154,11 +151,11 @@ public class OrderViewModel extends ViewModel {
         if(club==null) return;
         Log.d(TAG, "ClubApiService.getCars(" + club.getId() +")");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
-        Call<RetrofitResponse<List<CarAndModel>>> call = service.getCars(club.getId());
-        call.enqueue(new Callback<RetrofitResponse<List<CarAndModel>>>() {
+        Call<RetrofitResponse<List<Car>>> call = service.getCars(club.getId());
+        call.enqueue(new Callback<RetrofitResponse<List<Car>>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
-                                   @NonNull Response<RetrofitResponse<List<CarAndModel>>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<List<Car>>> call,
+                                   @NonNull Response<RetrofitResponse<List<Car>>> response) {
                 Log.e(TAG, response.toString());
                 if (response.body() != null) {
                     Log.e(TAG, response.body().toString());
@@ -169,7 +166,7 @@ public class OrderViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<List<CarAndModel>>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<List<Car>>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.getMessage(), throwable);
                 carsResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -195,16 +192,16 @@ public class OrderViewModel extends ViewModel {
         Log.d(TAG, "placeOrder(" + orderRequest + ")");
 
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.createOrder(token, orderRequest);
-        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+        Call<RetrofitResponse<Order>> call = service.create(token, orderRequest);
+        call.enqueue(new Callback<RetrofitResponse<Order>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
+                                   @NonNull Response<RetrofitResponse<Order>> response) {
                 Log.e(TAG, response.toString());
                 if (response.body() != null){
                     Log.e(TAG, response.body().toString());
                     if(response.body().isSuccess()) {
-                        orderResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                        orderResult.setValue(new RemoteLoaderResult<Order>(response.body().getData()));
                     }else{
                         orderResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
@@ -214,7 +211,7 @@ public class OrderViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.getMessage(), throwable);
                 orderResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -222,23 +219,23 @@ public class OrderViewModel extends ViewModel {
         });
     }
 
-    public Call<RetrofitResponse<OrderWithDatas>> getCart() {
+    public Call<RetrofitResponse<Order>> getCart() {
         Log.d(TAG+"Cart", "OrderApiService.getCart()");
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrder(order).setItems(items).checkElement();
         Log.d(TAG+"Cart", "getCart(" + orderRequest + ")");
 
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.getCart(orderRequest);
-        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+        Call<RetrofitResponse<Order>> call = service.cart(orderRequest);
+        call.enqueue(new Callback<RetrofitResponse<Order>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
+                                   @NonNull Response<RetrofitResponse<Order>> response) {
                 Log.e(TAG+"Cart", response.toString());
                 if (response.body() != null){
                     Log.e(TAG+"Cart", response.body().toString());
                     if(response.body().isSuccess()) {
-                        cartResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                        cartResult.setValue(new RemoteLoaderResult<Order>(response.body().getData()));
                     }else{
                         cartResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
@@ -248,7 +245,7 @@ public class OrderViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG+"Cart", throwable.getMessage(), throwable);
                 cartResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -258,19 +255,19 @@ public class OrderViewModel extends ViewModel {
         return call;
     }
 
-    public Call<RetrofitResponse<OrderWithDatas>> getOrder(String token, String orderId) {
+    public Call<RetrofitResponse<Order>> getOrder(String token, String orderId) {
         Log.d(TAG+"Cart", "OrderApiService.getOrder(" + orderId + ")");
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.getOrder(token, orderId);
-        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+        Call<RetrofitResponse<Order>> call = service.show(token, orderId);
+        call.enqueue(new Callback<RetrofitResponse<Order>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
+                                   @NonNull Response<RetrofitResponse<Order>> response) {
                 Log.e(TAG+"View", response.toString());
                 if (response.body() != null){
                     Log.e(TAG+"View", response.body().toString());
                     if(response.body().isSuccess()) {
-                        viewResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                        viewResult.setValue(new RemoteLoaderResult<Order>(response.body().getData()));
                     }else{
                         viewResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
@@ -280,7 +277,7 @@ public class OrderViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG+"View", throwable.getMessage(), throwable);
                 viewResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -295,16 +292,16 @@ public class OrderViewModel extends ViewModel {
         OrderParam orderParam = new OrderParam(orderId);
 
         CashApiService service = RetrofitClient.getInstance().create(CashApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.pay(token, orderParam);
-        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+        Call<RetrofitResponse<Order>> call = service.pay(token, orderParam);
+        call.enqueue(new Callback<RetrofitResponse<Order>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
+                                   @NonNull Response<RetrofitResponse<Order>> response) {
                 Log.e(TAG, response.toString());
                 if (response.body() != null){
                     Log.e(TAG+"Payment", response.body().toString());
                     if(response.body().isSuccess()) {
-                        paymentResult.setValue(new RemoteLoaderResult<OrderWithDatas>(response.body().getData()));
+                        paymentResult.setValue(new RemoteLoaderResult<Order>(response.body().getData()));
                     }else{
                         paymentResult.setValue(new RemoteLoaderResult<>(response.body().getErrorResString()));
                     }
@@ -314,7 +311,7 @@ public class OrderViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG+"Payment", throwable.getMessage(), throwable);
                 paymentResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -322,19 +319,19 @@ public class OrderViewModel extends ViewModel {
         });
     }
 
-    public LiveData<RemoteLoaderResult<List<CarAndModel>>> getCarsResult() {
+    public LiveData<RemoteLoaderResult<List<Car>>> getCarsResult() {
         return this.carsResult;
     }
 
-    public void setCarsResult(RemoteLoaderResult<List<CarAndModel>> value) {
+    public void setCarsResult(RemoteLoaderResult<List<Car>> value) {
         this.carsResult.setValue(value);
     }
 
-    public LiveData<RemoteLoaderResult<OrderWithDatas>> getOrderResult() {
+    public LiveData<RemoteLoaderResult<Order>> getOrderResult() {
         return this.orderResult;
     }
 
-    public void setOrderResult(RemoteLoaderResult<OrderWithDatas> value) {
+    public void setOrderResult(RemoteLoaderResult<Order> value) {
         this.orderResult.setValue(value);
     }
 
@@ -407,15 +404,15 @@ public class OrderViewModel extends ViewModel {
         return car;
     }
 
-    public List<ItemWithDatas> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public MutableLiveData<List<ItemWithDatas>> getItemsLiveData() {
+    public MutableLiveData<List<Item>> getItemsLiveData() {
         return itemsLiveData;
     }
 
-    public void setItemsLiveData(List<ItemWithDatas> items) {
+    public void setItemsLiveData(List<Item> items) {
         this.items = items;
         this.itemsLiveData.setValue(items);
     }
@@ -511,29 +508,28 @@ public class OrderViewModel extends ViewModel {
         setItem1LiveData(item, point);
     }
 
-    public void setItem1LiveData(Item item, Point point) {
+    public void setItem1LiveData(Item item1, Point point) {
         mayBeInitItems();
 
-        ItemWithDatas data = null;
+        Item data = null;
         data = items.get(0);
         if(data==null){
-            data = new ItemWithDatas();
+            data = item1;
         }
 
-        data.setItem(item);
         data.setPoint(point);
         items.set(0, data);
-        setItem1LiveData(item);
+        setItem1LiveData(item1);
         setItem1PointLiveData(point);
     }
 
     public void setItem1LiveData(Item item1) {
         mayBeInitItems();
 
-        ItemWithDatas data = null;
+        Item data = null;
         data = items.get(0);
         if(data==null){
-            data = new ItemWithDatas();
+            data = item1;
         }
 
         if(item1!=null) {
@@ -544,7 +540,6 @@ public class OrderViewModel extends ViewModel {
             }
         }
 
-        data.setItem(item1);
         items.set(0, data);
 
         this.item1 = item1;
@@ -597,15 +592,8 @@ public class OrderViewModel extends ViewModel {
     public void setItem2LiveData(Item item, Point point) {
         mayBeInitItems();
 
-        ItemWithDatas data = null;
-        data = items.get(1);
-        if(data==null){
-            data = new ItemWithDatas();
-        }
-
-        data.setItem(item);
-        data.setPoint(point);
-        items.set(1, data);
+        item.setPoint(point);
+        items.set(1, item);
 
         setItem2LiveData(item);
         setItem2PointLiveData(point);
@@ -615,19 +603,7 @@ public class OrderViewModel extends ViewModel {
         Log.d(TAG, "setItem2LiveData(Item) " + item2);
         mayBeInitItems();
 
-        ItemWithDatas data = null;
-        data = items.get(1);
-        if(data==null){
-            data = new ItemWithDatas();
-        }
-
-        if(item2!=null) {
-            item2.setType(Order.TYPE_BACK);
-        }
-
-        data.setItem(item2);
-        items.set(1, data);
-
+        items.set(1, item2);
         this.item2 = item2;
         this.item2LiveData.setValue(item2);
     }
@@ -644,10 +620,10 @@ public class OrderViewModel extends ViewModel {
         Log.d(TAG, "setItem1PointLiveData() [point] " + point);
         mayBeInitItems();
 
-        ItemWithDatas data = null;
+        Item data = null;
         data = items.get(0);
         if(data==null){
-            data = new ItemWithDatas();
+            data = new Item();
         }
 
         data.setPoint(point);
@@ -670,10 +646,10 @@ public class OrderViewModel extends ViewModel {
         Log.d(TAG, "setItem2PointLiveData() " + orderType);
         mayBeInitItems();
 
-        ItemWithDatas data = null;
+        Item data = null;
         data = items.get(1);
         if(data==null){
-            data = new ItemWithDatas();
+            data = new Item();
         }
 
         data.setPoint(point);
@@ -801,53 +777,53 @@ public class OrderViewModel extends ViewModel {
         }
     }
 
-    public LiveData<RemoteLoaderResult<OrderWithDatas>> getPaymentResult() {
+    public LiveData<RemoteLoaderResult<Order>> getPaymentResult() {
         return paymentResult;
     }
 
-    public void setPaymentResult(RemoteLoaderResult<OrderWithDatas> paymentResult) {
+    public void setPaymentResult(RemoteLoaderResult<Order> paymentResult) {
         this.paymentResult.setValue(paymentResult);
     }
 
-    public LiveData<RemoteLoaderResult<OrderWithDatas>> getCartResult() {
+    public LiveData<RemoteLoaderResult<Order>> getCartResult() {
         return cartResult;
     }
 
-    public void setCartResult(RemoteLoaderResult<OrderWithDatas> cartResult) {
+    public void setCartResult(RemoteLoaderResult<Order> cartResult) {
         this.cartResult.setValue(cartResult);
     }
 
-    public LiveData<RemoteLoaderResult<OrderWithDatas>> getCancelResult() {
+    public LiveData<RemoteLoaderResult<Order>> getCancelResult() {
         return cancelResult;
     }
 
-    public void setCancelResult(RemoteLoaderResult<OrderWithDatas> cancelResult) {
+    public void setCancelResult(RemoteLoaderResult<Order> cancelResult) {
         this.cancelResult.setValue(cancelResult);
     }
 
-    public void attach(OrderWithDatas item) {
-        this.setOrderLiveData(item.getOrder());
+    public void attach(Order item) {
+        this.setOrderLiveData(item);
         this.setClubLiveData(item.getClub());
-        this.setClubPointLiveData(item.getClubPoint());
+        this.setClubPointLiveData(item.getClub().getPoint());
         this.setCarLiveData(item.getCar());
 
-        List<ItemWithDatas> items = item.getItems();
+        List<Item> items = item.getItems();
         if(items!=null) {
             for (int i=0; (i < items.size()) && (i < 2); i++) {
-                ItemWithDatas itemWithData = items.get(i);
+                Item itemWithData = items.get(i);
                 if(itemWithData!=null){
                     if(i==0){
-                        this.setItem1LiveData(itemWithData.getItem(), itemWithData.getPoint());
+                        this.setItem1LiveData(itemWithData, itemWithData.getPoint());
                     }else{
-                        this.setItem2LiveData(itemWithData.getItem(), itemWithData.getPoint());
+                        this.setItem2LiveData(itemWithData, itemWithData.getPoint());
                     }
                 }
             }
         }
 
-        if(item.getOrder()!=null){
-            if(item.getOrder().getType()!=null){
-                switch (item.getOrder().getType()){
+        if(item!=null){
+            if(item.getType()!=null){
+                switch (item.getType()){
                     case Order.TYPE_GO:
                         setOrderTypeLiveData(OrderType.GO);
                         break;
@@ -862,11 +838,11 @@ public class OrderViewModel extends ViewModel {
         }
     }
 
-    public LiveData<RemoteLoaderResult<OrderWithDatas>> getViewResult() {
+    public LiveData<RemoteLoaderResult<Order>> getViewResult() {
         return viewResult;
     }
 
-    public void setViewResult(RemoteLoaderResult<OrderWithDatas> viewResult) {
+    public void setViewResult(RemoteLoaderResult<Order> viewResult) {
         this.viewResult.setValue(viewResult);
     }
 

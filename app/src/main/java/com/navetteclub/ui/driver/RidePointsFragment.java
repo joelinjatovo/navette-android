@@ -25,12 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
-import com.navetteclub.database.entity.RidePointWithDatas;
-import com.navetteclub.database.entity.RideWithDatas;
-import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentRidePointsBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.vm.AuthViewModel;

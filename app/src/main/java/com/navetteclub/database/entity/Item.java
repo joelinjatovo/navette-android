@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +13,7 @@ import com.navetteclub.R;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 
 @Entity(
     tableName = "items"
@@ -23,7 +25,7 @@ public class Item {
     public static final String STATUS_CANCELED = "canceled";
     public static final String STATUS_NEXT = "next";
     public static final String STATUS_ARRIVED = "arrived";
-    public static final String STATUS_ONLINE = "online";
+    public static final String STATUS_STARTED = "started";
     public static final String STATUS_COMPLETED = "completed";
     public static final String TYPE_GO = "go";
     public static final String TYPE_BACK = "back";
@@ -54,6 +56,10 @@ public class Item {
     @ColumnInfo(name = "distance")
     private String distance;
 
+    @SerializedName("suggestion_count")
+    @ColumnInfo(name = "suggestion_count")
+    private Long suggestionCount;
+
     @SerializedName("duration_value")
     @ColumnInfo(name = "duration_value")
     private Long durationValue;
@@ -69,6 +75,26 @@ public class Item {
     @SerializedName("ride_at")
     @ColumnInfo(name = "ride_at")
     private Date rideAt;
+
+    @SerializedName("start_at")
+    @ColumnInfo(name = "start_at")
+    private Date startAt;
+
+    @SerializedName("actived_at")
+    @ColumnInfo(name = "actived_at")
+    private Date activedAt;
+
+    @SerializedName("arrived_at")
+    @ColumnInfo(name = "arrived_at")
+    private Date arrivedAt;
+
+    @SerializedName("started_at")
+    @ColumnInfo(name = "started_at")
+    private Date startedAt;
+
+    @SerializedName("canceled_at")
+    @ColumnInfo(name = "canceled_at")
+    private Date canceledAt;
 
     @SerializedName("completed_at")
     @ColumnInfo(name = "completed_at")
@@ -89,6 +115,26 @@ public class Item {
 
     @ColumnInfo(name = "order_id")
     private String orderId;
+
+    @SerializedName("point")
+    @Ignore
+    private Point point;
+
+    @SerializedName("order")
+    @Ignore
+    private Order order;
+
+    @SerializedName("ride")
+    @Ignore
+    private Ride ride;
+
+    @SerializedName("driver")
+    @Ignore
+    private User driver;
+
+    @SerializedName("ridepoints")
+    @Ignore
+    private List<RidePoint> ridePoints;
 
     public Long getId() {
         return id;
@@ -249,10 +295,98 @@ public class Item {
             case STATUS_ACTIVE: return R.string.status_active;
             case STATUS_ARRIVED: return R.string.status_arrived;
             case STATUS_NEXT: return R.string.status_next;
-            case STATUS_ONLINE: return R.string.status_online;
+            case STATUS_STARTED: return R.string.status_online;
             case STATUS_CANCELED: return R.string.status_canceled;
             case STATUS_COMPLETED: return R.string.status_completed;
             case STATUS_PING: default: return R.string.status_ping;
         }
+    }
+
+    public Date getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(Date startAt) {
+        this.startAt = startAt;
+    }
+
+    public Date getActivedAt() {
+        return activedAt;
+    }
+
+    public void setActivedAt(Date activedAt) {
+        this.activedAt = activedAt;
+    }
+
+    public Date getArrivedAt() {
+        return arrivedAt;
+    }
+
+    public void setArrivedAt(Date arrivedAt) {
+        this.arrivedAt = arrivedAt;
+    }
+
+    public Date getCanceledAt() {
+        return canceledAt;
+    }
+
+    public void setCanceledAt(Date canceledAt) {
+        this.canceledAt = canceledAt;
+    }
+
+    public Date getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Date startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+    public Ride getRide() {
+        return ride;
+    }
+
+    public void setRide(Ride ride) {
+        this.ride = ride;
+    }
+
+    public User getDriver() {
+        return driver;
+    }
+
+    public void setDriver(User driver) {
+        this.driver = driver;
+    }
+
+    public List<RidePoint> getRidePoints() {
+        return ridePoints;
+    }
+
+    public void setRidePoints(List<RidePoint> ridePoints) {
+        this.ridePoints = ridePoints;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Long getSuggestionCount() {
+        return suggestionCount;
+    }
+
+    public void setSuggestionCount(Long suggestionCount) {
+        this.suggestionCount = suggestionCount;
     }
 }

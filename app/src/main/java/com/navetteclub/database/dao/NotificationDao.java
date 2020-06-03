@@ -2,15 +2,10 @@ package com.navetteclub.database.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Notification;
-import com.navetteclub.database.entity.Point;
 
 import java.util.ArrayList;
 import java.util.List;

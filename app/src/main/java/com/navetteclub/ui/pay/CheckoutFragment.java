@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentCheckoutBinding;
 import com.navetteclub.utils.UiUtils;

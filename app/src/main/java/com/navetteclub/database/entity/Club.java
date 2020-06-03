@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -42,6 +43,10 @@ public class Club {
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
+
+    @SerializedName("point")
+    @Ignore
+    private Point point;
 
     public Club() {
     }
@@ -92,5 +97,13 @@ public class Club {
                 + "; name=" + name
                 + "; imageUrl=" + imageUrl
             + "]";
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
     }
 }

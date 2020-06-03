@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import com.navetteclub.database.entity.Car;
-import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.database.entity.CarModel;
 import com.navetteclub.database.entity.Club;
 
@@ -55,19 +54,4 @@ public abstract class CarDao extends BaseDao<Car> {
         }
         return output;
     }
-
-    @Transaction
-    public void insertCarAndModel(Club club, Car car, CarModel model) {
-        _insertCarModel(model);
-        car.setCarModelId(model.getId());
-        car.setClubId(club.getId());
-        insert(car);
-    }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract Long _insertCarModel(CarModel model);
-
-    @Transaction
-    @Query("SELECT * FROM car_models JOIN cars ON cars.car_model_id = car_models.id WHERE cars.club_id = :clubId")
-    public abstract LiveData<List<CarAndModel>> loadCarAndClub(Long clubId);
 }

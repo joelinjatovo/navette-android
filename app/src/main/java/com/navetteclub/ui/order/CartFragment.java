@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,9 +26,7 @@ import com.navetteclub.R;
 import com.navetteclub.database.entity.Car;
 import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentCartBinding;
 import com.navetteclub.utils.Log;

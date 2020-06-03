@@ -1,21 +1,16 @@
 package com.navetteclub.ui.order;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -46,12 +41,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-import com.navetteclub.App;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
@@ -59,33 +51,23 @@ import com.navetteclub.database.entity.User;
 import com.navetteclub.database.entity.UserAndPoint;
 import com.navetteclub.databinding.FragmentLiveBinding;
 import com.navetteclub.services.LocationUpdatesService;
-import com.navetteclub.ui.MainActivity;
 import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Log;
 import com.navetteclub.utils.MapUiUtils;
 import com.navetteclub.utils.PusherOdk;
 import com.navetteclub.utils.Utils;
 import com.navetteclub.vm.AuthViewModel;
-import com.navetteclub.vm.GoogleViewModel;
 import com.navetteclub.vm.ItemViewModel;
 import com.navetteclub.vm.LiveViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.RideViewModel;
 import com.pusher.client.Pusher;
-import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
 import com.pusher.client.channel.PusherEvent;
-import com.pusher.client.connection.ConnectionEventListener;
-import com.pusher.client.connection.ConnectionState;
-import com.pusher.client.connection.ConnectionStateChange;
-import com.pusher.client.util.HttpAuthorizer;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 

@@ -1,19 +1,18 @@
 package com.navetteclub.database.entity;
 
 import androidx.annotation.NonNull;
-import androidx.room.Embedded;
-import androidx.room.Relation;
+import androidx.room.Ignore;
 
 import com.google.gson.annotations.SerializedName;
 
 public class UserAndPoint {
 
     @SerializedName("point")
-    @Embedded
+    @Ignore
     private Point point;
 
     @SerializedName("user")
-    @Embedded
+    @Ignore
     private User user;
 
     public Point getPoint() {

@@ -283,6 +283,7 @@
     <string name="status_completed">términé</string>
     <string name="status_canceled">annulé</string>
     <string name="status_online">en route</string>
+    <string name="status_started">debuter</string>
     <string name="status_arrived">arrivé</string>
     <string name="status_next">prochain</string>
     <string name="status_ok">ok</string>

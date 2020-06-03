@@ -1,6 +1,5 @@
 package com.navetteclub.ui.order;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.CarAndModel;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.utils.Constants;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

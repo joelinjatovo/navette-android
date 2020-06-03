@@ -3,6 +3,7 @@ package com.navetteclub.database.entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -10,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 
 @Entity(
     tableName = "orders"
@@ -120,6 +122,22 @@ public class Order {
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
+
+    @SerializedName("club")
+    @Ignore
+    private Club club;
+
+    @SerializedName("car")
+    @Ignore
+    private Car car;
+
+    @SerializedName("items")
+    @Ignore
+    private List<Item> items;
+
+    @SerializedName("rides")
+    @Ignore
+    private List<Ride> rides;
 
     public Long getId() {
         return id;
@@ -336,5 +354,37 @@ public class Order {
 
     public void setCoefficient(Double coefficient) {
         this.coefficient = coefficient;
+    }
+
+    public Club getClub() {
+        return club;
+    }
+
+    public void setClub(Club club) {
+        this.club = club;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public List<Ride> getRides() {
+        return rides;
+    }
+
+    public void setRides(List<Ride> rides) {
+        this.rides = rides;
     }
 }

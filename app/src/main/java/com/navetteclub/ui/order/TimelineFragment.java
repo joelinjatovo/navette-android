@@ -1,14 +1,10 @@
 package com.navetteclub.ui.order;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,18 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.databinding.FragmentTimelineBinding;
 import com.navetteclub.models.Timeline;
-import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.OrderViewModel;
-import com.navetteclub.vm.OrdersViewModel;
-
-import java.util.ArrayList;
 
 public class TimelineFragment extends Fragment {
 

@@ -4,8 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,13 +22,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.navetteclub.R;
 import com.navetteclub.api.models.Pagination;
-import com.navetteclub.database.entity.CarAndModel;
-import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.ItemWithDatas;
-import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -43,7 +33,6 @@ import com.navetteclub.vm.OrderViewModel;
 import com.navetteclub.vm.OrdersViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class OrdersFragment extends Fragment implements OnClickItemListener<OrderWithDatas>, SwipeRefreshLayout.OnRefreshListener {
 

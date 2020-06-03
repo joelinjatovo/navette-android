@@ -11,21 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Car;
-import com.navetteclub.database.entity.Notification;
-import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
-import com.navetteclub.database.entity.RideWithDatas;
-import com.navetteclub.databinding.ViewholderNotificationBinding;
-import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.databinding.ViewholderRideBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
-import com.navetteclub.ui.order.OrdersFragment;
-import com.navetteclub.utils.Constants;
 import com.navetteclub.utils.Utils;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.navetteclub.ui.car;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,27 +9,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.CarAndModel;
+import com.navetteclub.database.entity.Car;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.order.CarRecyclerViewAdapter;
-import com.navetteclub.ui.order.OrderFragment;
-import com.navetteclub.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapter.ViewHolder> {
 
-    private List<CarAndModel> mItems;
+    private List<Car> mItems;
 
-    private final OnClickItemListener<CarAndModel> mListener;
+    private final OnClickItemListener<Car> mListener;
 
-    public CarViewPagerAdapter(OnClickItemListener<CarAndModel> listener) {
+    public CarViewPagerAdapter(OnClickItemListener<Car> listener) {
         mListener = listener;
     }
 
@@ -45,10 +40,10 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
     @Override
     public void onBindViewHolder(final CarViewPagerAdapter.ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        holder.mTextView.setText(mItems.get(position).getCar().getName());
+        holder.mTextView.setText(mItems.get(position).getName());
         new Picasso.Builder(holder.mImageView.getContext())
                 .build()
-                .load(BuildConfig.BASE_URL + mItems.get(position).getCar().getImageUrl())
+                .load(BuildConfig.BASE_URL + mItems.get(position).getImageUrl())
                 .resize(360,180).into(holder.mImageView);
 
         holder.mView.setOnClickListener(v -> {
@@ -73,7 +68,7 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<CarAndModel> items){
+    public void setItems(List<Car> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -91,16 +86,16 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    CarAndModel oldItem = mItems.get(oldItemPosition);
-                    CarAndModel newItem = mItems.get(newItemPosition);
-                    return oldItem.getCar().getId() == newItem.getCar().getId();
+                    Car oldItem = mItems.get(oldItemPosition);
+                    Car newItem = mItems.get(newItemPosition);
+                    return oldItem.getId() == newItem.getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    CarAndModel oldItem = mItems.get(oldItemPosition);
-                    CarAndModel newItem = mItems.get(newItemPosition);
-                    return oldItem.getCar().getName()!=null && oldItem.getCar().getName().equals(newItem.getCar().getName());
+                    Car oldItem = mItems.get(oldItemPosition);
+                    Car newItem = mItems.get(newItemPosition);
+                    return oldItem.getName()!=null && oldItem.getName().equals(newItem.getName());
                 }
             });
 
@@ -114,7 +109,7 @@ public class CarViewPagerAdapter extends RecyclerView.Adapter<CarViewPagerAdapte
         final ImageView mImageView;
         final TextView mTextView;
         final ExtendedFloatingActionButton mButton;
-        CarAndModel mItem;
+        Car mItem;
 
         ViewHolder(View view) {
             super(view);

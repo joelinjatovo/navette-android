@@ -1,37 +1,21 @@
 package com.navetteclub.ui.order;
 
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.ItemWithDatas;
-import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.Point;
 import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.notification.NotificationFragment;
-import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.BaseViewHolder>{

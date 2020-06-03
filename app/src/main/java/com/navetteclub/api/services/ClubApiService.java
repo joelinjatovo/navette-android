@@ -1,8 +1,8 @@
 package com.navetteclub.api.services;
 
 import com.navetteclub.api.responses.RetrofitResponse;
-import com.navetteclub.database.entity.CarAndModel;
-import com.navetteclub.database.entity.ClubAndPoint;
+import com.navetteclub.database.entity.Car;
+import com.navetteclub.database.entity.Club;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public interface ClubApiService {
     
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/clubs")
-    Call<RetrofitResponse<List<ClubAndPoint>>> getClubs();
+    Call<RetrofitResponse<List<Club>>> index();
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @GET("api/v1/club/{club}/cars")
-    Call<RetrofitResponse<List<CarAndModel>>> getCars(@Path("club") Long clubId);
+    Call<RetrofitResponse<List<Car>>> getCars(@Path("club") Long clubId);
 }

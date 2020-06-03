@@ -11,11 +11,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -23,12 +20,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Car;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.FragmentPlaceBinding;
-import com.navetteclub.models.RemoteLoaderResult;
-import com.navetteclub.utils.UiUtils;
-import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 

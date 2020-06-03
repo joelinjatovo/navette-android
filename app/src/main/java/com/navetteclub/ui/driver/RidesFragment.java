@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,20 +22,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.navetteclub.R;
 import com.navetteclub.api.models.Pagination;
-import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.RideWithDatas;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.databinding.FragmentRidesBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.PaginationListener;
-import com.navetteclub.ui.notification.NotificationRecyclerViewAdapter;
-import com.navetteclub.ui.order.OrdersFragment;
 import com.navetteclub.utils.Log;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
-import com.navetteclub.vm.OrderViewModel;
-import com.navetteclub.vm.OrdersViewModel;
 import com.navetteclub.vm.RidesViewModel;
 
 import java.util.ArrayList;

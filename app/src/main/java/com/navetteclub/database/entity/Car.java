@@ -3,6 +3,7 @@ package com.navetteclub.database.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -48,6 +49,14 @@ public class Car {
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
     private Date createdAt;
+
+    @SerializedName("model")
+    @Ignore
+    private CarModel model;
+
+    @SerializedName("driver")
+    @Ignore
+    private User driver;
 
     public Car() {
     }
@@ -114,5 +123,21 @@ public class Car {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public CarModel getModel() {
+        return model;
+    }
+
+    public void setModel(CarModel model) {
+        this.model = model;
+    }
+
+    public User getDriver() {
+        return driver;
+    }
+
+    public void setDriver(User driver) {
+        this.driver = driver;
     }
 }

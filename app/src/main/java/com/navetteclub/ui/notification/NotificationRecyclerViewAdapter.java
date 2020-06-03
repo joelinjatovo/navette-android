@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,14 +15,10 @@ import com.navetteclub.database.converter.ObjectConverter;
 import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Notification;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.databinding.ViewholderDateBinding;
 import com.navetteclub.databinding.ViewholderNotificationBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.order.OrderRecyclerViewAdapter;
-import com.navetteclub.ui.order.OrderViewFragment;
-import com.navetteclub.utils.Log;
 import com.navetteclub.utils.Utils;
 
 import org.json.JSONException;

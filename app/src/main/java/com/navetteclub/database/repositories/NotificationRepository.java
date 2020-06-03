@@ -5,12 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.navetteclub.database.AppDatabase;
-import com.navetteclub.database.callback.UpsertCallback;
-import com.navetteclub.database.dao.ClubDao;
 import com.navetteclub.database.dao.NotificationDao;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Notification;
-import com.navetteclub.database.task.UpsertClubAndPointAsyncTask;
 
 import java.util.List;
 

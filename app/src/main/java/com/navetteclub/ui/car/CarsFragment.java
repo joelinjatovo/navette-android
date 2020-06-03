@@ -18,22 +18,17 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.CarAndModel;
-import com.navetteclub.database.entity.Notification;
+import com.navetteclub.database.entity.Car;
 import com.navetteclub.databinding.FragmentCarsBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.ui.order.OrderFragment;
-import com.navetteclub.ui.order.ProcessFragment;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
 import java.util.ArrayList;
 
-public class CarsFragment extends Fragment implements OnClickItemListener<CarAndModel> {
+public class CarsFragment extends Fragment implements OnClickItemListener<Car> {
 
     private static final String TAG = CarsFragment.class.getSimpleName();
 
@@ -95,7 +90,7 @@ public class CarsFragment extends Fragment implements OnClickItemListener<CarAnd
 
                     if(result.getSuccess()!=null){
                         mBinding.setIsLoading(false);
-                        ArrayList<CarAndModel> items = (ArrayList<CarAndModel>) result.getSuccess();
+                        ArrayList<Car> items = (ArrayList<Car>) result.getSuccess();
                         if(items.isEmpty()){
                             mBinding.setShowError(true);
                             mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);
@@ -142,8 +137,8 @@ public class CarsFragment extends Fragment implements OnClickItemListener<CarAnd
     }
 
     @Override
-    public void onClick(View view, int position, CarAndModel item) {
-        orderViewModel.setCarLiveData(item.getCar());
+    public void onClick(View view, int position, Car item) {
+        orderViewModel.setCarLiveData(item);
         Navigation.findNavController(view).navigate(R.id.action_cars_fragment_to_privatize_fragment);
     }
 }

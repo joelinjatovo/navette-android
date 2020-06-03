@@ -30,7 +30,6 @@ import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.database.entity.User;
-import com.navetteclub.database.entity.UserPoint;
 
 @Database(entities = {
         Car.class,

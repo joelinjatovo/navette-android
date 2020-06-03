@@ -15,39 +15,25 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.Car;
-import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
-import com.navetteclub.database.entity.ItemWithDatas;
 import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
-import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrderViewBinding;
 import com.navetteclub.utils.Log;
-import com.navetteclub.utils.PusherOdk;
-import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.AuthViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 import com.navetteclub.vm.OrderViewModel;
 
-import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 

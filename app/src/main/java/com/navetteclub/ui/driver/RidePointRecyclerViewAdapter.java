@@ -1,7 +1,5 @@
 package com.navetteclub.ui.driver;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.navetteclub.R;
-import com.navetteclub.database.entity.Order;
-import com.navetteclub.database.entity.OrderWithDatas;
 import com.navetteclub.database.entity.RidePoint;
-import com.navetteclub.database.entity.RidePointWithDatas;
-import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.databinding.ViewholderRidePointBinding;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.utils.Constants;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

@@ -10,7 +10,6 @@ import com.navetteclub.api.datasources.LoginDataSource;
 import com.navetteclub.api.datasources.RegisterDataSource;
 import com.navetteclub.api.repositories.LoginRepository;
 import com.navetteclub.api.repositories.RegisterRepository;
-import com.navetteclub.database.repositories.CarRepository;
 import com.navetteclub.database.repositories.ClubRepository;
 import com.navetteclub.database.repositories.LocationRepository;
 import com.navetteclub.database.repositories.NotificationRepository;

@@ -8,12 +8,9 @@ import androidx.lifecycle.ViewModel;
 import com.navetteclub.R;
 import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.ItemParam;
-import com.navetteclub.api.models.RidePointParam;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.ItemApiService;
-import com.navetteclub.api.services.RidePointApiService;
-import com.navetteclub.database.entity.ItemWithDatas;
-import com.navetteclub.database.entity.RideWithDatas;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.models.RemoteLoaderResult;
 import com.navetteclub.utils.Log;
 
@@ -25,17 +22,17 @@ public class ItemViewModel extends ViewModel {
 
     private static final String TAG = ItemViewModel.class.getSimpleName();
 
-    private MutableLiveData<RemoteLoaderResult<ItemWithDatas>> itemViewResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Item>> itemViewResult = new MutableLiveData<>();
 
-    private MutableLiveData<RemoteLoaderResult<ItemWithDatas>> itemCancelResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<Item>> itemCancelResult = new MutableLiveData<>();
 
     public void loadItem(String token, String itemId) {
         ItemApiService service = RetrofitClient.getInstance().create(ItemApiService.class);
-        Call<RetrofitResponse<ItemWithDatas>> call = service.getItem(token, itemId);
-        call.enqueue(new Callback<RetrofitResponse<ItemWithDatas>>() {
+        Call<RetrofitResponse<Item>> call = service.show(token, itemId);
+        call.enqueue(new Callback<RetrofitResponse<Item>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<ItemWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<ItemWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Item>> call,
+                                   @NonNull Response<RetrofitResponse<Item>> response) {
                 Log.d(TAG, response.toString());
                 if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
@@ -50,7 +47,7 @@ public class ItemViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<ItemWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Item>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.toString(), throwable);
                 itemViewResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -60,11 +57,11 @@ public class ItemViewModel extends ViewModel {
 
     public void cancelItem(String token, String itemId){
         ItemApiService service = RetrofitClient.getInstance().create(ItemApiService.class);
-        Call<RetrofitResponse<ItemWithDatas>> call = service.cancel(token, new ItemParam(itemId));
-        call.enqueue(new Callback<RetrofitResponse<ItemWithDatas>>() {
+        Call<RetrofitResponse<Item>> call = service.cancel(token, new ItemParam(itemId));
+        call.enqueue(new Callback<RetrofitResponse<Item>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<ItemWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<ItemWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Item>> call,
+                                   @NonNull Response<RetrofitResponse<Item>> response) {
                 Log.d(TAG, response.toString());
                 if (response.body() != null) {
                     Log.d(TAG, response.body().toString());
@@ -79,7 +76,7 @@ public class ItemViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<ItemWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Item>> call,
                                   @NonNull Throwable throwable) {
                 Log.e(TAG, throwable.toString(), throwable);
                 itemCancelResult.setValue(new RemoteLoaderResult<>(R.string.error_bad_request));
@@ -87,19 +84,19 @@ public class ItemViewModel extends ViewModel {
         });
     }
 
-    public LiveData<RemoteLoaderResult<ItemWithDatas>> getItemViewResult() {
+    public LiveData<RemoteLoaderResult<Item>> getItemViewResult() {
         return itemViewResult;
     }
 
-    public void setItemViewResult(RemoteLoaderResult<ItemWithDatas> itemViewResult) {
+    public void setItemViewResult(RemoteLoaderResult<Item> itemViewResult) {
         this.itemViewResult.setValue(itemViewResult);
     }
 
-    public LiveData<RemoteLoaderResult<ItemWithDatas>> getItemCancelResult() {
+    public LiveData<RemoteLoaderResult<Item>> getItemCancelResult() {
         return itemCancelResult;
     }
 
-    public void setItemCancelResult(RemoteLoaderResult<ItemWithDatas> itemCancelResult) {
+    public void setItemCancelResult(RemoteLoaderResult<Item> itemCancelResult) {
         this.itemCancelResult.setValue(itemCancelResult);
     }
 }

@@ -14,17 +14,10 @@ import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.RidePoint;
-import com.navetteclub.database.entity.RidePointWithDatas;
-import com.navetteclub.database.entity.RideWithDatas;
-import com.navetteclub.databinding.ViewholderRideBinding;
-import com.navetteclub.databinding.ViewholderRidePointBinding;
 import com.navetteclub.databinding.ViewpagerRidePointBinding;
-import com.navetteclub.databinding.ViewpagerRidePointBindingImpl;
 import com.navetteclub.ui.OnClickItemListener;
-import com.navetteclub.utils.Constants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePointMapRecyclerViewAdapter.BaseViewHolder>{
@@ -32,16 +25,16 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
     private static final int VIEW_TYPE_NORMAL = 1;
     private static final int VIEW_TYPE_COMPLETING = 2;
 
-    private List<RidePointWithDatas> mItems;
+    private List<RidePoint> mItems;
 
-    private OnClickItemListener<RidePointWithDatas> mListener;
+    private OnClickItemListener<RidePoint> mListener;
 
     private boolean hasStarting = false;
 
     private boolean hasCompleting = false;
 
 
-    public RidePointMapRecyclerViewAdapter setOnClickListener(OnClickItemListener<RidePointWithDatas> listener){
+    public RidePointMapRecyclerViewAdapter setOnClickListener(OnClickItemListener<RidePoint> listener){
         mListener = listener;
         return this;
     }
@@ -88,7 +81,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
     public void addStarting() {
         if(mItems!=null){
             hasStarting = true;
-            mItems.add(0, new RidePointWithDatas());
+            mItems.add(0, new RidePoint());
             notifyItemInserted(getItemCount() - 1);
         }
     }
@@ -96,14 +89,14 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
     public void addCompleting() {
         if(mItems!=null){
             hasCompleting = true;
-            mItems.add(new RidePointWithDatas());
+            mItems.add(new RidePoint());
             notifyItemInserted(getItemCount() - 1);
         }
     }
 
     public void removeStarting() {
         int position = 0;
-        RidePointWithDatas item = getItem(position);
+        RidePoint item = getItem(position);
         if (hasStarting && item != null && mItems!=null) {
             hasStarting = false;
             mItems.remove(position);
@@ -113,7 +106,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
 
     public void removeCompleting() {
         int position = getItemCount() - 1;
-        RidePointWithDatas item = getItem(position);
+        RidePoint item = getItem(position);
         if (hasCompleting && item != null && mItems!=null) {
             hasCompleting = false;
             mItems.remove(position);
@@ -128,12 +121,12 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
         }
     }
 
-    private RidePointWithDatas getItem(int position) {
+    private RidePoint getItem(int position) {
         if(mItems==null) return null;
         return mItems.get(position);
     }
 
-    public void setItems(List<RidePointWithDatas> items){
+    public void setItems(List<RidePoint> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -151,20 +144,20 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    RidePointWithDatas oldItem = mItems.get(oldItemPosition);
-                    RidePointWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRidePoint() != null
-                            && oldItem.getRidePoint().getId()!=null
-                            && newItem.getRidePoint() != null
-                            && newItem.getRidePoint().getId()!=null
-                            && oldItem.getRidePoint().getId().equals(newItem.getRidePoint().getId());
+                    RidePoint oldItem = mItems.get(oldItemPosition);
+                    RidePoint newItem = items.get(newItemPosition);
+                    return oldItem != null
+                            && oldItem.getId()!=null
+                            && newItem != null
+                            && newItem.getId()!=null
+                            && oldItem.getId().equals(newItem.getId());
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    RidePointWithDatas oldItem = mItems.get(oldItemPosition);
-                    RidePointWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRidePoint()!=null && oldItem.getRidePoint().equals(newItem.getRidePoint());
+                    RidePoint oldItem = mItems.get(oldItemPosition);
+                    RidePoint newItem = items.get(newItemPosition);
+                    return oldItem!=null && oldItem.equals(newItem);
                 }
             });
 
@@ -175,7 +168,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
 
     public static class ViewHolder extends BaseViewHolder {
         final ViewpagerRidePointBinding mBinding;
-        RidePointWithDatas mItem;
+        RidePoint mItem;
 
         ViewHolder(ViewpagerRidePointBinding binding) {
             super(binding.getRoot());
@@ -187,7 +180,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
 
         }
 
-        void setItem(RidePointWithDatas item){
+        void setItem(RidePoint item){
             mItem = item;
             if(mItem!=null){
                 if(mItem.getUser()!=null){
@@ -207,7 +200,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
                     mBinding.setPoint(point.getName());
                 }
 
-                RidePoint ridePoint = mItem.getRidePoint();
+                RidePoint ridePoint = mItem;
                 if(ridePoint!=null){
                     mBinding.setRideType(ridePoint.getType());
                     if(ridePoint.getStatus()!=null){
@@ -244,9 +237,9 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
                                 }
                                 mBinding.buttonAction.setVisibility(View.VISIBLE);
                             break;
-                            case RidePoint.STATUS_ONLINE:
+                            case RidePoint.STATUS_STARTED:
                                 mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
-                                mBinding.setRideStatus(getString(R.string.status_online));
+                                mBinding.setRideStatus(getString(R.string.status_started));
                                 mBinding.buttonAction.setVisibility(View.GONE);
                             break;
                         }
@@ -311,7 +304,7 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
         protected void clear() {
         }
 
-        void setItem(RidePointWithDatas item){
+        void setItem(RidePoint item){
             mItem = item;
             button.setOnClickListener(v -> {
                 if(mListener!=null){
@@ -325,9 +318,9 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
 
         private int mCurrentPosition;
 
-        protected RidePointWithDatas mItem;
+        protected RidePoint mItem;
 
-        protected OnClickItemListener<RidePointWithDatas>  mListener;
+        protected OnClickItemListener<RidePoint>  mListener;
 
         public BaseViewHolder(View itemView) {
             super(itemView);
@@ -335,11 +328,11 @@ public class RidePointMapRecyclerViewAdapter extends RecyclerView.Adapter<RidePo
 
         protected abstract void clear();
 
-        void setListener(OnClickItemListener<RidePointWithDatas> listener){
+        void setListener(OnClickItemListener<RidePoint> listener){
             mListener = listener;
         }
 
-        void setItem(RidePointWithDatas item){
+        void setItem(RidePoint item){
             mItem = item;
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
