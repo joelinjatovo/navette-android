@@ -2,12 +2,13 @@
 <resources>
     <color name="colorPrimary">#3a61c7</color>
     <color name="colorPrimaryDark">#056ce2</color>
-    <color name="colorAccent">#add4f5</color>
+    <color name="colorPrimaryWhite">#add4f5</color>
+    <color name="colorAccent">#3a61c7</color>
     <color name="colorAlert">#fb0066</color>
     <color name="colorAlertAccent">#ff0080</color>
     <color name="colorAlertDefault">#999999</color>
-    <color name="colorAlertPrimary">#66ff66</color>
-    <color name="colorAlertSuccess">#99ff99</color>
+    <color name="colorAlertPrimary">#3a61c7</color>
+    <color name="colorAlertSuccess">#056ce2</color>
     <color name="colorText">#2a2a2a</color>
     <color name="colorTextDark">#2a2a2a</color>
     <color name="colorIcon">#D6D6D6</color>

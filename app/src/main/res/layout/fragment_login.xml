@@ -15,23 +15,15 @@
         tools:context=".ui.MainActivity">
 
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/image"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg" />
-
-        <ImageView
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/image"
             android:src="@drawable/outline_clear_black_36"
-            android:tint="@color/white"
+            android:tint="@color/colorAccent"
             android:layout_margin="20dp"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintTop_toTopOf="@id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -40,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="@string/title_login"
-            android:textColor="@color/white"
+            android:textColor="@color/colorAccent"
             android:textSize="24sp"
             android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
