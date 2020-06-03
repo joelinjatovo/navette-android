@@ -22,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.navetteclub.R;
 import com.navetteclub.api.models.Pagination;
+import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentRidesBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -55,10 +56,10 @@ public class RidesFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private PaginationListener scrollListener;
 
-    private OnClickItemListener<RideWithDatas> mListener = (v,pos,item) -> {
-        if(authViewModel.getUser()!=null && item!=null && item.getRide()!=null){
+    private OnClickItemListener<Ride> mListener = (v, pos, item) -> {
+        if(authViewModel.getUser()!=null && item!=null && item!=null){
             RidesFragmentDirections.ActionRidesFragmentToRidePointsFragment action = RidesFragmentDirections
-                    .actionRidesFragmentToRidePointsFragment(item.getRide().getId());
+                    .actionRidesFragmentToRidePointsFragment(item.getId());
             NavHostFragment.findNavController(RidesFragment.this).navigate(action);
         }
     };
@@ -191,7 +192,7 @@ public class RidesFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     }
 
                     if(result.getSuccess()!=null){
-                        ArrayList<RideWithDatas> items = (ArrayList<RideWithDatas>) result.getSuccess();
+                        ArrayList<Ride> items = (ArrayList<Ride>) result.getSuccess();
                         if(items.isEmpty()){
                             mBinding.setShowError(true);
                             mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);

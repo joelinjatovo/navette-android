@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
 import com.navetteclub.databinding.ViewholderRidePointBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -16,11 +17,11 @@ import java.util.List;
 
 public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePointRecyclerViewAdapter.ViewHolder>{
 
-    private List<RidePointWithDatas> mItems;
+    private List<RidePoint> mItems;
 
-    private final OnClickItemListener<RidePointWithDatas> mListener;
+    private final OnClickItemListener<RidePoint> mListener;
 
-    public RidePointRecyclerViewAdapter(OnClickItemListener<RidePointWithDatas> listener) {
+    public RidePointRecyclerViewAdapter(OnClickItemListener<RidePoint> listener) {
         mListener = listener;
     }
 
@@ -74,7 +75,7 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<RidePointWithDatas> items){
+    public void setItems(List<RidePoint> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -92,18 +93,18 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    RidePointWithDatas oldItem = mItems.get(oldItemPosition);
-                    RidePointWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRidePoint()!=null &&
-                            oldItem.getRidePoint().getId() != null &&
-                            oldItem.getRidePoint().getId().equals(newItem.getRidePoint().getId());
+                    RidePoint oldItem = mItems.get(oldItemPosition);
+                    RidePoint newItem = items.get(newItemPosition);
+                    return oldItem!=null &&
+                            oldItem.getId() != null &&
+                            oldItem.getId().equals(newItem.getId());
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    RidePointWithDatas oldItem = mItems.get(oldItemPosition);
-                    RidePointWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRidePoint()!=null && oldItem.getRidePoint().equals(newItem.getRidePoint());
+                    RidePoint oldItem = mItems.get(oldItemPosition);
+                    RidePoint newItem = items.get(newItemPosition);
+                    return oldItem!=null && oldItem.equals(newItem);
                 }
             });
 
@@ -114,32 +115,32 @@ public class RidePointRecyclerViewAdapter extends RecyclerView.Adapter<RidePoint
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final ViewholderRidePointBinding mBinding;
-        RidePointWithDatas mItem;
+        RidePoint mItem;
 
         ViewHolder(ViewholderRidePointBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
         }
 
-        void setItem(RidePointWithDatas item){
+        void setItem(RidePoint item){
             mItem = item;
             if(mItem!=null){
-                if(mItem.getRidePoint()!=null){
-                    mBinding.setRideType(mItem.getRidePoint().getType());
-                    mBinding.setRideStatus(mItem.getRidePoint().getStatus());
-                    mBinding.setDuration(mItem.getRidePoint().getDuration());
+                if(mItem!=null){
+                    mBinding.setRideType(mItem.getType());
+                    mBinding.setRideStatus(mItem.getStatus());
+                    mBinding.setDuration(mItem.getDuration());
 
                     if(mItem.getPoint()!=null){
                         mBinding.setPoint(mItem.getPoint().getName());
                     }
 
-                    if(mItem.getRidePoint().getStatus()!=null){
-                        mBinding.setIsActive(RidePoint.STATUS_ACTIVE.equals(mItem.getRidePoint().getStatus()));
-                        mBinding.setIsNext(RidePoint.STATUS_NEXT.equals(mItem.getRidePoint().getStatus()));
-                        mBinding.setIsOnline(RidePoint.STATUS_ONLINE.equals(mItem.getRidePoint().getStatus()));
-                        mBinding.setIsCompleted(RidePoint.STATUS_COMPLETED.equals(mItem.getRidePoint().getStatus()));
-                        mBinding.setIsCanceled(RidePoint.STATUS_CANCELED.equals(mItem.getRidePoint().getStatus()));
-                        if (RidePoint.STATUS_PING.equals(mItem.getRidePoint().getStatus())) {
+                    if(mItem.getStatus()!=null){
+                        mBinding.setIsActive(RidePoint.STATUS_ACTIVE.equals(mItem.getStatus()));
+                        mBinding.setIsNext(RidePoint.STATUS_NEXT.equals(mItem.getStatus()));
+                        mBinding.setIsOnline(RidePoint.STATUS_STARTED.equals(mItem.getStatus()));
+                        mBinding.setIsCompleted(RidePoint.STATUS_COMPLETED.equals(mItem.getStatus()));
+                        mBinding.setIsCanceled(RidePoint.STATUS_CANCELED.equals(mItem.getStatus()));
+                        if (RidePoint.STATUS_PING.equals(mItem.getStatus())) {
                             mBinding.orderTextView.setVisibility(View.GONE);
                         } else {
                             mBinding.orderTextView.setVisibility(View.VISIBLE);

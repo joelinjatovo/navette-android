@@ -24,11 +24,11 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
     private static final int VIEW_TYPE_NORMAL = 1;
     private boolean isLoaderVisible = false;
 
-    private List<RideWithDatas> mItems;
+    private List<Ride> mItems;
 
-    private final OnClickItemListener<RideWithDatas> mListener;
+    private final OnClickItemListener<Ride> mListener;
 
-    public RideRecyclerViewAdapter(OnClickItemListener<RideWithDatas> listener) {
+    public RideRecyclerViewAdapter(OnClickItemListener<Ride> listener) {
         mListener = listener;
     }
 
@@ -66,7 +66,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
     public void addLoading() {
         if(mItems!=null){
             isLoaderVisible = true;
-            mItems.add(new RideWithDatas());
+            mItems.add(new Ride());
             notifyItemInserted(getItemCount() - 1);
         }
     }
@@ -74,7 +74,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
     public void removeLoading() {
         isLoaderVisible = false;
         int position = getItemCount() - 1;
-        RideWithDatas item = getItem(position);
+        Ride item = getItem(position);
         if (item != null && mItems!=null) {
             mItems.remove(position);
             notifyItemRemoved(position);
@@ -88,22 +88,22 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
         }
     }
 
-    RideWithDatas getItem(int position) {
+    Ride getItem(int position) {
         if(mItems==null) return null;
         return mItems.get(position);
     }
 
-    public void addItems(List<RideWithDatas> items) {
+    public void addItems(List<Ride> items) {
         if (mItems == null) {
             setItems(items);
         }else{
-            List<RideWithDatas> clone = new ArrayList<>(mItems);
+            List<Ride> clone = new ArrayList<>(mItems);
             clone.addAll(items);
             setItems(clone);
         }
     }
 
-    public void setItems(List<RideWithDatas> items){
+    public void setItems(List<Ride> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -121,16 +121,16 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    RideWithDatas oldItem = mItems.get(oldItemPosition);
-                    RideWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRide().getId() == newItem.getRide().getId();
+                    Ride oldItem = mItems.get(oldItemPosition);
+                    Ride newItem = items.get(newItemPosition);
+                    return oldItem.getId() == newItem.getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    RideWithDatas oldItem = mItems.get(oldItemPosition);
-                    RideWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getRide()!=null && oldItem.getRide().equals(newItem.getRide());
+                    Ride oldItem = mItems.get(oldItemPosition);
+                    Ride newItem = items.get(newItemPosition);
+                    return oldItem!=null && oldItem.equals(newItem.getRide());
                 }
             });
 
@@ -141,7 +141,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
     static class ViewHolder extends BaseViewHolder {
         final ViewholderRideBinding mBinding;
-        RideWithDatas mItem;
+        Ride mItem;
 
         ViewHolder(ViewholderRideBinding binding) {
             super(binding.getRoot());
@@ -153,7 +153,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
         }
 
-        void setItem(RideWithDatas item){
+        void setItem(Ride item){
             mItem = item;
             if(mItem!=null){
                 Car car = mItem.getCar();
@@ -167,7 +167,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
                             .into(mBinding.carImageView);
                 }
                 */
-                Ride ride = mItem.getRide();
+                Ride ride = mItem;
                 if(ride!=null) {
                     mBinding.setRideId(String.valueOf(ride.getId()));
                     mBinding.setDate(Utils.formatDateToString(ride.getStartedAt()));
@@ -240,9 +240,9 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
         private int mCurrentPosition;
 
-        protected RideWithDatas mItem;
+        protected Ride mItem;
 
-        protected OnClickItemListener<RideWithDatas>  mListener;
+        protected OnClickItemListener<Ride>  mListener;
 
         public BaseViewHolder(View itemView) {
             super(itemView);
@@ -250,11 +250,11 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
         protected abstract void clear();
 
-        void setListener(OnClickItemListener<RideWithDatas> listener){
+        void setListener(OnClickItemListener<Ride> listener){
             mListener = listener;
         }
 
-        void setItem(RideWithDatas item){
+        void setItem(Ride item){
             mItem = item;
         }
 

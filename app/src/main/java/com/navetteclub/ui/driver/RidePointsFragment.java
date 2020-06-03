@@ -58,7 +58,7 @@ public class RidePointsFragment extends Fragment {
 
     private Long rideId;
 
-    private RideWithDatas rideWithDatas;
+    private Ride rideWithDatas;
 
     private RideViewModel rideViewModel;
 
@@ -280,12 +280,12 @@ public class RidePointsFragment extends Fragment {
         ridesViewModel.loadRide(token, rideId);
     }
 
-    private void setRide(RideWithDatas rideWithDatas) {
+    private void setRide(Ride rideWithDatas) {
         this.rideWithDatas = rideWithDatas;
         if(rideWithDatas==null) return;
 
         // Ride
-        Ride ride = rideWithDatas.getRide();
+        Ride ride = rideWithDatas;
         if(ride!=null){
             if(Ride.STATUS_CANCELABLE.equals(ride.getStatus())){
                 // Cancel and live button
@@ -338,7 +338,7 @@ public class RidePointsFragment extends Fragment {
         }
 
         // Ride points
-        List<RidePointWithDatas> points = rideWithDatas.getPoints();
+        List<RidePoint> points = rideWithDatas.getRidepoints();
         mAdapter.setItems(points);
     }
 
@@ -436,11 +436,11 @@ public class RidePointsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private OnClickItemListener<RidePointWithDatas> mListener = (v, pos, item) -> {
+    private OnClickItemListener<RidePoint> mListener = (v, pos, item) -> {
         if(item==null){
             return;
         }
-        RidePoint ridePoint = item.getRidePoint();
+        RidePoint ridePoint = item;
         switch (v.getId()){
             case R.id.button_call:
                 if (item.getUser() != null && item.getUser().getPhone() != null) {

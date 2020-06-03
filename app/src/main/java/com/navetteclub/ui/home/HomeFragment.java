@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.databinding.FragmentHomeBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.utils.Constants;
@@ -59,7 +61,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
 
     private ClubRecyclerViewAdapter mAdapter;
 
-    private List<ClubAndPoint> mClubs;
+    private List<Club> mClubs;
 
     private ClubViewModel clubViewModel;
 
@@ -125,7 +127,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
     private void setupUi() {
         mBinding.createOrderButton.setOnClickListener(v -> {
             orderViewModel.refresh();
-            Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
+            NavHostFragment.findNavController(this).navigate(R.id.action_navigation_home_to_navigation_order);
         });
         mBinding.errorLoader.getButton().setOnClickListener(v -> loadClubs());
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
@@ -177,15 +179,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
         clubViewModel.load();
     }
 
-    private void updateClubUI(List<ClubAndPoint> clubs) {
+    private void updateClubUI(List<Club> clubs) {
         if(clubs!=null){
             mAdapter.setItems(clubs);
         }
         if(mMap!=null && clubs !=null) {
-            for(ClubAndPoint item: clubs){
-                if(item.getClub()!=null && item.getPoint()!=null){
+            for(Club item: clubs){
+                if(item!=null && item.getPoint()!=null){
                     LatLng latLng = new LatLng(item.getPoint().getLat(), item.getPoint().getLng());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(item.getClub().getName()));
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(item.getName()));
                 }
             }
         }
@@ -280,10 +282,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
     }
 
     @Override
-    public void onClick(View v, int position, ClubAndPoint item) {
+    public void onClick(View v, int position, Club item) {
         googleViewModel.refresh();
         orderViewModel.refresh();
-        orderViewModel.setClubLiveData(item.getClub());
+        orderViewModel.setClubLiveData(item);
         orderViewModel.setClubPointLiveData(item.getPoint());
         Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_order);
     }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.databinding.ViewholderClubHomeBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.squareup.picasso.Picasso;
@@ -17,11 +18,11 @@ import java.util.List;
 
 public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerViewAdapter.ViewHolder>{
 
-    private List<ClubAndPoint> mItems;
+    private List<Club> mItems;
 
-    private final OnClickItemListener<ClubAndPoint> mListener;
+    private final OnClickItemListener<Club> mListener;
 
-    public ClubRecyclerViewAdapter(OnClickItemListener<ClubAndPoint> listener) {
+    public ClubRecyclerViewAdapter(OnClickItemListener<Club> listener) {
         mListener = listener;
     }
 
@@ -51,7 +52,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<ClubAndPoint> items){
+    public void setItems(List<Club> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -69,16 +70,16 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    ClubAndPoint oldItem = mItems.get(oldItemPosition);
-                    ClubAndPoint newItem = items.get(newItemPosition);
-                    return oldItem.getClub().getId() == newItem.getClub().getId();
+                    Club oldItem = mItems.get(oldItemPosition);
+                    Club newItem = items.get(newItemPosition);
+                    return oldItem.getId() == newItem.getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    ClubAndPoint oldItem = mItems.get(oldItemPosition);
-                    ClubAndPoint newItem = items.get(newItemPosition);
-                    return oldItem.getClub()!=null && oldItem.getClub().equals(newItem.getClub());
+                    Club oldItem = mItems.get(oldItemPosition);
+                    Club newItem = items.get(newItemPosition);
+                    return oldItem!=null && oldItem.equals(newItem.getClub());
                 }
             });
 
@@ -89,20 +90,20 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ViewholderClubHomeBinding mBinding;
-        ClubAndPoint mItem;
+        Club mItem;
 
         ViewHolder(ViewholderClubHomeBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
         }
 
-        void setItem(ClubAndPoint item){
+        void setItem(Club item){
             mItem = item;
-            if(item.getClub()!=null) {
-                mBinding.setClub(item.getClub());
+            if(item!=null) {
+                mBinding.setClub(item);
                     if(item.getClub().getImageUrl()!=null) {
                         Picasso.get()
-                                .load(BuildConfig.BASE_URL + mItem.getClub().getImageUrl())
+                                .load(BuildConfig.BASE_URL + mItem.getImageUrl())
                                 .placeholder(R.drawable.image_placeholder)
                                 .error(R.drawable.image_placeholder)
                                 .resize(270, 135)

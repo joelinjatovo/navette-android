@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2DBB54</color>
-    <color name="colorPrimaryDark">#00a539</color>
-    <color name="colorAccent">#2DBB54</color>
-    <color name="colorText">#2a2a2a</color>
-    <color name="colorIcon">#D6D6D6</color>
-    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorPrimary">#3a61c7</color>
+    <color name="colorPrimaryDark">#056ce2</color>
+    <color name="colorAccent">#add4f5</color>
     <color name="colorAlert">#fb0066</color>
-    <color name="colorImportant">#ff0080</color>
-    <color name="background">#f8f8f8</color>
+    <color name="colorAlertAccent">#ff0080</color>
+    <color name="colorAlertDefault">#999999</color>
+    <color name="colorAlertPrimary">#66ff66</color>
+    <color name="colorAlertSuccess">#99ff99</color>
+    <color name="colorText">#2a2a2a</color>
+    <color name="colorTextDark">#2a2a2a</color>
+    <color name="colorIcon">#D6D6D6</color>
+    <color name="backgroundDefault">#f8f8f8</color>
+    <color name="backgroundDark">#2b2b2b</color>
+    <color name="backgroundWhite">#ffffff</color>
     <color name="white">#FFFFFF</color>
-    <color name="overlay">#bf000000</color>
     <color name="black">#000000</color>
     <color name="gray">#333333</color>
     <color name="red">#fe0007</color>
     <color name="transparent">#ffffffff</color>
-    <color name="colorAlertDefault">#999999</color>
-    <color name="colorAlertError">#fc7abb</color>
-    <color name="colorAlertSuccess">#99ff99</color>
-    <color name="colorAlertAccent">#6afd6a</color>
-    <color name="colorAlertPrimary">#66ff66</color>
+    <color name="overlay">#bf000000</color>
 </resources>

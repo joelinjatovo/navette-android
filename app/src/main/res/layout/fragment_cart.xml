@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/close_button"
-                android:background="@color/background"
+                android:background="@color/backgroundDefault"
                 android:visibility="@{isUnauthenticated|isLoading|showErrorLoader?View.GONE:View.VISIBLE}">
 
                 <androidx.core.widget.NestedScrollView
@@ -233,7 +233,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="3dp"
-                            android:background="@color/background" />
+                            android:background="@color/backgroundDefault" />
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
@@ -287,7 +287,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="3dp"
-                            android:background="@color/background" />
+                            android:background="@color/backgroundDefault" />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/live1Button"
@@ -338,7 +338,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:layout_alignParentEnd="true"
                                     android:text="@{@string/person_count(place)}"
-                                    android:textColor="@color/colorImportant" />
+                                    android:textColor="@color/colorAlert" />
 
                             </RelativeLayout>
 
@@ -347,7 +347,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="3dp"
-                            android:background="@color/background" />
+                            android:background="@color/backgroundDefault" />
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
@@ -404,7 +404,7 @@
                                         android:layout_alignParentEnd="true"
                                         android:text="@string/edit2"
                                         android:textAppearance="?attr/textAppearanceCaption"
-                                        android:textColor="@color/colorImportant" />
+                                        android:textColor="@color/colorAlert" />
 
                                 </RelativeLayout>
 
@@ -584,7 +584,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="3dp"
-                            android:background="@color/background" />
+                            android:background="@color/backgroundDefault" />
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
@@ -641,7 +641,7 @@
                                         android:layout_alignParentEnd="true"
                                         android:text="@string/edit2"
                                         android:textAppearance="?attr/textAppearanceCaption"
-                                        android:textColor="@color/colorImportant" />
+                                        android:textColor="@color/colorAlert" />
 
                                 </RelativeLayout>
 
@@ -820,7 +820,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="26dp"
-                            android:background="@color/background" />
+                            android:background="@color/backgroundDefault" />
 
                     </LinearLayout>
 
