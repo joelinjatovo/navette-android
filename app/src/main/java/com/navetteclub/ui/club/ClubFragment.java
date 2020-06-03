@@ -20,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.databinding.FragmentClubBinding;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.ClubViewModel;
@@ -35,7 +36,7 @@ public class ClubFragment extends BottomSheetDialogFragment {
 
     private ClubViewModel clubViewModel;
 
-    private ClubAndPoint mClubAndPoint;
+    private Club mClubAndPoint;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,11 +99,11 @@ public class ClubFragment extends BottomSheetDialogFragment {
 
                     mClubAndPoint = clubAndPoint;
 
-                    if(clubAndPoint.getClub()!=null){
-                        mBinding.setClub(clubAndPoint.getClub());
+                    if(clubAndPoint!=null){
+                        mBinding.setClub(clubAndPoint);
 
                         Picasso.get()
-                                .load(BuildConfig.BASE_URL + clubAndPoint.getClub().getImageUrl())
+                                .load(BuildConfig.BASE_URL + clubAndPoint.getImageUrl())
                                 .into(mBinding.imageView);
                     }
                 });
@@ -114,7 +115,7 @@ public class ClubFragment extends BottomSheetDialogFragment {
 
         mBinding.confirmButton.setOnClickListener(
                 v -> {
-                    orderViewModel.setClubLiveData(mClubAndPoint.getClub());
+                    orderViewModel.setClubLiveData(mClubAndPoint);
                     orderViewModel.setClubPointLiveData(mClubAndPoint.getPoint());
                     NavHostFragment.findNavController(this).navigate(R.id.action_club_to_order);
                 });

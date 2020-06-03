@@ -136,7 +136,7 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
 
                     if(result.getSuccess()!=null){
                         mBinding.setIsLoading(false);
-                        ArrayList<OrderWithDatas> items = (ArrayList<OrderWithDatas>) result.getSuccess();
+                        ArrayList<Order> items = (ArrayList<Order>) result.getSuccess();
                         if(items.isEmpty()){
                             mBinding.setShowError(true);
                             mBinding.loaderErrorView.getTitleView().setText(R.string.title_empty);

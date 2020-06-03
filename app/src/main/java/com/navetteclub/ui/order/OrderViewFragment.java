@@ -219,9 +219,9 @@ public class OrderViewFragment extends BottomSheetDialogFragment {
                     }
 
                     if(result.getSuccess()!=null){
-                        OrderWithDatas data = result.getSuccess();
+                        Order data = result.getSuccess();
                         if(data!=null){
-                            Order orderOnline = data.getOrder();
+                            Order orderOnline = data;
                             if(orderOnline!=null){
                                 setOrder(orderOnline);
                             }

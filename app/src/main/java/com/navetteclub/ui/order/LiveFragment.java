@@ -215,7 +215,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         updateUi(result.getSuccess());
 
                         // Listen ride
-                        ItemWithDatas itemWithData = result.getSuccess();
+                        Item itemWithData = result.getSuccess();
                         if(itemWithData==null) return;
                         Ride ride = itemWithData.getRide();
                         if(ride!=null){
@@ -312,13 +312,13 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         mBinding.statusTextView.setText(R.string.status_ping);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_default);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
-                        color = R.color.colorAlertError;
+                        color = R.color.colorAlert;
                         break;
                     case Item.STATUS_ACTIVE:
                         mBinding.statusTextView.setText(R.string.status_active);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
-                        color = R.color.colorImportant;
+                        color = R.color.colorAlert;
                         break;
                     case Item.STATUS_NEXT:
                         mBinding.setIsNext(true);
@@ -326,13 +326,13 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         mBinding.statusTextView.setText(R.string.status_next);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
-                        color = R.color.colorImportant;
+                        color = R.color.colorAlert;
                         break;
                     case Item.STATUS_ARRIVED:
                         mBinding.statusTextView.setText(R.string.status_arrived);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
-                        color = R.color.colorImportant;
+                        color = R.color.colorAlert;
                         break;
                     case Item.STATUS_COMPLETED:
                         mBinding.buttonCancel.setVisibility(View.GONE);

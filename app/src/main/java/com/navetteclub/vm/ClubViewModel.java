@@ -22,33 +22,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ClubViewModel extends ViewModel implements Callback<RetrofitResponse<List<Club>>>, UpsertCallback<ClubAndPoint> {
+public class ClubViewModel extends ViewModel implements Callback<RetrofitResponse<List<Club>>> {
 
     private static final String TAG = ClubViewModel.class.getSimpleName();
 
     private ClubRepository clubRepository;
 
-    private MutableLiveData<RemoteLoaderResult<List<ClubAndPoint>>> clubsResult = new MutableLiveData<>();
+    private MutableLiveData<RemoteLoaderResult<List<Club>>> clubsResult = new MutableLiveData<>();
 
-    private MutableLiveData<ClubAndPoint> club = new MutableLiveData<>();
-
-    private LiveData<List<ClubAndPoint>> clubs;
+    private MutableLiveData<Club> club = new MutableLiveData<>();
 
     ClubViewModel(ClubRepository clubRepository) {
         this.clubRepository = clubRepository;
-        this.clubs = clubRepository.getList();
     }
 
-    public LiveData<List<ClubAndPoint>> getClubs() {
-        return clubs;
-    }
-
-    public LiveData<List<ClubAndPoint>> search(String search) {
+    public LiveData<List<Club>> search(String search) {
         return clubRepository.search(search);
     }
 
     public void load(){
-        Log.d(TAG, "service.getClubs()");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
         Call<RetrofitResponse<List<Club>>> call = service.index();
         call.enqueue(this);
@@ -61,48 +53,30 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
             Log.d(TAG, response.body().toString());
             List<Club> clubAndPoints = response.body().getData();
             if(clubAndPoints!=null){
-                ClubAndPoint[] items = new ClubAndPoint[clubAndPoints.size()];
-                for(int i = 0 ; i < clubAndPoints.size(); i++){
-                    Club club = response.body().getData().get(i);
-                    if(club != null && club.getPoint() != null){
-                        Point point = club.getPoint();
-                        items[i] = new ClubAndPoint(club, point);
-                    }
-                }
-                clubRepository.upsert(this, items);
+                clubsResult.setValue(new RemoteLoaderResult<List<Club>>(clubAndPoints));
             }else{
-                clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
+                clubsResult.setValue(new RemoteLoaderResult<List<Club>>(R.string.error_loading_clubs));
             }
         }else{
-            clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
+            clubsResult.setValue(new RemoteLoaderResult<List<Club>>(R.string.error_loading_clubs));
         }
     }
 
     @Override
     public void onFailure(@NonNull Call<RetrofitResponse<List<Club>>> call, @NonNull Throwable t) {
         Log.e(TAG, t.toString());
-        clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_loading_clubs));
+        clubsResult.setValue(new RemoteLoaderResult<List<Club>>(R.string.error_loading_clubs));
     }
 
-    @Override
-    public void onUpsertError() {
-        clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(R.string.error_inserting_clubs));
-    }
-
-    @Override
-    public void onUpsertSuccess(List<ClubAndPoint> items) {
-        clubsResult.setValue(new RemoteLoaderResult<List<ClubAndPoint>>(items));
-    }
-
-    public MutableLiveData<ClubAndPoint> getClub() {
+    public MutableLiveData<Club> getClub() {
         return club;
     }
 
-    public void setClub(ClubAndPoint club) {
+    public void setClub(Club club) {
         this.club.setValue(club);
     }
 
-    public MutableLiveData<RemoteLoaderResult<List<ClubAndPoint>>> getClubsResult() {
+    public MutableLiveData<RemoteLoaderResult<List<Club>>> getClubsResult() {
         return clubsResult;
     }
 }

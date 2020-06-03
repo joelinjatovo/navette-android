@@ -425,17 +425,13 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
-        ClubAndPoint clubAndPoint = new ClubAndPoint(rideWithDatas.getClub(), rideWithDatas.getClub().getPoint());
-        if(clubAndPoint!=null){
-            Point point = clubAndPoint.getPoint();
-            Club club = clubAndPoint.getClub();
-            if(club!=null && point!=null){
-                drawClubMarker(point, club);
-
-                if(mMap!=null){
-                    LatLng latLng = point.toLatLng();
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                }
+        Club club = rideWithDatas.getClub();
+        Point point = rideWithDatas.getClub().getPoint();
+        if(club!=null && point!=null){
+            drawClubMarker(point, club);
+            if(mMap!=null){
+                LatLng latLng = point.toLatLng();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             }
         }
 

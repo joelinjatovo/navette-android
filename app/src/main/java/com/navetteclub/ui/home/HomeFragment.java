@@ -45,7 +45,7 @@ import com.navetteclub.vm.OrderViewModel;
 
 import java.util.List;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClickItemListener<ClubAndPoint> {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClickItemListener<Club> {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
@@ -158,17 +158,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
                     if (result.getError() != null) {
                         mBinding.setIsErrorLoading(true);
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
-                    }else{
+                    }
+                    if(result.getSuccess()!=null){
                         mBinding.setIsErrorLoading(false);
+                        mClubs = result.getSuccess();
+                        updateClubUI(result.getSuccess());
                     }
-                });
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(),
-                clubAndPoints -> {
-                    if (clubAndPoints == null) {
-                        return;
-                    }
-                    mClubs = clubAndPoints;
-                    updateClubUI(clubAndPoints);
                 });
         loadClubs();
     }

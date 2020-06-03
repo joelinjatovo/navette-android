@@ -179,7 +179,7 @@ public class CheckoutFragment extends BottomSheetDialogFragment {
                     }
 
                     if(result.getSuccess()!=null){
-                        OrderWithDatas data = result.getSuccess();
+                        Order data = result.getSuccess();
                         if(data!=null){
                             NavHostFragment.findNavController(this).navigate(R.id.action_checkout_fragment_to_thanks_fragment);
                         }

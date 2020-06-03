@@ -436,9 +436,9 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                             mBinding.bottomSheets.setShowErrorLoaderCart(true);
                         }
                         if(cart.getSuccess()!=null){
-                            OrderWithDatas data = cart.getSuccess();
+                            Order data = cart.getSuccess();
                             if(data!=null){
-                                Order order = data.getOrder();
+                                Order order = data;
                                 if(order!=null) {
                                     Order orderLive = orderViewModel.getOrder();
                                     orderLive.setCoefficient(order.getCoefficient());
@@ -462,13 +462,13 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                         mBinding.bottomSheets.setShowErrorLoaderCar(true);
                     }
                     if(result.getSuccess()!=null){
-                        ArrayList<CarAndModel> items = (ArrayList<CarAndModel>) result.getSuccess();
+                        ArrayList<Car> items = (ArrayList<Car>) result.getSuccess();
                         if(items.isEmpty()){
                             mBinding.bottomSheets.setShowErrorLoaderCar(true);
                         }else{
                             mBinding.bottomSheets.setShowErrorLoaderCar(false);
                             mAdapter.setItems(items);
-                            orderViewModel.setCarLiveData(items.get(0).getCar());
+                            orderViewModel.setCarLiveData(items.get(0));
                             mAdapter.setSelected(0);
                         }
                     }
@@ -483,7 +483,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
                         Toast.makeText(requireContext(), result.getError(), Toast.LENGTH_SHORT).show();
                     }
                     if(result.getSuccess()!=null){
-                        Order order = result.getSuccess().getOrder();
+                        Order order = result.getSuccess();
                         if(order!=null){
                             mBinding.bottomSheets.setAmount(order.getTotalStr());
                         }
@@ -500,7 +500,7 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
         if(club==null) return;
         Item item = orderViewModel.getItem1();
         if(item==null) return;
-        Call<RetrofitResponse<OrderWithDatas>> cartRetrofitRequest = orderViewModel.getCart();
+        Call<RetrofitResponse<Order>> cartRetrofitRequest = orderViewModel.getCart();
         mBinding.bottomSheets.setIsLoadingCart(true);
         mBinding.bottomSheets.setShowErrorLoaderCart(false);
     }

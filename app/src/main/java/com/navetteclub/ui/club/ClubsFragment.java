@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.databinding.FragmentClubsBinding;
 import com.navetteclub.ui.OnClickItemListener;
 import com.navetteclub.ui.order.OrdersFragment;
@@ -32,7 +33,7 @@ import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.ClubViewModel;
 import com.navetteclub.vm.MyViewModelFactory;
 
-public class ClubsFragment extends BottomSheetDialogFragment implements OnClickItemListener<ClubAndPoint> {
+public class ClubsFragment extends BottomSheetDialogFragment implements OnClickItemListener<Club> {
 
     private static final String TAG = OrdersFragment.class.getSimpleName();
 
@@ -115,13 +116,18 @@ public class ClubsFragment extends BottomSheetDialogFragment implements OnClickI
 
         clubViewModel = new ViewModelProvider(requireActivity(), factory).get(ClubViewModel.class);
 
-        clubViewModel.getClubs().observe(getViewLifecycleOwner(),
+        clubViewModel.getClubsResult().observe(getViewLifecycleOwner(),
                 clubAndPointList -> {
                     if (clubAndPointList == null) {
                         return;
                     }
-                    mAdapter.setItems(clubAndPointList);
-                    mBinding.setShowError(clubAndPointList.isEmpty());
+                    if(clubAndPointList.getError()==null){
+                        mBinding.setShowError(true);
+                    }
+                    if(clubAndPointList.getSuccess()==null){
+                        mAdapter.setItems(clubAndPointList.getSuccess());
+                        mBinding.setShowError(false);
+                    }
                 });
 
         clubViewModel.getClubsResult().observe(getViewLifecycleOwner(),
@@ -185,7 +191,7 @@ public class ClubsFragment extends BottomSheetDialogFragment implements OnClickI
     }
 
     @Override
-    public void onClick(View view, int position, ClubAndPoint item) {
+    public void onClick(View view, int position, Club item) {
         clubViewModel.setClub(item);
         NavHostFragment.findNavController(ClubsFragment.this).navigate(R.id.club_fragment);
     }

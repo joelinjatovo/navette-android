@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.ui.OnClickItemListener;
 import com.squareup.picasso.Picasso;
 
@@ -22,13 +23,13 @@ import java.util.List;
 
 public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerViewAdapter.ViewHolder>  implements Filterable {
 
-    private List<ClubAndPoint> mItems;
+    private List<Club> mItems;
 
-    private List<ClubAndPoint> mOriginItems;
+    private List<Club> mOriginItems;
 
-    private final OnClickItemListener<ClubAndPoint> mListener;
+    private final OnClickItemListener<Club> mListener;
 
-    public ClubRecyclerViewAdapter(OnClickItemListener<ClubAndPoint> listener) {
+    public ClubRecyclerViewAdapter(OnClickItemListener<Club> listener) {
         mListener = listener;
     }
 
@@ -42,10 +43,10 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mItems.get(position);
-        holder.mNameTextView.setText(mItems.get(position).getClub().getName());
+        holder.mNameTextView.setText(mItems.get(position).getName());
         new Picasso.Builder(holder.mClubImageView.getContext())
                 .build()
-                .load(BuildConfig.BASE_URL + mItems.get(position).getClub().getImageUrl())
+                .load(BuildConfig.BASE_URL + mItems.get(position).getImageUrl())
                 .resize(200,200).into(holder.mClubImageView);
 
         holder.mView.setOnClickListener(v -> {
@@ -63,7 +64,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<ClubAndPoint> items){
+    public void setItems(List<Club> items){
         if (mItems == null) {
             mItems = items;
             mOriginItems = items;
@@ -82,16 +83,16 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    ClubAndPoint oldItem = mItems.get(oldItemPosition);
-                    ClubAndPoint newItem = items.get(newItemPosition);
-                    return oldItem.getClub().getId() == newItem.getClub().getId();
+                    Club oldItem = mItems.get(oldItemPosition);
+                    Club newItem = items.get(newItemPosition);
+                    return oldItem.getId() == newItem.getId();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    ClubAndPoint oldItem = mItems.get(oldItemPosition);
-                    ClubAndPoint newItem = items.get(newItemPosition);
-                    return oldItem.getClub().getName()!=null && oldItem.getClub().getName().equals(newItem.getClub().getName());
+                    Club oldItem = mItems.get(oldItemPosition);
+                    Club newItem = items.get(newItemPosition);
+                    return oldItem.getName()!=null && oldItem.getName().equals(newItem.getName());
                 }
             });
 
@@ -110,15 +111,15 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 final FilterResults oReturn = new FilterResults();
-                final ArrayList<ClubAndPoint> results = new ArrayList<>();
+                final ArrayList<Club> results = new ArrayList<>();
 
                 if (mOriginItems == null)
                     mOriginItems = new ArrayList<>(mItems);
 
                 if (constraint != null && constraint.length() > 0) {
                     if (mOriginItems != null && mOriginItems.size() > 0) {
-                        for (final ClubAndPoint cd : mOriginItems) {
-                            if (cd.getClub().getName().toLowerCase()
+                        for (final Club cd : mOriginItems) {
+                            if (cd.getName().toLowerCase()
                                     .contains(constraint.toString().toLowerCase()))
                                 results.add(cd);
                         }
@@ -136,7 +137,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
             @Override
             protected void publishResults(final CharSequence constraint,
                                           FilterResults results) {
-                ArrayList<ClubAndPoint> itemList = new ArrayList<>((ArrayList<ClubAndPoint>) results.values);
+                ArrayList<Club> itemList = new ArrayList<>((ArrayList<Club>) results.values);
                 ///Collections.sort(itemList);
                 setItems(itemList);
             }
@@ -147,7 +148,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
         final View mView;
         final ImageView mClubImageView;
         final TextView mNameTextView;
-        ClubAndPoint mItem;
+        Club mItem;
 
         ViewHolder(View view) {
             super(view);

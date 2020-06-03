@@ -136,7 +136,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     Order oldItem = mItems.get(oldItemPosition);
                     Order newItem = items.get(newItemPosition);
-                    return oldItem!=null && oldItem.equals(newItem.getOrder());
+                    return oldItem!=null && oldItem.equals(newItem);
                 }
             });
 

@@ -25,6 +25,7 @@ import com.navetteclub.api.clients.RetrofitClient;
 import com.navetteclub.api.models.OrderParam;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.OrderApiService;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrderCancelBinding;
 import com.navetteclub.utils.Log;
@@ -131,11 +132,11 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
         Log.d(TAG, "OrderApiService.cancelOrder()");
         progressDialog.show();
         OrderApiService service = RetrofitClient.getInstance().create(OrderApiService.class);
-        Call<RetrofitResponse<OrderWithDatas>> call = service.cancel(token, new OrderParam(orderRid));
-        call.enqueue(new Callback<RetrofitResponse<OrderWithDatas>>() {
+        Call<RetrofitResponse<Order>> call = service.cancel(token, new OrderParam(orderRid));
+        call.enqueue(new Callback<RetrofitResponse<Order>>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
-                                   @NonNull Response<RetrofitResponse<OrderWithDatas>> response) {
+            public void onResponse(@NonNull Call<RetrofitResponse<Order>> call,
+                                   @NonNull Response<RetrofitResponse<Order>> response) {
                 Log.e(TAG, response.toString());
                 progressDialog.dismiss();
                 if (response.body() != null){
@@ -151,7 +152,7 @@ public class OrderCancelFragment extends BottomSheetDialogFragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse<OrderWithDatas>> call,
+            public void onFailure(@NonNull Call<RetrofitResponse<Order>> call,
                                   @NonNull Throwable throwable) {
                 progressDialog.dismiss();
                 Log.e(TAG, throwable.getMessage(), throwable);

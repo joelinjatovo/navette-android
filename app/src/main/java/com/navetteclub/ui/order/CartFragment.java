@@ -252,9 +252,9 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                     }
 
                     if(result.getSuccess()!=null){
-                        OrderWithDatas data = result.getSuccess();
+                        Order data = result.getSuccess();
                         if(data!=null){
-                            Order order = data.getOrder();
+                            Order order = data;
                             if(order!=null) {
                                 Order orderLive = orderViewModel.getOrder();
                                 if(orderLive!=null) {
@@ -336,9 +336,9 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                     }
 
                     if(result.getSuccess()!=null){
-                        OrderWithDatas data = result.getSuccess();
+                        Order data = result.getSuccess();
                         if(data!=null){
-                            Order orderOnline = data.getOrder();
+                            Order orderOnline = data;
                             if(orderOnline!=null){
                                 Car carOnline = data.getCar();
                                 if(carOnline!=null){
@@ -350,7 +350,7 @@ public class CartFragment extends BottomSheetDialogFragment implements DatePicke
                                 }
                                 orderViewModel.setOrderLiveData(orderOnline);
                             }
-                            List<ItemWithDatas> items = data.getItems();
+                            List<Item> items = data.getItems();
                             orderViewModel.setItemsLiveData(items);
                             NavHostFragment.findNavController(this).navigate(R.id.action_cart_fragment_to_navigation_checkout);
                         }
