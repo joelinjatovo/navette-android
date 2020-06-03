@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -125,6 +128,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnClic
     }
 
     private void setupUi() {
+        mBinding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DrawerLayout navDrawer = requireActivity().findViewById(R.id.drawer_layout);
+                // If the navigation drawer is not open then open it, if its already open then close it.
+                if(navDrawer!=null) {
+                    if (!navDrawer.isDrawerOpen(GravityCompat.START)) {
+                        navDrawer.openDrawer(GravityCompat.START);
+                    } else {
+                        navDrawer.closeDrawer(GravityCompat.END);
+                    }
+                }
+            }
+        });
         mBinding.createOrderButton.setOnClickListener(v -> {
             orderViewModel.refresh();
             NavHostFragment.findNavController(this).navigate(R.id.action_navigation_home_to_navigation_order);

@@ -19,6 +19,6 @@
     <color name="black">#000000</color>
     <color name="gray">#333333</color>
     <color name="red">#fe0007</color>
-    <color name="transparent">#ffffffff</color>
+    <color name="transparent">#00ffffff</color>
     <color name="overlay">#bf000000</color>
 </resources>
