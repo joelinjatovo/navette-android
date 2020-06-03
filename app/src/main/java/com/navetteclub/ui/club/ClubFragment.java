@@ -20,7 +20,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.databinding.FragmentClubBinding;
 import com.navetteclub.utils.UiUtils;
 import com.navetteclub.vm.ClubViewModel;

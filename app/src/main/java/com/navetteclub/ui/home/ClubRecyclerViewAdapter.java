@@ -79,7 +79,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     Club oldItem = mItems.get(oldItemPosition);
                     Club newItem = items.get(newItemPosition);
-                    return oldItem!=null && oldItem.equals(newItem.getClub());
+                    return oldItem!=null && oldItem.equals(newItem);
                 }
             });
 
@@ -101,7 +101,7 @@ public class ClubRecyclerViewAdapter extends RecyclerView.Adapter<ClubRecyclerVi
             mItem = item;
             if(item!=null) {
                 mBinding.setClub(item);
-                    if(item.getClub().getImageUrl()!=null) {
+                    if(item.getImageUrl()!=null) {
                         Picasso.get()
                                 .load(BuildConfig.BASE_URL + mItem.getImageUrl())
                                 .placeholder(R.drawable.image_placeholder)

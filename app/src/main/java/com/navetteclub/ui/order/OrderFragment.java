@@ -111,10 +111,10 @@ public class OrderFragment extends Fragment implements OnMapReadyCallback, DateP
 
     private Calendar calendar;
 
-    private OnClickItemListener<CarAndModel> mListerner = new OnClickItemListener<CarAndModel>() {
+    private OnClickItemListener<Car> mListerner = new OnClickItemListener<Car>() {
         @Override
-        public void onClick(View v, int position, CarAndModel item) {
-            orderViewModel.setCarLiveData(item.getCar());
+        public void onClick(View v, int position, Car item) {
+            orderViewModel.setCarLiveData(item);
             mAdapter.setSelected(position);
         }
     };

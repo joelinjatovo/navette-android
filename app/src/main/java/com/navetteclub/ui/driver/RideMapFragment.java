@@ -56,7 +56,6 @@ import com.navetteclub.api.models.google.Route;
 import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.UserApiService;
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
 import com.navetteclub.database.entity.RidePoint;
@@ -608,7 +607,7 @@ public class RideMapFragment extends Fragment implements OnMapReadyCallback {
 
         int color = R.color.colorAlertDefault;
         if (RidePoint.STATUS_NEXT.equals(ridePoint.getStatus())) {
-            color = R.color.colorImportant;
+            color = R.color.colorAccent;
         }
         if (RidePoint.STATUS_ACTIVE.equals(ridePoint.getStatus())) {
             color = R.color.colorAlertAccent;

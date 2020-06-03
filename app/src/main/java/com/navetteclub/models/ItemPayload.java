@@ -62,7 +62,7 @@ public class ItemPayload {
             case Item.STATUS_ACTIVE: return R.string.desc_order_item_status_active;
             case Item.STATUS_NEXT: return R.string.desc_order_item_status_next;
             case Item.STATUS_ARRIVED: return R.string.desc_order_item_status_arrived;
-            case Item.STATUS_ONLINE: return R.string.desc_order_item_status_online;
+            case Item.STATUS_STARTED: return R.string.desc_order_item_status_online;
             case Item.STATUS_CANCELED: return R.string.desc_order_item_status_canceled;
             case Item.STATUS_COMPLETED: return R.string.desc_order_item_status_completed;
         }

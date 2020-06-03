@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.ui.OnClickItemListener;
 import com.squareup.picasso.Picasso;
 

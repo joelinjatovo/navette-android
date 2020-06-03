@@ -11,7 +11,6 @@ import com.navetteclub.api.responses.RetrofitResponse;
 import com.navetteclub.api.services.ClubApiService;
 import com.navetteclub.database.callback.UpsertCallback;
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.repositories.ClubRepository;
 import com.navetteclub.utils.Log;
@@ -51,7 +50,7 @@ public class ClubViewModel extends ViewModel implements Callback<RetrofitRespons
     public void load(){
         Log.d(TAG, "service.getClubs()");
         ClubApiService service = RetrofitClient.getInstance().create(ClubApiService.class);
-        Call<RetrofitResponse<List<Club>>> call = service.getClubs();
+        Call<RetrofitResponse<List<Club>>> call = service.index();
         call.enqueue(this);
     }
 

@@ -12,19 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Car;
 import com.navetteclub.ui.OnClickItemListener;
 
 import java.util.List;
 
 public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerViewAdapter.ViewHolder> {
 
-    private List<CarAndModel> mItems;
+    private List<Car> mItems;
 
-    private final OnClickItemListener<CarAndModel> mListener;
+    private final OnClickItemListener<Car> mListener;
 
     private int selected;
 
-    public CarRecyclerViewAdapter(OnClickItemListener<CarAndModel> listener) {
+    public CarRecyclerViewAdapter(OnClickItemListener<Car> listener) {
         mListener = listener;
     }
 
@@ -53,7 +54,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         return mItems==null?0:mItems.size();
     }
 
-    public void setItems(List<CarAndModel> items){
+    public void setItems(List<Car> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -71,26 +72,22 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    CarAndModel oldItem = mItems.get(oldItemPosition);
-                    CarAndModel newItem = mItems.get(newItemPosition);
+                    Car oldItem = mItems.get(oldItemPosition);
+                    Car newItem = mItems.get(newItemPosition);
                     return oldItem != null
-                            && oldItem.getCar() != null
                             && newItem != null
-                            && newItem.getCar() != null
-                            && oldItem.getCar().getId()!=null
-                            && oldItem.getCar().getId().equals(newItem.getCar().getId());
+                            && oldItem.getId()!=null
+                            && oldItem.getId().equals(newItem.getId());
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    CarAndModel oldItem = mItems.get(oldItemPosition);
-                    CarAndModel newItem = mItems.get(newItemPosition);
+                    Car oldItem = mItems.get(oldItemPosition);
+                    Car newItem = mItems.get(newItemPosition);
                     return oldItem != null
-                            && oldItem.getCar() != null
                             && newItem != null
-                            && newItem.getCar() != null
-                            && oldItem.getCar().getName()!=null
-                            && oldItem.getCar().getName().equals(newItem.getCar().getName())
+                            && oldItem.getName()!=null
+                            && oldItem.getName().equals(newItem.getName())
                             && oldItem.isSelected() == newItem.isSelected();
                 }
             });
@@ -100,7 +97,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         }
     }
 
-    public List<CarAndModel> getItems() {
+    public List<Car> getItems() {
         return this.mItems;
     }
 
@@ -126,7 +123,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
         final ImageView mCarImageView;
         final TextView mNameTextView;
         final TextView mDescTextView;
-        CarAndModel mItem;
+        Car mItem;
 
         ViewHolder(View view) {
             super(view);
@@ -136,7 +133,7 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
             mDescTextView = view.findViewById(R.id.descTextView);
         }
 
-        void setItem(CarAndModel item){
+        void setItem(Car item){
             mItem = item;
             if(mItem!=null){
                 if(mItem.isSelected())
@@ -144,10 +141,10 @@ public class CarRecyclerViewAdapter extends RecyclerView.Adapter<CarRecyclerView
                 else
                     mView.setStrokeColor(mView.getContext().getResources().getColor(R.color.colorIcon));
 
-                if(mItem.getCar()!=null){
-                    mNameTextView.setText(mItem.getCar().getName());
-                    mDescTextView.setText(String.valueOf(mItem.getCar().getPlace()));
-                    if(mItem.getCar().getImageUrl()!=null){
+                if(mItem!=null){
+                    mNameTextView.setText(mItem.getName());
+                    mDescTextView.setText(String.valueOf(mItem.getPlace()));
+                    if(mItem.getImageUrl()!=null){
                         /*
                         Picasso.get()
                                 .load(Constants.getBaseUrl() + mItem.getCar().getImageUrl())

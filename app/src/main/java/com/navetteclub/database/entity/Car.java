@@ -58,6 +58,9 @@ public class Car {
     @Ignore
     private User driver;
 
+    @Ignore
+    private boolean selected;
+
     public Car() {
     }
 
@@ -139,5 +142,13 @@ public class Car {
 
     public void setDriver(User driver) {
         this.driver = driver;
+    }
+
+    public void setSelected(boolean b) {
+        this.selected = true;
+    }
+
+    public boolean isSelected() {
+        return this.selected;
     }
 }

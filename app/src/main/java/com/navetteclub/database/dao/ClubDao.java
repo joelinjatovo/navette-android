@@ -8,7 +8,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import com.navetteclub.database.entity.Club;
-import com.navetteclub.database.entity.ClubAndPoint;
 import com.navetteclub.database.entity.Point;
 
 import java.util.ArrayList;
@@ -57,11 +56,11 @@ public abstract class ClubDao extends BaseDao<Club> {
 
     @Transaction
     @Query("SELECT * FROM points JOIN clubs ON clubs.point_id = points.id WHERE clubs.name LIKE :search")
-    public abstract LiveData<List<ClubAndPoint>> searchPointAndClub(String search);
+    public abstract LiveData<List<Club>> searchPointAndClub(String search);
 
     @Transaction
-    @Query("SELECT * FROM points")
-    public abstract LiveData<List<ClubAndPoint>> loadPointAndClub();
+    @Query("SELECT * FROM points JOIN clubs ON clubs.point_id = points.id")
+    public abstract LiveData<List<Club>> loadPointAndClub();
 
     @Transaction
     public void insertClubAndPoint(Club club, Point point) {

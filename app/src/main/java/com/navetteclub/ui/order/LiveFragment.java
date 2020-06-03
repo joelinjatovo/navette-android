@@ -43,6 +43,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.navetteclub.BuildConfig;
 import com.navetteclub.R;
+import com.navetteclub.database.entity.Club;
 import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Point;
 import com.navetteclub.database.entity.Ride;
@@ -266,7 +267,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void updateUi(ItemWithDatas itemWithData) {
+    private void updateUi(Item itemWithData) {
         if(itemWithData==null) return;
         User driver = itemWithData.getDriver();
         if(driver!=null){
@@ -290,7 +291,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
         }
 
         int color = R.color.colorAccent;
-        Item item = itemWithData.getItem();
+        Item item = itemWithData;
         String pointLabel = null;
         if(item!=null){
             if(item.getType()!=null){
@@ -347,8 +348,8 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.white));
                         color = R.color.colorIcon;
                         break;
-                    case Item.STATUS_ONLINE:
-                        mBinding.statusTextView.setText(R.string.status_online);
+                    case Item.STATUS_STARTED:
+                        mBinding.statusTextView.setText(R.string.status_started);
                         mBinding.statusTextView.setBackgroundResource(R.drawable.bg_text_alert_success);
                         mBinding.statusTextView.setTextColor(getResources().getColor(R.color.colorText));
                         color = R.color.colorAccent;
@@ -359,7 +360,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
 
             String direction = null;
 
-            List<RidePoint> ridePoints = itemWithData.getRidepoints();
+            List<RidePoint> ridePoints = itemWithData.getRidePoints();
             if(ridePoints!=null && ridePoints.size() > 0){
                 RidePoint ridePoint = ridePoints.get(0);
                 /* Draw ride point direction */
@@ -396,10 +397,11 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        ClubAndPoint clubAndPoint = itemWithData.getClubAndPoint();
-        Log.e(TAG, "ClubANdPoint " + clubAndPoint);
-        if(clubAndPoint!=null){
-            drawClubMarker(clubAndPoint.getPoint());
+        if(itemWithData.getOrder()!=null) {
+            Club clubAndPoint = itemWithData.getOrder().getClub();
+            if (clubAndPoint != null) {
+                drawClubMarker(clubAndPoint.getPoint());
+            }
         }
     }
 
@@ -680,7 +682,7 @@ public class LiveFragment extends Fragment implements OnMapReadyCallback {
                                 case Item.STATUS_NEXT:
                                     showSweetInfo(R.string.desc_order_item_status_next);
                                     break;
-                                case Item.STATUS_ONLINE:
+                                case Item.STATUS_STARTED:
                                     showSweetInfo(R.string.desc_order_item_status_online);
                                     break;
                                 case Item.STATUS_CANCELED:

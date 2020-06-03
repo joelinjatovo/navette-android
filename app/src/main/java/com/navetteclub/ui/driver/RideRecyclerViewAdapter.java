@@ -130,7 +130,7 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     Ride oldItem = mItems.get(oldItemPosition);
                     Ride newItem = items.get(newItemPosition);
-                    return oldItem!=null && oldItem.equals(newItem.getRide());
+                    return oldItem!=null && oldItem.equals(newItem);
                 }
             });
 
@@ -202,8 +202,8 @@ public class RideRecyclerViewAdapter extends RecyclerView.Adapter<RideRecyclerVi
 
                     }
                 }
-                if(mItem.getPoints()!=null){
-                    mBinding.setPointCount(mItem.getPoints().size());
+                if(mItem.getRidepoints()!=null){
+                    mBinding.setPointCount(mItem.getRidepoints().size());
                 }
             }
 

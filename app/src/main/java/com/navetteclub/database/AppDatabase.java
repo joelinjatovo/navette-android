@@ -42,7 +42,6 @@ import com.navetteclub.database.entity.User;
         Ride.class,
         RidePoint.class,
         User.class,
-        UserPoint.class,
 },version = 1, exportSchema = false)
 @TypeConverters({DateConverter.class, ArrayConverter.class, ObjectConverter.class})
 public abstract class AppDatabase extends RoomDatabase {

@@ -22,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.navetteclub.R;
 import com.navetteclub.api.models.Pagination;
+import com.navetteclub.database.entity.Order;
 import com.navetteclub.database.entity.User;
 import com.navetteclub.databinding.FragmentOrdersBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -34,7 +35,7 @@ import com.navetteclub.vm.OrdersViewModel;
 
 import java.util.ArrayList;
 
-public class OrdersFragment extends Fragment implements OnClickItemListener<OrderWithDatas>, SwipeRefreshLayout.OnRefreshListener {
+public class OrdersFragment extends Fragment implements OnClickItemListener<Order>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = OrdersFragment.class.getSimpleName();
     private static final int PAGE_START = 1;
@@ -191,10 +192,10 @@ public class OrdersFragment extends Fragment implements OnClickItemListener<Orde
     }
 
     @Override
-    public void onClick(View view, int position, OrderWithDatas item) {
+    public void onClick(View view, int position, Order item) {
         orderViewModel.refresh();
         OrdersFragmentDirections.ActionOrdersFragmentToOrderViewFragment action = OrdersFragmentDirections
-                .actionOrdersFragmentToOrderViewFragment(item.getOrder().getRid());
+                .actionOrdersFragmentToOrderViewFragment(item.getRid());
 
         NavHostFragment.findNavController(OrdersFragment.this).navigate(action);
     }

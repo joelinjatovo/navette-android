@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.navetteclub.R;
 import com.navetteclub.database.entity.Club;
+import com.navetteclub.database.entity.Item;
 import com.navetteclub.database.entity.Order;
 import com.navetteclub.databinding.ViewholderOrderBinding;
 import com.navetteclub.ui.OnClickItemListener;
@@ -23,11 +24,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     private static final int VIEW_TYPE_NORMAL = 1;
     private boolean isLoaderVisible = false;
 
-    private List<OrderWithDatas> mItems;
+    private List<Order> mItems;
 
-    private final OnClickItemListener<OrderWithDatas>  mListener;
+    private final OnClickItemListener<Order>  mListener;
 
-    public OrderRecyclerViewAdapter(OnClickItemListener<OrderWithDatas> listener) {
+    public OrderRecyclerViewAdapter(OnClickItemListener<Order> listener) {
         mListener = listener;
     }
 
@@ -67,7 +68,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     public void addLoading() {
         if(mItems!=null){
             isLoaderVisible = true;
-            mItems.add(new OrderWithDatas());
+            mItems.add(new Order());
             notifyItemInserted(getItemCount() - 1);
         }
     }
@@ -75,7 +76,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     public void removeLoading() {
         isLoaderVisible = false;
         int position = getItemCount() - 1;
-        OrderWithDatas item = getItem(position);
+        Order item = getItem(position);
         if (item != null && mItems!=null) {
             mItems.remove(position);
             notifyItemRemoved(position);
@@ -89,22 +90,22 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         }
     }
 
-    private OrderWithDatas getItem(int position) {
+    private Order getItem(int position) {
         if(mItems==null) return null;
         return mItems.get(position);
     }
 
-    public void addItems(List<OrderWithDatas> items) {
+    public void addItems(List<Order> items) {
         if (mItems == null) {
             setItems(items);
         }else{
-            List<OrderWithDatas> clone = new ArrayList<>(mItems);
+            List<Order> clone = new ArrayList<>(mItems);
             clone.addAll(items);
             setItems(clone);
         }
     }
 
-    private void setItems(List<OrderWithDatas> items){
+    private void setItems(List<Order> items){
         if (mItems == null) {
             mItems = items;
             notifyItemRangeInserted(0, mItems.size());
@@ -122,20 +123,20 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    OrderWithDatas oldItem = mItems.get(oldItemPosition);
-                    OrderWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getOrder() != null &&
-                            newItem.getOrder() != null &&
-                            oldItem.getOrder().getId() != null &&
-                            newItem.getOrder().getId() != null &&
-                            oldItem.getOrder().getId().equals(newItem.getOrder().getId());
+                    Order oldItem = mItems.get(oldItemPosition);
+                    Order newItem = items.get(newItemPosition);
+                    return oldItem != null &&
+                            newItem!= null &&
+                            oldItem.getId() != null &&
+                            newItem.getId() != null &&
+                            oldItem.getId().equals(newItem.getId());
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    OrderWithDatas oldItem = mItems.get(oldItemPosition);
-                    OrderWithDatas newItem = items.get(newItemPosition);
-                    return oldItem.getOrder()!=null && oldItem.getOrder().equals(newItem.getOrder());
+                    Order oldItem = mItems.get(oldItemPosition);
+                    Order newItem = items.get(newItemPosition);
+                    return oldItem!=null && oldItem.equals(newItem.getOrder());
                 }
             });
 
@@ -158,10 +159,10 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         }
 
         @Override
-        void setItem(OrderWithDatas item){
+        void setItem(Order item){
             super.setItem(item);
             if(mItem!=null){
-                Order order = mItem.getOrder();
+                Order order = mItem;
                 if(order!=null){
                     mBinding.setOrderId(order.getRid());
                     mBinding.setAmount(order.getAmountStr());
@@ -218,12 +219,12 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 }
 
                 //Items
-                List<ItemWithDatas> items = mItem.getItems();
+                List<Item> items = mItem.getItems();
                 int i = 0;
                 if(items!=null && !items.isEmpty()){
-                    for(ItemWithDatas itemWithData: items){
-                        if(itemWithData!=null && itemWithData.getItem()!=null && itemWithData.getPoint()!=null) {
-                            if(Order.TYPE_BACK.equals(itemWithData.getItem().getType())){
+                    for(Item itemWithData: items){
+                        if(itemWithData!=null && itemWithData.getPoint()!=null) {
+                            if(Order.TYPE_BACK.equals(itemWithData.getType())){
                                 mBinding.setPoint3Title("Drop");
                                 mBinding.setPoint3(itemWithData.getPoint().getName());
                             }else{
@@ -277,9 +278,9 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
         private int mCurrentPosition;
 
-        protected OrderWithDatas mItem;
+        protected Order mItem;
 
-        protected OnClickItemListener<OrderWithDatas>  mListener;
+        protected OnClickItemListener<Order>  mListener;
 
         public BaseViewHolder(View itemView) {
             super(itemView);
@@ -287,11 +288,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
         protected abstract void clear();
 
-        void setListener(OnClickItemListener<OrderWithDatas> listener){
+        void setListener(OnClickItemListener<Order> listener){
             mListener = listener;
         }
 
-        void setItem(OrderWithDatas item){
+        void setItem(Order item){
             mItem = item;
         }
 
