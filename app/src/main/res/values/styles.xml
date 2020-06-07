@@ -9,8 +9,10 @@
     </style>
 
     <!-- Popup application theme. -->
-    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Light">
-        <item name="colorPrimary">@color/transparent</item>
+    <style name="AppTheme.Toolbar" parent="Theme.MaterialComponents.Light">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
     <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
